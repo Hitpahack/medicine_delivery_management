@@ -26,7 +26,7 @@ import { FormControlErrorsDirective } from "../common/app.directives";
     exports: [ AdminLayoutComponent   ]
   })
   export class AdminModule { 
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<AdminModule> {
       return {
         ngModule: AdminModule,
         providers: []

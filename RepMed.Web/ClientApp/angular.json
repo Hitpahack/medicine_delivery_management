@@ -14,7 +14,6 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "progress": false,
-            "extractCss": true,
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -138,5 +137,8 @@
       }
     }
   },
-  "defaultProject": "RepMed.Web"
+  //"defaultProject": "RepMed.Web",
+  "cli": {
+    "analytics": "06b9e3e3-629d-41df-bb74-1afe2463c635"
+  }
 }

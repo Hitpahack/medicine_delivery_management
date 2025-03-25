@@ -7,7 +7,7 @@ import { adminBaseService } from "../admin.baseservice";
     providedIn: 'root'
   })
   
-  export class adminUserService extends adminBaseService {
+export class AdminUserService extends adminBaseService {
   
   
       constructor(public http: HttpClient) {

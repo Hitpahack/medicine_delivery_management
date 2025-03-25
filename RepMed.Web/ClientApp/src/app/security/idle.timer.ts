@@ -1,5 +1,8 @@
-import { IdentityHelper } from "./identity.helper";
-
+import { IDENTITY_HELPER } from "./identity.helper";
+declare global {    interface Date {
+        addMinutes(minutes: number): Date;
+    }
+}
 class IdleTimer {
 
   private sessionTimeoutMinute: number;
@@ -21,7 +24,7 @@ class IdleTimer {
   startInterval() {
       this.updateExpiredTime();
       this.interval = setInterval(() => {
-          const expTime = IdentityHelper.getSecureData("_expiredTime");
+          const expTime = IDENTITY_HELPER.getSecureData("_expiredTime");
           const expiredTime = parseInt(expTime, 10);
           if (expiredTime < Date.now()) {
               if (this.onTimeout) {
@@ -37,8 +40,12 @@ class IdleTimer {
           clearTimeout(this.timeoutTracker);
       }
       this.timeoutTracker = setTimeout(() => {
-          var time = new Date().addMinute(this.sessionTimeoutMinute).getTime();
-          IdentityHelper.setSecureData("_expiredTime",time.toString())
+          Date.prototype.addMinutes = function (minutes: number) {
+              return new Date(this.getTime() + minutes * 60000);
+          };
+          var time = new Date().addMinutes(this.sessionTimeoutMinute).getTime();
+
+          IDENTITY_HELPER.setSecureData("_expiredTime",time.toString())
       }, 300);
   }
 

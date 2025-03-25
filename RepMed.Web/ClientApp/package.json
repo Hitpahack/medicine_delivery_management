@@ -21,11 +21,10 @@
     "@angular/platform-browser-dynamic": "^17.2.1",
     "@angular/platform-server": "^17.2.1",
     "@angular/router": "^17.2.1",
-    "@nguniversal/module-map-ngfactory-loader": "^17.2.1",
     "bootstrap": "^5.3.0",
     "core-js": "^3.30.0",
     "rxjs": "^7.8.1",
-    "zone.js": "^0.14.2"
+    "zone.js": "^0.15.0"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.2.1",
@@ -36,13 +35,13 @@
     "@types/node": "^18.14.6",
     "codelyzer": "^6.0.2",
     "jasmine-core": "^4.6.0",
-    "jasmine-spec-reporter": "^8.0.0",
+    "jasmine-spec-reporter": "^7.0.0",
     "karma": "^6.4.2",
     "karma-chrome-launcher": "^3.2.0",
     "karma-coverage-istanbul-reporter": "^3.0.3",
     "karma-jasmine": "^5.0.0",
     "karma-jasmine-html-reporter": "^2.0.0",
-    "typescript": "^5.2.2"
+    "typescript": "^5.4.5"
   },
   "optionalDependencies": {
     "node-sass": "^8.0.0",
