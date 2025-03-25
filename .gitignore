@@ -1,0 +1,19 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/RepMed
+/RepMed.Core/.vs/RepMed.Core/v17
+/RepMed.Core/bin
+/RepMed.Core/obj
+/RepMed.Dtos/bin
+/RepMed.Dtos/obj
+/RepMed.Localize/bin
+/RepMed.Localize/obj
+/RepMed.Packages/bin
+/RepMed.Packages/obj
+/RepMed.Services/bin
+/RepMed.Services/obj
+/RepMed.Web/bin
+/RepMed.Web/ClientApp/e2e
+/RepMed.Web/obj

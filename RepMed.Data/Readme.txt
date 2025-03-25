@@ -1,0 +1,1 @@
+﻿Scaffold-DbContext "Server=127.0.0.1;Port=5432;Database=bestshifts;User Id=bestshifts_user;Password=bestshifts_user;" Npgsql.EntityFrameworkCore.PostgreSQL -f
