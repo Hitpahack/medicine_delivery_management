@@ -48,18 +48,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "RepMed.Web:build"
+            "buildTarget": "RepMed.Web:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "RepMed.Web:build:production"
+              "buildTarget": "RepMed.Web:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "RepMed.Web:build"
+            "buildTarget": "RepMed.Web:build"
           }
         },
         "test": {
