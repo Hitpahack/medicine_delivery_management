@@ -11,13 +11,11 @@ import { WebModule } from './web/web.module';
 import { AdminModule } from './admin/admin.module';
 
 @NgModule({
-  declarations: [
-    AppComponent
-    
-  ],
-  imports: [
-    BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
+     imports: [
+    RouterModule,
+    BrowserModule,
     HttpClientModule,
+    AppComponent,
     FormsModule,
     WebModule.forRoot(),
     AdminModule.forRoot(),

@@ -1,8 +1,10 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { getBaseUrl, loadScript, loadScripts, loadStylesheets, setTitle } from 'src/main';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin-emptylayout',
+  imports: [RouterModule],
   templateUrl: './admin.emptylayout.component.html',
   styles: ['']
 })

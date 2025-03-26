@@ -12,16 +12,18 @@ import { ReactiveFormsModule } from "@angular/forms";
 import { FormControlErrorsDirective } from "../common/app.directives";
 
 @NgModule({
-    imports: [CommonModule, RouterModule,ReactiveFormsModule],
-    declarations: [   
-      AdminLayoutComponent,
-      AdminEmptyLayoutComponent, 
-      AdminShiftsComponent, 
-      AdminLoginComponent,
-      AdminFooterComponent,
-      AdminHeaderComponent,
-      AdminNavComponent ,
-      FormControlErrorsDirective
+    imports: [
+        CommonModule,
+        RouterModule,
+        ReactiveFormsModule,
+        AdminLayoutComponent,
+        AdminEmptyLayoutComponent,
+        AdminShiftsComponent,
+        AdminLoginComponent,
+        AdminFooterComponent,
+        AdminHeaderComponent,
+        AdminNavComponent,
+        FormControlErrorsDirective
     ],
     exports: [ AdminLayoutComponent   ]
   })

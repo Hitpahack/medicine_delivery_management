@@ -7,8 +7,7 @@ import { FacilitesComponent } from "./facilites/facilites.component";
 import { AdminModule } from "../admin/admin.module";
 
 @NgModule({
-    imports: [CommonModule, RouterModule],
-    declarations: [   WebLayoutComponent, FacilitesComponent, LoginComponent ],
+    imports: [CommonModule, RouterModule, WebLayoutComponent, FacilitesComponent, LoginComponent],
     exports: [        WebLayoutComponent   ]
   })
   export class WebModule { 
