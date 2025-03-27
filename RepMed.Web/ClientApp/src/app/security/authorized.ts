@@ -4,9 +4,8 @@ import { Subject } from "rxjs";
 import { APP_DI_CONTAINER } from "../common/app.di.container";
 import { AuthGuard } from "./authenticate.guard";
 import { IDENTITY_HELPER } from "./identity.helper";
-
-
-
+import { AdminUserService } from "../admin/services/users/admin.user.services";
+import { HttpResponse } from '@angular/common/http';
 export function IsAuthrozed({ permission }): ClassDecorator {
     // Decorator Factory
     return (target: Function) => {
@@ -23,81 +22,66 @@ export function IsAuthrozed({ permission }): ClassDecorator {
                     ngOnInit.apply(this, args);
                 }
                 else {
-                    APP_DI_CONTAINER.getInjector().get(adminUserService)
+                    APP_DI_CONTAINER.getInjector().get(AdminUserService)
                         .GetRoleInfo(IDENTITY_HELPER.getUserId).subscribe((res) => {
-                            if (res.success) {
-                                IDENTITY_HELPER.setUserRolesPermission(res.data.roles);
+                            if (res instanceof HttpResponse && res.body) {
+                                if (res.body.isSuccess) {
+                                    IDENTITY_HELPER.setUserRolesPermission(res.body.data.roles);
 
-                                var rolPermission = res.data.roles.map(s => s.permissions)
-                                const result = rolPermission.reduce((accumulator, value) => accumulator.concat(value), []).filter(s => s?.id);
-                                if (result.length > 0) {
+                                    var rolPermission = res.body.data.roles.map(s => s.permissions);
+                                    const result = rolPermission.reduce((accumulator, value) => accumulator.concat(value), []).filter(s => s?.id);
 
-                                    if (!result.map(s => s.permission).includes(permission.trim().toLowerCase())) {
-                                        isAuthorized = false;
-
-                                    }
-                                    else {
-
+                                    if (result.length > 0) {
+                                        if (!result.map(s => s.permission).includes(permission.trim().toLowerCase())) {
+                                            isAuthorized = false;
+                                        } else {
                                             var acts = result.find(s => s.permission.trim().toLowerCase() === permission.trim().toLowerCase());
                                             if (acts) {
                                                 switch (activeAction) {
                                                     case Actions.canAdd:
                                                         isAuthorized = acts.canAdd ?? false;
                                                         break;
-
                                                     case Actions.canEdit:
                                                         isAuthorized = acts.canEdit ?? false;
                                                         break;
-
                                                     case Actions.canDelete:
                                                         isAuthorized = acts.canDelete ?? false;
                                                         break;
-
                                                     case Actions.canListing:
                                                         isAuthorized = acts.canListing ?? false;
                                                         break;
-                                                        case Actions.canDetail:
-                                                            isAuthorized = acts.canDetail ?? false;
-                                                            break;
+                                                    case Actions.canDetail:
+                                                        isAuthorized = acts.canDetail ?? false;
+                                                        break;
                                                 }
-                                            }
-                                            else {
+                                            } else {
                                                 isAuthorized = false;
                                             }
-
-
-                                    }
-                                }
-                                else {
-                                    isAuthorized = false;
-                                }
-                                if (!isAuthorized) {
-                                    //if (this.dialog)
-                                        //APP_DI_CONTAINER.CloseDialog(this.dialog);
-
-                                    router.navigate(['/unauthorized'], {
-                                        queryParams: {
-                                            returnUrl: "/dashboard",
-                                            message: "You don't have permission to access this!",
-                                            title: "Permission Denied!"
-                                            // reqData: "lockeduser by Admin"
                                         }
+                                    } else {
+                                        isAuthorized = false;
+                                    }
 
-                                    });
+                                    if (!isAuthorized) {
+                                        router.navigate(['/unauthorized'], {
+                                            queryParams: {
+                                                returnUrl: "/dashboard",
+                                                message: "You don't have permission to access this!",
+                                                title: "Permission Denied!"
+                                            }
+                                        });
+                                    }
                                 }
                             }
                         },
                             (err) => {
-                                // APP_DI_CONTAINER.getInjector().get(ToastrService)
-                                //     .warning(err?.error?.message ? 'Permission Error! ' + err.error.message : 'Permission Error! ' + err?.error ? err.error : 'Permission Error!');
+                                console.error("Permission Error!", err);
                             },
                             () => {
-
                                 if (isAuthorized && ngOnInit) {
                                     ngOnInit.apply(this, args);
                                 }
-                            })
-
+                            });
                 }
             }
             else {

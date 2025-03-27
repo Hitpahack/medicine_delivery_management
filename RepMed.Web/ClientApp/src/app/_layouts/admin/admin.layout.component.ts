@@ -1,7 +1,8 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
-
+import { RouterModule } from '@angular/router';
 @Component({
-  selector: 'app-admin-layout',
+    selector: 'app-admin-layout',
+  imports: [RouterModule],
   templateUrl: './admin.layout.component.html',
   styles: ['']
 })

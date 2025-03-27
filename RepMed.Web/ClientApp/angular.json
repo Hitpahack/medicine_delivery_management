@@ -14,7 +14,6 @@
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
             "progress": false,
-            "extractCss": true,
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
@@ -24,7 +23,11 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/@popperjs/core/dist/umd/popper.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+            ]
           },
           "configurations": {
             "production": {
@@ -49,18 +52,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "RepMed.Web:build"
+            "buildTarget": "RepMed.Web:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "RepMed.Web:build:production"
+              "buildTarget": "RepMed.Web:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "RepMed.Web:build"
+            "buildTarget": "RepMed.Web:build"
           }
         },
         "test": {
@@ -71,7 +74,11 @@
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "styles": ["src/styles.css"],
-            "scripts": [],
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/popper.js/dist/umd/popper.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ],
             "assets": ["src/assets"]
           }
         },
@@ -138,5 +145,8 @@
       }
     }
   },
-  "defaultProject": "RepMed.Web"
+  //"defaultProject": "RepMed.Web",
+  "cli": {
+    "analytics": "06b9e3e3-629d-41df-bb74-1afe2463c635"
+  }
 }

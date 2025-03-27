@@ -1,5 +1,4 @@
 import { Router, RouterStateSnapshot } from "@angular/router";
-import { UserInfo } from "os";
 import { environment } from "src/environments/environment";
 import { APP_DI_CONTAINER } from "../common/app.di.container";
 import { BaseAccountsDto, LoginResponse } from "../viewmodels/accounts/base.accountsdto";
@@ -16,7 +15,7 @@ export class Serilization<T> {
 }
 
 export class IDENTITY_HELPER {
-
+    static isMasterAdmin: boolean = false;
     private static timer: any;
     private static _hubConnectionId: string;
 

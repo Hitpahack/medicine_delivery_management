@@ -8,25 +8,28 @@ import { AdminFooterComponent } from "./shared/footer/admin.footer.component";
 import { AdminHeaderComponent } from "./shared/header/admin.header.component";
 import { AdminNavComponent } from "./shared/nav/admin.nav.component";
 import { AdminShiftsComponent } from "./shifts/admin.shifts.component";
-import { ReactiveFormsModule } from "@angular/forms";
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormControlErrorsDirective } from "../common/app.directives";
 
 @NgModule({
-    imports: [CommonModule, RouterModule,ReactiveFormsModule],
-    declarations: [   
-      AdminLayoutComponent,
-      AdminEmptyLayoutComponent, 
-      AdminShiftsComponent, 
-      AdminLoginComponent,
-      AdminFooterComponent,
-      AdminHeaderComponent,
-      AdminNavComponent ,
-      FormControlErrorsDirective
+    imports: [
+        CommonModule,
+        RouterModule,
+        FormsModule,
+        ReactiveFormsModule,
+        AdminLayoutComponent,
+        AdminEmptyLayoutComponent,
+        AdminShiftsComponent,
+        AdminLoginComponent,
+        AdminFooterComponent,
+        AdminHeaderComponent,
+        AdminNavComponent,
+        FormControlErrorsDirective
     ],
     exports: [ AdminLayoutComponent   ]
   })
   export class AdminModule { 
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<AdminModule> {
       return {
         ngModule: AdminModule,
         providers: []

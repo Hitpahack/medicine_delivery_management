@@ -4,14 +4,14 @@ import { RouterModule } from "@angular/router";
 import { WebLayoutComponent } from "../_layouts/web/web.layout.component";
 import { LoginComponent } from "./accounts/login.component";
 import { FacilitesComponent } from "./facilites/facilites.component";
+import { AdminModule } from "../admin/admin.module";
 
 @NgModule({
-    imports: [CommonModule, RouterModule],
-    declarations: [   WebLayoutComponent, FacilitesComponent, LoginComponent ],
+    imports: [CommonModule, RouterModule, WebLayoutComponent, FacilitesComponent, LoginComponent],
     exports: [        WebLayoutComponent   ]
   })
   export class WebModule { 
-    static forRoot(): ModuleWithProviders {
+    static forRoot(): ModuleWithProviders<WebModule> {
       return {
         ngModule: WebModule,
           providers: []

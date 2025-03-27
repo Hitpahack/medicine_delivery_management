@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
-    
+    templateUrl: './example.component.html',
 })
 
 export class AdminBaseComponent implements OnInit 

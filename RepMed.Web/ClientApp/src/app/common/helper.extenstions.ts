@@ -1,5 +1,3 @@
-import { stringify } from "querystring";
-
 declare const $: any;
 
 export class Helper 

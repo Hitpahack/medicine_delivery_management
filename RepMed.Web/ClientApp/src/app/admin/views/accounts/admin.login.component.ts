@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { FormBuilder, FormControl, FormGroup, Validators } from "@angular/forms";
+import { CommonModule } from "@angular/common";
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 import { CustomValidator } from "src/app/common/custom.validators";
 import { Helper } from "src/app/common/helper.extenstions";
@@ -10,7 +11,9 @@ import { adminAccountsService } from "../../services/accounts/admin.accountsserv
 @Component({
     selector: 'admin-login',
     templateUrl: './admin.login.component.html',
-    styles: ['']
+    styles: [''],
+    standalone: true,
+    imports: [CommonModule,ReactiveFormsModule, FormsModule],
 })
 
 export class AdminLoginComponent extends AdminBaseComponent implements OnInit  {
@@ -26,8 +29,9 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit  {
 
    loginForm: FormGroup;
     ngOnInit(): void {
-
+        console.log("AdminLoginComponent initialized");
         this.loginForm = this.initForm();
+        console.log("Login Form Initialized:", this.loginForm.value);
     }
 
 
