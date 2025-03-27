@@ -3,8 +3,9 @@ import { getBaseUrl, loadScript, loadScripts, loadStylesheets, setTitle } from '
 import { RouterModule } from '@angular/router';
 
 @Component({
-  selector: 'app-admin-emptylayout',
-  imports: [RouterModule],
+    selector: 'app-admin-emptylayout',
+    standalone: true, 
+    imports: [RouterModule],
   templateUrl: './admin.emptylayout.component.html',
   styles: ['']
 })
