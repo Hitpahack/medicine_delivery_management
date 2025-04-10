@@ -1,7 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { ApiResponse } from "src/app/common/api.response";
-import { LoginResponse } from "src/app/viewmodels/accounts/base.accountsdto";
+import { ApiResponse } from "../../../../app/common/api.response";
+import { LoginResponse } from "../../../../app/viewmodels/accounts/base.accountsdto";
 import { admin_apiconfig } from "../../admin.endpoints";
 import { adminBaseService } from "../admin.baseservice";
 

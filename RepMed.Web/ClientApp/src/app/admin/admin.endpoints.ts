@@ -1,4 +1,4 @@
-import { environment } from 'src/environments/environment';
+import { environment } from '../../../src/environments/environment';
 
 export const admin_apiconfig = 
 {

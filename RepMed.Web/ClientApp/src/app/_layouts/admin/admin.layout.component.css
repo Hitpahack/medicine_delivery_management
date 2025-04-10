@@ -1,0 +1,48 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+  }
+  
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 220px;
+    height: 100%;
+    background-color: #333;
+    color: white;
+    padding-top: 20px;
+  }
+  
+  .sidebar h2 {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .sidebar a {
+    display: block;
+    color: white;
+    padding: 15px;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .sidebar a:hover {
+    background-color: #575757;
+  }
+  
+  .submenu {
+    background-color: #444;
+  }
+  
+  .submenu a {
+    padding-left: 30px;
+    font-size: 14px;
+    color: #ddd;
+  }
+  
+  .submenu a:hover {
+    background-color: #555;
+  }
+  

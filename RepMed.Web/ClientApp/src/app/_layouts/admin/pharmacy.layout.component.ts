@@ -1,12 +1,12 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 @Component({
-    selector: 'app-admin-layout',
+    selector: 'app-pharmacy-layout',
   imports: [RouterModule],
-  templateUrl: './admin.layout.component.html',
+  templateUrl: './pharmacy.layout.component.html',
   styleUrls: ['./admin.layout.component.css']
 })
-export class AdminLayoutComponent implements OnInit {
+export class PharmacyLayoutComponent implements OnInit {
 
   // Show/hide pharmacy submenu
   isPharmacySubmenuVisible: boolean = false;

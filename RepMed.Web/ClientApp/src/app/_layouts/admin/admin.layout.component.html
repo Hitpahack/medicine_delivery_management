@@ -1,3 +1,34 @@
-<section>Admin Header</section> 
-<router-outlet></router-outlet>
-<footer>AdminFooter</footer>   
+<section>Admin Header</section>
+
+<div class="sidebar">
+  <h2>Admin</h2>
+  <a href="/admin/dashboard">Dashboard</a>
+
+  <a onclick="toggleSubmenu()">Users ▾</a>
+  <div class="submenu" id="pharmacySubmenu">
+    <a href="#">Add SubAdmin</a>
+  </div>
+
+  <a onclick="toggleSubmenu()">Pharmacy ▾</a>
+  <div class="submenu" id="pharmacySubmenu">
+    <a href="/admin/addpharmacy">Add</a>
+    <a href="/admin/pharmacylist">List</a>
+  </div>
+
+  <a href="">Product</a>
+  <a href="#">Order </a>
+  <a href="#">Payment & Transaction</a>
+  <a href="#">Discount & Coupon Management</a>
+  <a href="#">Logout</a>
+</div>
+
+<script>
+  function toggleSubmenu() {
+    const submenu = document.getElementById("pharmacySubmenu");
+    submenu.style.display = submenu.style.display === "block" ? "none" : "block";
+  }
+</script>
+<div class="main-content" style="margin-left: 220px; margin-right: 100px; padding: 20px;">
+  <router-outlet></router-outlet>
+</div>
+<footer>AdminFooter</footer>

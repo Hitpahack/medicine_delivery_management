@@ -10,6 +10,11 @@ import { AdminNavComponent } from "./shared/nav/admin.nav.component";
 import { AdminShiftsComponent } from "./shifts/admin.shifts.component";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormControlErrorsDirective } from "../common/app.directives";
+import { AdminDashboardComponent } from "./views/admindashboard/admin.dashboard.component";
+import { AdminAddPharmacyComponent } from "./views/pharmacy/admin.addpharmacy.component";
+import { PharmacyDashboardComponent } from "./views/pharmacydashboard/pharmacy.dashboard.component";
+import { PharmacyLayoutComponent } from "../_layouts/admin/pharmacy.layout.component";
+import { AdminPharmacyListComponent } from "./views/pharmacy/admin.pharmacylist.component";
 
 @NgModule({
     imports: [
@@ -24,7 +29,12 @@ import { FormControlErrorsDirective } from "../common/app.directives";
         AdminFooterComponent,
         AdminHeaderComponent,
         AdminNavComponent,
-        FormControlErrorsDirective
+        FormControlErrorsDirective,
+        AdminDashboardComponent,
+        AdminAddPharmacyComponent,
+        PharmacyDashboardComponent,
+        PharmacyLayoutComponent,
+        AdminPharmacyListComponent
     ],
     exports: [ AdminLayoutComponent   ]
   })

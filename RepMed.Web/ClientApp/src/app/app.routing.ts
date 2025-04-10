@@ -7,7 +7,12 @@ import { AdminEmptyLayoutComponent } from './_layouts/admin/admin.emptylayout.co
 import { AdminLayoutComponent } from './_layouts/admin/admin.layout.component';
 import { WebLayoutComponent } from './_layouts/web/web.layout.component';
 import { LoginComponent } from './pages/login/login.component';
-import {AddUserComponent} from "../app/admin/views/user/admin.adduser.component"
+import { AdminDashboardComponent } from './admin/views/admindashboard/admin.dashboard.component';
+import { AdminAddPharmacyComponent } from './admin/views/pharmacy/admin.addpharmacy.component';
+import { PharmacyLayoutComponent } from './_layouts/admin/pharmacy.layout.component';
+import { PharmacyDashboardComponent } from './admin/views/pharmacydashboard/pharmacy.dashboard.component';
+import { AdminPharmacyListComponent } from './admin/views/pharmacy/admin.pharmacylist.component';
+
 
 
 
@@ -26,9 +31,19 @@ export const routes: Routes = [
         component: AdminLayoutComponent,
         children: [
           { path: 'shifts', component: AdminShiftsComponent },
-          { path: 'adduser', component: AddUserComponent },
+          { path: 'dashboard', component: AdminDashboardComponent },
+          { path: 'addpharmacy', component: AdminAddPharmacyComponent },
+            { path: 'pharmacylist', component: AdminPharmacyListComponent },
+            { path: 'adduser', component: AddUserComponent },
         ]
     },
+    { 
+      path: 'admin', 
+      component: PharmacyLayoutComponent,
+      children: [
+        { path: 'pharmacy', component: PharmacyDashboardComponent }
+      ]
+  },
     
     //Web routes goes here
     //{ path: '', component: LoginComponent, pathMatch: 'full'},

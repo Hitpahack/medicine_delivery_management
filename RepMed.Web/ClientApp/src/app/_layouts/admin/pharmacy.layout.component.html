@@ -1,0 +1,25 @@
+<section>Admin Header</section>
+
+<div class="sidebar">
+  <h2>Pharmacy</h2>
+  <a href="">Dashboard</a>
+  <a href="">Profile Management</a>
+  <a href="">User Details & Communication</a>
+  <a href="">Product Management</a>
+  <a href="">Order Management </a>
+  <a href="">Prescription Verification</a>
+  <a href="">Payment & Invoice Management</a>
+  <a href="">Notifications & Alerts</a>
+  <a href="">Logout</a>
+</div>
+
+<script>
+  function toggleSubmenu() {
+    const submenu = document.getElementById("pharmacySubmenu");
+    submenu.style.display = submenu.style.display === "block" ? "none" : "block";
+  }
+</script>
+<div class="main-content" style="margin-left: 220px; margin-right: 100px; padding: 20px;">
+  <router-outlet></router-outlet>
+</div>
+<footer>AdminFooter</footer>
