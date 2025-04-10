@@ -1,8 +1,4 @@
-﻿using RepMed.Localize;
-using Microsoft.Extensions.Localization;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Microsoft.Extensions.Localization;
 
 namespace RepMed.Localize
 {

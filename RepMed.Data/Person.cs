@@ -5,7 +5,7 @@ namespace RepMed.Data;
 
 public partial class Person
 {
-    public Guid Id { get; set; }
+    public long Id { get; set; }
 
     public string FirstName { get; set; }
 
@@ -15,25 +15,29 @@ public partial class Person
 
     public string Mobile { get; set; }
 
+    public bool? MobileVerified { get; set; }
+
+    public bool? EmailVerified { get; set; }
+
+    public DateOnly? DateOfBirth { get; set; }
+
+    public string Gender { get; set; }
+
     public string BloodGroup { get; set; }
-
-    public DateTime? Dob { get; set; }
-
-    public string MotherName { get; set; }
-
-    public string Qualifications { get; set; }
 
     public string Picture { get; set; }
 
-    public string Signatures { get; set; }
+    public string Signature { get; set; }
 
-    public string State { get; set; }
+    public string MotherName { get; set; }
 
-    public DateTime? CreatedOn { get; set; }
+    public string Qualification { get; set; }
 
-    public DateTime? UpdatedOn { get; set; }
+    public DateTime? CreatedAt { get; set; }
 
-    public virtual ICollection<Usercontact> Usercontacts { get; set; } = new List<Usercontact>();
+    public DateTime? UpdatedAt { get; set; }
+
+    public virtual ICollection<Useraddress> Useraddresses { get; set; } = new List<Useraddress>();
 
     public virtual ICollection<User> Users { get; set; } = new List<User>();
 }

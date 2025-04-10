@@ -13,7 +13,7 @@ namespace RepMed.Services
 
     public interface IJwtManager : IDisposable
     {
-        JtwTokenResponse GenerateJWT(Guid userId, string email, string[] roles);
+        JtwTokenResponse GenerateJWT(long userId, string email, string[] roles);
     }
     public class JwtManager : IJwtManager
     {
@@ -29,7 +29,7 @@ namespace RepMed.Services
             GC.SuppressFinalize(this);
         }
 
-        public JtwTokenResponse GenerateJWT(Guid userId, string email, string[] roles)
+        public JtwTokenResponse GenerateJWT(long userId, string email, string[] roles)
         {
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_appSettings.JwtAuth.Key));

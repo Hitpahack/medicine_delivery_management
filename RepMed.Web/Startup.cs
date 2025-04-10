@@ -59,7 +59,7 @@ namespace RepMed.Web
 
             var sqlConnectionString = Configuration.GetConnectionString("default");
 
-            services.AddDbContext<RepMedContext>(options => options.UseNpgsql(sqlConnectionString));
+            services.AddDbContext<RepMedContext>(options => options.UseMySql(sqlConnectionString, ServerVersion.AutoDetect(sqlConnectionString)));
 
             services.AddHttpContextAccessor();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
@@ -74,6 +74,7 @@ namespace RepMed.Web
             services.AddMvcCore().AddNewtonsoftJson();
             services.AddAuthorization();
             services.Localization(services.AddMvc());
+            services.AddAutoMapper(typeof(Startup)); 
 
 
 
@@ -164,6 +165,8 @@ namespace RepMed.Web
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey,
                     Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    //Type = SecuritySchemeType.ApiKey,
+                    //Scheme = JwtBearerDefaults.AuthenticationScheme,
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
                     Description = "JWT Authorization header using the Bearer",

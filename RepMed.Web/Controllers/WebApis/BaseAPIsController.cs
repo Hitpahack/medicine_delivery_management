@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using System.Threading.Tasks;
 
 namespace RepMed.Web.Controllers.WebApis
 {
@@ -22,7 +23,6 @@ namespace RepMed.Web.Controllers.WebApis
             _appSettings = appSettings.Value;
             _mapper = ServiceActivator.GetScope().ServiceProvider.GetService<IGenericMapper>();
             _headerParam = ServiceActivator.GetScope().ServiceProvider.GetService<IHttpContextAccessor>().HttpContext.Request.GetHeaderParma();
-
         }
     }
 }

@@ -13,14 +13,14 @@ namespace RepMed.Dtos
     public class EntityRoleDto : BasicRoleDto
     {
         public int Id { get; set; }
-        public IList<UserRolePermissionDto> UserRolePermission { get; set; }
+        //public IList<UserRolePermissionDto> UserRolePermission { get; set; }
         //public virtual ICollection<UserRoles> UserRoles { get; set; }
 
     }
 
     public class EntityUserRoleDto 
     {
-        public Guid UserId { get; set; }
+        public long UserId { get; set; }
         public int RoleId { get; set; }
 
         //public virtual Role Role { get; set; }
@@ -35,7 +35,7 @@ namespace RepMed.Dtos
             //UserRolePermission = new HashSet<UserRolePermission>();
         }
 
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public string Permission { get; set; }
         public string Description { get; set; }
         public string Title { get; set; }
@@ -52,9 +52,9 @@ namespace RepMed.Dtos
 
     public partial class UserRolePermissionDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public int RoleId { get; set; }
-        public Guid PermissionId { get; set; }
+        public long PermissionId { get; set; }
         public bool? CanAdd { get; set; }
         public bool? CanEdit { get; set; }
         public bool? CanDelete { get; set; }

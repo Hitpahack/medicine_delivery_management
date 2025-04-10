@@ -21,38 +21,52 @@ namespace RepMed.Dtos
     }
     public class BasePersonDto : BasePerson
     {
-        [Required]
-        public int? Gender { get; set; }
-        [Required]
-        public DateTime? DOB { get; set; }
+        public string Gender { get; set; }
+        public DateTime? DateOfBirth { get; set; }
         [Required]
         [RegularExpression(@"^(\d{10})|(\d{4}[- ])(\d{3}[- ])(\d{3})|(\d{1,3}[- ])(\d{4}[- ]\d{3}[- ]\d{3})|(\+\d{1,3}[- ])(\d{4}[- ]\d{3}[- ]\d{3})|(\d{1,3}[- ])(\d{7,10})|(\d{1,3}[- ])(\d{3}[- ])(\d{4})|(\+\d{1,3}[- ]?)(\d{7,12})|(\+\d{1,3}[- ]?)(\d{3}[- ])(\d{4})$/", ErrorMessage = "Invalid phone no")]
         public string Mobile { get; set; }
-        public string MotherName { get; set; }
         
     }
     public class BasicPersonsDto : BasePersonDto
     {
-        public string Picture { get; set; }
-        
-       
+        public string Picture { get; set; }       
     }
 
     public class EntityPersonsDto : BasicPersonsDto
     {
-        public Guid Id { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public DateTime? UpdatedOn { get; set; }
-        public Guid? CreatedBy { get; set; }
-        public Guid? UpdatedBy { get; set; }
-        public bool? IsActive { get; set; }
-        public bool? IsDelete { get; set; }
-        public string State { get; set; }
-        public string Signatures { get; set; }
-        public string Qualifications { get; set; }
-        public int? Age { get; set; }
-        public Guid Userid { get; set; }
-        public EntityContactsDto UserContacts { get; set; }
+        public long Id { get; set; }
+
+        public string FirstName { get; set; }
+
+        public string LastName { get; set; }
+
+        public string Email { get; set; }
+
+        public string Mobile { get; set; }
+
+        public bool? MobileVerified { get; set; }
+
+        public bool? EmailVerified { get; set; }
+
+        public DateTime? DateOfBirth { get; set; }
+
+        public string Gender { get; set; }
+
+        public string BloodGroup { get; set; }
+
+        public string Picture { get; set; }
+
+        public string Signature { get; set; }
+
+        public string MotherName { get; set; }
+
+        public string Qualification { get; set; }
+
+        public DateTime? CreatedAt { get; set; }
+
+        public DateTime? UpdatedAt { get; set; }
+        
     }
 
     public class AddPersonDto : BasicPersonsDto
@@ -74,13 +88,14 @@ namespace RepMed.Dtos
         [Core.IgnoreDapper]
         public string ConfirmPassword { get; set; }
 
-        public Guid? CreatedBy { get; set; }
+        public long? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public bool? IsActive { get; set; }
 
         [Core.IgnoreDapper]
-        public AddContactsDto Contact { get; set; }
-
+        public AddAddressDto Address { get; set; }
+        [Core.IgnoreDapper]
+        public string Role { get; set; }
 
 
     }

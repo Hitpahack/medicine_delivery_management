@@ -50,15 +50,15 @@ namespace RepMed.Services
         {
             string sqlExist = DbTables.tblPersons.Select(
                                 new string[] { nameof(BasePerson.Email) },
-                                whereQuery: $@" ""{nameof(BasePerson.Email)}"" = '{email}' ");
+                                whereQuery: $@" `{nameof(BasePerson.Email)}` = '{email}' ");
 
             if (checkUserTbl)
             {
-                string whereUser = DbTables.tblUser.Select(new string[] { nameof(BasePerson.Email) }, tblPrefix: "u", 
-                                whereQuery: $@" u.""{nameof(BasePerson.Email)}"" = '{email}' ");
+                string whereUser = DbTables.tblUser.Select(new string[] { nameof(BasePerson.Email) }, tblPrefix: "u",
+                    whereQuery: $@" u.`{nameof(BasePerson.Email)}` = '{email}' ");
 
                 sqlExist = DbTables.tblPersons.Select(new string[] { nameof(BasePerson.Email) },
-                    whereQuery: $@" ""{nameof(BasePerson.Email)}"" = ({whereUser}) ");
+                    whereQuery: $@" `{nameof(BasePerson.Email)}` = ({whereUser}) ");
             }
 
             BasicPersonsDto isExist = _idbConnection.Query<BasicPersonsDto>(sqlExist, transaction: _idbTransaction).SingleOrDefault();

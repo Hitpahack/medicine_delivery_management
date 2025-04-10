@@ -1,12 +1,10 @@
-﻿using RepMed.Core;
-using RepMed.Dtos;
-using RepMed.Services;
-using RepMed.Web.Controllers.BaseApis;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Npgsql;
+using RepMed.Core;
+using RepMed.Dtos;
+using RepMed.Web.Controllers.BaseApis;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;

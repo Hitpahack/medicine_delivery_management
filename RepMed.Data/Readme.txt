@@ -1,1 +1,2 @@
-﻿Scaffold-DbContext "Server=127.0.0.1;Port=5432;Database=bestshifts;User Id=bestshifts_user;Password=bestshifts_user;" Npgsql.EntityFrameworkCore.PostgreSQL -f
+﻿dotnet ef dbcontext scaffold "server=localhost;port=3306;database=repmed;user=root;password=Hitesh;" Pomelo.EntityFrameworkCore.MySql  --context RepMedContext --force
+
