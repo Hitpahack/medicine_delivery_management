@@ -29,9 +29,7 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit  {
 
    loginForm: FormGroup;
     ngOnInit(): void {
-        console.log("AdminLoginComponent initialized");
         this.loginForm = this.initForm();
-        console.log("Login Form Initialized:", this.loginForm.value);
     }
 
 
@@ -43,7 +41,9 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit  {
       });
    }
 
-   onSubmit(){
+    onSubmit() {
+        debugger;
+        console.log("Hello");
        let isValid = this.validateForm(this.loginForm);
        if(isValid){
            this.accountservice.login(this.loginForm.value).subscribe(
