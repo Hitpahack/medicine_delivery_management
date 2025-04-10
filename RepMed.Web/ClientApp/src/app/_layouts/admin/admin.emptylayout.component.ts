@@ -1,5 +1,5 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
-import { getBaseUrl, loadScript, loadScripts, loadStylesheets, setTitle } from 'src/main';
+import { getBaseUrl, loadScript, loadScripts, loadStylesheets, setTitle } from '../../../main';
 import { RouterModule } from '@angular/router';
 
 @Component({

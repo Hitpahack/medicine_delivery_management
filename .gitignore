@@ -33,3 +33,8 @@
 /.vs/ProjectEvaluation/repmed.strings.v9.bin
 /RepMed.Web/ClientApp/.angular/cache/17.3.13
 /RepMed.Web/ClientApp/.angular/cache/19.2.4
+/RepMed.Data/obj/project.assets.json
+/RepMed.Data/obj/project.nuget.cache
+/RepMed.Data/obj/RepMed.Data.csproj.nuget.dgspec.json
+/RepMed.Data/obj/project.assets.json
+/RepMed.Data/obj/project.nuget.cache

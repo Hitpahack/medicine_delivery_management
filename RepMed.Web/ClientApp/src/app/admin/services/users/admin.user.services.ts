@@ -1,6 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { ApiResponse } from "src/app/common/api.response";
+import { ApiResponse } from "../../../../app/common/api.response";
 import { adminBaseService } from "../admin.baseservice";
 
 @Injectable({

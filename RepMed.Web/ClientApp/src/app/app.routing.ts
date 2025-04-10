@@ -7,7 +7,7 @@ import { AdminEmptyLayoutComponent } from './_layouts/admin/admin.emptylayout.co
 import { AdminLayoutComponent } from './_layouts/admin/admin.layout.component';
 import { WebLayoutComponent } from './_layouts/web/web.layout.component';
 import { LoginComponent } from './pages/login/login.component';
-
+import {AddUserComponent} from "../app/admin/views/user/admin.adduser.component"
 
 
 
@@ -26,6 +26,7 @@ export const routes: Routes = [
         component: AdminLayoutComponent,
         children: [
           { path: 'shifts', component: AdminShiftsComponent },
+          { path: 'adduser', component: AddUserComponent },
         ]
     },
     

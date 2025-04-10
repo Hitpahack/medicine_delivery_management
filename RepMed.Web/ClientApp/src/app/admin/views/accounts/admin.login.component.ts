@@ -2,8 +2,8 @@ import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
-import { CustomValidator } from "src/app/common/custom.validators";
-import { Helper } from "src/app/common/helper.extenstions";
+import { CustomValidator } from "../../../../app/common/custom.validators";
+import { Helper } from "../../../../app/common/helper.extenstions";
 import { AdminBaseComponent } from "../../admin.base.component";
 import { adminAccountsService } from "../../services/accounts/admin.accountsservice";
 
@@ -46,6 +46,7 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit  {
         console.log("Hello");
        let isValid = this.validateForm(this.loginForm);
        if(isValid){
+        console.log("form is valid")
            this.accountservice.login(this.loginForm.value).subscribe(
                (response)=>{
                 if(!response.isSuccess){
