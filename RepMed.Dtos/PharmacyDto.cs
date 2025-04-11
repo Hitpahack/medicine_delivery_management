@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace RepMed.Dtos
@@ -10,6 +11,7 @@ namespace RepMed.Dtos
 
     public class PharmacyBankDetailsDto
     {
+        [JsonIgnore]
         public long Id { get; set; }
         [Required]
         public long PharmacyId { get; set; }
@@ -25,7 +27,6 @@ namespace RepMed.Dtos
         public string BranchName { get; set; }
 
         public string UpiId { get; set; }
-
         public DateTime? CreatedDate { get; set; }
 
         public DateTime? UpdatedDate { get; set; }
@@ -33,6 +34,7 @@ namespace RepMed.Dtos
 
     public class AddPharmacyDto
     {
+        [JsonIgnore]
         public long Id { get; set; }
 
         public long UserId { get; set; }
@@ -43,7 +45,7 @@ namespace RepMed.Dtos
 
         public string LicenseNumber { get; set; }
 
-        public DateOnly? LicenseExpiry { get; set; }
+        public DateTime? LicenseExpiry { get; set; }
 
         public string Gstnumber { get; set; }
 
@@ -85,10 +87,14 @@ namespace RepMed.Dtos
 
     }
 
-    public class PharmacyDto    
+    public class PharmacyDto: BasePharmacyDto
+    {
+        public AddPersonDto User { get; set; }
+    }
+
+    public class BasePharmacyDto
     {
         public AddPharmacyDto Pharmacy { get; set; }
-        public AddPersonDto User { get; set; }
         public PharmacyBankDetailsDto PharmacyBankDetails { get; set; }
     }
 }

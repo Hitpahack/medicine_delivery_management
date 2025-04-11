@@ -102,7 +102,7 @@ namespace RepMed.Web.Controllers.BaseApis
                 }
             }
         }
-        protected async Task<APIsResponse<bool>> AddUser(AddPersonDto reqDto)
+        protected async Task<APIsResponse<EntityUsersDto>> AddUser(AddPersonDto reqDto)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -115,18 +115,19 @@ namespace RepMed.Web.Controllers.BaseApis
                         if(!person.IsSuccess)
                         {
                             tran.Rollback();
-                            return new APIsResponse<bool> { IsSuccess = false, Message = "Failed to add person." };
+                            return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Failed to add person." };
                         }
                         using (IUserServices userService = new UserServices(db, tran))
                         {
                             var user = await userService.AddUser(new AddUsersDto()
                             {
-                                PersonId = person.Data.Id
+                                PersonId = person.Data.Id,
+                                ConfirmPassword = reqDto.ConfirmPassword
                             });
                             if(!user.IsSuccess)
                             {
                                 tran.Rollback();
-                                return new APIsResponse<bool> { IsSuccess = false, Message = "Failed to add user." };
+                                return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Failed to add user." };
                             }
                             using (IAccountService accountService = new AccountService(db, tran))
                             {
@@ -134,13 +135,14 @@ namespace RepMed.Web.Controllers.BaseApis
                                 if (!role.IsSuccess)
                                 {
                                     tran.Rollback();
-                                    return new APIsResponse<bool> { IsSuccess = false, Message = "Failed to add role." };
+                                    return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Failed to add role." };
                                 }
                             }
+                            tran.Commit();
+                            return new APIsResponse<EntityUsersDto> { IsSuccess = true, Data= user.Data, Message = "Successfuly Added User Details" };
                         }
                     }
-                    tran.Commit();
-                    return new APIsResponse<bool> { IsSuccess = true, Message = "Successfulyy Added User Details" };
+                    
                 }
             }
         }

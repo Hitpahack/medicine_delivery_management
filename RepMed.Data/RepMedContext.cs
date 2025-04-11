@@ -472,9 +472,7 @@ public partial class RepMedContext : DbContext
                 .ValueGeneratedOnAddOrUpdate()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
-            entity.Property(e => e.UpiId)
-                .HasMaxLength(100)
-                .HasColumnName("UPI_ID");
+            entity.Property(e => e.UpiId).HasMaxLength(100);
 
             entity.HasOne(d => d.Pharmacy).WithMany(p => p.Pharmacybankdetails)
                 .HasForeignKey(d => d.PharmacyId)
@@ -752,6 +750,8 @@ public partial class RepMedContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.Email).HasMaxLength(255);
             entity.Property(e => e.FirstName).HasMaxLength(100);
+            entity.Property(e => e.IsDeleted).HasDefaultValueSql("'0'");
+            entity.Property(e => e.IsLocked).HasDefaultValueSql("'0'");
             entity.Property(e => e.LastLoginDate).HasColumnType("datetime");
             entity.Property(e => e.LastName).HasMaxLength(100);
             entity.Property(e => e.PasswordHash)

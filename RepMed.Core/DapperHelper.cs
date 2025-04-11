@@ -109,7 +109,7 @@ namespace RepMed.Core
         #endregion
 
         #region Update Query
-        public static TResult UpdateById<TResult>(this IDbConnection con, IDbTransaction tran,
+        public static TResult Update<TResult>(this IDbConnection con, IDbTransaction tran,
              string tableName, string updateColumns,
              object data, long id
          ) where TResult : class
@@ -301,6 +301,7 @@ namespace RepMed.Core
         public const string tblUserCustomFields = "`UserCustomFields`";
         public const string tblUserAssessments = "`UserAssessments`";
         public const string tblPharmacy= "`Pharmacies`";
+        public const string tblPharmacyBankDetails = "`PharmacyBankDetails`";
         public const string tblUserAddress= "`UserAddresses`";
     }
 

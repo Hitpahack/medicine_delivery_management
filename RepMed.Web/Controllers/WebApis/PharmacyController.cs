@@ -7,6 +7,7 @@ using RepMed.Dtos;
 using RepMed.Services;
 using RepMed.Web.Controllers.BaseApis;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace RepMed.Web.Controllers.WebApis
 {
@@ -22,7 +23,49 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("insert")]
         [HttpPost]
-        public async Task<IActionResult> Insert([FromBody] PharmacyDto reqDto)  
+        public async Task<IActionResult> Insert([FromBody] PharmacyDto reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPersonService personService = new PersonService(db, tran))
+                    {
+                        var user = await base.AddUser(reqDto.User);
+                        if (!user.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(user);
+                        }
+                        using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
+                        {
+                            reqDto.Pharmacy.UserId = user.Data.Id;
+                            var pharmacy = await pharmacyService.AddUpdatePharmacy(reqDto.Pharmacy, 0);
+                            if (!pharmacy.IsSuccess)
+                            {
+                                tran.Rollback();
+                                return BadRequest(pharmacy);
+                            }
+                            reqDto.PharmacyBankDetails.PharmacyId = pharmacy.Data.Id;
+                            var pharmacybank = await pharmacyService.AddUpdatePharmacyBankDetails(reqDto.PharmacyBankDetails, 0);
+                            if (!pharmacybank.IsSuccess)
+                            {
+                                tran.Rollback();
+                                return BadRequest(pharmacybank);
+                            }
+                        }
+                    }
+                    tran.Commit();
+                    return Ok();
+                }
+
+            }
+        }
+
+        [Route("getpharmacies")]
+        [HttpPost]
+        public async Task<IActionResult> Get()
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -31,35 +74,12 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
                     {
-                        var pharmacy = await pharmacyService.AddUpdatePharmacy(reqDto.Pharmacy , 0);
+                        var pharmacy = await pharmacyService.GetAllPharmacies();
                         if (!pharmacy.IsSuccess)
-                        {
-                            tran.Rollback();
-                            return null;
-                        }
-                        reqDto.PharmacyBankDetails.PharmacyId = pharmacy.Data.Id;
-                        var pharmacybank = await pharmacyService.AddUpdatePharmacyBankDetails(reqDto.PharmacyBankDetails ,0);
-                        if (!pharmacybank.IsSuccess)
-                        {
-                            tran.Rollback();
-                            return null;
-                        }
-                        using (IPersonService personService = new PersonService(db, tran))
-                        {
-                            var user = await base.AddUser(reqDto.User);
-                            if (!user.IsSuccess)
-                            {
-                                tran.Rollback();
-                                return null;
-                            }
-                        }
-
+                            return BadRequest();
+                        return Ok(pharmacy.Data);                        
                     }
-
-                    tran.Commit();
-                    return null;
                 }
-
             }
         }
     }
