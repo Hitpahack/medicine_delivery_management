@@ -20,8 +20,6 @@ namespace RepMed.Services
         Task<APIsResponse<EntityPersonsDto>> AddPerson(AddPersonDto reqDto);
         Task<APIsResponse<bool>> IsPersonExist(string email);
 
-
-
     }
 
     public class PersonService : BaseService, IPersonService
@@ -34,8 +32,6 @@ namespace RepMed.Services
         {
             try
             {
-
-
                 APIsResponse<EntityPersonsDto> apiResponse = default(APIsResponse<EntityPersonsDto>);
                 string sql;
 
@@ -57,20 +53,19 @@ namespace RepMed.Services
                     DbTables.tblPersons,
                     DapperHelper.QueryAsColumnsParma<Person, AddPersonDto>(),
                     DapperHelper.QueryAsValuesParma<Person, AddPersonDto>(),
-                    reqDto, "RETURNING *");
+                    reqDto);
 
                 #endregion
 
-                #region Add Person Contact
-                if (reqDto.Contact != null)
+                #region Add Person Address
+                if (reqDto.Address != null)
                 {
-                    reqDto.Contact.PersonID = person.Id;
-
-                    person.UserContacts = _idbConnection.Insert<EntityContactsDto>(_idbTransaction,
-                    DbTables.tblUserContacts,
-                    DapperHelper.QueryAsColumnsParma<Usercontact, AddContactsDto>(),
-                    DapperHelper.QueryAsValuesParma<Usercontact, AddContactsDto>(),
-                    reqDto.Contact, "RETURNING *");
+                    reqDto.Address.PersonId = person.Id;
+                    EntityAddressDto address = _idbConnection.Insert<EntityAddressDto>(_idbTransaction,
+                    DbTables.tblUserAddress,
+                    DapperHelper.QueryAsColumnsParma<Useraddress, AddAddressDto>(),
+                    DapperHelper.QueryAsValuesParma<Useraddress, AddAddressDto>(),
+                    reqDto.Address);
 
                 }
                 #endregion

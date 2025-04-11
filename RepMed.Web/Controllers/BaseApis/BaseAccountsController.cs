@@ -1,8 +1,9 @@
-﻿using RepMed.Core;
+﻿using Microsoft.Extensions.Logging.Abstractions;
+using Microsoft.Extensions.Options;
+using MySqlConnector;
+using RepMed.Core;
 using RepMed.Dtos;
 using RepMed.Services;
-using Microsoft.Extensions.Options;
-using Npgsql;
 using System.Threading.Tasks;
 
 namespace RepMed.Web.Controllers.BaseApis
@@ -17,7 +18,7 @@ namespace RepMed.Web.Controllers.BaseApis
         protected async Task<APIsResponse<Login_ResDto>> Login(Login_ReqDto reqDto)
         {
 
-            using (var db = new NpgsqlConnection(_appSettings.ConnectionString))
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
                 db.Open();
                 using (var tran = db.BeginTransaction())
@@ -39,7 +40,7 @@ namespace RepMed.Web.Controllers.BaseApis
 
         protected async Task<APIsResponse<string>> ForgotPassword(ForgotPasswordDtos reqDto)
         {
-            using (var db = new NpgsqlConnection(_appSettings.ConnectionString))
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
                 db.Open();
                 using (var tran = db.BeginTransaction())
@@ -60,10 +61,9 @@ namespace RepMed.Web.Controllers.BaseApis
 
         }
 
-
         protected async Task<APIsResponse<bool>> ResetPassword(ResetPasswordDTO reqDto)
         {
-            using (var db = new NpgsqlConnection(_appSettings.ConnectionString))
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
                 db.Open();
                 using (var tran = db.BeginTransaction())
@@ -79,9 +79,70 @@ namespace RepMed.Web.Controllers.BaseApis
                         return isReset;
                     }
                 }
-
             }
+        }
 
+        protected async Task<APIsResponse<bool>> AddRole(EntityUsersDto reqDto, string role)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IAccountService accountService = new AccountService(db, tran))
+                    {
+                        var isReset = await accountService.AddRoleAsync(reqDto,role);
+                        if (isReset.IsSuccess)
+                            tran.Commit();
+                        else
+                            tran.Rollback();
+
+                        return new APIsResponse<bool> { IsSuccess = false, Message= " role added" };
+                    }
+                }
+            }
+        }
+        protected async Task<APIsResponse<bool>> AddUser(AddPersonDto reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPersonService personService = new PersonService(db, tran))
+                    {   
+                        var person = await personService.AddPerson(reqDto);
+                        if(!person.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return new APIsResponse<bool> { IsSuccess = false, Message = "Failed to add person." };
+                        }
+                        using (IUserServices userService = new UserServices(db, tran))
+                        {
+                            var user = await userService.AddUser(new AddUsersDto()
+                            {
+                                PersonId = person.Data.Id
+                            });
+                            if(!user.IsSuccess)
+                            {
+                                tran.Rollback();
+                                return new APIsResponse<bool> { IsSuccess = false, Message = "Failed to add user." };
+                            }
+                            using (IAccountService accountService = new AccountService(db, tran))
+                            {
+                                var role = await accountService.AddRoleAsync(user.Data, reqDto.Role);
+                                if (!role.IsSuccess)
+                                {
+                                    tran.Rollback();
+                                    return new APIsResponse<bool> { IsSuccess = false, Message = "Failed to add role." };
+                                }
+                            }
+                        }
+                    }
+                    tran.Commit();
+                    return new APIsResponse<bool> { IsSuccess = true, Message = "Successfulyy Added User Details" };
+                }
+            }
         }
     }
 }

@@ -1,14 +1,7 @@
-﻿using RepMed.Core;
-using RepMed.Services;
-using RepMed.Web.Controllers.BaseApis;
-using RepMed.Web.Models;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Npgsql;
-using System;
-using System.Collections.Generic;
-using System.Linq;
+using RepMed.Core;
+using RepMed.Web.Controllers.BaseApis;
 using System.Threading.Tasks;
 
 namespace RepMed.Web.Controllers.WebApis

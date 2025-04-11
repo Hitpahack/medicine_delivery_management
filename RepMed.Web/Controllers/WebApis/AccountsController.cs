@@ -1,20 +1,17 @@
-﻿using RepMed.Core;
-using RepMed.Dtos;
-using RepMed.Services;
-using RepMed.Web.Controllers.BaseApis;
-using Microsoft.AspNetCore.Authentication;
+﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
-using Npgsql;
+using RepMed.Core;
+using RepMed.Dtos;
+using RepMed.Web.Controllers.BaseApis;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace RepMed.Web.Controllers.WebApis
 {
-    
+
     [ApiExplorerSettings(GroupName = "admin")]
     [Route("api/v1/admin/accounts")]
     public class AccountsController : BaseAccountsController
@@ -58,6 +55,18 @@ namespace RepMed.Web.Controllers.WebApis
             return BadRequest(data);
 
         }
+        [Route("adduser")]
+        [HttpPost]
+        public async Task<IActionResult> AddUser(AddPersonDto reqDto)
+        {
+            var data = await base.AddUser(reqDto);
+            if (data.IsSuccess)
+                return Ok(data);
+
+            return BadRequest(data);
+
+        }
+
 
         private async Task SignInAsync(IEnumerable<Claim> Claims)
         {

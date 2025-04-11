@@ -1,9 +1,9 @@
-﻿using RepMed.Core;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Options;
+using MySqlConnector;
+using RepMed.Core;
 using RepMed.Dtos;
 using RepMed.Services;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Options;
-using Npgsql;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -18,7 +18,7 @@ namespace RepMed.Web.Controllers.BaseApis
 
         protected async Task<APIsResponse<IEnumerable<SelectListItem>>> Countries()
         {
-            using (var db = new NpgsqlConnection(_appSettings.ConnectionString))
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
                 db.Open();
 
@@ -39,7 +39,7 @@ namespace RepMed.Web.Controllers.BaseApis
 
         protected async Task<APIsResponse<IEnumerable<SelectListItem>>> States()
         {
-            using (var db = new NpgsqlConnection(_appSettings.ConnectionString))
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
                 db.Open();
 
@@ -60,7 +60,7 @@ namespace RepMed.Web.Controllers.BaseApis
 
         protected async Task<APIsResponse<IEnumerable<SelectListItem>>> Cities()
         {
-            using (var db = new NpgsqlConnection(_appSettings.ConnectionString))
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
                 db.Open();
 

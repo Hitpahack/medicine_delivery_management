@@ -37,32 +37,37 @@ namespace RepMed.Core
 
             if (!string.IsNullOrEmpty(tblPrefix))
             {
-                columns = columns.Select(r => string.Concat(tblPrefix, ".", '"', r, '"')).ToArray();
-                tableName = string.Concat(tableName, " ", tblPrefix);
+                tableName = $"{tableName} {tblPrefix}";
+                columns = columns.Select(r => $"{tblPrefix}.`{r}`").ToArray();
             }
             else
             {
-                columns = columns.Select(r => string.Concat('"', r, '"')).ToArray();
+                tableName = $"{tableName}";
+                columns = columns.Select(r => $"`{r}`").ToArray();
             }
 
+            var query   = $"SELECT {string.Join(",", columns)} FROM {tableName}";
 
-            var query = string.Concat($@"SELECT {string.Join(",", columns)} FROM {tableName}");
             if (!string.IsNullOrEmpty(whereQuery))
-                query = string.Concat(query, $@" where {whereQuery}");
+                query += $" WHERE {whereQuery}";
 
             return query;
+
+
         }
         #endregion
 
-        #region Insert Query
+        #region Insert Query    
         public static TResult Insert<TResult>(this IDbConnection con, IDbTransaction tran,
             string tableName, string tblcolumns,
             string dataColumn,
-            object data,
-            string returningData = "") where TResult : class
+            object data
+            ) where TResult : class
         {
-            string sql = $@"INSERT INTO {tableName} ({tblcolumns}) VALUES ({dataColumn}) {returningData}";
-
+            string sql = $@"
+                        INSERT INTO {tableName} ({tblcolumns}) VALUES ({dataColumn});
+                        SELECT * FROM {tableName} WHERE Id = LAST_INSERT_ID();
+                    ";
             return con.QueryFirstOrDefault<TResult>(sql, data, tran);
         }
 
@@ -104,6 +109,26 @@ namespace RepMed.Core
         #endregion
 
         #region Update Query
+        public static TResult UpdateById<TResult>(this IDbConnection con, IDbTransaction tran,
+             string tableName, string updateColumns,
+             object data, long id
+         ) where TResult : class
+        {
+            string sql = $@"
+                        UPDATE {tableName}
+                        SET {updateColumns}
+                        WHERE Id = @__Id;
+                        SELECT * FROM {tableName} WHERE Id = @__Id;
+                    ";
+
+            var parameters = new DynamicParameters(data);
+            parameters.Add("__Id", id);
+
+            return con.QueryFirstOrDefault<TResult>(sql, parameters, tran);
+        }
+
+
+
         public static TResult Update<TResult>(this IDbConnection con, IDbTransaction tran,
             string tableName, Dictionary<string,string> updateData,
             string wherQuery = "", string returningData = "") where TResult : class
@@ -170,8 +195,7 @@ namespace RepMed.Core
         public static string QueryAsColumnsParma<T, T2>(string prefix = "", params string[] excludesProperties) where T : class
         {
             var query_ = AsQueryParma(typeof(T), typeof(T2), "", excludesProperties);
-            return string.Join(",", query_.Select(r => string.Concat(prefix, '"', r, '"')));
-
+            return string.Join(",", query_.Select(r => string.Concat(prefix, r)));
         }
         public static string QueryAsValuesParma<T, T2>(params string[] excludesProperties) where T : class
         {
@@ -259,24 +283,26 @@ namespace RepMed.Core
 
     public class DbTables
     {
-        public const string tblUser = @" dbo.""User"" ";
-        public const string tblPersons = @" dbo.""Persons"" ";
-        public const string tblUserContacts = @" dbo.""UserContacts"" ";
-        public const string tblUserRolePermission = @" dbo.""UserRolePermission"" ";
-        public const string tblUserRoles = @" dbo.""UserRoles"" ";
-        public const string tblUserTokenLog = @" dbo.""UserTokenLog"" ";
-        public const string tblRole = @" dbo.""Role"" ";
-        public const string tblCountry = @" dbo.""Country"" ";
-        public const string tblStates = @" dbo.""State"" ";
-        public const string tblCity = @" dbo.""City"" ";
-        public const string tblProviders = @" dbo.""Providers"" ";
-        public const string tblCodeRequest = @" dbo.""CodeRequest"" ";
-        public const string tblProviderCategory = @" dbo.""ProviderCategories"" ";
-        public const string tblAssessments = @" dbo.""Assessments"" ";
-        public const string tblCustomFields = @" dbo.""CustomFields"" ";
-        public const string tblUserCustomFields = @" dbo.""UserCustomFields"" ";
-        public const string tblUserAssessments = @" dbo.""UserAssessments"" ";
-
+        public const string tblUser = "`Users`";
+        public const string tblPersons = "`Persons`";
+        public const string tblUserContacts = "`UserContacts`";
+        public const string tblUserRolePermission = "`UserRolePermission`";
+        public const string tblUserRoles = "`UserRoles`";
+        public const string tblUserTokenLog = "`UserTokenLog`";
+        public const string tblRole = "`Roles`";
+        public const string tblCountry = "`Countries`";
+        public const string tblStates = "`States`";
+        public const string tblCity = "`Cities`";
+        public const string tblProviders = "`Providers`";
+        public const string tblCodeRequest = "`CodeRequest`";
+        public const string tblProviderCategory = "`ProviderCategories`";
+        public const string tblAssessments = "`Assessments`";
+        public const string tblCustomFields = "`CustomFields`";
+        public const string tblUserCustomFields = "`UserCustomFields`";
+        public const string tblUserAssessments = "`UserAssessments`";
+        public const string tblPharmacy= "`Pharmacies`";
+        public const string tblUserAddress= "`UserAddresses`";
     }
+
 
 }

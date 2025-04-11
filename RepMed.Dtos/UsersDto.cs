@@ -1,22 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace RepMed.Dtos
 {
-    public class BasicUsersDto : BasePerson
+    public class BasicUsersDto  
     {
+        public string Email { get; set; }
         public bool? EmailConfirmed { get; set; }
-        public Guid PersonId { get; set; }
+        public long PersonId { get; set; }
         
     }
 
     public class EntityUsersDto : BasicUsersDto
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public bool IsLocked { get; set; }
         public bool IsDeleted { get; set; }
-        public DateTime? LastLoginDate { get; set; }
         public BasicPersonsDto Person { get; set; }
         public IEnumerable<EntityRoleDto> Roles { get; set; }
 
@@ -28,7 +29,7 @@ namespace RepMed.Dtos
         {
             this.Roles = new List<EntityRoleDto>();
         }
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
         public bool IsLocked { get; set; }
@@ -58,14 +59,14 @@ namespace RepMed.Dtos
         [Core.IgnoreDapper]
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
+        [JsonIgnore]
         public byte[] PasswordHash { get; set; }
+        [JsonIgnore]
         public byte[] PasswordSalt { get; set; }
-        public bool IsLocked { get; set; }
-        public bool IsDeleted { get; set; }
-        public string SSN { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public string Status { get; set; }
+        public DateTime? LastLoginDate { get; set; }
 
     }
-
-
-    
 }

@@ -40,15 +40,19 @@ namespace RepMed.Services
                 using (IPersonService personService = new PersonService(_idbConnection, _idbTransaction))
                 {
 
-                    string sql = $@"select {(DapperHelper.QueryAsColumnsParma<Person, BasicPersonsDto>("pe."))}, 
-                                       {(DapperHelper.QueryAsColumnsParma<User, EntityUsersPassDto>("us."))}
-                            from {DbTables.tblPersons} pe  
-                            left join {DbTables.tblUser} us on pe.""{nameof(EntityUsersDto.Id)}"" = us.""{nameof(EntityUsersDto.PersonId)}""
-                            WHERE pe.""{nameof(BasePerson.Email)}"" = '{reqDto.Email}'; 
-                            select * from {DbTables.tblRole} where ""{nameof(EntityRoleDto.Id)}"" in (select ur.""{nameof(EntityUserRoleDto.RoleId)}"" from {DbTables.tblUserRoles} ur where ur.""{nameof(EntityUserRoleDto.UserId)}"" = (select usr.""{nameof(EntityUsersDto.Id)}"" from {DbTables.tblUser} usr where usr.""{nameof(BasePerson.Email)}"" = '{reqDto.Email}'))";
+                    string sql = $@"
+                                    SELECT {DapperHelper.QueryAsColumnsParma<Person, BasicPersonsDto>("pe.").Replace("\"", "`")}, 
+                                           {DapperHelper.QueryAsColumnsParma<User, EntityUsersPassDto>("us.").Replace("\"", "`")}
+                                    FROM {DbTables.tblPersons} pe  
+                                    LEFT JOIN {DbTables.tblUser} us 
+                                        ON pe.`{nameof(EntityUsersDto.Id)}` = us.`{nameof(EntityUsersDto.PersonId)}`
+                                    WHERE pe.`{nameof(BasePerson.Email)}` = '{reqDto.Email}'; 
+
+                                   ";
+
                     //var mQuery = _idbConnection.QueryMultiple(sql, transaction: _idbTransaction);
                     EntityUsersPassDto response;
-                    using (var mQuery = _idbConnection.QueryMultiple(sql, transaction: _idbTransaction))
+                        using (var mQuery = _idbConnection.QueryMultiple(sql, transaction: _idbTransaction))
                     {
                         response = mQuery.Read<EntityPersonsDto, EntityUsersPassDto, EntityUsersPassDto>((person, user) =>
                         {
@@ -108,10 +112,10 @@ namespace RepMed.Services
                             {
                                 var tokenId = _idbConnection.Insert<EntityUserTokenLogDto>(_idbTransaction, DbTables.tblUserTokenLog,
                                      new Dictionary<string, string> {
-                                { nameof(Usertokenlog.Id), userObj.Id.ToString() },
-                                { nameof(Usertokenlog.TokenValidTill), jwtToken.validTill.ToString() },
-                                { nameof(Usertokenlog.CreatedDate), DateTime.UtcNow.ToString() },
-                                { nameof(Usertokenlog.Token), jwtToken.token }
+                                //{ nameof(Usertokenlog.Id), userObj.Id.ToString() },
+                                //{ nameof(Usertokenlog.TokenValidTill), jwtToken.validTill.ToString() },
+                                //{ nameof(Usertokenlog.CreatedDate), DateTime.UtcNow.ToString() },
+                                //{ nameof(Usertokenlog.Token), jwtToken.token }
                                     }, @"RETURNING * ");
 
 
@@ -146,7 +150,6 @@ namespace RepMed.Services
             try
             {
 
-
                 APIsResponse<EntityUsersDto> apiResponse = default(APIsResponse<EntityUsersDto>);
 
                 List<EntityRoleDto> addRoles = new List<EntityRoleDto>();
@@ -160,8 +163,14 @@ namespace RepMed.Services
 
                 foreach (var role in roles)
                 {
-                    string sqlExist = DbTables.tblRole.SelectAll(@$" LOWER(""{nameof(BasicRoleDto.Name)}"") = '{role.Trim().ToLower()}'");
-                    EntityRoleDto isExist = _idbConnection.QueryFirstOrDefault<EntityRoleDto>(sqlExist, transaction: _idbTransaction);
+                    string sqlExist = DbTables.tblRole.SelectAll("LOWER(RoleName) = @RoleName");
+
+                    var isExist = _idbConnection.QueryFirstOrDefault<EntityRoleDto>(
+                        sqlExist,
+                        new { RoleName = role.Trim().ToLower() },
+                        transaction: _idbTransaction
+                    );
+
                     if (isExist == null)
                     {
                         apiResponse = new APIsError<EntityUsersDto>(_validateMessages.GetNotExist($"{role} Role"));
@@ -175,9 +184,12 @@ namespace RepMed.Services
                 }
                 #endregion
 
-                var values = addRoles.Select(r => string.Concat($"('{reqDto.Id}','{r.Id}')"));
-                string sql = $@"insert into {DbTables.tblUserRoles} (""{nameof(EntityUserRoleDto.UserId)}"",""{nameof(EntityUserRoleDto.RoleId)}"") 
-                                values {string.Join(",", values)}";
+                var values = addRoles.Select(r => $"({reqDto.Id}, {r.Id})");
+                string sql = $@"
+                            INSERT INTO {DbTables.tblUserRoles} (UserId, RoleId)
+                            VALUES {string.Join(",", values)};
+                        ";
+
 
                 var response = await _idbConnection.ExecuteAsync(sql, transaction: _idbTransaction);
                 if (response > 0)
@@ -244,7 +256,7 @@ namespace RepMed.Services
             {
                 return await Task.FromResult(new APIsError<string>(ex.GetActualError()));
             }
-        }
+        }   
         public async Task<APIsResponse<bool>> ResetPassword(ResetPasswordDTO model)
         {
             try
@@ -358,15 +370,15 @@ namespace RepMed.Services
 
             if (usercode == null)
             {
-                usercode = _idbConnection.Insert<CodeRequestDtos>(_idbTransaction, DbTables.tblCodeRequest,
-                    DapperHelper.QueryAsColumnsParma<Coderequest, BaseCodeRequestDtos>(),
-                    DapperHelper.QueryAsValuesParma<Coderequest, BaseCodeRequestDtos>(),
-                    new BaseCodeRequestDtos
-                    {
-                        SecurityCode = token,
-                        ValidTo = validTokenTime,
-                        Userid = userId
-                    }, "RETURNING *");
+                //usercode = _idbConnection.Insert<CodeRequestDtos>(_idbTransaction, DbTables.tblCodeRequest,
+                //    //DapperHelper.QueryAsColumnsParma<Coderequest, BaseCodeRequestDtos>(),
+                //    //DapperHelper.QueryAsValuesParma<Coderequest, BaseCodeRequestDtos>(),
+                //    new BaseCodeRequestDtos
+                //    {
+                //        SecurityCode = token,
+                //        ValidTo = validTokenTime,
+                //        Userid = userId
+                //    }, "RETURNING *");
 
 
             }

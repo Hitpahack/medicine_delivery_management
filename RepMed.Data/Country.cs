@@ -5,19 +5,15 @@ namespace RepMed.Data;
 
 public partial class Country
 {
-    public int Id { get; set; }
-
-    public string CountryCode { get; set; }
-
-    public string CountryCodeTwo { get; set; }
-
-    public string Currency { get; set; }
-
-    public string CurrencySymbol { get; set; }
+    public long Id { get; set; }
 
     public string Name { get; set; }
 
-    public string TimeZone { get; set; }
+    public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
+
+    public virtual ICollection<Pharmacy> Pharmacies { get; set; } = new List<Pharmacy>();
 
     public virtual ICollection<State> States { get; set; } = new List<State>();
+
+    public virtual ICollection<Useraddress> Useraddresses { get; set; } = new List<Useraddress>();
 }
