@@ -24,6 +24,10 @@ export const admin_apiconfig =
           login: environment.admin_apiv1 + '/accounts/login',
 
       },
+      addpharmacy: {
+        add: environment.admin_apiv1 + '/pharmacy/insert',
+
+    },
       user: {
         add: environment.admin_apiv1 + '/accounts/adduser'
       }

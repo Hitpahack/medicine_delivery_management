@@ -1,0 +1,41 @@
+<table id="pharmacyDetailsTable" class="display" *ngIf="pharmacyDetails">
+  <thead>
+    <tr>
+      <th colspan="2">Pharmacy Details (ID: {{ pharmacyDetails?.id }})</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td>Owner Name</td><td>{{ pharmacyDetails.ownerName }}</td></tr>
+    <tr><td>Store Name</td><td>{{ pharmacyDetails.storeName }}</td></tr>
+    <tr><td>Business Name</td><td>{{ pharmacyDetails.businessName }}</td></tr>
+    <tr><td>License Number</td><td>{{ pharmacyDetails.licenseNumber }}</td></tr>
+    <tr><td>License Expiry</td><td>{{ pharmacyDetails.licenseExpiry }}</td></tr>
+    <tr><td>GST Number</td><td>{{ pharmacyDetails.gstNumber }}</td></tr>
+    <tr><td>Registered Mobile</td><td>{{ pharmacyDetails.registeredMobile }}</td></tr>
+    <tr><td>Official Email</td><td>{{ pharmacyDetails.officialEmail }}</td></tr>
+    <tr><td>Store Mobile 1</td><td>{{ pharmacyDetails.storeMobile1 }}</td></tr>
+    <tr><td>Store Email 1</td><td>{{ pharmacyDetails.storeEmail1 }}</td></tr>
+    <tr><td>Store Email 2</td><td>{{ pharmacyDetails.storeEmail2 }}</td></tr>
+    <tr><td>Address 1</td><td>{{ pharmacyDetails.address1 }}</td></tr>
+    <tr><td>Address 2</td><td>{{ pharmacyDetails.address2 }}</td></tr>
+    <tr><td>Country ID</td><td>{{ pharmacyDetails.countryId }}</td></tr>
+    <tr><td>State ID</td><td>{{ pharmacyDetails.stateId }}</td></tr>
+    <tr><td>City ID</td><td>{{ pharmacyDetails.cityId }}</td></tr>
+    <tr><td>First Name</td><td>{{ pharmacyDetails.firstName }}</td></tr>
+    <tr><td>Last Name</td><td>{{ pharmacyDetails.lastName }}</td></tr>
+    <tr><td>Person Email</td><td>{{ pharmacyDetails.personEmail }}</td></tr>
+    <tr><td>Person Mobile</td><td>{{ pharmacyDetails.personMobile }}</td></tr>
+    <tr><td>Date of Birth</td><td>{{ pharmacyDetails.dateofBirth }}</td></tr>
+    <tr><td>Gender</td><td>{{ pharmacyDetails.gender }}</td></tr>
+    <tr>
+      <td>Picture</td>
+      <td><img [src]="pharmacyDetails.picture" width="80" /></td>
+    </tr>
+    <tr><td>Bank Name</td><td>{{ pharmacyDetails.bankName }}</td></tr>
+    <tr><td>Account Holder Name</td><td>{{ pharmacyDetails.accountholderName }}</td></tr>
+    <tr><td>Account Number</td><td>{{ pharmacyDetails.accountNumber }}</td></tr>
+    <tr><td>IFSC Code</td><td>{{ pharmacyDetails.ifscCode }}</td></tr>
+    <tr><td>Branch Name</td><td>{{ pharmacyDetails.branchName }}</td></tr>
+    <tr><td>UPI ID</td><td>{{ pharmacyDetails.upiId }}</td></tr>
+  </tbody>
+</table>

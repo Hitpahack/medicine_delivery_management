@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
-import { FormBuilder, FormsModule, ReactiveFormsModule, FormControl, FormGroup, Validators } from "@angular/forms";
+import { FormBuilder, FormsModule, ReactiveFormsModule, FormControl, FormGroup, Validators, AbstractControl } from "@angular/forms";
 import { AdminBaseComponent } from "../../admin.base.component";
 import { CommonModule } from "@angular/common";
 import { CustomValidator } from "../../../common/custom.validators";
 import { Helper } from "../../../common/helper.extenstions";
 import { adminAccountsService } from "../../services/accounts/admin.accountsservice";
+import { AdminPharmacyService } from "../../services/pharmacy/admin.pharmacy.services";
 
 @Component({
     selector: 'app-admin-addpharmacy',
@@ -18,65 +19,76 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
     constructor(
         public router: Router, public fb: FormBuilder,
         public validator: CustomValidator,
-        public accountservice: adminAccountsService
+        public accountservice: adminAccountsService,
+        public PharmacyService: AdminPharmacyService
     ) {
         super(router, fb);
     }
-
+    minExpiryDate: string = '';
     phForm: FormGroup;
+
     ngOnInit(): void {
         // This runs when the dashboard loads.
         //console.log('Add Pharmacy Page loaded!');
         this.phForm = this.initForm();
+        const today = new Date();
+        this.minExpiryDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
     }
 
     initForm(): FormGroup {
         return this.fb.group({
+            //email: new FormControl(null, [this.validator.ValidateEmail,Validators.required]),
             ownerName: new FormControl(null, [Validators.required]),
             storeName: new FormControl(null, [Validators.required]),
             businessName: new FormControl(null, [Validators.required]),
             licenseNumber: new FormControl(null, [Validators.required]),
-            licenseExpiry: new FormControl(null, [Validators.required]),
-            gstNumber: new FormControl(null, [Validators.required]),
+            //licenseExpiry: new FormControl(null, [Validators.required]),
+            licenseExpiry: [null, [Validators.required, this.validator.futureDateValidator]],
+            gstNumber: new FormControl(null, [Validators.required, Validators.pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/)]),
             registeredMobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
+            //registeredMobile: ['', [Validators.required,Validators.pattern(/^[0-9]{10}$/)]],  // only 10 digit numbers allowed
             officialEmail: new FormControl(null, [Validators.required, Validators.email]),
             storeMobile1: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
             storeEmail1: new FormControl(null, [Validators.required, Validators.email]),
             storeEmail2: new FormControl(null, [Validators.required, Validators.email]),
-            
+
             address1: new FormControl(null, [Validators.required]),
             address2: new FormControl(null, [Validators.required]),
             countryId: new FormControl(null, [Validators.required]),
             stateId: new FormControl(null, [Validators.required]),
             cityId: new FormControl(null, [Validators.required]),
-            
+
             firstName: new FormControl(null, [Validators.required]),
             lastName: new FormControl(null, [Validators.required]),
             personEmail: new FormControl(null, [Validators.required, Validators.email]),
             personMobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
-            dateofBirth: new FormControl(null, [Validators.required]),
+            dateofBirth: new FormControl(null, [Validators.required, this.validator.futureDateValidator_old]),
             gender: new FormControl(null, [Validators.required]),
             picture: new FormControl(null, [Validators.required]),
-            
+
             bankName: new FormControl(null, [Validators.required]),
             accountholderName: new FormControl(null, [Validators.required]),
             accountNumber: new FormControl(null, [Validators.required]),
             ifscCode: new FormControl(null, [Validators.required]),
             branchName: new FormControl(null, [Validators.required]),
-            upiId: new FormControl(null, [Validators.required]),
-            
+            upiId: new FormControl(null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/)])
         });
     }
 
-    onSubmit() {
-        console.log("Hello");
-        debugger;
-        let isValid = this.validateForm(this.phForm);
-        if (isValid) {
-            console.log("All fields fill(Successfully)");
+    allowOnlyNumbers(event: KeyboardEvent) {
+        const charCode = event.key.charCodeAt(0);
+        // Allow only digits (0–9)
+        if (charCode < 48 || charCode > 57) {
+            event.preventDefault();
         }
-        else
-        console.log("not fill");
-            Helper.ShowError('Please fill the required fields');
+    }
+    onSubmit() {
+        if (this.phForm.invalid) {
+            this.validator.markInvalidFieldsTouched(this.phForm);
+            return;
+        }
+        this.PharmacyService.add(this.phForm.value)
+        // Submit the form
+        console.log('Form submitted:', this.phForm.value);
     }
 }
