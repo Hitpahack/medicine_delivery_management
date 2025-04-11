@@ -12,7 +12,7 @@ import { AdminAddPharmacyComponent } from './admin/views/pharmacy/admin.addpharm
 import { PharmacyLayoutComponent } from './_layouts/admin/pharmacy.layout.component';
 import { PharmacyDashboardComponent } from './admin/views/pharmacydashboard/pharmacy.dashboard.component';
 import { AdminPharmacyListComponent } from './admin/views/pharmacy/admin.pharmacylist.component';
-
+import { AddUserComponent } from "../app/admin/views/user/admin.adduser.component";
 
 
 
