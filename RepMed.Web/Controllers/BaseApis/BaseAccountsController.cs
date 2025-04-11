@@ -102,7 +102,7 @@ namespace RepMed.Web.Controllers.BaseApis
                 }
             }
         }
-        protected async Task<APIsResponse<EntityUsersDto>> AddUser(AddPersonDto reqDto)
+        protected async Task<APIsResponse<EntityUsersDto>> AddUser(AddPersonDto reqDto, long Id)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -111,7 +111,7 @@ namespace RepMed.Web.Controllers.BaseApis
                 {
                     using (IPersonService personService = new PersonService(db, tran))
                     {   
-                        var person = await personService.AddPerson(reqDto);
+                        var person = await personService.AddPerson(reqDto,Id);
                         if(!person.IsSuccess)
                         {
                             tran.Rollback();
@@ -123,7 +123,7 @@ namespace RepMed.Web.Controllers.BaseApis
                             {
                                 PersonId = person.Data.Id,
                                 ConfirmPassword = reqDto.ConfirmPassword
-                            });
+                            }, Id);
                             if(!user.IsSuccess)
                             {
                                 tran.Rollback();

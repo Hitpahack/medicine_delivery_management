@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using Org.BouncyCastle.Crypto.Generators;
 using RepMed.Core;
 using RepMed.Dtos;
 using RepMed.Web.Controllers.BaseApis;
@@ -55,29 +56,6 @@ namespace RepMed.Web.Controllers.WebApis
             return BadRequest(data);
 
         }
-        [Route("adduser")]
-        [HttpPost]
-        public async Task<IActionResult> AddUser(AddPersonDto reqDto)
-        {
-            var data = await base.AddUser(reqDto);
-            if (data.IsSuccess)
-                return Ok(data);
-
-            return BadRequest(data);
-        }
-        [Route("edituser")]
-        [HttpPost]
-        public async Task<IActionResult> EditUser(AddPersonDto reqDto)
-        {
-            var data = await base.AddUser(reqDto);
-            if (data.IsSuccess)
-                return Ok(data);
-
-            return BadRequest(data);
-
-        }
-
-
         private async Task SignInAsync(IEnumerable<Claim> Claims)
         {
             #region HttpContext SignIn

@@ -5,24 +5,17 @@ namespace RepMed.Dtos
 {
     public class BasicAddressDto
     {
-        [Required]
         public string AddressLine { get; set; }
-        [Required]
-
+            
         public int CityId { get; set; }
-        [Required]
 
         public int StateId { get; set; }
-        [Required]
 
         public int CountryId { get; set; }
-        [Required]
 
         public string Pincode { get; set; }
-        [Required]
 
         public decimal? Latitude { get; set; }
-        [Required]
         public decimal? Longitude { get; set; }
     }
 

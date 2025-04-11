@@ -64,6 +64,8 @@ namespace RepMed.Web
             services.AddHttpContextAccessor();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<AdminSettings>(Configuration.GetSection("AdminSettings"));
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
+
             services.AddTransient<ITemplatesService>(x =>
            new TemplatesService(string.Concat(x.GetService<IWebHostEnvironment>().WebRootPath, "/Templates/Template.xml")));
             services.AddTransient<IJwtManager, JwtManager>();

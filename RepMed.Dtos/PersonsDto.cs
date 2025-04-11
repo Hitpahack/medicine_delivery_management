@@ -6,11 +6,8 @@ namespace RepMed.Dtos
 {
    public class BasePerson
     {
-
-        [Required]
         [MinLength(3)]
         public string FirstName { get; set; }
-        [Required]
         [MinLength(3)]
         public string LastName { get; set; }
         [Required]
@@ -95,7 +92,7 @@ namespace RepMed.Dtos
         [Core.IgnoreDapper]
         public AddAddressDto Address { get; set; }
         [Core.IgnoreDapper]
-        public string Role { get; set; }
+        public string Role { get; set; } 
 
 
     }

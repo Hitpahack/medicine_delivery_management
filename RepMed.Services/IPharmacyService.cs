@@ -1,13 +1,14 @@
 ﻿using Dapper;
-using Newtonsoft.Json.Linq;
+using MimeKit;
 using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
+using System.Net.Mail;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace RepMed.Services
@@ -17,6 +18,7 @@ namespace RepMed.Services
         Task<APIsResponse<PharmacyBankDetailsDto>> AddUpdatePharmacyBankDetails(PharmacyBankDetailsDto reqDto, long Id);
         Task<APIsResponse<AddPharmacyDto>> AddUpdatePharmacy(AddPharmacyDto reqDto, long Id);
         Task<APIsResponse<IEnumerable<BasePharmacyDto>>> GetAllPharmacies();
+        Task<APIsResponse<bool>> GenrateEmailToken(long newUserId, string userEmail);
     }
 
     public class PharmacyService : BaseService, IPharmacyService
@@ -56,6 +58,7 @@ namespace RepMed.Services
                     #endregion
                     apiResponse = new APIsSuccsss<PharmacyBankDetailsDto>("Pharmacy bank details Updated successfully", pharmacyBank);
 
+
                 }
                 return await Task.FromResult(apiResponse);
 
@@ -65,6 +68,73 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<PharmacyBankDetailsDto>(ex.GetActualError()));
             }
         }
+
+        public async Task<APIsResponse<bool>> GenrateEmailToken(long newUserId, string userEmail)
+        {
+            try
+            {
+                string token = Guid.NewGuid().ToString();
+                DateTime expiry = DateTime.UtcNow.AddHours(12); // Token valid for 2 hours
+
+                string sql = $@"INSERT INTO {DbTables.tblUserTokens} (UserId, Token, ExpiresAt) VALUES (@UserId, @Token, @ExpiresAt)";
+                await _idbConnection.ExecuteAsync(
+                            sql,
+                            new
+                            {
+                                UserId = newUserId,
+                                Token = token,
+                                ExpiresAt = expiry
+                            }, transaction: _idbTransaction);
+
+                string url = $"https://localhost:44379/set-password?token={token}";
+
+                await SendEmailAsync(userEmail, "Set Your Password", $"Click here to set your password: <a href='{url}'>Set Password</a>");
+
+                return new APIsSuccsss<bool>("Email Sent for genrate password", true);
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
+            }
+
+        }
+        private async Task SendEmailAsync(string toEmail, string subject, string htmlBody)
+        {
+            try
+            {
+                var fromEmail = _emailSettings.FromEmail;
+                var fromName = _emailSettings.FromName;
+                var username = _emailSettings.UsernameEmail;
+                var password = _emailSettings.UsernamePassword;
+                var smtpHost = _emailSettings.PrimaryDomain;
+                var smtpPort = _emailSettings.PrimaryPort;
+                var enableSsl = _emailSettings.EnableSSL;
+
+                using (var smtp = new SmtpClient(smtpHost, smtpPort))
+                {
+                    smtp.EnableSsl = enableSsl;
+                    smtp.Credentials = new NetworkCredential(username, password);
+
+                    var mail = new MailMessage
+                    {
+                        From = new MailAddress(fromEmail, fromName),
+                        Subject = subject,
+                        Body = htmlBody,
+                        IsBodyHtml = true
+                    };
+                    mail.To.Add(toEmail);
+
+                    await smtp.SendMailAsync(mail);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+        }
+
+
 
         public async Task<APIsResponse<AddPharmacyDto>> AddUpdatePharmacy(AddPharmacyDto reqDto, long Id)
         {
@@ -109,7 +179,7 @@ namespace RepMed.Services
         {
             try
             {
-                APIsResponse<IEnumerable<BasePharmacyDto >> apiResponse = default;
+                APIsResponse<IEnumerable<BasePharmacyDto>> apiResponse = default;
 
                 #region Get All Pharmacy 
                 var sql = @"
@@ -127,7 +197,7 @@ namespace RepMed.Services
                         splitOn: "PharmacyId"
                 );
                 #endregion
-                if(pharmacyBank.Any())
+                if (pharmacyBank.Any())
                     apiResponse = new APIsSuccsss<IEnumerable<BasePharmacyDto>>("Pharmacy details retrieved successfully", pharmacyBank);
                 else
                     apiResponse = new APIsSuccsss<IEnumerable<BasePharmacyDto>>("No Pharmacy Found", pharmacyBank);

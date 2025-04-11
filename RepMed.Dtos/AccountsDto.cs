@@ -42,4 +42,11 @@ namespace RepMed.Dtos
         public string Token { get; set; }
         public DateTime TokenValidTill { get; set; }
     }
+    public class SetPasswordDto
+    {
+        public string Token { get; set; }
+        public string Password { get; set; }
+        public string ConfirmPassword { get; set; }
+    }
 }
+

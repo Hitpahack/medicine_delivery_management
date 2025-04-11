@@ -303,6 +303,7 @@ namespace RepMed.Core
         public const string tblPharmacy= "`Pharmacies`";
         public const string tblPharmacyBankDetails = "`PharmacyBankDetails`";
         public const string tblUserAddress= "`UserAddresses`";
+        public const string tblUserTokens= "`UserTokens`";
     }
 
 
