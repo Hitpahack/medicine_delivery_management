@@ -30,47 +30,67 @@
             </div>
 
             <div class="input-group mb-4 float">
-                <input type="date" placeholder=" " formControlName="licenseExpiry" class="form-control" required>
+                <input type="date" placeholder=" " formControlName="licenseExpiry" class="form-control" required  [min]="minExpiryDate">
                 <label class="float-lbl">License Expiry *</label>
                 <div *ngIf="phForm.get('licenseExpiry')?.touched && phForm.get('licenseExpiry')?.errors?.['required']">LicenseExpiry date is required.</div>
+                <div *ngIf="phForm.get('licenseExpiry')?.errors?.['pastDate'] && (phForm.get('licenseExpiry')?.touched || phForm.get('licenseExpiry')?.dirty)">
+                  Expiry date cannot be in the past.
+                </div>
+                
             </div>
 
             <div class="input-group mb-4 float">
                 <input type="text" placeholder=" " formControlName="gstNumber" class="form-control" required>
                 <label class="float-lbl">GST Number *</label>
                 <div *ngIf="phForm.get('gstNumber')?.touched && phForm.get('gstNumber')?.errors?.['required']">GSTNumber is required.</div>
+                <div *ngIf="phForm.get('gstNumber')?.touched && phForm.get('gstNumber')?.errors?.['pattern']">
+                  Enter a valid GST Number (15 characters).
+                </div>
             </div>
 
             <div class="input-group mb-4 float">
-                <input type="text" placeholder=" " formControlName="registeredMobile" class="form-control" required>
+                <input type="text" placeholder=" " formControlName="registeredMobile" class="form-control" required maxlength="10" (keypress)="allowOnlyNumbers($event)">
                 <label class="float-lbl">Registered Mobile *</label>
                 <div *ngIf="phForm.get('registeredMobile')?.touched && phForm.get('registeredMobile')?.errors?.['required']">RegisteredMobile is required.</div>
-                <div *ngIf="phForm.get('registeredMobile')?.touched && phForm.get('registeredMobile')?.errors?.['pattern']">Enter a valid 10-digit mobile number.</div>
+                <div *ngIf="phForm.get('registeredMobile')?.errors?.['pattern'] && phForm.get('registeredMobile')?.touched">
+                  Only digits allowed.
+                </div>
             </div>
 
             <div class="input-group mb-4 float">
                 <input type="email" placeholder=" " formControlName="officialEmail" class="form-control" required>
                 <label class="float-lbl">Official Email *</label>
-                <div *ngIf="phForm.get('officialEmail')?.touched && phForm.get('officialEmail')?.errors?.['required']">OfficialEmail is required.</div>
+                <div *ngIf="phForm.get('officialEmail')?.touched && phForm.get('officialEmail')?.errors?.['required']">
+                  Official Email is required.
+                </div>
+                <div *ngIf="phForm.get('officialEmail')?.touched && phForm.get('officialEmail')?.errors?.['email']">
+                  Please enter a valid email address.
+                </div>
+                
             </div>
 
             <div class="input-group mb-4 float">
-                <input type="text" placeholder=" " formControlName="storeMobile1" class="form-control" required>
+                <input type="text" placeholder=" " formControlName="storeMobile1" class="form-control" required maxlength="10" (keypress)="allowOnlyNumbers($event)">
                 <label class="float-lbl">Store Mobile 1 *</label>
                 <div *ngIf="phForm.get('storeMobile1')?.touched && phForm.get('storeMobile1')?.errors?.['required']">Mobile number is required.</div>
-                <div *ngIf="phForm.get('storeMobile1')?.touched && phForm.get('storeMobile1')?.errors?.['pattern']">Enter a valid 10-digit mobile number.</div>
+                <div *ngIf="phForm.get('storeMobile1')?.errors?.['pattern'] && phForm.get('storeMobile1')?.touched">
+                  Only digits allowed.
+                </div>
             </div>
 
             <div class="input-group mb-4 float">
                 <input type="email" placeholder=" " formControlName="storeEmail1" class="form-control" required>
                 <label class="float-lbl">Store Email 1 *</label>
                 <div *ngIf="phForm.get('storeEmail1')?.touched && phForm.get('storeEmail1')?.errors?.['required']">Email is required.</div>
+                <div *ngIf="phForm.get('storeEmail1')?.touched && phForm.get('storeEmail1')?.errors?.['email']">Please enter a valid email address.</div>
+                
             </div>
 
             <div class="input-group mb-4 float">
                 <input type="email" placeholder=" " formControlName="storeEmail2" class="form-control" required>
                 <label class="float-lbl">Store Email 2 *</label>
                 <div *ngIf="phForm.get('storeEmail2')?.touched && phForm.get('storeEmail2')?.errors?.['required']">Email is required.</div>
+                <div *ngIf="phForm.get('storeEmail2')?.touched && phForm.get('storeEmail2')?.errors?.['email']">Please enter a valid email address.</div>
             </div>
         </div>
       </fieldset>
@@ -146,17 +166,23 @@
             <input type="email" placeholder="" formControlName="personEmail" class="form-control" required>
             <label class="float-lbl">Email *</label>
             <div *ngIf="phForm.get('personEmail')?.touched && phForm.get('personEmail')?.errors?.['required']">Email is required.</div>
+                <div *ngIf="phForm.get('personEmail')?.touched && phForm.get('personEmail')?.errors?.['email']">Please enter a valid email address.</div>
         </div>
         <div class="input-group mb-4 float">
-            <input type="text" placeholder="" formControlName="personMobile" class="form-control" required>
+            <input type="text" placeholder="" formControlName="personMobile" class="form-control" required maxlength="10" (keypress)="allowOnlyNumbers($event)">
             <label class="float-lbl">Mobile *</label>
             <div *ngIf="phForm.get('personMobile')?.touched && phForm.get('personMobile')?.errors?.['required']">Mobile is required.</div>
-            <div *ngIf="phForm.get('personMobile')?.touched && phForm.get('personMobile')?.errors?.['pattern']">Enter a valid 10-digit mobile number.</div>
+            <div *ngIf="phForm.get('personMobile')?.errors?.['pattern'] && phForm.get('personMobile')?.touched">
+              Only digits allowed.
+            </div>
         </div>
         <div class="input-group mb-4 float">
-            <input type="date" placeholder="" formControlName="dateofBirth" class="form-control" required>
+            <input type="date" placeholder="" formControlName="dateofBirth" class="form-control" required [max]="maxExpiryDate">
             <label class="float-lbl">Date Of Birth *</label>
             <div *ngIf="phForm.get('dateofBirth')?.touched && phForm.get('dateofBirth')?.errors?.['required']">DateOfBirth is required.</div>
+            <div *ngIf="phForm.get('dateofBirth')?.errors?.['futureDate'] && (phForm.get('dateofBirth')?.touched || phForm.get('dateofBirth')?.dirty)">
+              Expiry date cannot be in the past.
+            </div>
         </div>
         <div class="input-group mb-4 float">
             <select formControlName="gender" class="form-control" required>
@@ -214,6 +240,9 @@
                 <input type="text" placeholder=" " formControlName="upiId" class="form-control" required>
                 <label class="float-lbl">UPI ID *</label>
                 <div *ngIf="phForm.get('upiId')?.touched && phForm.get('upiId')?.errors?.['required']">UPI_ID is required.</div>
+                <div *ngIf="phForm.get('upiId')?.errors?.['pattern'] && phForm.get('upiId')?.touched">
+                  Please enter a valid UPI ID.
+                </div>
               </div>
         </div>
       </fieldset>

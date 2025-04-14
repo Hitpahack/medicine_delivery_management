@@ -1,45 +1,52 @@
 <form class="card auth_form form_validation" [formGroup]="addUserForm" (ngSubmit)="onSubmit()">
- 
-  <legend>User</legend>
- 
-<div class="form-grid">
-<div class="input-group mb-3 float">
-<input type="text" class="form-control" placeholder=" " formControlName="firstname">
-<label class="float-lbl">First Name *</label>
-<div *ngIf="addUserForm.get('firstname')?.errors?.['required'] && addUserForm.get('firstname')?.touched">
-        First Name is required.
-</div>
-</div>
- 
-    <div class="input-group mb-3 float">
-<input type="text" class="form-control" placeholder=" " formControlName="lastname">
-<label class="float-lbl">Last Name *</label>
-<div *ngIf="addUserForm.get('lastname')?.errors?.['required'] && addUserForm.get('lastname')?.touched">
-        Last Name is required.
-</div>
-</div>
- 
-    <div class="input-group mb-3 float">
-<input type="text" class="form-control" placeholder=" " formControlName="email">
-<label class="float-lbl">Email *</label>
-<div *ngIf="addUserForm.get('email')?.errors?.['required'] && addUserForm.get('email')?.touched">
-        Email is required.
-</div>
-<div *ngIf="addUserForm.get('email')?.errors?.['ValidateEmail'] && addUserForm.get('email')?.touched">
-        Enter a valid email address.
-</div>
-</div>
- 
-    <div class="input-group mb-3 float">
-<input type="text" class="form-control" placeholder=" " formControlName="mobile">
-<label class="float-lbl">Mobile *</label>
-<div *ngIf="addUserForm.get('mobile')?.errors?.['required'] && addUserForm.get('mobile')?.touched">
-        Mobile Number is required.
-</div>
-</div>
- 
-    <div class="form-actions">
-<button type="submit">Add User</button>
-</div>
-</div>
+
+        <legend>User</legend>
+
+        <div class="form-grid">
+
+                <div class="input-group mb-3 float">
+                        <input type="text" class="form-control" placeholder=" " formControlName="email">
+                        <label class="float-lbl">Email *</label>
+                        <div *ngIf="addUserForm.get('email')?.touched && addUserForm.get('email')?.errors">
+                                <div
+                                        *ngIf="addUserForm.get('email')?.errors?.['required'] && addUserForm.get('email')?.touched">
+                                        Email is required.
+                                </div>
+                                <div *ngIf="addUserForm.get('email')?.errors['email']">
+                                        {{ addUserForm.get('email')?.errors['error'] }}
+                                </div>
+                        </div>
+                </div>
+
+                <div class="input-group mb-3 float">
+                        <input type="text" class="form-control" placeholder=" " formControlName="mobile">
+                        <label class="float-lbl">Mobile *</label>
+                        <div
+                                *ngIf="addUserForm.get('mobile')?.errors?.['required'] && addUserForm.get('mobile')?.touched">
+                                Mobile Number is required.
+                        </div>
+                </div>
+
+                <div class="input-group mb-3 float">
+                        <input type="text" class="form-control" placeholder=" " formControlName="Password">
+                        <label class="float-lbl">Password *</label>
+                        <div
+                                *ngIf="addUserForm.get('Password')?.errors?.['required'] && addUserForm.get('Password')?.touched">
+                                Password is required.
+                        </div>
+                </div>
+
+                <div class="input-group mb-3 float">
+                        <input type="text" class="form-control" placeholder=" " formControlName="ConfirmPassword">
+                        <label class="float-lbl">ConfirmPassword *</label>
+                        <div
+                                *ngIf="addUserForm.get('ConfirmPassword')?.errors?.['required'] && addUserForm.get('ConfirmPassword')?.touched">
+                                ConfirmPassword is required.
+                        </div>
+                </div>
+
+                <div class="form-actions">
+                        <button type="submit">Add User</button>
+                </div>
+        </div>
 </form>

@@ -12,51 +12,56 @@ import { AdminAddPharmacyComponent } from './admin/views/pharmacy/admin.addpharm
 import { PharmacyLayoutComponent } from './_layouts/admin/pharmacy.layout.component';
 import { PharmacyDashboardComponent } from './admin/views/pharmacydashboard/pharmacy.dashboard.component';
 import { AdminPharmacyListComponent } from './admin/views/pharmacy/admin.pharmacylist.component';
+import { AddUserComponent } from '../app/admin/views/user/admin.adduser.component';
+import { AdminPharmacyDetailsComponent} from './admin/views/pharmacy/admin.pharmacydetails.component';
 
+import { AddUserComponent } from "../app/admin/views/user/admin.adduser.component";
 
 
 
 export const routes: Routes = [
-    
-    //Admin routes goes here 
-    { path: 'admin', 
-      component: AdminEmptyLayoutComponent, 
-      children: [
-        { path: '', component: AdminLoginComponent },
-        { path: 'login', component: AdminLoginComponent },
-      ]
-    },
-    { 
-        path: 'admin', 
-        component: AdminLayoutComponent,
-        children: [
-          { path: 'shifts', component: AdminShiftsComponent },
-          { path: 'dashboard', component: AdminDashboardComponent },
-          { path: 'addpharmacy', component: AdminAddPharmacyComponent },
-            { path: 'pharmacylist', component: AdminPharmacyListComponent },
-            { path: 'adduser', component: AddUserComponent },
-        ]
-    },
-    { 
-      path: 'admin', 
-      component: PharmacyLayoutComponent,
-      children: [
-        { path: 'pharmacy', component: PharmacyDashboardComponent }
-      ]
+
+  //Admin routes goes here 
+  {
+    path: 'admin',
+    component: AdminEmptyLayoutComponent,
+    children: [
+      { path: '', component: AdminLoginComponent },
+      { path: 'login', component: AdminLoginComponent },
+    ]
   },
-    
-    //Web routes goes here
-    //{ path: '', component: LoginComponent, pathMatch: 'full'},
-    //{ 
-    //  path: '', 
-    //  component: WebLayoutComponent,
-    //  children: [
-    //    { path: 'facilites', component: FacilitesComponent }
-    //  ]
-    //},
-  { path: 'login', component: LoginComponent},
-  
-  
+  {
+    path: 'admin',
+    component: AdminLayoutComponent,
+    children: [
+      { path: 'shifts', component: AdminShiftsComponent },
+      { path: 'dashboard', component: AdminDashboardComponent },
+      { path: 'addpharmacy', component: AdminAddPharmacyComponent },
+      { path: 'pharmacylist', component: AdminPharmacyListComponent },
+      { path: 'pharmacydetails/:id', component: AdminPharmacyDetailsComponent },
+      { path: 'adduser', component: AddUserComponent },
+    ]
+  },
+  {
+    path: 'admin',
+    component: PharmacyLayoutComponent,
+    children: [
+      { path: 'pharmacy', component: PharmacyDashboardComponent }
+    ]
+  },
+
+  //Web routes goes here
+  //{ path: '', component: LoginComponent, pathMatch: 'full'},
+  //{ 
+  //  path: '', 
+  //  component: WebLayoutComponent,
+  //  children: [
+  //    { path: 'facilites', component: FacilitesComponent }
+  //  ]
+  //},
+  { path: 'login', component: LoginComponent },
+
+
   // otherwise redirect to home
   { path: '**', redirectTo: '' }
 ];

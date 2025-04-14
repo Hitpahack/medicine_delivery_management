@@ -4,7 +4,7 @@ export const admin_apiconfig =
 {
     requestSettings: {
       header: {
-          // 'Content-Type': 'application/json',
+          'Content-Type': 'application/json',
           //'Access-Control-Allow-Origin': '*',
           //'Access-Control-Allow-Methods': 'GET, POST, OPTIONS, PUT, PATCH, DELETE',
           'Accept-Language':'en'
@@ -21,8 +21,15 @@ export const admin_apiconfig =
     },
     endpoints:{
       accounts: {
-          login: environment.admin_apiv1 + '/Accounts/login',
+          login: environment.admin_apiv1 + '/accounts/login',
 
       },
+      addpharmacy: {
+        add: environment.admin_apiv1 + '/pharmacy/insert',
+
+    },
+      user: {
+        add: environment.admin_apiv1 + '/accounts/adduser'
+      }
     }
 }

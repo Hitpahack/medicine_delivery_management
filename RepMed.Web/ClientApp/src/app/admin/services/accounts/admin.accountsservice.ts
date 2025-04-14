@@ -18,10 +18,8 @@ export class adminAccountsService extends adminBaseService {
     }
 
     login(formData: any) {
-        return this.http.post<ApiResponse<LoginResponse>>(
-          admin_apiconfig.endpoints.accounts.login,
-          formData,
-          { headers: admin_apiconfig.requestSettings.header }
+        console.log("login is called.");
+        return this.http.post<ApiResponse<LoginResponse>>(admin_apiconfig.endpoints.accounts.login,formData,{ headers: admin_apiconfig.requestSettings.header }
         );
       }
 }
