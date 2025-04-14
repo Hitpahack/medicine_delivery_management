@@ -92,6 +92,7 @@ namespace RepMed.Dtos
         [Core.IgnoreDapper]
         public AddAddressDto Address { get; set; }
         [Core.IgnoreDapper]
+        [Required]
         public string Role { get; set; } 
 
 

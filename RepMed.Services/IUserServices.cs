@@ -9,13 +9,15 @@ using System.Linq;
 using System.Threading.Tasks;
 using Org.BouncyCastle.Crypto.Generators;
 using Newtonsoft.Json.Linq;
+using Org.BouncyCastle.Asn1.Ess;
 
 namespace RepMed.Services
 {
     public interface IUserServices : IDisposable
     {
         Task<APIsResponse<EntityUsersDto>> AddUser(AddUsersDto reqDto, long Id);
-        Task<APIsResponse<bool>> SetPasswordAsync(SetPasswordDto dto);
+        Task<APIsResponse<bool>> SetPassword(SetPasswordDto dto);
+        Task<APIsResponse<GetUserDto>> GetUser(long Id);
     }
 
 
@@ -76,46 +78,78 @@ namespace RepMed.Services
             GC.SuppressFinalize(this);
         }
 
-        public async Task<APIsResponse<bool>> SetPasswordAsync(SetPasswordDto reqdto)
+        public async Task<APIsResponse<GetUserDto>> GetUser(long id)
         {
-            if (reqdto.Password != reqdto.ConfirmPassword)
-                return new APIsSuccsss<bool>(_validateMessages.InvalidPassword, false);
+            try
+            {
+                var sql = $@"
+                            SELECT u.Id, p.FirstName,p.LastName,p.Email,p.Mobile,p.Gender,p.DateOfBirth
+                            FROM {DbTables.tblUser} u
+                            INNER JOIN {DbTables.tblPersons} p ON u.PersonId = p.Id
+                            WHERE u.Id = @Id;
+                        ";
+                var userData = await _idbConnection.QueryFirstOrDefaultAsync<GetUserDto>(sql, new { Id = id },transaction:_idbTransaction);
 
-            string query = DbTables.tblUserTokens.SelectAll($@"
-                            ""Token"" = '{reqdto.Token}'
-                            AND ""IsUsed"" = FALSE
-                            AND ""ExpiresAt"" > NOW()");
+                if (userData == null)
+                    return new APIsError<GetUserDto>(_validateMessages.NotExist);
 
-            var tokenData = await _idbConnection.QueryFirstOrDefaultAsync<UserTokenDto>(query);
+                return new APIsSuccsss<GetUserDto>(_validateMessages.RetriveSuccess, userData);
 
-            if (tokenData == null)
-                return new APIsSuccsss<bool>("No data found", false);
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<GetUserDto>(ex.GetActualError()));
+            }
+        }
 
+        public async Task<APIsResponse<bool>> SetPassword(SetPasswordDto reqdto)
+        {
+            try
+            {
+                #region Get User Token
+                string query = DbTables.tblUserTokens.SelectAll($@"
+                            `Token` = '{reqdto.Token}'
+                            AND `IsUsed` = FALSE
+                            AND `ExpiresAt` > NOW()");
 
-            // Hash the password using BCrypt
-            Encryption.CreatePasswordHash(reqdto.ConfirmPassword, out var passHash, out var passSalt);
+                var tokenData = await _idbConnection.QueryFirstOrDefaultAsync<UserTokenDto>(query,transaction:_idbTransaction);
+                #endregion
 
-            // Update user's password
-            string updateUserQuery = $@" UPDATE {DbTables.tblUser} 
+                if (tokenData == null)
+                    return new APIsSuccsss<bool>("No data found", false);
+
+                Encryption.CreatePasswordHash(reqdto.ConfirmPassword, out var passHash, out var passSalt);
+
+                #region Update users password
+                string updateUserQuery = $@" UPDATE {DbTables.tblUser} 
                                         SET PasswordHash = @PasswordHash,
                                         PasswordSalt = @PasswordSalt
                                         WHERE Id = @Id";
-            await _idbConnection.ExecuteAsync(
-                        updateUserQuery,
-                        new
-                        {
-                            PasswordHash = passHash,
-                            PasswordSalt = passSalt,
-                            Id = tokenData.UserId
-                        });
+                await _idbConnection.ExecuteAsync(
+                            updateUserQuery,
+                            new
+                            {
+                                PasswordHash = passHash,
+                                PasswordSalt = passSalt,
+                                Id = tokenData.UserId
+                            },transaction:_idbTransaction);
+                #endregion
 
-            // Mark the token as used
-            string updateTokenQuery = $@" UPDATE {DbTables.tblUser} SET IsUsed = TRUE WHERE Id = @Id";
-            await _idbConnection.ExecuteAsync(
-                updateTokenQuery,
-                new { tokenData.Id });
+                #region Mark token as used (password has been set)
+                string updateTokenQuery = $@" UPDATE {DbTables.tblUserTokens} SET IsUsed = TRUE WHERE Id = @Id";
+                await _idbConnection.ExecuteAsync(
+                    updateTokenQuery,
+                    new { tokenData.Id },transaction:_idbTransaction);
 
-            return new APIsSuccsss<bool>(_validateMessages.UpdateSuccess, true);
+                #endregion
+
+                return new APIsSuccsss<bool>(_validateMessages.UpdateSuccess, true);
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
+
+            }
         }
     }
 }

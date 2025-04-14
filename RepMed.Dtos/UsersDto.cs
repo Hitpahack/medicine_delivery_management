@@ -5,12 +5,12 @@ using System.Text.Json.Serialization;
 
 namespace RepMed.Dtos
 {
-    public class BasicUsersDto  
+    public class BasicUsersDto
     {
         public string Email { get; set; }
         public bool? EmailConfirmed { get; set; }
         public long PersonId { get; set; }
-        
+
     }
 
     public class EntityUsersDto : BasicUsersDto
@@ -22,7 +22,7 @@ namespace RepMed.Dtos
         public IEnumerable<EntityRoleDto> Roles { get; set; }
 
     }
-    
+
     public class EntityUsersPassDto : BasicUsersDto
     {
         public EntityUsersPassDto()
@@ -43,7 +43,7 @@ namespace RepMed.Dtos
 
     public class AddUsersDto : BasicUsersDto
     {
-        
+
         [Required]
         [MaxLength(25, ErrorMessage = "Maximum 15 characters allow ")]
         [MinLength(3, ErrorMessage = "Minimum 3 characters allow ")]
@@ -67,6 +67,12 @@ namespace RepMed.Dtos
         public DateTime? UpdatedAt { get; set; }
         public string Status { get; set; }
         public DateTime? LastLoginDate { get; set; }
+
+    }
+
+    public class GetUserDto : BasePersonDto
+    {
+        public long Id{ get; set; }
 
     }
 }

@@ -81,6 +81,26 @@ namespace RepMed.Web.Controllers.BaseApis
                 }
             }
         }
+        protected async Task<APIsResponse<bool>> ChangePassword(ChangePasswordDto reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IAccountService accountService = new AccountService(db, tran))
+                    {
+                        var isReset = await accountService.ChangePassword(reqDto);
+                        if (isReset.IsSuccess)
+                            tran.Commit();
+                        else
+                            tran.Rollback();
+
+                        return isReset;
+                    }
+                }
+            }
+        }
 
         protected async Task<APIsResponse<bool>> AddRole(EntityUsersDto reqDto, string role)
         {

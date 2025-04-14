@@ -40,6 +40,15 @@ namespace RepMed.Services
                                     reqDto,
                                     Id);
                     #endregion
+                    #region Update Person Address
+                    if (reqDto.Address != null)
+                    {
+                        EntityAddressDto address = _idbConnection.Update<EntityAddressDto>(_idbTransaction,
+                        DbTables.tblUserAddress,
+                        DapperHelper.QueryAsColumnsParma<Useraddress, AddAddressDto>(),
+                        reqDto.Address,person.Id, "PersonId");
+                    }
+                    #endregion
                     apiResponse = new APIsSuccsss<EntityPersonsDto>(_validateMessages.Success, person);
                 }
                 else
@@ -75,9 +84,9 @@ namespace RepMed.Services
                         DapperHelper.QueryAsColumnsParma<Useraddress, AddAddressDto>(),
                         DapperHelper.QueryAsValuesParma<Useraddress, AddAddressDto>(),
                         reqDto.Address);
-                        apiResponse = new APIsSuccsss<EntityPersonsDto>(_validateMessages.Success, person);
                     }
                     #endregion
+                    apiResponse = new APIsSuccsss<EntityPersonsDto>(_validateMessages.Success, person);
                 }
 
                 return await Task.FromResult(apiResponse);

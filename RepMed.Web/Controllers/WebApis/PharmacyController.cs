@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using MySqlConnector;
 using RepMed.Core;
 using RepMed.Dtos;
+using RepMed.Dtos.PharmacyPage;
 using RepMed.Services;
 using RepMed.Web.Controllers.BaseApis;
 using System.Threading.Tasks;
@@ -64,7 +65,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("getpharmacies")]
         [HttpPost]
-        public async Task<IActionResult> Get()
+        public async Task<IActionResult> Get([FromBody] PharmacyPagingRequest search)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -73,7 +74,7 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
                     {
-                        var pharmacy = await pharmacyService.GetAllPharmacies();
+                        var pharmacy = await pharmacyService.GetAllPharmacies(search);
                         if (!pharmacy.IsSuccess)
                             return BadRequest();
                         return Ok(pharmacy.Data);
@@ -82,9 +83,9 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
-        [Route("email")]
-        [HttpPost]
+        [Route("passwordemail")]
         // for tesing purpose
+        [HttpPost]
         public async Task<IActionResult> Email(long UserId, string Email)
         {
             {
@@ -97,12 +98,17 @@ namespace RepMed.Web.Controllers.WebApis
                         {
                             var response = await pharmacyService.GenrateEmailToken(UserId, Email);
                             if (!response.IsSuccess)
+                            {
+                                tran.Rollback();
                                 return BadRequest();
+                            }
+                            tran.Commit();
                             return Ok();
                         }
                     }
                 }
             }
         }
+
     }
 }

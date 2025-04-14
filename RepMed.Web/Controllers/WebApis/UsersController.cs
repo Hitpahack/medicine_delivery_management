@@ -22,19 +22,17 @@ namespace RepMed.Web.Controllers.WebApis
         [HttpPost]
         public async Task<IActionResult> AddEditUser(AddPersonDto reqDto, long Id = 0)
         {
-            reqDto.Role = "Customer";
             var data = await base.AddUser(reqDto, Id);
             if (data.IsSuccess)
                 return Ok(data);
 
             return BadRequest(data);
         }
-        [HttpPost("set-password")]
-        public async Task<IActionResult> SetPassword([FromBody] SetPasswordDto reqdto)
-        {
-            if (reqdto.Password != reqdto.ConfirmPassword)
-                return BadRequest("Passwords do not match");
 
+        [Route("get/{Id}")]
+        [HttpPost]
+        public async Task<IActionResult> GET(long Id)
+        {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
                 db.Open();
@@ -42,7 +40,7 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IUserServices userService = new UserServices(db, tran))
                     {
-                        var result = await userService.SetPasswordAsync(reqdto);
+                        var result = await userService.GetUser(Id);
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();
@@ -54,5 +52,41 @@ namespace RepMed.Web.Controllers.WebApis
                 }
             }
         }
+
+        [HttpPost("set-password")]
+        public async Task<IActionResult> SetPassword([FromBody] SetPasswordDto reqdto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IUserServices userService = new UserServices(db, tran))
+                    {
+                        var result = await userService.SetPassword(reqdto);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
+        [Route("change-password")]
+        [HttpPost]
+        public async Task<IActionResult> ChangePass(ChangePasswordDto reqDto)
+        {
+            var data = await base.ChangePassword(reqDto);
+            if (data.IsSuccess)
+                return Ok(data);
+            return BadRequest(data);
+
+        }
+
+
     }
 }

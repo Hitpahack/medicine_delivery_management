@@ -1,15 +1,17 @@
 ﻿using Dapper;
-using MimeKit;
 using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
+using RepMed.Dtos.DataTables;
+using RepMed.Dtos.PharmacyPage;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Net.Mail;
 using System.Net;
+using System.Net.Mail;
 using System.Threading.Tasks;
+
 
 namespace RepMed.Services
 {
@@ -17,7 +19,7 @@ namespace RepMed.Services
     {
         Task<APIsResponse<PharmacyBankDetailsDto>> AddUpdatePharmacyBankDetails(PharmacyBankDetailsDto reqDto, long Id);
         Task<APIsResponse<AddPharmacyDto>> AddUpdatePharmacy(AddPharmacyDto reqDto, long Id);
-        Task<APIsResponse<IEnumerable<BasePharmacyDto>>> GetAllPharmacies();
+        Task<APIsResponse<Datatable<PharmacyPagingResponse>>> GetAllPharmacies(PharmacyPagingRequest reqDto);
         Task<APIsResponse<bool>> GenrateEmailToken(long newUserId, string userEmail);
     }
 
@@ -74,8 +76,9 @@ namespace RepMed.Services
             try
             {
                 string token = Guid.NewGuid().ToString();
-                DateTime expiry = DateTime.UtcNow.AddHours(12); // Token valid for 2 hours
+                DateTime expiry = DateTime.UtcNow.AddHours(12); // Token valid for 12 hours
 
+                #region create user token for set password
                 string sql = $@"INSERT INTO {DbTables.tblUserTokens} (UserId, Token, ExpiresAt) VALUES (@UserId, @Token, @ExpiresAt)";
                 await _idbConnection.ExecuteAsync(
                             sql,
@@ -85,10 +88,12 @@ namespace RepMed.Services
                                 Token = token,
                                 ExpiresAt = expiry
                             }, transaction: _idbTransaction);
-
+                #endregion
+                #region send email for set password
                 string url = $"https://localhost:44379/set-password?token={token}";
 
                 await SendEmailAsync(userEmail, "Set Your Password", $"Click here to set your password: <a href='{url}'>Set Password</a>");
+                #endregion
 
                 return new APIsSuccsss<bool>("Email Sent for genrate password", true);
 
@@ -99,7 +104,7 @@ namespace RepMed.Services
             }
 
         }
-        private async Task SendEmailAsync(string toEmail, string subject, string htmlBody)
+        private async Task<bool> SendEmailAsync(string toEmail, string subject, string htmlBody)
         {
             try
             {
@@ -126,11 +131,12 @@ namespace RepMed.Services
                     mail.To.Add(toEmail);
 
                     await smtp.SendMailAsync(mail);
+                    return true;
                 }
             }
             catch (Exception ex)
             {
-
+                return false;
             }
         }
 
@@ -175,40 +181,54 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<AddPharmacyDto>(ex.GetActualError()));
             }
         }
-        public async Task<APIsResponse<IEnumerable<BasePharmacyDto>>> GetAllPharmacies()
+        public async Task<APIsResponse<Datatable<PharmacyPagingResponse>>> GetAllPharmacies(PharmacyPagingRequest reqDto)
         {
             try
             {
-                APIsResponse<IEnumerable<BasePharmacyDto>> apiResponse = default;
-
+                APIsResponse<Datatable<PharmacyPagingResponse>> apiResponse = default;
                 #region Get All Pharmacy 
-                var sql = @"
-                            SELECT *                             
-                            FROM pharmacies p
-                            LEFT JOIN pharmacybankdetails b ON p.Id = b.PharmacyId";
-                var pharmacyBank = await _idbConnection.QueryAsync<AddPharmacyDto, PharmacyBankDetailsDto, BasePharmacyDto>(
-                        sql,
-                        (pharmacy, bankDetails) => new BasePharmacyDto
-                        {
-                            Pharmacy = pharmacy,
-                            PharmacyBankDetails = bankDetails
-                        },
-                        transaction: _idbTransaction,
-                        splitOn: "PharmacyId"
+                var parameters = new DynamicParameters();
+                parameters.Add("page", reqDto.Page, DbType.Int32);
+                parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
+                parameters.Add("searchText", reqDto.SearchText?? string.Empty, DbType.String);
+                parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
+                parameters.Add("Order_by", reqDto.order_by, DbType.String);
+
+                var result = await _idbConnection.QueryAsync<PharmacyPagingResponse>(
+                    sql: "GET_PHARMACY_PAGED",
+                    param: parameters,
+                    commandType: CommandType.StoredProcedure,
+                    transaction: _idbTransaction 
                 );
+                #region Get All Pharmacy Commented
+
+                //var sql = @"
+                //            SELECT *                             
+                //            FROM pharmacies p
+                //            LEFT JOIN pharmacybankdetails b ON p.Id = b.PharmacyId";
+                //var pharmacyBank = await _idbConnection.QueryAsync<AddPharmacyDto, PharmacyBankDetailsDto, BasePharmacyDto>(
+                //        sql,
+                //        (pharmacy, bankDetails) => new BasePharmacyDto
+                //        {
+                //            Pharmacy = pharmacy,
+                //            PharmacyBankDetails = bankDetails
+                //        },
+                //        transaction: _idbTransaction,
+                //        splitOn: "PharmacyId"
+                //);
                 #endregion
-                if (pharmacyBank.Any())
-                    apiResponse = new APIsSuccsss<IEnumerable<BasePharmacyDto>>("Pharmacy details retrieved successfully", pharmacyBank);
+
+                if (result.Any())
+                    apiResponse = new APIsSuccsss<Datatable<PharmacyPagingResponse>>("Pharmacy details retrieved successfully", result);
                 else
-                    apiResponse = new APIsSuccsss<IEnumerable<BasePharmacyDto>>("No Pharmacy Found", pharmacyBank);
-
-
+                    apiResponse = new APIsSuccsss<Datatable<PharmacyPagingResponse>>("No Pharmacy Found", result);
+                #endregion
                 return await Task.FromResult(apiResponse);
 
             }
             catch (Exception ex)
             {
-                return await Task.FromResult(new APIsError<IEnumerable<BasePharmacyDto>>(ex.GetActualError()));
+                return await Task.FromResult(new APIsError<Datatable<PharmacyPagingResponse>>(ex.GetActualError()));
             }
         }
 

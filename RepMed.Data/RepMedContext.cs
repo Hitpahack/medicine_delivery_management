@@ -58,6 +58,8 @@ public partial class RepMedContext : DbContext
 
     public virtual DbSet<Useraddress> Useraddresses { get; set; }
 
+    public virtual DbSet<Userjwttokenlog> Userjwttokenlogs { get; set; }
+
     public virtual DbSet<Userrole> Userroles { get; set; }
 
     public virtual DbSet<Usertoken> Usertokens { get; set; }
@@ -811,6 +813,27 @@ public partial class RepMedContext : DbContext
             entity.HasOne(d => d.State).WithMany(p => p.Useraddresses)
                 .HasForeignKey(d => d.StateId)
                 .HasConstraintName("useraddresses_ibfk_4");
+        });
+
+        modelBuilder.Entity<Userjwttokenlog>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("userjwttokenlog");
+
+            entity.HasIndex(e => e.UserId, "UserId");
+
+            entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.Token)
+                .IsRequired()
+                .HasMaxLength(255);
+            entity.Property(e => e.TokenValidTill).HasColumnType("datetime");
+            entity.Property(e => e.UpdatedDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Userjwttokenlogs)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.SetNull)
+                .HasConstraintName("userjwttokenlog_ibfk_1");
         });
 
         modelBuilder.Entity<Userrole>(entity =>

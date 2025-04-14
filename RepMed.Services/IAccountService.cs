@@ -23,6 +23,7 @@ namespace RepMed.Services
         Task<APIsResponse<EntityUsersDto>> AddRoleAsync(EntityUsersDto reqDto, params string[] roles);
         Task<APIsResponse<string>> ForgotPassword(string Email);
         Task<APIsResponse<bool>> ResetPassword(ResetPasswordDTO model);
+        Task<APIsResponse<bool>> ChangePassword(ChangePasswordDto reqDto);
 
     }
 
@@ -46,9 +47,21 @@ namespace RepMed.Services
                                     FROM {DbTables.tblPersons} pe  
                                     LEFT JOIN {DbTables.tblUser} us 
                                         ON pe.`{nameof(EntityUsersDto.Id)}` = us.`{nameof(EntityUsersDto.PersonId)}`
-                                    WHERE pe.`{nameof(BasePerson.Email)}` = '{reqDto.Email}'; 
+                                    WHERE pe.`{nameof(BasePerson.Email)}` = '{reqDto.Email}';
 
-                                   ";
+                                    SELECT * 
+                                    FROM {DbTables.tblRole} r
+                                    WHERE r.`{nameof(EntityRoleDto.Id)}` IN (
+                                        SELECT ur.`{nameof(EntityUserRoleDto.RoleId)}`
+                                        FROM {DbTables.tblUserRoles} ur
+                                        WHERE ur.`{nameof(EntityUserRoleDto.UserId)}` = (
+                                            SELECT usr.`{nameof(EntityUsersDto.Id)}`
+                                            FROM {DbTables.tblUser} usr
+                                            WHERE usr.`{nameof(BasePerson.Email)}` = '{reqDto.Email}'
+                                            LIMIT 1
+                                        )
+                                    );
+                                    ";
 
                     //var mQuery = _idbConnection.QueryMultiple(sql, transaction: _idbTransaction);
                     EntityUsersPassDto response;
@@ -91,16 +104,16 @@ namespace RepMed.Services
 
                             };
 
-                            string tokenSql = DbTables.tblUserTokenLog.SelectAll($@" ""{nameof(UserTokenLogDto.UserID)}"" = '{response.Id}'");
+                            string tokenSql = DbTables.tblUserJWTTokenLog.SelectAll($@" `{nameof(UserTokenLogDto.UserID)}` = {response.Id}");
                             var tokenResponse = _idbConnection.QuerySingleOrDefault<EntityUserTokenLogDto>(tokenSql, transaction: _idbTransaction);
 
                             if (tokenResponse != null)
                             {
-                                var userToken = _idbConnection.Update<UserTokenLogDto>(_idbTransaction, DbTables.tblUserTokenLog,
-                            new Dictionary<string, string> {
-                        { "Token", jwtToken.token },
-                        { "TokenValidTill", jwtToken.validTill.ToString() }
-                            }, $@" ""ID""='{tokenResponse.Id}'", "RETURNING *");
+                                var userToken = _idbConnection.Update<UserTokenLogDto>(_idbTransaction, DbTables.tblUserJWTTokenLog,
+                                                new Dictionary<string, string> {
+                                                    { "Token", jwtToken.token },
+                                                    { "TokenValidTill", jwtToken.validTill.ToString() }
+                                                }, $@" ""ID""='{tokenResponse.Id}'", "RETURNING *");
 
 
                                 if (userToken == null)
@@ -110,33 +123,29 @@ namespace RepMed.Services
                             }
                             else
                             {
-                                var tokenId = _idbConnection.Insert<EntityUserTokenLogDto>(_idbTransaction, DbTables.tblUserTokenLog,
-                                     new Dictionary<string, string> {
-                                //{ nameof(Usertokenlog.Id), userObj.Id.ToString() },
-                                //{ nameof(Usertokenlog.TokenValidTill), jwtToken.validTill.ToString() },
-                                //{ nameof(Usertokenlog.CreatedDate), DateTime.UtcNow.ToString() },
-                                //{ nameof(Usertokenlog.Token), jwtToken.token }
-                                    }, @"RETURNING * ");
+                                //var tokenId = _idbConnection.Insert<EntityUserTokenLogDto>(_idbTransaction, DbTables.tblUserJWTTokenLog,
+                                //     new Dictionary<string, string> {
+                                //        { nameof(Userjwttokenlog.UserId), userObj.Id.ToString()},
+                                //        { nameof(Userjwttokenlog.TokenValidTill), jwtToken.validTill.ToString("yyyy-MM-dd HH:mm:ss") },
+                                //        { nameof(Userjwttokenlog.CreatedDate), DateTime.UtcNow.ToString("yyyy-MM-dd HH:mm:ss") },
+                                //        { nameof(Userjwttokenlog.Token), jwtToken.token }
+                                //    });
+
+                                tokenSql = $@"
+                                            INSERT INTO {DbTables.tblUserJWTTokenLog} 
+                                                (UserId, Token, TokenValidTill, CreatedDate) 
+                                            VALUES 
+                                                ({userObj.Id}, '{jwtToken.token}', '{jwtToken.validTill:yyyy-MM-dd HH:mm:ss}', '{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}');
+                                            SELECT LAST_INSERT_ID();";
 
 
-                                loginObj.Token.TokenId = tokenId.Id;
-                                //tokenSql = $"Insert into {DbTables.tblUserTokenLog} " +
-                                //    $"(UserID,Token,TokenValidTill,CreatedDate)  OUTPUT INSERTED.Id " +
-                                //    $"Values ('{userObj.Id}','{jwtToken.token}','{jwtToken.validTill}','{DateTime.UtcNow}')";
-
-                                //loginObj.Token.TokenId = _idbConnection.QuerySingle<int>(tokenSql, transaction: _idbTransaction);
+                                loginObj.Token.TokenId = _idbConnection.QuerySingle<int>(tokenSql, transaction: _idbTransaction);
                             }
 
 
                             return await Task.FromResult(new APIsSuccsss<Login_ResDto>(_validateMessages.Success, loginObj, jwtToken.Claims));
                         }
-                    }
-
-                   
-                    
-
-                   
-
+                    }               
                 }
             }
             catch (Exception ex)
@@ -257,6 +266,47 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<string>(ex.GetActualError()));
             }
         }   
+        public async Task<APIsResponse<bool>> ChangePassword(ChangePasswordDto reqDto)
+        {
+            try
+            {
+                #region Get Login User details
+                string query = DbTables.tblUser.SelectAll($@" `{nameof(EntityUsersDto.Id)}` = {reqDto.UserId}");
+
+                var user = _idbConnection.QuerySingleOrDefault(query, transaction: _idbTransaction);
+                if(user==null)
+                    return await Task.FromResult(new APIsError<bool>("User doesn't exist"));
+                #endregion
+
+                #region Verify Current Password
+                if (!Encryption.VerifyPasswordHash(reqDto.CurrentPassword, user.PasswordHash, user.PasswordSalt))
+                    return await Task.FromResult(new APIsError<bool>(_validateMessages.InvalidPassword));
+
+                #endregion
+
+                #region Update users password
+                Encryption.CreatePasswordHash(reqDto.ConfirmPassword, out var passHash, out var passSalt);
+
+                string updateUserQuery = $@" UPDATE {DbTables.tblUser} 
+                                        SET PasswordHash = @PasswordHash,
+                                        PasswordSalt = @PasswordSalt
+                                        WHERE Id = @Id";
+                await _idbConnection.ExecuteAsync(
+                            updateUserQuery,
+                            new
+                            {
+                                PasswordHash = passHash,
+                                PasswordSalt = passSalt,
+                                Id = reqDto.UserId
+                            }, transaction: _idbTransaction);
+                #endregion
+                return new APIsSuccsss<bool>(_validateMessages.UpdateSuccess, true);
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
+            }
+        }
         public async Task<APIsResponse<bool>> ResetPassword(ResetPasswordDTO model)
         {
             try
@@ -359,6 +409,7 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
             }
         }
+
         private BaseCodeRequestDtos AddEditResetPassToken(string userId, string token)
         {
 

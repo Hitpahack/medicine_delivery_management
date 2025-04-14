@@ -36,23 +36,23 @@ namespace RepMed.Dtos
     {
         [JsonIgnore]
         public long Id { get; set; }
-
+        [Required]
         public long UserId { get; set; }
-
+        [Required]
         public string StoreName { get; set; }
-
+        [Required]
         public string BusinessName { get; set; }
-
+        [Required]
         public string LicenseNumber { get; set; }
-
+        [Required]
         public DateTime? LicenseExpiry { get; set; }
-
+        [Required]
         public string Gstnumber { get; set; }
-
+        [Required]
         public string OwnerName { get; set; }
-
+        [Required]
         public string RegisteredMobile { get; set; }
-
+        [Required]
         public string OfficialEmail { get; set; }
 
         public string StoreMobile1 { get; set; }
@@ -68,11 +68,11 @@ namespace RepMed.Dtos
         public string Address1 { get; set; }
 
         public string Address2 { get; set; }
-
+        
         public long? CityId { get; set; }
-
+        
         public long? StateId { get; set; }
-
+        
         public long? CountryId { get; set; }
 
         public bool? Otpverified { get; set; }

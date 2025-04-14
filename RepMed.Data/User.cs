@@ -50,4 +50,6 @@ public partial class User
     public virtual ICollection<Product> ProductCreatedByNavigations { get; set; } = new List<Product>();
 
     public virtual ICollection<Product> ProductUpdatedByNavigations { get; set; } = new List<Product>();
+
+    public virtual ICollection<Userjwttokenlog> Userjwttokenlogs { get; set; } = new List<Userjwttokenlog>();
 }

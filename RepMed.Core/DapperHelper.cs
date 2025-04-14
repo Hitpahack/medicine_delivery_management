@@ -16,7 +16,7 @@ namespace RepMed.Core
         {
             var query = string.Concat($@"SELECT * FROM {tableName}");
             if (!string.IsNullOrEmpty(whereQuery))
-                query =  string.Concat(query, $@" where {whereQuery}");
+                query = string.Concat(query, $@" where {whereQuery}");
 
             return query;
         }
@@ -46,7 +46,7 @@ namespace RepMed.Core
                 columns = columns.Select(r => $"`{r}`").ToArray();
             }
 
-            var query   = $"SELECT {string.Join(",", columns)} FROM {tableName}";
+            var query = $"SELECT {string.Join(",", columns)} FROM {tableName}";
 
             if (!string.IsNullOrEmpty(whereQuery))
                 query += $" WHERE {whereQuery}";
@@ -71,17 +71,30 @@ namespace RepMed.Core
             return con.QueryFirstOrDefault<TResult>(sql, data, tran);
         }
 
-        public static TResult Insert<TResult>(this IDbConnection con, IDbTransaction tran,
-           string tableName, Dictionary<string, string> updateData,
-           string returningData = "") where TResult : class
+        public static TResult Insert<TResult>(this IDbConnection con, IDbTransaction tran,string tableName, Dictionary<string, string> updateData) where TResult : class
         {
-            var tblcolumns = string.Join(",", updateData.Select(r => string.Concat(@$" ""{r.Key}"" ")));
-            var dataValues = string.Join(",", updateData.Select(r => string.Concat(@$" '{r.Value}' ")));
+            // Build columns and values
+            var tblcolumns = string.Join(",", updateData.Select(r => $"`{r.Key}`"));
+            var paramNames = string.Join(",", updateData.Select(r => $"@{r.Key}"));
 
-            string sql = $@"INSERT INTO {tableName} ({tblcolumns}) VALUES ({dataValues}) {returningData}";
+            // Prepare SQL
+            var sql = $@"
+                        INSERT INTO {tableName} ({tblcolumns})
+                        VALUES ({paramNames});
+                        SELECT * FROM {tableName} WHERE Id = LAST_INSERT_ID();
+                    ";
 
-            return con.QueryFirstOrDefault<TResult>(sql, transaction: tran);
+            // Create parameter object
+            var parameters = new DynamicParameters();
+            foreach (var kv in updateData)
+            {
+                parameters.Add($"@{kv.Key}", kv.Value);
+            }
+
+            // Execute insert and return the row
+            return con.QueryFirstOrDefault<TResult>(sql, parameters, transaction: tran);
         }
+
 
         public static TResult Insert<TResult>(this IDbConnection con, IDbTransaction tran,
           string tableName, Dictionary<string, object> updateData,
@@ -97,7 +110,7 @@ namespace RepMed.Core
 
         public static int Insert(this IDbConnection con, IDbTransaction tran,
            string tableName, Dictionary<string, string> updateData,
-           string returningData = "") 
+           string returningData = "")
         {
             var tblcolumns = string.Join(",", updateData.Select(r => string.Concat(@$" ""{r.Key}"" ")));
             var dataValues = string.Join(",", updateData.Select(r => string.Concat(@$" '{r.Value}' ")));
@@ -109,6 +122,28 @@ namespace RepMed.Core
         #endregion
 
         #region Update Query
+
+        public static TResult Update<TResult>(this IDbConnection con,IDbTransaction tran,
+            string tableName,string updateColumns,object data,
+            long id,
+            string conditionColumn = "Id"
+        ) where TResult : class
+        {
+            string sql = $@"
+                            UPDATE {tableName}
+                            SET {updateColumns}
+                            WHERE {conditionColumn} = @__Id;
+
+                            SELECT * FROM {tableName}
+                            WHERE {conditionColumn} = @__Id;
+                        ";
+
+            var parameters = new DynamicParameters(data);
+            parameters.Add("__Id", id);
+
+            return con.QueryFirstOrDefault<TResult>(sql, parameters, tran);
+        }
+
         public static TResult Update<TResult>(this IDbConnection con, IDbTransaction tran,
              string tableName, string updateColumns,
              object data, long id
@@ -130,7 +165,7 @@ namespace RepMed.Core
 
 
         public static TResult Update<TResult>(this IDbConnection con, IDbTransaction tran,
-            string tableName, Dictionary<string,string> updateData,
+            string tableName, Dictionary<string, string> updateData,
             string wherQuery = "", string returningData = "") where TResult : class
         {
             var updatecolumQury = string.Join(",", updateData.Select(r => string.Concat(@$" ""{r.Key}""='{r.Value}'")));
@@ -149,7 +184,7 @@ namespace RepMed.Core
           string wherQuery = "", string returningData = "") where TResult : class
         {
             var updatecolumQury = string.Join(",", updateData.Select(r => string.Concat(@$" ""{r.Key}""='{r.Value}'")));
-            
+
             string sql = $@"UPDATE {tableName} SET {updatecolumQury} ";
 
             if (!string.IsNullOrEmpty(wherQuery))
@@ -165,7 +200,7 @@ namespace RepMed.Core
           string wherQuery = "", string returningData = "") where TResult : class
         {
             var updatecolumQury = string.Join(",", updateKeyValueColumns.Select(r => string.Concat(@$" ""{r.Key}""=@{r.Value}")));
-            
+
             string sql = $@"UPDATE {tableName} SET {updatecolumQury} ";
 
             if (!string.IsNullOrEmpty(wherQuery))
@@ -178,7 +213,7 @@ namespace RepMed.Core
 
         #endregion
 
-       
+
         public static string QueryAsValuesParma<T>(string prefix = "", params string[] excludesProperties) where T : class
         {
             var query_ = AsQueryParma(typeof(T), prefix, excludesProperties);
@@ -203,7 +238,7 @@ namespace RepMed.Core
             return string.Join(",", query_.Select(r => string.Concat(r)));
 
         }
-       
+
         public static string QueryAsValuesParma<T>(this T classs, string prefix = "", params string[] excludesProperties) where T : class
         {
             var query_ = AsQueryParma(classs, prefix, excludesProperties);
@@ -288,7 +323,7 @@ namespace RepMed.Core
         public const string tblUserContacts = "`UserContacts`";
         public const string tblUserRolePermission = "`UserRolePermission`";
         public const string tblUserRoles = "`UserRoles`";
-        public const string tblUserTokenLog = "`UserTokenLog`";
+        public const string tblUserJWTTokenLog = "`UserJWTTokenLog`";
         public const string tblRole = "`Roles`";
         public const string tblCountry = "`Countries`";
         public const string tblStates = "`States`";

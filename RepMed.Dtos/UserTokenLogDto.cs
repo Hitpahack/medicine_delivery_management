@@ -6,7 +6,7 @@ namespace RepMed.Dtos
 {
     public class UserTokenLogDto
     {
-        public Guid? UserID { get; set; }
+        public long? UserID { get; set; }
         public string Token { get; set; }
         public DateTime TokenValidTill { get; set; }
         public DateTime? CreatedDate { get; set; }

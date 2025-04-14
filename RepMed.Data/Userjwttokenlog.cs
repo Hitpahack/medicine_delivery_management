@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace RepMed.Data;
 
-public partial class Usertokenlog
+public partial class Userjwttokenlog
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
-    public Guid? UserId { get; set; }
+    public long? UserId { get; set; }
 
     public string Token { get; set; }
 
