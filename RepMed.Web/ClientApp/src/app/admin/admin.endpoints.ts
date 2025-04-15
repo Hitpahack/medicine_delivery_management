@@ -30,9 +30,9 @@ export const admin_apiconfig =
     },
     user: {
       add: (id: number) => environment.admin_apiv1 + '/users/addedituser/' + id,
-      get: (id: number) => environment.admin_apiv1 + '/users/' + id,
+      get: (id: number) => environment.admin_apiv1 + '/users/get/' + id,
       update: (id: number) => environment.admin_apiv1 + '/users/addedituser/' + id,
-      setpassword: (id: number) => environment.admin_apiv1 + '/users/set-password/' + id,
+      setpassword: environment.admin_apiv1 + '/users/change-password',
 
     }
   }

@@ -30,7 +30,7 @@ namespace RepMed.Web.Controllers.WebApis
         }
 
         [Route("get/{Id}")]
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> GET(long Id)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))

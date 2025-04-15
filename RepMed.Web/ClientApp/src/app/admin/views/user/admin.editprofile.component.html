@@ -5,15 +5,15 @@
     <div class="form-grid">
 
         <div class="input-group mb-3 float">
-            <input type="text" placeholder="" formControlName="firstName" class="form-control" required>
+            <input type="text" placeholder="" formControlName="firstname" class="form-control" required>
             <label class="float-lbl">First Name *</label>
-            <div *ngIf="editUserForm.get('firstName')?.touched && editUserForm.get('firstName')?.errors?.['required']">FirstName is
+            <div *ngIf="editUserForm.get('firstname')?.touched && editUserForm.get('firstname')?.errors?.['required']">FirstName is
                 required.</div>
         </div>
         <div class="input-group mb-3 float">
-            <input type="text" placeholder="" formControlName="lastName" class="form-control" required>
+            <input type="text" placeholder="" formControlName="lastname" class="form-control" required>
             <label class="float-lbl">Last Name *</label>
-            <div *ngIf="editUserForm.get('lastName')?.touched && editUserForm.get('lastName')?.errors?.['required']">LastName is
+            <div *ngIf="editUserForm.get('lastname')?.touched && editUserForm.get('lastname')?.errors?.['required']">LastName is
                 required.</div>
         </div>
 
@@ -41,7 +41,7 @@
             </div>
         </div>
         <div class="form-actions">
-            <button type="submit">Add User</button>
+            <button type="submit">Update User</button>
         </div>
     </div>
 </form>

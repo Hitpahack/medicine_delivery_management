@@ -25,12 +25,6 @@
                     <div *ngIf="addUserForm.get('mobile')?.errors?.['pattern'] && addUserForm.get('mobile')?.touched">
                         Only digits allowed.
                     </div>
-                        <input type="text" class="form-control" placeholder=" " formControlName="mobile">
-                        <label class="float-lbl">Mobile *</label>
-                        <div
-                                *ngIf="addUserForm.get('mobile')?.errors?.['required'] && addUserForm.get('mobile')?.touched">
-                                Mobile Number is required.
-                        </div>
                 </div>
 
                 <div class="input-group mb-3 float">

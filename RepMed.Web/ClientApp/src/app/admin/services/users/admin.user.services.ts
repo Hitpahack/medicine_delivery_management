@@ -27,10 +27,10 @@ export class AdminUserService extends adminBaseService {
   }
 
   getUserbyId(id: number){
-    return this.http.get<AddPersonDto>(admin_apiconfig.endpoints.user.get(id), { headers: admin_apiconfig.requestSettings.header })
+    return this.http.get<ApiResponse<AddPersonDto>>(admin_apiconfig.endpoints.user.get(id), { headers: admin_apiconfig.requestSettings.header })
   }
 
-  updateUser(formData: any, id: number){
-    return this.http.put(admin_apiconfig.endpoints.user.update(id), formData, { headers: admin_apiconfig.requestSettings.header })
+  setpassword(formData: any){
+    return this.http.post(admin_apiconfig.endpoints.user.setpassword, formData, { headers: admin_apiconfig.requestSettings.header })
   }
 }

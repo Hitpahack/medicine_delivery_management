@@ -20,6 +20,7 @@ import { ActivatedRoute } from '@angular/router';
 
 export class SetPassword extends AdminBaseComponent implements OnInit {
     SetPasswordForm: FormGroup;
+
     constructor(public router: Router, public fb: FormBuilder, public validator: CustomValidator, public adminuserservice: AdminUserService, private route: ActivatedRoute) {
         super(router, fb);
     }
@@ -30,15 +31,24 @@ export class SetPassword extends AdminBaseComponent implements OnInit {
 
     initForm(): FormGroup {
         return this.fb.group({
-          oldPassword: new FormControl(null, [Validators.required]),
-          password: new FormControl(null, [Validators.required]),
-          confirmpassword: new FormControl(null, [Validators.required])
-        }, {
+          CurrentPassword: new FormControl(null, [Validators.required]),
+          NewPassword: new FormControl(null, [Validators.required]),
+          ConfirmPassword: new FormControl(null, [Validators.required]),
+        },
+        {
           validators: this.validator.passwordMatchValidator
-        });
+        }
+      );
       }
 
     onSubmit() {
-        
+      let isValid = this.validateForm(this.SetPasswordForm)
+      if(isValid){ 
+        this.adminuserservice.setpassword(this.SetPasswordForm.value).subscribe(response =>{
+                console.log("User udated successfully!")
+            })
+      }
+      else
+      Helper.ShowError('Please fill the required fields');
     }
 }

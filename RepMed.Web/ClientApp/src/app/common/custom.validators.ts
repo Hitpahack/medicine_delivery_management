@@ -8,7 +8,6 @@ export class CustomValidator {
   constructor() { }
 
   public ValidateEmail(control: AbstractControl) {
-
     if (!control.value || control.value.length == 0) {
       return null;
     }
@@ -51,11 +50,10 @@ export class CustomValidator {
     });
   }
 
-  passwordMatchValidator(form: FormGroup) {
-    const newPassword = form.get('newPassword')?.value;
-    const confirmPassword = form.get('confirmPassword')?.value;
-
-    return newPassword === confirmPassword ? null : { passwordMismatch: true };
+  passwordMatchValidator(control: AbstractControl) {
+    const password = control.get('NewPassword')?.value;
+    const confirmpassword = control.get('ConfirmPassword')?.value;
+    return password === confirmpassword ? null : { passwordMismatch: true };
   }
   
 }

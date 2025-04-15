@@ -27,17 +27,24 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
     ngOnInit(): void {
         this.editUserForm = this.initForm();
         const userId = this.route.snapshot.params['id']; 
-        
+        console.log("userids", userId)
         if (userId) {
-            this.adminuserservice.getUserbyId(userId).subscribe((user) => {
-              this.editUserForm.patchValue({
-                firstName: user.firstName,
-                lastName: user.lastName,
-                email: user.email,
-                mobile: user.mobile
-              });
+            this.adminuserservice.getUserbyId(userId).subscribe((response) => {
+                if (response?.isSuccess && response.data) {
+                    const user = response.data;
+                    console.log("User data received:", user.lastName);
+                
+                    this.editUserForm.patchValue({
+                      firstname: user.firstName,
+                      lastname: user.lastName,
+                      email: user.email,
+                      mobile: user.mobile
+                    });
+                  } else {
+                    console.error("Failed to load user data", response);
+                  }
             });
-          } 
+          }
     }
 
 
@@ -51,10 +58,12 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
     }
 
     onSubmit() {
-
+        console.log("form submited")
         let isValid = this.validateForm(this.editUserForm);
+        console.log("isValid")
         if (isValid) {
             const userId = this.route.snapshot.params['id'];
+
             const dto: AddPersonDto = this.editUserForm.value;
             this.adminuserservice.add(dto, userId).subscribe(response =>{
                 console.log("User udated successfully!")
