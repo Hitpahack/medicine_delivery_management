@@ -112,8 +112,8 @@ namespace RepMed.Services
                                 var userToken = _idbConnection.Update<UserTokenLogDto>(_idbTransaction, DbTables.tblUserJWTTokenLog,
                                                 new Dictionary<string, string> {
                                                     { "Token", jwtToken.token },
-                                                    { "TokenValidTill", jwtToken.validTill.ToString() }
-                                                }, $@" ""ID""='{tokenResponse.Id}'", "RETURNING *");
+                                                    { "TokenValidTill", jwtToken.validTill.ToString("yyyy-MM-dd HH:MM:ss") }
+                                                }, $@"ID='{tokenResponse.Id}'");
 
 
                                 if (userToken == null)

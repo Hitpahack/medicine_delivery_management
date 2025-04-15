@@ -1,3 +1,4 @@
+import { get } from 'jquery';
 import { environment } from '../../../src/environments/environment';
 
 export const admin_apiconfig =
@@ -24,8 +25,9 @@ export const admin_apiconfig =
 
       },
 
-    addpharmacy: {
+    pharmacy: {
       add: (id: number) => environment.admin_apiv1 + '/pharmacy/addeditpharmacy/' + id,
+      getPaged: environment.admin_apiv1 + '/pharmacy/getpharmacies/'
 
     },
     user: {

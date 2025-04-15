@@ -45,8 +45,6 @@ export interface PharmacyDto {
       ifsccode: string;
       branchName: string;
       upiId?: string;
-      createdDate?: Date;
-      updatedDate?: Date;
     };
     
   }

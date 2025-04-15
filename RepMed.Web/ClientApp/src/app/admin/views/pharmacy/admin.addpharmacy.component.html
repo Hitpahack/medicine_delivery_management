@@ -177,13 +177,12 @@
             </div>
         </div>
         <div class="input-group mb-4 float">
-            <input type="date" placeholder="" formControlName="dateofBirth" class="form-control" required [max]="maxExpiryDate">
-            <label class="float-lbl">Date Of Birth *</label>
-            <div *ngIf="phForm.get('dateofBirth')?.touched && phForm.get('dateofBirth')?.errors?.['required']">DateOfBirth is required.</div>
-            <div *ngIf="phForm.get('dateofBirth')?.errors?.['futureDate'] && (phForm.get('dateofBirth')?.touched || phForm.get('dateofBirth')?.dirty)">
-              Expiry date cannot be in the past.
-            </div>
+          <input type="date" formControlName="dateofBirth" class="form-control" required [max]="maxDate">
+          <label class="float-lbl">Date Of Birth *</label>
+          <div *ngIf="phForm.get('dateofBirth')?.touched && phForm.get('dateofBirth')?.errors?.['required']">Date of Birth is required</div>
+          <div *ngIf="phForm.get('dateofBirth')?.errors?.['futureDate'] && (phForm.get('dateofBirth')?.touched || phForm.get('dateofBirth')?.dirty)">Date of Birth cannot be in the future</div>
         </div>
+        
         <div class="input-group mb-4 float">
             <select formControlName="gender" class="form-control" required>
               <option value="" disabled selected>Select Gender</option>

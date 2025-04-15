@@ -7,6 +7,7 @@ import { CustomValidator } from "../../../common/custom.validators";
 import { Helper } from "../../../common/helper.extenstions";
 import { adminAccountsService } from "../../services/accounts/admin.accountsservice";
 import { AdminPharmacyService } from "../../services/pharmacy/admin.pharmacy.services";
+import { PharmacyDto } from 'src/app/viewmodels/pharmacy/Pharmacy.add.dto';
 
 @Component({
     selector: 'app-admin-addpharmacy',
@@ -26,6 +27,8 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
     }
     minExpiryDate: string = '';
     phForm: FormGroup;
+    PharmacyDto: PharmacyDto;
+    maxDate = new Date().toISOString().split('T')[0];
 
     ngOnInit(): void {
         // This runs when the dashboard loads.
@@ -62,7 +65,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
             lastName: new FormControl(null, [Validators.required]),
             personEmail: new FormControl(null, [Validators.required, Validators.email]),
             personMobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
-            dateofBirth: new FormControl(null, [Validators.required, this.validator.futureDateValidator_old]),
+            dateofBirth: new FormControl(null, [Validators.required, this.validator.pastDateOnly]),
             gender: new FormControl(null, [Validators.required]),
             picture: new FormControl(null, [Validators.required]),
 
@@ -87,7 +90,11 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
             this.validator.markInvalidFieldsTouched(this.phForm);
             return;
         }
-        this.PharmacyService.add(this.phForm.value, 0)
+        const dto: PharmacyDto = this.phForm.value;
+        this.PharmacyService.add(dto,0).subscribe({
+            next: res => console.log("Success", res),
+            error: err => console.error("Error", err)
+        })
         // Submit the form
         console.log('Form submitted:', this.phForm.value);
     }

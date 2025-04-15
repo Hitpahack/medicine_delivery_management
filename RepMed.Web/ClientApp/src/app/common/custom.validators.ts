@@ -41,6 +41,17 @@ export class CustomValidator {
     return null;
   }
 
+  public pastDateOnly(control: AbstractControl): { [key: string]: any } | null {
+    const dob = new Date(control.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // remove time part
+  
+    if (dob > today) {
+      return { futureDate: true };
+    }
+    return null;
+  }
+
   public markInvalidFieldsTouched(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {
       const control = formGroup.get(field);

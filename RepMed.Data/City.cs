@@ -16,6 +16,4 @@ public partial class City
     public virtual ICollection<Pharmacy> Pharmacies { get; set; } = new List<Pharmacy>();
 
     public virtual State State { get; set; }
-
-    public virtual ICollection<Useraddress> Useraddresses { get; set; } = new List<Useraddress>();
 }

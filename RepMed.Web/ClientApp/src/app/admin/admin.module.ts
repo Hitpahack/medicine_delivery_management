@@ -14,7 +14,7 @@ import { AdminDashboardComponent } from "./views/admindashboard/admin.dashboard.
 import { AdminAddPharmacyComponent } from "./views/pharmacy/admin.addpharmacy.component";
 import { PharmacyDashboardComponent } from "./views/pharmacydashboard/pharmacy.dashboard.component";
 import { PharmacyLayoutComponent } from "../_layouts/admin/pharmacy.layout.component";
-//import { AdminPharmacyListsComponent } from "./views/pharmacy/admin.pharmacylists.component";
+import { AdminPharmacyListsComponent } from "./views/pharmacy/admin.pharmacylists.component";
 import { BrowserModule } from '@angular/platform-browser';
 import { DataTablesModule } from "angular-datatables";
 import { AppComponent } from "../app.component";
@@ -38,7 +38,7 @@ import { AppComponent } from "../app.component";
     AdminAddPharmacyComponent,
     PharmacyDashboardComponent,
     PharmacyLayoutComponent,
-    //AdminPharmacyListsComponent,
+    AdminPharmacyListsComponent,
     BrowserModule,
     DataTablesModule,
     AppComponent

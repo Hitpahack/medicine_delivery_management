@@ -18,6 +18,4 @@ public partial class State
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
 
     public virtual ICollection<Pharmacy> Pharmacies { get; set; } = new List<Pharmacy>();
-
-    public virtual ICollection<Useraddress> Useraddresses { get; set; } = new List<Useraddress>();
 }

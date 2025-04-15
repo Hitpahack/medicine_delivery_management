@@ -148,16 +148,16 @@ namespace RepMed.Web
                 c.SwaggerDoc("app", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Bestshifts App",
-                    Description = "Bestshifts",
+                    Title = "Repmed App",
+                    Description = "Repmed",
                     TermsOfService = new Uri("https://example.com/terms"),
 
                 });
                 c.SwaggerDoc("admin", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Bestshifts Admin",
-                    Description = "Bestshifts",
+                    Title = "Repmed Admin",
+                    Description = "Repmed",
                     TermsOfService = new Uri("https://example.com/terms"),
 
                 });
