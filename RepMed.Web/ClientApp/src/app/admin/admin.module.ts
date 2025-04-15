@@ -14,35 +14,35 @@ import { AdminDashboardComponent } from "./views/admindashboard/admin.dashboard.
 import { AdminAddPharmacyComponent } from "./views/pharmacy/admin.addpharmacy.component";
 import { PharmacyDashboardComponent } from "./views/pharmacydashboard/pharmacy.dashboard.component";
 import { PharmacyLayoutComponent } from "../_layouts/admin/pharmacy.layout.component";
-import { AdminPharmacyListComponent } from "./views/pharmacy/admin.pharmacylist.component";
+
 
 @NgModule({
-    imports: [
-        CommonModule,
-        RouterModule,
-        FormsModule,
-        ReactiveFormsModule,
-        AdminLayoutComponent,
-        AdminEmptyLayoutComponent,
-        AdminShiftsComponent,
-        AdminLoginComponent,
-        AdminFooterComponent,
-        AdminHeaderComponent,
-        AdminNavComponent,
-        FormControlErrorsDirective,
-        AdminDashboardComponent,
-        AdminAddPharmacyComponent,
-        PharmacyDashboardComponent,
-        PharmacyLayoutComponent,
-        AdminPharmacyListComponent
-    ],
-    exports: [ AdminLayoutComponent   ]
-  })
-  export class AdminModule { 
-    static forRoot(): ModuleWithProviders<AdminModule> {
-      return {
-        ngModule: AdminModule,
-        providers: []
-      };
-    }
+  imports: [
+    CommonModule,
+    RouterModule,
+    FormsModule,
+    ReactiveFormsModule,
+    AdminLayoutComponent,
+    AdminEmptyLayoutComponent,
+    AdminShiftsComponent,
+    AdminLoginComponent,
+    AdminFooterComponent,
+    AdminHeaderComponent,
+    AdminNavComponent,
+    FormControlErrorsDirective,
+    AdminDashboardComponent,
+    AdminAddPharmacyComponent,
+    PharmacyDashboardComponent,
+    PharmacyLayoutComponent,
+
+  ],
+  exports: [AdminLayoutComponent]
+})
+export class AdminModule {
+  static forRoot(): ModuleWithProviders<AdminModule> {
+    return {
+      ngModule: AdminModule,
+      providers: []
+    };
   }
+}

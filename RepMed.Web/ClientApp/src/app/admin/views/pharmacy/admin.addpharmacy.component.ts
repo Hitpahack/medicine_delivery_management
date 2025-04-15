@@ -87,7 +87,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
             this.validator.markInvalidFieldsTouched(this.phForm);
             return;
         }
-        this.PharmacyService.add(this.phForm.value)
+        this.PharmacyService.add(this.phForm.value, 0)
         // Submit the form
         console.log('Form submitted:', this.phForm.value);
     }

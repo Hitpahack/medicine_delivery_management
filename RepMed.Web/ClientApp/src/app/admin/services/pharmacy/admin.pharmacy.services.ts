@@ -20,8 +20,8 @@ export class AdminPharmacyService extends adminBaseService {
         return this.http.post<ApiResponse<any>>("", null);
     }
 
-    add(formData:any){
+    add(formData:any, id: number){
         console.log("called.")
-        return this.http.post(admin_apiconfig.endpoints.addpharmacy.add, formData, { headers: admin_apiconfig.requestSettings.header })
+        return this.http.post(admin_apiconfig.endpoints.addpharmacy.add(id), formData, { headers: admin_apiconfig.requestSettings.header })
       }
 }
