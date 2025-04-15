@@ -50,3 +50,5 @@
 /RepMed.Data/obj/project.assets.json
 /RepMed.Data/obj/project.nuget.cache
 /RepMed.Data/obj/RepMed.Data.csproj.nuget.dgspec.json
+/.vs/ProjectEvaluation
+/RepMed.Data/obj/RepMed.Data.csproj.nuget.g.props
