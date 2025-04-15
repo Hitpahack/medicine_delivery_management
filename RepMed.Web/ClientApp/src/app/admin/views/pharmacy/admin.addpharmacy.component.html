@@ -219,7 +219,7 @@
               </div>
 
               <div class="input-group mb-4 float">
-                <input type="text" placeholder=" " formControlName="accountNumber" class="form-control" required>
+                <input type="text" placeholder=" " formControlName="accountNumber" class="form-control" required required (keypress)="allowOnlyNumbers($event)">
                 <label class="float-lbl">Account Number *</label>
                 <div *ngIf="phForm.get('accountNumber')?.touched && phForm.get('accountNumber')?.errors?.['required']">AccountNumber is required.</div>
               </div>
