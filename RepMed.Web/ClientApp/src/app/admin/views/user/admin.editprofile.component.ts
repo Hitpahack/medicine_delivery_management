@@ -26,14 +26,11 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
 
     ngOnInit(): void {
         this.editUserForm = this.initForm();
-        const userId = this.route.snapshot.params['id']; 
-        console.log("userids", userId)
+        const userId = this.route.snapshot.params['id'];
         if (userId) {
             this.adminuserservice.getUserbyId(userId).subscribe((response) => {
                 if (response?.isSuccess && response.data) {
                     const user = response.data;
-                    console.log("User data received:", user.lastName);
-                
                     this.editUserForm.patchValue({
                       firstname: user.firstName,
                       lastname: user.lastName,
@@ -50,6 +47,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
 
     initForm(): FormGroup {
         return this.fb.group({
+            Role : new FormControl(null),
             firstname: new FormControl(null, [Validators.required]),
             lastname: new FormControl(null, [Validators.required]),
             email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),

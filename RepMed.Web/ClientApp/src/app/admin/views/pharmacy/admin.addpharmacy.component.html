@@ -2,9 +2,9 @@
 <div class="pharmacy-form-container">
     <form formvalidator class="card auth_form form_validation" *ngIf="phForm" [formGroup]="phForm" #phForm_html="ngForm" (ngSubmit)="onSubmit()">
       <!-- Section 1: Pharmacy -->
-      <fieldset>
+      <fieldset formGroupName="pharmacy">
         <legend>Pharmacy Details</legend>
-        <div class="form-grid">
+        <div class="form-grid" >
             <div class="input-group mb-4 float">
                 <input type="text" placeholder="" formControlName="ownerName" class="form-control" required>
                 <label class="float-lbl">Owner Name *</label>
@@ -79,26 +79,24 @@
             </div>
 
             <div class="input-group mb-4 float">
-                <input type="email" placeholder=" " formControlName="storeEmail1" class="form-control" required>
+                <input type="email" placeholder=" " formControlName="storeEmail1" class="form-control">
                 <label class="float-lbl">Store Email 1 *</label>
-                <div *ngIf="phForm.get('storeEmail1')?.touched && phForm.get('storeEmail1')?.errors?.['required']">Email is required.</div>
                 <div *ngIf="phForm.get('storeEmail1')?.touched && phForm.get('storeEmail1')?.errors?.['email']">Please enter a valid email address.</div>
                 
             </div>
 
             <div class="input-group mb-4 float">
-                <input type="email" placeholder=" " formControlName="storeEmail2" class="form-control" required>
+                <input type="email" placeholder=" " formControlName="storeEmail2" class="form-control">
                 <label class="float-lbl">Store Email 2 *</label>
-                <div *ngIf="phForm.get('storeEmail2')?.touched && phForm.get('storeEmail2')?.errors?.['required']">Email is required.</div>
                 <div *ngIf="phForm.get('storeEmail2')?.touched && phForm.get('storeEmail2')?.errors?.['email']">Please enter a valid email address.</div>
             </div>
         </div>
       </fieldset>
   
       <!-- Section 2: Pharmacy Address -->
-      <fieldset>
+      <fieldset formGroupName="pharmacy">
         <legend>Pharmacy Address</legend>
-        <div class="form-grid">
+        <div class="form-grid" >
             <div class="input-group mb-4 float">
                 <textarea rows="2" placeholder=" " formControlName="address1" class="form-control" style="width: 90%;" required></textarea>
                 <label class="float-lbl">Address 1 *</label>
@@ -149,7 +147,7 @@
 
 
       <!-- Section 3: Pharmacy Person -->
-      <fieldset>
+      <fieldset formGroupName="user">
         <legend>Pharmacy Person</legend>
         <div class="form-grid">
         <div class="input-group mb-4 float">
@@ -163,16 +161,16 @@
             <div *ngIf="phForm.get('lastName')?.touched && phForm.get('lastName')?.errors?.['required']">LastName is required.</div>
         </div>
         <div class="input-group mb-4 float">
-            <input type="email" placeholder="" formControlName="personEmail" class="form-control" required>
+            <input type="email" placeholder="" formControlName="email" class="form-control" required>
             <label class="float-lbl">Email *</label>
-            <div *ngIf="phForm.get('personEmail')?.touched && phForm.get('personEmail')?.errors?.['required']">Email is required.</div>
-                <div *ngIf="phForm.get('personEmail')?.touched && phForm.get('personEmail')?.errors?.['email']">Please enter a valid email address.</div>
+            <div *ngIf="phForm.get('email')?.touched && phForm.get('email')?.errors?.['required']">Email is required.</div>
+                <div *ngIf="phForm.get('email')?.touched && phForm.get('email')?.errors?.['email']">Please enter a valid email address.</div>
         </div>
         <div class="input-group mb-4 float">
-            <input type="text" placeholder="" formControlName="personMobile" class="form-control" required maxlength="10" (keypress)="allowOnlyNumbers($event)">
+            <input type="text" placeholder="" formControlName="mobile" class="form-control" required maxlength="10" (keypress)="allowOnlyNumbers($event)">
             <label class="float-lbl">Mobile *</label>
-            <div *ngIf="phForm.get('personMobile')?.touched && phForm.get('personMobile')?.errors?.['required']">Mobile is required.</div>
-            <div *ngIf="phForm.get('personMobile')?.errors?.['pattern'] && phForm.get('personMobile')?.touched">
+            <div *ngIf="phForm.get('mobile')?.touched && phForm.get('mobile')?.errors?.['required']">Mobile is required.</div>
+            <div *ngIf="phForm.get('mobile')?.errors?.['pattern'] && phForm.get('mobile')?.touched">
               Only digits allowed.
             </div>
         </div>
@@ -195,14 +193,13 @@
           </div>
           <div class="input-group mb-4">
             <label class="form-label">Upload Picture *</label>
-            <input type="file" formControlName="picture" class="form-control" accept="image/*" required>
-            <div *ngIf="phForm.get('picture')?.touched && phForm.get('picture')?.errors?.['required']" class="text-danger">Picture is required.</div>
+            <input type="file" formControlName="picture" class="form-control" accept="image/*">
           </div>
     </div>
       </fieldset>
   
       <!-- Section 4: Bank Details -->
-      <fieldset>
+      <fieldset formGroupName="pharmacyBankDetails">
         <legend>Bank Details</legend>
         <div class="form-grid">
             <div class="input-group mb-4 float">
@@ -215,10 +212,13 @@
                 <input type="text" placeholder=" " formControlName="accountholderName" class="form-control" required>
                 <label class="float-lbl">Account Holder Name *</label>
                 <div *ngIf="phForm.get('accountholderName')?.touched && phForm.get('accountholderName')?.errors?.['required']">AccountHolderName is required.</div>
+                <div *ngIf="phForm.get('accountholderName')?.errors?.['pattern'] && phForm.get('accountholderName')?.touched">
+                  Only digits allowed.
+                </div>
               </div>
 
               <div class="input-group mb-4 float">
-                <input type="text" placeholder=" " formControlName="accountNumber" class="form-control" required required (keypress)="allowOnlyNumbers($event)">
+                <input type="text" placeholder=" " formControlName="accountNumber" class="form-control" maxlength="16" required required (keypress)="allowOnlyNumbers($event)">
                 <label class="float-lbl">Account Number *</label>
                 <div *ngIf="phForm.get('accountNumber')?.touched && phForm.get('accountNumber')?.errors?.['required']">AccountNumber is required.</div>
               </div>

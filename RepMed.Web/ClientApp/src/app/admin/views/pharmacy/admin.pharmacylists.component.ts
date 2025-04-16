@@ -23,7 +23,6 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
         super(router, fb);
     }
     ngOnInit(): void {
-        const url = 'https://dummyjson.com/posts'; // Dummy API URL
 
         $('#post_pharmacylist_datatable').DataTable({
             processing: true,
@@ -44,7 +43,12 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
                 {
                     data: 'id', render: (data: any) =>
                         `<input class="item_checkbox" id="${data}" type="checkbox" value="${data}" />`
-                }
+                },
+                { data: 'storeName'},
+                { data: 'ownerName'},
+                {data: 'officialEmail'},
+                {data: 'cityName'},
+                {data: 'registeredMobile'}
             ]
         });
     }

@@ -1,0 +1,255 @@
+<div class="authentication">
+    <div class="pharmacy-form-container">
+        <form formvalidator class="card auth_form form_validation" [formGroup]="editpharmacyForm" (ngSubmit)="onSubmit()">
+          <!-- Section 1: Pharmacy -->
+          <fieldset formGroupName="pharmacy">
+            <legend>Pharmacy Details</legend>
+            <div class="form-grid" >
+                <div class="input-group mb-4 float">
+                    <input type="text" placeholder="" formControlName="ownerName" class="form-control" required>
+                    <label class="float-lbl">Owner Name *</label>
+                    <div *ngIf="editpharmacyForm.get('ownerName')?.touched && editpharmacyForm.get('ownerName')?.errors?.['required']">OwnerName is required.</div>
+                </div>
+    
+                <div class="input-group mb-4 float">
+                    <input type="text" placeholder="" formControlName="storeName" class="form-control" required>
+                    <label class="float-lbl">Store Name *</label>
+                    <div *ngIf="editpharmacyForm.get('storeName')?.touched && editpharmacyForm.get('storeName')?.errors?.['required']">StoreName is required.</div>
+                </div>
+    
+                <div class="input-group mb-4 float">
+                    <input type="text" placeholder=" " formControlName="businessName" class="form-control" required>
+                    <label class="float-lbl">Business Name *</label>
+                    <div *ngIf="editpharmacyForm.get('businessName')?.touched && editpharmacyForm.get('businessName')?.errors?.['required']">BusinessName is required.</div>
+                </div>
+    
+                <div class="input-group mb-4 float">
+                    <input type="text" placeholder=" " formControlName="licenseNumber" class="form-control" required>
+                    <label class="float-lbl">License Number *</label>
+                    <div *ngIf="editpharmacyForm.get('licenseNumber')?.touched && editpharmacyForm.get('licenseNumber')?.errors?.['required']">LicenseNumber is required.</div>
+                </div>
+    
+                <div class="input-group mb-4 float">
+                    <input type="date" placeholder=" " formControlName="licenseExpiry" class="form-control" required  [min]="minExpiryDate">
+                    <label class="float-lbl">License Expiry *</label>
+                    <div *ngIf="editpharmacyForm.get('licenseExpiry')?.touched && editpharmacyForm.get('licenseExpiry')?.errors?.['required']">LicenseExpiry date is required.</div>
+                    <div *ngIf="editpharmacyForm.get('licenseExpiry')?.errors?.['pastDate'] && (editpharmacyForm.get('licenseExpiry')?.touched || editpharmacyForm.get('licenseExpiry')?.dirty)">
+                      Expiry date cannot be in the past.
+                    </div>
+                    
+                </div>
+    
+                <div class="input-group mb-4 float">
+                    <input type="text" placeholder=" " formControlName="gstNumber" class="form-control" required>
+                    <label class="float-lbl">GST Number *</label>
+                    <div *ngIf="editpharmacyForm.get('gstNumber')?.touched && editpharmacyForm.get('gstNumber')?.errors?.['required']">GSTNumber is required.</div>
+                    <div *ngIf="editpharmacyForm.get('gstNumber')?.touched && editpharmacyForm.get('gstNumber')?.errors?.['pattern']">
+                      Enter a valid GST Number (15 characters).
+                    </div>
+                </div>
+    
+                <div class="input-group mb-4 float">
+                    <input type="text" placeholder=" " formControlName="registeredMobile" class="form-control" required maxlength="10" (keypress)="allowOnlyNumbers($event)">
+                    <label class="float-lbl">Registered Mobile *</label>
+                    <div *ngIf="editpharmacyForm.get('registeredMobile')?.touched && editpharmacyForm.get('registeredMobile')?.errors?.['required']">RegisteredMobile is required.</div>
+                    <div *ngIf="editpharmacyForm.get('registeredMobile')?.errors?.['pattern'] && editpharmacyForm.get('registeredMobile')?.touched">
+                      Only digits allowed.
+                    </div>
+                </div>
+    
+                <div class="input-group mb-4 float">
+                    <input type="email" placeholder=" " formControlName="officialEmail" class="form-control" required>
+                    <label class="float-lbl">Official Email *</label>
+                    <div *ngIf="editpharmacyForm.get('officialEmail')?.touched && editpharmacyForm.get('officialEmail')?.errors?.['required']">
+                      Official Email is required.
+                    </div>
+                    <div *ngIf="editpharmacyForm.get('officialEmail')?.touched && editpharmacyForm.get('officialEmail')?.errors?.['email']">
+                      Please enter a valid email address.
+                    </div>
+                    
+                </div>
+    
+                <div class="input-group mb-4 float">
+                    <input type="text" placeholder=" " formControlName="storeMobile1" class="form-control" required maxlength="10" (keypress)="allowOnlyNumbers($event)">
+                    <label class="float-lbl">Store Mobile 1 *</label>
+                    <div *ngIf="editpharmacyForm.get('storeMobile1')?.touched && editpharmacyForm.get('storeMobile1')?.errors?.['required']">Mobile number is required.</div>
+                    <div *ngIf="editpharmacyForm.get('storeMobile1')?.errors?.['pattern'] && editpharmacyForm.get('storeMobile1')?.touched">
+                      Only digits allowed.
+                    </div>
+                </div>
+    
+                <div class="input-group mb-4 float">
+                    <input type="email" placeholder=" " formControlName="storeEmail1" class="form-control">
+                    <label class="float-lbl">Store Email 1 *</label>
+                    <div *ngIf="editpharmacyForm.get('storeEmail1')?.touched && editpharmacyForm.get('storeEmail1')?.errors?.['email']">Please enter a valid email address.</div>
+                    
+                </div>
+    
+                <div class="input-group mb-4 float">
+                    <input type="email" placeholder=" " formControlName="storeEmail2" class="form-control">
+                    <label class="float-lbl">Store Email 2 *</label>
+                    <div *ngIf="editpharmacyForm.get('storeEmail2')?.touched && editpharmacyForm.get('storeEmail2')?.errors?.['email']">Please enter a valid email address.</div>
+                </div>
+            </div>
+          </fieldset>
+      
+          <!-- Section 2: Pharmacy Address -->
+          <fieldset formGroupName="pharmacy">
+            <legend>Pharmacy Address</legend>
+            <div class="form-grid" >
+                <div class="input-group mb-4 float">
+                    <textarea rows="2" placeholder=" " formControlName="address1" class="form-control" style="width: 90%;" required></textarea>
+                    <label class="float-lbl">Address 1 *</label>
+                    <div *ngIf="editpharmacyForm.get('address1')?.touched && editpharmacyForm.get('address1')?.errors?.['required']">Address is required.</div>
+                </div>
+    
+                <div class="input-group mb-4 float">
+                    <textarea rows="2" placeholder=" " formControlName="address2" class="form-control" style="width: 90%;" required></textarea>
+                    <label class="float-lbl">Address 2 *</label>
+                    <div *ngIf="editpharmacyForm.get('address2')?.touched && editpharmacyForm.get('address2')?.errors?.['required']">Address is required.</div>
+                </div>
+            </div>
+            <div class="form-grid mt-3" style="margin-top: 2rem !important;">
+                <div class="input-group mb-4 float">
+                    <select formControlName="countryId" class="form-control" required>
+                      <option value="" disabled selected>Select Country</option>
+                      <option value="1">India</option>
+                      <option value="2">USA</option>
+                      <option value="3">UK</option>
+                    </select>
+                    <label class="float-lbl">Country *</label>
+                    <div *ngIf="editpharmacyForm.get('countryId')?.touched && editpharmacyForm.get('countryId')?.errors?.['required']">Country is required.</div>
+                  </div>
+    
+                  <div class="input-group mb-4 float">
+                    <select formControlName="stateId" class="form-control" required>
+                      <option value="" disabled selected>Select State</option>
+                  <option value="1">Maharashtra</option>
+                  <option value="2">Karnataka</option>
+                  <option value="3">Tamil Nadu</option>
+                    </select>
+                    <label class="float-lbl">State *</label>
+                    <div *ngIf="editpharmacyForm.get('stateId')?.touched && editpharmacyForm.get('stateId')?.errors?.['required']">State is required.</div>
+                  </div>
+    
+                  <div class="input-group mb-4 float">
+                    <select formControlName="cityId" class="form-control" required>
+                      <option value="" disabled selected>Select City</option>
+                      <option value="1">Mumbai</option>
+                      <option value="2">Delhi</option>
+                      <option value="3">Bangalore</option>
+                    </select>
+                    <label class="float-lbl">City *</label>
+                    <div *ngIf="editpharmacyForm.get('cityId')?.touched && editpharmacyForm.get('cityId')?.errors?.['required']">City is required.</div>
+                  </div>
+            </div>
+          </fieldset>
+    
+    
+          <!-- Section 3: Pharmacy Person -->
+          <fieldset formGroupName="user">
+            <legend>Pharmacy Person</legend>
+            <div class="form-grid">
+            <div class="input-group mb-4 float">
+                <input type="text" placeholder="" formControlName="firstName" class="form-control" required>
+                <label class="float-lbl">First Name *</label>
+                <div *ngIf="editpharmacyForm.get('firstName')?.touched && editpharmacyForm.get('firstName')?.errors?.['required']">FirstName is required.</div>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="text" placeholder="" formControlName="lastName" class="form-control" required>
+                <label class="float-lbl">Last Name *</label>
+                <div *ngIf="editpharmacyForm.get('lastName')?.touched && editpharmacyForm.get('lastName')?.errors?.['required']">LastName is required.</div>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="email" placeholder="" formControlName="email" class="form-control" required>
+                <label class="float-lbl">Email *</label>
+                <div *ngIf="editpharmacyForm.get('email')?.touched && editpharmacyForm.get('email')?.errors?.['required']">Email is required.</div>
+                    <div *ngIf="editpharmacyForm.get('email')?.touched && editpharmacyForm.get('email')?.errors?.['email']">Please enter a valid email address.</div>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="text" placeholder="" formControlName="mobile" class="form-control" required maxlength="10" (keypress)="allowOnlyNumbers($event)">
+                <label class="float-lbl">Mobile *</label>
+                <div *ngIf="editpharmacyForm.get('mobile')?.touched && editpharmacyForm.get('mobile')?.errors?.['required']">Mobile is required.</div>
+                <div *ngIf="editpharmacyForm.get('mobile')?.errors?.['pattern'] && editpharmacyForm.get('mobile')?.touched">
+                  Only digits allowed.
+                </div>
+            </div>
+            <div class="input-group mb-4 float">
+              <input type="date" formControlName="dateofBirth" class="form-control" required [max]="maxDate">
+              <label class="float-lbl">Date Of Birth *</label>
+              <div *ngIf="editpharmacyForm.get('dateofBirth')?.touched && editpharmacyForm.get('dateofBirth')?.errors?.['required']">Date of Birth is required</div>
+              <div *ngIf="editpharmacyForm.get('dateofBirth')?.errors?.['futureDate'] && (editpharmacyForm.get('dateofBirth')?.touched || editpharmacyForm.get('dateofBirth')?.dirty)">Date of Birth cannot be in the future</div>
+            </div>
+            
+            <div class="input-group mb-4 float">
+                <select formControlName="gender" class="form-control" required>
+                  <option value="" disabled selected>Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+                <label class="float-lbl">Gender *</label>
+                <div *ngIf="editpharmacyForm.get('gender')?.touched && editpharmacyForm.get('gender')?.errors?.['required']">Gender is required.</div>
+              </div>
+              <div class="input-group mb-4">
+                <label class="form-label">Upload Picture *</label>
+                <input type="file" formControlName="picture" class="form-control" accept="image/*">
+              </div>
+        </div>
+          </fieldset>
+      
+          <!-- Section 4: Bank Details -->
+          <fieldset formGroupName="pharmacyBankDetails">
+            <legend>Bank Details</legend>
+            <div class="form-grid">
+                <div class="input-group mb-4 float">
+                    <input type="text" placeholder=" " formControlName="bankName" class="form-control" required>
+                    <label class="float-lbl">Bank Name *</label>
+                    <div *ngIf="editpharmacyForm.get('bankName')?.touched && editpharmacyForm.get('bankName')?.errors?.['required']">Bank Name is required.</div>
+                  </div>
+    
+                  <div class="input-group mb-4 float">
+                    <input type="text" placeholder=" " formControlName="accountholderName" class="form-control" required>
+                    <label class="float-lbl">Account Holder Name *</label>
+                    <div *ngIf="editpharmacyForm.get('accountholderName')?.touched && editpharmacyForm.get('accountholderName')?.errors?.['required']">AccountHolderName is required.</div>
+                    <div *ngIf="editpharmacyForm.get('accountholderName')?.errors?.['pattern'] && editpharmacyForm.get('accountholderName')?.touched">
+                      Only digits allowed.
+                    </div>
+                  </div>
+    
+                  <div class="input-group mb-4 float">
+                    <input type="text" placeholder=" " formControlName="accountNumber" class="form-control" maxlength="16" required required (keypress)="allowOnlyNumbers($event)">
+                    <label class="float-lbl">Account Number *</label>
+                    <div *ngIf="editpharmacyForm.get('accountNumber')?.touched && editpharmacyForm.get('accountNumber')?.errors?.['required']">AccountNumber is required.</div>
+                  </div>
+    
+                  <div class="input-group mb-4 float">
+                    <input type="text" placeholder=" " formControlName="ifscCode" class="form-control" required>
+                    <label class="float-lbl">IFSC Code *</label>
+                    <div *ngIf="editpharmacyForm.get('ifscCode')?.touched && editpharmacyForm.get('ifscCode')?.errors?.['required']">IFSCCode is required.</div>
+                  </div>
+    
+                  <div class="input-group mb-4 float">
+                    <input type="text" placeholder=" " formControlName="branchName" class="form-control" required>
+                    <label class="float-lbl">Branch Name *</label>
+                    <div *ngIf="editpharmacyForm.get('branchName')?.touched && editpharmacyForm.get('branchName')?.errors?.['required']">BranchName is required.</div>
+                  </div>
+    
+                  <div class="input-group mb-4 float">
+                    <input type="text" placeholder=" " formControlName="upiId" class="form-control" required>
+                    <label class="float-lbl">UPI ID *</label>
+                    <div *ngIf="editpharmacyForm.get('upiId')?.touched && editpharmacyForm.get('upiId')?.errors?.['required']">UPI_ID is required.</div>
+                    <div *ngIf="editpharmacyForm.get('upiId')?.errors?.['pattern'] && editpharmacyForm.get('upiId')?.touched">
+                      Please enter a valid UPI ID.
+                    </div>
+                  </div>
+            </div>
+          </fieldset>
+      
+          <!-- Submit Button -->
+          <div class="form-actions">
+            <button type="submit">Update Pharmacy</button>
+          </div>
+        </form>
+      </div>
+    </div>

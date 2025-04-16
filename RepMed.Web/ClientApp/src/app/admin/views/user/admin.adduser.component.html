@@ -3,8 +3,8 @@
         <legend>User</legend>
 
         <div class="form-grid">
-
                 <div class="input-group mb-3 float">
+                        <input type="hidden" formControlName="Role" />
                         <input type="text" class="form-control" placeholder=" " formControlName="email">
                         <label class="float-lbl">Email *</label>
                         <div *ngIf="addUserForm.get('email')?.touched && addUserForm.get('email')?.errors">
@@ -19,12 +19,16 @@
                 </div>
 
                 <div class="input-group mb-3 float">
-                    <input type="text" class="form-control" placeholder=" " formControlName="mobile" required maxlength="10" (keypress)="allowOnlyNumbers($event)">
-                    <label class="float-lbl">Mobile *</label>
-                    <div *ngIf="addUserForm.get('mobile')?.touched && addUserForm.get('mobile')?.errors?.['required']">Mobile is required.</div>
-                    <div *ngIf="addUserForm.get('mobile')?.errors?.['pattern'] && addUserForm.get('mobile')?.touched">
-                        Only digits allowed.
-                    </div>
+                        <input type="text" class="form-control" placeholder=" " formControlName="mobile" required
+                                maxlength="10" (keypress)="allowOnlyNumbers($event)">
+                        <label class="float-lbl">Mobile *</label>
+                        <div
+                                *ngIf="addUserForm.get('mobile')?.touched && addUserForm.get('mobile')?.errors?.['required']">
+                                Mobile is required.</div>
+                        <div
+                                *ngIf="addUserForm.get('mobile')?.errors?.['pattern'] && addUserForm.get('mobile')?.touched">
+                                Only digits allowed.
+                        </div>
                 </div>
 
                 <div class="input-group mb-3 float">
@@ -42,6 +46,10 @@
                         <div
                                 *ngIf="addUserForm.get('ConfirmPassword')?.errors?.['required'] && addUserForm.get('ConfirmPassword')?.touched">
                                 ConfirmPassword is required.
+                        </div>
+                        <div *ngIf="addUserForm.errors?.['passwordMismatch'] && addUserForm.get('ConfirmPassword')?.touched"
+                                class="text-danger">
+                                Password do not match.
                         </div>
                 </div>
 

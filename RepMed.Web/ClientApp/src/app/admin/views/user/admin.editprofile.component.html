@@ -5,6 +5,7 @@
     <div class="form-grid">
 
         <div class="input-group mb-3 float">
+            <input type="hidden" formControlName="Role" value="subadmin" />
             <input type="text" placeholder="" formControlName="firstname" class="form-control" required>
             <label class="float-lbl">First Name *</label>
             <div *ngIf="editUserForm.get('firstname')?.touched && editUserForm.get('firstname')?.errors?.['required']">FirstName is
@@ -18,7 +19,7 @@
         </div>
 
         <div class="input-group mb-3 float">
-            <input type="text" class="form-control" placeholder=" " formControlName="email">
+            <input type="text" class="form-control" placeholder=" " formControlName="email" [readonly]="true">
             <label class="float-lbl">Email *</label>
             <div *ngIf="editUserForm.get('email')?.touched && editUserForm.get('email')?.errors">
                 <div *ngIf="editUserForm.get('email')?.errors?.['required'] && editUserForm.get('email')?.touched">
