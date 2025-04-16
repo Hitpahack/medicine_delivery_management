@@ -9,9 +9,8 @@ import 'datatables.net';
 @Component({
     selector: 'app-pharmacy-list',
     templateUrl: './admin.pharmacylist.component.html',
-    styleUrls: [''],
-    standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    standalone: true
+    
 })
 export class AdminPharmacyListComponent extends AdminBaseComponent implements OnInit {
 
@@ -52,10 +51,7 @@ export class AdminPharmacyListComponent extends AdminBaseComponent implements On
     
   
     ngOnInit(): void {
-      // Wait a bit to ensure HTML table is rendered
-      setTimeout(() => {
-        $('#example').DataTable();
-      }, 100);
+      
     }
 
     viewPharmacy(id: number) {

@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { ActivatedRouteSnapshot, CanActivate, CanLoad, Route, Router, RouterStateSnapshot, UrlSegment, UrlTree } from "@angular/router";
 import { Helper } from "../common/helper.extenstions";
-import { Actions } from "./authorized";
+import { Actions } from "./Authorized";
 import { IDENTITY_HELPER, Roles } from "./identity.helper";
 
 

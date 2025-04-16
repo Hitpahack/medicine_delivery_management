@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using Dapper;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace RepMed.Core
 {
@@ -174,9 +175,12 @@ namespace RepMed.Core
             if (!string.IsNullOrEmpty(wherQuery))
                 sql = string.Concat(sql, $" WHERE {wherQuery} ");
 
-            sql = string.Concat(sql, returningData);
-
-            return con.QueryFirstOrDefault<TResult>(sql, transaction: tran);
+            sql = sql + $"; SELECT * FROM {tableName} WHERE {wherQuery}";
+            using (var multi = con.QueryMultiple(sql, new { UserId = 1 }))
+            {
+                return multi.ReadFirstOrDefault<TResult>();
+                
+            }
         }
 
         public static TResult Update<TResult>(this IDbConnection con, IDbTransaction tran,
@@ -190,9 +194,11 @@ namespace RepMed.Core
             if (!string.IsNullOrEmpty(wherQuery))
                 sql = string.Concat(sql, $" WHERE {wherQuery} ");
 
-            sql = string.Concat(sql, returningData);
-
-            return con.QueryFirstOrDefault<TResult>(sql, transaction: tran);
+            sql = sql + $"; SELECT * FROM {tableName} WHERE {wherQuery}";
+            using (var multi = con.QueryMultiple(sql, new { UserId = 1 }))
+            {
+                return multi.ReadFirstOrDefault<TResult>();
+            }
         }
 
         public static TResult Update<TResult>(this IDbConnection con, IDbTransaction tran,

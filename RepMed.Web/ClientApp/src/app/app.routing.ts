@@ -15,7 +15,6 @@ import { AdminPharmacyListComponent } from './admin/views/pharmacy/admin.pharmac
 import { AddUserComponent } from '../app/admin/views/user/admin.adduser.component';
 import { AdminPharmacyDetailsComponent} from './admin/views/pharmacy/admin.pharmacydetails.component';
 
-import { AddUserComponent } from "../app/admin/views/user/admin.adduser.component";
 
 
 
@@ -38,7 +37,7 @@ export const routes: Routes = [
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'addpharmacy', component: AdminAddPharmacyComponent },
       { path: 'pharmacylist', component: AdminPharmacyListComponent },
-      { path: 'pharmacydetails/:id', component: AdminPharmacyDetailsComponent },
+     { path: 'pharmacydetails/:id', component: AdminPharmacyDetailsComponent },
       { path: 'adduser', component: AddUserComponent },
     ]
   },
