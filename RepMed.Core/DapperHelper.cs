@@ -175,16 +175,12 @@ namespace RepMed.Core
             if (!string.IsNullOrEmpty(wherQuery))
                 sql = string.Concat(sql, $" WHERE {wherQuery} ");
 
-
-            //sql = string.Concat(sql, $";select * from {tableName}  WHERE  {wherQuery}");
-            sql = sql+ $";SELECT * FROM {tableName} WHERE {wherQuery}";
-            using (var multi = con.QueryMultiple(sql, transaction: tran))
+            sql = sql + $"; SELECT * FROM {tableName} WHERE {wherQuery}";
+            using (var multi = con.QueryMultiple(sql, new { UserId = 1 }, transaction: tran))
             {
-
                 return multi.ReadFirstOrDefault<TResult>();
-
+                
             }
-            
         }
 
         public static TResult Update<TResult>(this IDbConnection con, IDbTransaction tran,
@@ -198,17 +194,11 @@ namespace RepMed.Core
             if (!string.IsNullOrEmpty(wherQuery))
                 sql = string.Concat(sql, $" WHERE {wherQuery} ");
 
-            sql = sql + $";SELECT * FROM {tableName} WHERE {wherQuery}";
-            using (var multi = con.QueryMultiple(sql, transaction: tran))
+            sql = sql + $"; SELECT * FROM {tableName} WHERE {wherQuery}";
+            using (var multi = con.QueryMultiple(sql, new { UserId = 1 }))
             {
-                
                 return multi.ReadFirstOrDefault<TResult>();
-
-                
             }
-            
-
-
         }
 
         public static TResult Update<TResult>(this IDbConnection con, IDbTransaction tran,

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Org.BouncyCastle.Crypto.Generators;
@@ -32,6 +33,17 @@ namespace RepMed.Web.Controllers.WebApis
 
             return BadRequest(data);
         }
+        [Authorize]
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var data = await base.Logout();
+            if (data.IsSuccess)
+                return Ok(data);
+
+            return BadRequest(data);
+        }
+
 
         [Route("forgotpassword")]
         [HttpPost]

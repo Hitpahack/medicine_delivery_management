@@ -1,33 +1,34 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
-import { FormBuilder, FormsModule, ReactiveFormsModule, FormControl, FormGroup, Validators, AbstractControl } from "@angular/forms";
-import { AdminBaseComponent } from "../../admin.base.component";
+import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
+import { Router, RouterModule } from "@angular/router";
 import { CustomValidator } from "../../../common/custom.validators";
-import { Helper } from "../../../common/helper.extenstions";
-import { adminAccountsService } from "../../services/accounts/admin.accountsservice";
+import { AdminBaseComponent } from "../../admin.base.component";
+import { Helper } from "../../../../app/common/helper.extenstions";
 import { AdminPharmacyService } from "../../services/pharmacy/admin.pharmacy.services";
-import { PharmacyDto } from 'src/app/viewmodels/pharmacy/Pharmacy.add.dto';
+import { PharmacyDto } from "src/app/viewmodels/pharmacy/Pharmacy.add.dto";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
-    selector: 'app-admin-addpharmacy',
-    templateUrl: './admin.addpharmacy.component.html',
-    styleUrls: ['./admin.addpharmacy.component.css'],
+    selector: 'admin-edit-pharmacy',
+    templateUrl: 'admin.pharmacyedit.component.html',
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    styleUrl: './admin.addpharmacy.component.css',
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
 })
-export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnInit {
-    constructor(
-        public router: Router, public fb: FormBuilder,
-        public validator: CustomValidator,
-        public accountservice: adminAccountsService,
-        public PharmacyService: AdminPharmacyService
-    ) {
+
+export class EditPharmacy extends AdminBaseComponent implements OnInit {
+    
+    constructor(public router: Router,
+         public fb: FormBuilder, 
+         public validator: CustomValidator, 
+         public adminpharmacyservice: AdminPharmacyService, 
+         private route: ActivatedRoute) {
         super(router, fb);
     }
+    editpharmacyForm: FormGroup
+    addpharmacyData: PharmacyDto;
     minExpiryDate: string = '';
-    phForm: FormGroup;
-    PharmacyDto: PharmacyDto;
     maxDate = new Date().toISOString().split('T')[0];
     countries: any[] = [
         { id: 1, name: 'India' },
@@ -44,16 +45,11 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
     states: any[] = [];
     cities: any[] = [];
 
-
     ngOnInit(): void {
-        // This runs when the dashboard loads.
-        //console.log('Add Pharmacy Page loaded!');
-        this.phForm = this.initForm();
         const today = new Date();
-        this.minExpiryDate = today.toISOString().split('T')[0];
+        this.minExpiryDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
 
-        // this code for country, state, city
-        const pharmacyGroup = this.phForm.get('pharmacy');
+        const pharmacyGroup = this.editpharmacyForm.get('pharmacy');
         pharmacyGroup?.get('countryId')?.valueChanges.subscribe(countryId => {
             this.states = this.getStatesByCountry(countryId); // Replace this with API if needed
             pharmacyGroup.get('stateId')?.reset();
@@ -65,7 +61,56 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
             this.cities = this.getCitiesByState(stateId); // Replace this with API if needed
             pharmacyGroup.get('cityId')?.reset();
         });
+        this.editpharmacyForm = this.initForm();
+        const userId = this.route.snapshot.params['id'];
+        console.log("userids", userId)
+        if (userId) {
+            this.adminpharmacyservice.getpharmacybyId(userId).subscribe((response) => {
+                if (response?.isSuccess && response.data) {
+                    const pharmacydto = response.data;
+                    console.log("User data received:", pharmacydto.pharmacy.ownerName);
+
+                    this.editpharmacyForm.patchValue({
+                        ownerName: pharmacydto.pharmacy.ownerName,
+                        storeName: pharmacydto.pharmacy.storeName,
+                        businessName: pharmacydto.pharmacy.businessName,
+                        licenseNumber: pharmacydto.pharmacy.licenseNumber,
+                        licenseExpiry: pharmacydto.pharmacy.licenseExpiry,
+                        gstNumber: pharmacydto.pharmacy.gstnumber,
+                        registeredMobile: pharmacydto.pharmacy.registeredMobile,
+                        officialEmail: pharmacydto.pharmacy.officialEmail,
+                        storeMobile1: pharmacydto.pharmacy.storeMobile1,
+                        storeEmail1: pharmacydto.pharmacy.storeEmail1,
+                        storeEmail2: pharmacydto.pharmacy.storeEmail2,
+                        address1: pharmacydto.pharmacy.address1,
+                        address2: pharmacydto.pharmacy.address2,
+                        //countryId: pharmacydto.pharmacy.countryId,
+                        //stateId: pharmacydto.pharmacy.stateId,
+                        //cityId: pharmacydto.pharmacy.cityId,
+
+                        // firstName: pharmacydto.person.firstName,
+                        // lastName: pharmacydto.person.lastName,
+                        // email: pharmacydto.person.email,
+                        // mobile: pharmacydto.person.mobile,
+                        // dateofBirth: pharmacydto.person.dateOfBirth,
+                        // gender: pharmacydto.person.gender,
+                        // picture: pharmacydto.person.picture,
+
+                        bankName: pharmacydto.pharmacyBankDetails.bankName,
+                        accountholderName: pharmacydto.pharmacyBankDetails.accountHolderName,
+                        accountNumber: pharmacydto.pharmacyBankDetails.accountNumber,
+                        ifscCode: pharmacydto.pharmacyBankDetails.ifsccode,
+                        branchName: pharmacydto.pharmacyBankDetails.branchName,
+                        upiId: pharmacydto.pharmacyBankDetails.upiId,
+
+                    });
+                } else {
+                    console.error("Failed to load pharmacy data", response);
+                }
+            });
+        }
     }
+
 
     initForm(): FormGroup {
         return this.fb.group({
@@ -87,16 +132,16 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                 stateId: new FormControl(null, [Validators.required]),
                 cityId: new FormControl(null, [Validators.required]),
             }),
-            user: this.fb.group({
-                firstName: new FormControl(null, [Validators.required]),
-                lastName: new FormControl(null, [Validators.required]),
-                email: new FormControl(null, [Validators.required, Validators.email]),
-                mobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
-                dateofBirth: new FormControl(null, [Validators.required, this.validator.pastDateOnly]),
-                gender: new FormControl(null, [Validators.required]),
-                picture: new FormControl(null, []),
-            }),
-            pharmacyBankDetails: this.fb.group({
+            // user: this.fb.group({
+            //     firstName: new FormControl(null, [Validators.required]),
+            //     lastName: new FormControl(null, [Validators.required]),
+            //     email: new FormControl(null, [Validators.required, Validators.email]),
+            //     mobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
+            //     dateofBirth: new FormControl(null, [Validators.required, this.validator.pastDateOnly]),
+            //     gender: new FormControl(null, [Validators.required]),
+            //     picture: new FormControl(null, []),
+            // }),
+            pharmacyBankDetails: this.fb.group({ 
                 bankName: new FormControl(null, [Validators.required]),
                 accountholderName: new FormControl(null, [Validators.required]),
                 accountNumber: new FormControl(null, [Validators.required, Validators.pattern(/^\d{16}$/)]),
@@ -107,12 +152,30 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
         });
     }
 
+    onSubmit() {
+        console.log("form submited")
+        let isValid = this.validateForm(this.editpharmacyForm);
+        console.log("isValid")
+        if (isValid) {
+            const pharmacyId = this.route.snapshot.params['id'];
+
+            const dto: PharmacyDto = this.editpharmacyForm.value;
+            this.adminpharmacyservice.add(dto, pharmacyId).subscribe(response => {
+                console.log("Pharmacy updated successfully!")
+            })
+        }
+        else
+            Helper.ShowError('Please fill the required fields');
+    }
+
+
     allowOnlyNumbers(event: KeyboardEvent) {
         const charCode = event.key.charCodeAt(0);
         if (charCode < 48 || charCode > 57) {
             event.preventDefault();
         }
     }
+
     getStatesByCountry(countryId: number) {
         const allStates = [
             { id: 1, name: 'Maharashtra', countryId: 1 },
@@ -184,20 +247,4 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
         ];
         return allCities.filter(c => c.stateId == stateId);
     }
-
-    onSubmit() {
-        if (this.phForm.invalid) {
-            this.validator.markInvalidFieldsTouched(this.phForm);
-            return;
-        }
-        const dto: PharmacyDto = this.phForm.value;
-        this.PharmacyService.add(dto, 0).subscribe({
-            next: res => console.log("Success", res),
-            error: err => console.error("Error", err)
-        })
-        // Submit the form
-        console.log('Form submitted:', this.phForm.value);
-    }
-
-
 }

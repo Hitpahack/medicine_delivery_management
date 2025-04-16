@@ -27,7 +27,11 @@ export const admin_apiconfig =
 
     pharmacy: {
       add: (id: number) => environment.admin_apiv1 + '/pharmacy/addeditpharmacy/' + id,
-      getPaged: environment.admin_apiv1 + '/pharmacy/getpharmacies/'
+      getPaged: environment.admin_apiv1 + '/pharmacy/getpharmacies/',
+      get: (id: number) => environment.admin_apiv1 + '/pharmacy/getpharmacy/' + id,
+      getcountries: environment.admin_api + '/masters/getcountries/',
+      getstates: (id: number) => environment.admin_api + '/masters/getstates/' + id,
+      getcities: (id: number) => environment.admin_api + '/masters/getcities/' + id
 
     },
     user: {
@@ -35,7 +39,8 @@ export const admin_apiconfig =
       get: (id: number) => environment.admin_apiv1 + '/users/get/' + id,
       update: (id: number) => environment.admin_apiv1 + '/users/addedituser/' + id,
       setpassword: environment.admin_apiv1 + '/users/change-password',
-
+      userroles: 'https://localhost:44379/api/v1/masters/getroles',
+      changepassword: environment.admin_apiv1 +'/users/SetPassword'
     }
   }
 }

@@ -43,12 +43,13 @@ export interface BasePerson {
   }
   
   export interface AddPersonDto extends BasicPersonsDto {
+    id: number;
     password: string;
     confirmPassword: string;
     createdBy?: number;
     createdOn?: Date;
     isActive?: boolean;
     address?: AddAddressDto;
-    role?: string;
+    Role?: string;
   }
   

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using MySqlConnector;
 using RepMed.Core;
+using RepMed.Data;
 using RepMed.Dtos;
 using RepMed.Services;
 using System.Collections.Generic;
@@ -34,10 +35,9 @@ namespace RepMed.Web.Controllers.BaseApis
                     }
                 }
             }
-
         }
 
-        protected async Task<APIsResponse<IEnumerable<SelectListItem>>> States()
+        protected async Task<APIsResponse<IEnumerable<SelectListItem>>> States(long? countryid)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -47,7 +47,12 @@ namespace RepMed.Web.Controllers.BaseApis
                 {
                     using (IMasterService masterService = new MasterService(db, tran))
                     {
-                        var countries = await masterService.GetStates();
+                        APIsResponse<IEnumerable<SelectListItem>> countries;
+                        if (countryid > 0)
+                            countries = await masterService.GetStates(s => s.CountryId == countryid);
+                        else
+                            countries = await masterService.GetStates();
+
                         tran.Commit();
 
                         return countries;
@@ -58,7 +63,7 @@ namespace RepMed.Web.Controllers.BaseApis
 
         }
 
-        protected async Task<APIsResponse<IEnumerable<SelectListItem>>> Cities()
+        protected async Task<APIsResponse<IEnumerable<SelectListItem>>> Cities(long? stateid)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -68,7 +73,13 @@ namespace RepMed.Web.Controllers.BaseApis
                 {
                     using (IMasterService masterService = new MasterService(db, tran))
                     {
-                        var countries = await masterService.GetCities();
+                        APIsResponse<IEnumerable<SelectListItem>> countries;    
+                        if (stateid > 0)
+                            countries = await masterService.GetCities(s => s.StateId == stateid);
+                        else
+                            countries = await masterService.GetCities();
+                        
+                        if(countries.IsSuccess)
                         tran.Commit();
 
                         return countries;
@@ -78,5 +89,27 @@ namespace RepMed.Web.Controllers.BaseApis
             }
 
         }
+        protected async Task<APIsResponse<IEnumerable<SelectListItem>>> Roles()
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IMasterService masterService = new MasterService(db, tran))
+                    {
+                        var countries = await masterService.GetRoles();
+                        tran.Commit();
+                        return countries;
+
+                    }
+                }
+            }
+
+        }
+
+
+
     }
 }

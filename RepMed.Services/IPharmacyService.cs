@@ -1,16 +1,17 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Mvc;
 using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
 using RepMed.Dtos.DataTables;
 using RepMed.Dtos.PharmacyPage;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace RepMed.Services
@@ -20,6 +21,7 @@ namespace RepMed.Services
         Task<APIsResponse<PharmacyBankDetailsDto>> AddUpdatePharmacyBankDetails(PharmacyBankDetailsDto reqDto, long Id);
         Task<APIsResponse<AddPharmacyDto>> AddUpdatePharmacy(AddPharmacyDto reqDto, long Id);
         Task<APIsResponse<Datatable<PharmacyPagingResponse>>> GetAllPharmacies(PharmacyPagingRequest reqDto);
+        Task<APIsResponse<BasePharmacyDto>> GetPharmacy(long Id);
         Task<APIsResponse<bool>> GenrateEmailToken(long newUserId, string userEmail);
     }
 
@@ -157,7 +159,7 @@ namespace RepMed.Services
                                    DapperHelper.QueryAsValuesParma<Pharmacy, AddPharmacyDto>(),
                                    reqDto);
                     #endregion
-                    apiResponse = new APIsSuccsss<AddPharmacyDto>("Pharmacy created successfully", pharmacy);
+                    apiResponse = new APIsSuccsss<AddPharmacyDto>(_validateMessages.AddSuccess, pharmacy);
                 }
                 else
                 {
@@ -170,7 +172,7 @@ namespace RepMed.Services
                                     reqDto,
                                     reqDto.Id);
                     #endregion
-                    apiResponse = new APIsSuccsss<AddPharmacyDto>("Pharmacy Updated successfully", pharmacy);
+                    apiResponse = new APIsSuccsss<AddPharmacyDto>(_validateMessages.UpdateSuccess, pharmacy);
 
                 }
                 return await Task.FromResult(apiResponse);
@@ -194,12 +196,15 @@ namespace RepMed.Services
                 parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
                 parameters.Add("Order_by", reqDto.order_by, DbType.String);
 
-                var result = await _idbConnection.QueryAsync<PharmacyPagingResponse>(
-                    sql: "GET_PHARMACY_PAGED",
-                    param: parameters,
-                    commandType: CommandType.StoredProcedure,
-                    transaction: _idbTransaction 
-                );
+                var result = (await _idbConnection.QueryAsync<PharmacyPagingResponse>(
+                               sql: "GET_PHARMACY_PAGED",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                )).ToList();
+                #endregion
+                var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
+                var output = new Datatable<PharmacyPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
                 #region Get All Pharmacy Commented
 
                 //var sql = @"
@@ -217,13 +222,10 @@ namespace RepMed.Services
                 //        splitOn: "PharmacyId"
                 //);
                 #endregion
-
-                if (result.Any())
-                    apiResponse = new APIsSuccsss<Datatable<PharmacyPagingResponse>>("Pharmacy details retrieved successfully", result);
+                if(result.Any())
+                    return await Task.FromResult(new APIsSuccsss<Datatable<PharmacyPagingResponse>>(_validateMessages.RetriveSuccess, output));
                 else
-                    apiResponse = new APIsSuccsss<Datatable<PharmacyPagingResponse>>("No Pharmacy Found", result);
-                #endregion
-                return await Task.FromResult(apiResponse);
+                    return await Task.FromResult(new APIsSuccsss<Datatable<PharmacyPagingResponse>>(_validateMessages.NotExist));
 
             }
             catch (Exception ex)
@@ -231,12 +233,46 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<Datatable<PharmacyPagingResponse>>(ex.GetActualError()));
             }
         }
+        public async Task<APIsResponse<BasePharmacyDto>> GetPharmacy(long Id)
+        {
+            try
+            {
+                APIsResponse<BasePharmacyDto> apiResponse = default;
+                #region Get All Pharmacy Commented
+                var sql = $@"
+                            SELECT *                             
+                            FROM {DbTables.tblPharmacy} p
+                            LEFT JOIN {DbTables.tblPharmacyBankDetails} b ON p.Id = b.PharmacyId where p.Id = {Id}";
+                var pharmacyDataList = (await _idbConnection.QueryAsync<AddPharmacyDto, PharmacyBankDetailsDto, BasePharmacyDto>(
+                                        sql,
+                                        (pharmacy, bankDetails) => new BasePharmacyDto
+                                        {
+                                            Pharmacy = pharmacy,
+                                            PharmacyBankDetails = bankDetails
+                                        },
+                                        transaction: _idbTransaction,
+                                        splitOn: "PharmacyId"
+                                    )).ToList();
+
+                var pharmacyData = pharmacyDataList.FirstOrDefault();
+                #endregion
+                if (pharmacyData !=null)
+                    apiResponse = new APIsSuccsss<BasePharmacyDto>(_validateMessages.RetriveSuccess, pharmacyData);
+                else
+                    return new APIsSuccsss<BasePharmacyDto>(_validateMessages.NotExist);
+                return await Task.FromResult(apiResponse);
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<BasePharmacyDto>(ex.GetActualError()));
+            }
+        }
 
         public void Dispose()
         {
             GC.SuppressFinalize(this);
         }
-
 
     }
 }

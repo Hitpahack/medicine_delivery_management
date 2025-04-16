@@ -7,13 +7,13 @@ import { AdminBaseComponent } from "../../admin.base.component";
 import { Helper } from "../../../../app/common/helper.extenstions";
 import { AdminUserService } from "../../services/users/admin.user.services";
 import { AddPersonDto } from "../../../viewmodels/User/Person.add.dto";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from  '@angular/router';
 
 @Component({
     selector: 'admin-edit-user',
     templateUrl: 'admin.editprofile.component.html',
     standalone: true,
-    styles: [''],
+    styleUrls: ['./admin.editprofile.component.css'],
     imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
 })
 
@@ -26,19 +26,17 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
 
     ngOnInit(): void {
         this.editUserForm = this.initForm();
-        const userId = this.route.snapshot.params['id']; 
-        console.log("userids", userId)
+        const userId = this.route.snapshot.params['id'];
         if (userId) {
             this.adminuserservice.getUserbyId(userId).subscribe((response) => {
                 if (response?.isSuccess && response.data) {
                     const user = response.data;
-                    console.log("User data received:", user.lastName);
-                
                     this.editUserForm.patchValue({
                       firstname: user.firstName,
                       lastname: user.lastName,
                       email: user.email,
-                      mobile: user.mobile
+                      mobile: user.mobile,
+                      id:user.id,
                     });
                   } else {
                     console.error("Failed to load user data", response);
@@ -50,6 +48,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
 
     initForm(): FormGroup {
         return this.fb.group({
+            id : new FormControl(null),
             firstname: new FormControl(null, [Validators.required]),
             lastname: new FormControl(null, [Validators.required]),
             email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
@@ -60,10 +59,8 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
     onSubmit() {
         console.log("form submited")
         let isValid = this.validateForm(this.editUserForm);
-        console.log("isValid")
         if (isValid) {
             const userId = this.route.snapshot.params['id'];
-
             const dto: AddPersonDto = this.editUserForm.value;
             this.adminuserservice.add(dto, userId).subscribe(response =>{
                 console.log("User udated successfully!")
@@ -76,7 +73,6 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
 
     allowOnlyNumbers(event: KeyboardEvent) {
         const charCode = event.key.charCodeAt(0);
-        // Allow only digits (0�9)
         if (charCode < 48 || charCode > 57) {
             event.preventDefault();
         }

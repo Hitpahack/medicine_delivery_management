@@ -1,12 +1,14 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
+import { AdminBaseComponent } from '../../admin.base.component';
+import { FormBuilder } from '@angular/forms';
 declare var $: any;
 
 @Component({
   selector: 'app-pharmacy-details',
   templateUrl: './admin.pharmacydetails.component.html'
 })
-export class AdminPharmacyDetailsComponent implements OnInit, AfterViewInit {
+export class AdminPharmacyDetailsComponent extends AdminBaseComponent implements OnInit, AfterViewInit {
     pharmacyId: number = 0;
     pharmacyDetails: any;
 
@@ -77,11 +79,15 @@ export class AdminPharmacyDetailsComponent implements OnInit, AfterViewInit {
       }
   ]
 
-
-  constructor(private route: ActivatedRoute) {}
+  constructor(
+    public router: Router, private actroute: ActivatedRoute, public fb: FormBuilder
+) {
+    super(router, fb);
+}
+  //constructor(private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    this.pharmacyId = Number(this.route.snapshot.paramMap.get('id'));
+    this.pharmacyId = Number(this.actroute.snapshot.paramMap.get('id'));
     this.pharmacyDetails = this.allPharmacies.find(x => x.id === this.pharmacyId);
   }
 

@@ -1,0 +1,104 @@
+/* Container Styling */
+.card.auth_form {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    max-width: 500px;
+    margin: 40px auto;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Legend */
+.card.auth_form legend {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Grid Layout */
+.form-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Input Group (shared for input & select) */
+.input-group {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+/* Input & Select */
+.input-group input,
+.input-group select {
+    width: 94%;
+    padding: 14px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: all 0.3s;
+    background-color: #fff;
+    appearance: none;
+}
+
+/* Focus styles */
+.input-group input:focus,
+.input-group select:focus {
+    border-color: #4a90e2;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+/* Floating Label */
+.float-lbl {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    font-size: 14px;
+    color: #888;
+    background-color: #fff;
+    padding: 0 5px;
+    transition: all 0.2s;
+    pointer-events: none;
+}
+
+/* Floating effect on focus or when input has value */
+.input-group input:focus + .float-lbl,
+.input-group input:not(:placeholder-shown) + .float-lbl,
+.input-group select:focus + .float-lbl,
+.input-group select:valid + .float-lbl {
+    top: -8px;
+    left: 10px;
+    font-size: 12px;
+    color: #4a90e2;
+}
+
+/* Error Messages */
+.input-group div {
+    color: #e53935;
+    font-size: 13px;
+    margin-top: 4px;
+}
+
+/* Submit Button Styling */
+.form-actions {
+    text-align: center;
+}
+
+button[type="submit"] {
+    background-color: #4a90e2;
+    color: white;
+    padding: 10px 24px;
+    font-size: 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #357ab8;
+}

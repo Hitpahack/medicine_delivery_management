@@ -10,28 +10,27 @@ import { AddPersonDto } from "../../../viewmodels/User/Person.add.dto";
 import { ActivatedRoute } from '@angular/router';
 
 @Component({
-    selector: 'admin-set-password',
-    templateUrl: './admin.setpassword.component.html',
+    selector: 'admin-Change-password',
+    templateUrl: './admin.changepassword.component.html',
     standalone: true,
     styles: [''],
     imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
 })
 
-
-export class SetPassword extends AdminBaseComponent implements OnInit {
-    SetPasswordForm: FormGroup;
+export class ChangePassword extends AdminBaseComponent implements OnInit{
+    ChangePasswordForm: FormGroup;
 
     constructor(public router: Router, public fb: FormBuilder, public validator: CustomValidator, public adminuserservice: AdminUserService, private route: ActivatedRoute) {
         super(router, fb);
     }
 
+    
     ngOnInit(): void {
-        this.SetPasswordForm = this.initForm();
+        this.ChangePasswordForm = this.initForm();
     }
 
     initForm(): FormGroup {
         return this.fb.group({
-          CurrentPassword: new FormControl(null, [Validators.required]),
           Password: new FormControl(null, [Validators.required]),
           ConfirmPassword: new FormControl(null, [Validators.required]),
         },
@@ -41,14 +40,14 @@ export class SetPassword extends AdminBaseComponent implements OnInit {
       );
       }
 
-    onSubmit() {
-      let isValid = this.validateForm(this.SetPasswordForm)
-      if(isValid){ 
-        this.adminuserservice.setpassword(this.SetPasswordForm.value).subscribe(response =>{
-                console.log("User udated successfully!")
+      onSubmit() {
+        let isValid = this.validateForm(this.ChangePasswordForm)
+        if(isValid){
+            this.adminuserservice.changepassword(this.ChangePasswordForm.value).subscribe(response =>{
+                alert(response)
             })
+        }
+        else
+        Helper.ShowError('Please fill the required fields');
       }
-      else
-      Helper.ShowError('Please fill the required fields');
-    }
 }

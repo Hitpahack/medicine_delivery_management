@@ -14,6 +14,9 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using static RepMed.Core.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Security.Claims;
+using System.Data.Common;
 
 namespace RepMed.Services
 {
@@ -24,7 +27,7 @@ namespace RepMed.Services
         Task<APIsResponse<string>> ForgotPassword(string Email);
         Task<APIsResponse<bool>> ResetPassword(ResetPasswordDTO model);
         Task<APIsResponse<bool>> ChangePassword(ChangePasswordDto reqDto);
-
+        Task<APIsResponse<string>> LogoutAsync(ClaimsPrincipal user);
     }
 
     public class AccountService : BaseService, IAccountService
@@ -95,7 +98,7 @@ namespace RepMed.Services
                             var loginObj = _mapper.Map<Login_ResDto, EntityUsersDto>(userObj);
 
                             IJwtManager jwtManager = service.ServiceProvider.GetService<IJwtManager>();
-                            JtwTokenResponse jwtToken = jwtManager.GenerateJWT(userObj.Id, userObj.Email, userObj.Roles.Select(r => r.Name).ToArray());
+                            JtwTokenResponse jwtToken = jwtManager.GenerateJWT(userObj.Id, userObj.Email, userObj.Roles.Select(r => r.RoleName).ToArray());
 
                             loginObj.Token = new JwtTokenDto
                             {
@@ -446,10 +449,36 @@ namespace RepMed.Services
         }
 
 
-
         public void Dispose()
         {
             GC.SuppressFinalize(this);
+        }
+
+        public async Task<APIsResponse<string>> LogoutAsync(ClaimsPrincipal user)
+        {
+            try
+            {
+                var userId = user.FindFirst("UserId")?.Value;
+                var token = user.FindFirst("Token")?.Value;
+                if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+                    return new APIsError<string>("Invalid token or user");
+
+
+                // Optional: Invalidate the token by deleting from DB or marking as expired
+                var sql = $@"
+                            UPDATE {DbTables.tblUserJWTTokenLog}
+                            SET IsActive = 0, RevokedOn = '{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}'
+                            WHERE UserId = @UserId AND Token = @Token AND IsActive = 1;
+                        ";
+
+                await _idbConnection.ExecuteAsync(sql, new { UserId = userId, Token = token }, transaction: _idbTransaction);
+
+                return new APIsSuccsss<string>("Logout successful");
+            }
+            catch (Exception ex)
+            {
+                return new APIsError<string>(ex.GetActualError());
+            }
         }
     }
 }

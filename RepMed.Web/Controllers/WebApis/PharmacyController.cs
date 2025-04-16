@@ -31,6 +31,7 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IPersonService personService = new PersonService(db, tran))
                     {
+                        reqDto.User.Role = "pharmacy";
                         var user = await base.AddUser(reqDto.User, Id);
                         if (!user.IsSuccess)
                         {
@@ -65,7 +66,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("getpharmacies")]
         [HttpPost]
-        public async Task<IActionResult> Get([FromBody] PharmacyPagingRequest search)
+        public async Task<IActionResult> GetAll([FromBody] PharmacyPagingRequest search)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -105,6 +106,26 @@ namespace RepMed.Web.Controllers.WebApis
                             tran.Commit();
                             return Ok();
                         }
+                    }
+                }
+            }
+        }
+
+        [Route("getpharmacy/{Id?}")]
+        [HttpGet]
+        public async Task<IActionResult> Get(long Id)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
+                    {
+                        var pharmacy = await pharmacyService.GetPharmacy(Id);
+                        if (!pharmacy.IsSuccess)
+                            return BadRequest();
+                        return Ok(pharmacy.Data);
                     }
                 }
             }

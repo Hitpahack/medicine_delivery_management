@@ -42,8 +42,6 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit  {
    }
 
     onSubmit() {
-        debugger;
-        console.log("Hello");
        let isValid = this.validateForm(this.loginForm);
        if(isValid){
         console.log("form is valid")

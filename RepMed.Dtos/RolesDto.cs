@@ -6,7 +6,7 @@ namespace RepMed.Dtos
 {
     public class BasicRoleDto 
     {
-        public string Name { get; set; }
+        public string RoleName { get; set; }
         public string Description { get; set; }
     }
 

@@ -6,10 +6,8 @@ namespace RepMed.Dtos
 {
    public class BasePerson
     {
-        [MinLength(3)]
-        public string FirstName { get; set; }
-        [MinLength(3)]
-        public string LastName { get; set; }
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
         [Required]
         [DataType(DataType.EmailAddress)]
         [EmailAddress]
@@ -18,7 +16,7 @@ namespace RepMed.Dtos
     }
     public class BasePersonDto : BasePerson
     {
-        public string Gender { get; set; }
+        public string? Gender { get; set; }
         public DateTime? DateOfBirth { get; set; }
         [Required]
         [RegularExpression(@"^(\d{10})|(\d{4}[- ])(\d{3}[- ])(\d{3})|(\d{1,3}[- ])(\d{4}[- ]\d{3}[- ]\d{3})|(\+\d{1,3}[- ])(\d{4}[- ]\d{3}[- ]\d{3})|(\d{1,3}[- ])(\d{7,10})|(\d{1,3}[- ])(\d{3}[- ])(\d{4})|(\+\d{1,3}[- ]?)(\d{7,12})|(\+\d{1,3}[- ]?)(\d{3}[- ])(\d{4})$/", ErrorMessage = "Invalid phone no")]
@@ -69,14 +67,14 @@ namespace RepMed.Dtos
     public class AddPersonDto : BasicPersonsDto
     {
      
-        [Required]
+        [Core.RequiredIf("Id", "ShouldRequireReason")]
         [MaxLength(25, ErrorMessage = "Maximum 15 characters allow ")]
         [MinLength(3, ErrorMessage = "Minimum 3 characters allow ")]
         //[StandardPassword]
         [DataType(DataType.Password)]
         [Core.IgnoreDapper]
         public string Password { get; set; }
-        [Required]
+        [Core.RequiredIf("Id", "ShouldRequireReason")]
         [MaxLength(25, ErrorMessage = "Maximum 15 characters allow ")]
         [MinLength(3, ErrorMessage = "Minimum 3 characters allow ")]
         //[StandardPassword]
@@ -90,12 +88,16 @@ namespace RepMed.Dtos
         public bool? IsActive { get; set; }
 
         [Core.IgnoreDapper]
-        public AddAddressDto Address { get; set; }
+        public AddAddressDto? Address { get; set; }
         [Core.IgnoreDapper]
-        [Required]
         public string Role { get; set; }
+        public long? Id { get; set; } = 0;
 
-		
-	}
+        private bool ShouldRequireReason(object status)
+        {
+            return Id == 0;
+        }
+
+    }
     
 }
