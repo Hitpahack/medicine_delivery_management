@@ -6,9 +6,7 @@ namespace RepMed.Dtos
 {
    public class BasePerson
     {
-        [MinLength(3)]
         public string? FirstName { get; set; }
-        [MinLength(3)]
         public string? LastName { get; set; }
         [Required]
         [DataType(DataType.EmailAddress)]
@@ -92,7 +90,6 @@ namespace RepMed.Dtos
         [Core.IgnoreDapper]
         public AddAddressDto? Address { get; set; }
         [Core.IgnoreDapper]
-        [Required]
         public string Role { get; set; }
         public long? Id { get; set; } = 0;
 

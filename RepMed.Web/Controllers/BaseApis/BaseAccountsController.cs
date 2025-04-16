@@ -3,6 +3,7 @@ using MySqlConnector;
 using RepMed.Core;
 using RepMed.Dtos;
 using RepMed.Services;
+using System.Security.Claims;
 using System.Threading.Tasks;
 
 namespace RepMed.Web.Controllers.BaseApis
@@ -35,6 +36,27 @@ namespace RepMed.Web.Controllers.BaseApis
                 }
             }
         }
+        protected async Task<APIsResponse<string>> Logout()
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IAccountService accountService = new AccountService(db, tran))
+                    {
+                        var logout = await accountService.LogoutAsync(User);
+                        if (logout.IsSuccess)
+                            tran.Commit();
+                        else
+                            tran.Rollback();
+
+                        return logout;
+                    }
+                }
+            }
+        }
+
         protected async Task<APIsResponse<string>> ForgotPassword(ForgotPasswordDtos reqDto)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
