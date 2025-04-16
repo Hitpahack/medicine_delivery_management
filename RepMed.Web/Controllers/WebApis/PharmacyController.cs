@@ -112,7 +112,7 @@ namespace RepMed.Web.Controllers.WebApis
         }
 
         [Route("getpharmacy/{Id?}")]
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Get(long Id)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))

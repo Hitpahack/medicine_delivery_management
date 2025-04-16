@@ -1,6 +1,6 @@
 <div class="authentication">
     <div class="pharmacy-form-container">
-        <form formvalidator class="card auth_form form_validation" [formGroup]="editpharmacyForm" (ngSubmit)="onSubmit()">
+        <form class="card auth_form form_validation" [formGroup]="editpharmacyForm" (ngSubmit)="onSubmit()">
           <!-- Section 1: Pharmacy -->
           <fieldset formGroupName="pharmacy">
             <legend>Pharmacy Details</legend>
@@ -58,13 +58,10 @@
                 </div>
     
                 <div class="input-group mb-4 float">
-                    <input type="email" placeholder=" " formControlName="officialEmail" class="form-control" required>
+                    <input type="email" placeholder=" " formControlName="officialEmail" class="form-control" [readonly]="true">
                     <label class="float-lbl">Official Email *</label>
                     <div *ngIf="editpharmacyForm.get('officialEmail')?.touched && editpharmacyForm.get('officialEmail')?.errors?.['required']">
                       Official Email is required.
-                    </div>
-                    <div *ngIf="editpharmacyForm.get('officialEmail')?.touched && editpharmacyForm.get('officialEmail')?.errors?.['email']">
-                      Please enter a valid email address.
                     </div>
                     
                 </div>
@@ -110,44 +107,39 @@
                 </div>
             </div>
             <div class="form-grid mt-3" style="margin-top: 2rem !important;">
+              <div class="input-group mb-4 float">
+                  <select formControlName="countryId" class="form-control" required>
+                    <option value="" disabled selected>-- Select Country --</option>
+                    <option *ngFor="let c of countries" [value]="c.id">{{ c.name }}</option>
+                  </select>
+                  <label class="float-lbl">Country *</label>
+                  <div *ngIf="editpharmacyForm.get('countryId')?.touched && editpharmacyForm.get('countryId')?.errors?.['required']">Country is required.</div>
+                </div>
+  
                 <div class="input-group mb-4 float">
-                    <select formControlName="countryId" class="form-control" required>
-                      <option value="" disabled selected>Select Country</option>
-                      <option value="1">India</option>
-                      <option value="2">USA</option>
-                      <option value="3">UK</option>
-                    </select>
-                    <label class="float-lbl">Country *</label>
-                    <div *ngIf="editpharmacyForm.get('countryId')?.touched && editpharmacyForm.get('countryId')?.errors?.['required']">Country is required.</div>
-                  </div>
-    
-                  <div class="input-group mb-4 float">
-                    <select formControlName="stateId" class="form-control" required>
-                      <option value="" disabled selected>Select State</option>
-                  <option value="1">Maharashtra</option>
-                  <option value="2">Karnataka</option>
-                  <option value="3">Tamil Nadu</option>
-                    </select>
-                    <label class="float-lbl">State *</label>
-                    <div *ngIf="editpharmacyForm.get('stateId')?.touched && editpharmacyForm.get('stateId')?.errors?.['required']">State is required.</div>
-                  </div>
-    
-                  <div class="input-group mb-4 float">
-                    <select formControlName="cityId" class="form-control" required>
-                      <option value="" disabled selected>Select City</option>
-                      <option value="1">Mumbai</option>
-                      <option value="2">Delhi</option>
-                      <option value="3">Bangalore</option>
-                    </select>
-                    <label class="float-lbl">City *</label>
-                    <div *ngIf="editpharmacyForm.get('cityId')?.touched && editpharmacyForm.get('cityId')?.errors?.['required']">City is required.</div>
-                  </div>
-            </div>
+                  <select formControlName="stateId" [disabled]="!states.length" class="form-control" required>
+                    <option value="" disabled selected>-- Select State --</option>
+                    <option *ngFor="let s of states" [value]="s.id">{{ s.name }}</option>
+                  </select>
+                  <label class="float-lbl">State *</label>
+                  <div *ngIf="editpharmacyForm.get('stateId')?.touched && editpharmacyForm.get('stateId')?.errors?.['required']">State is required.</div>
+                </div>
+  
+                <div class="input-group mb-4 float">
+                  <select formControlName="cityId" [disabled]="!cities.length" class="form-control" required>
+                   <option value="" disabled selected>-- Select City --</option>
+                   <option *ngFor="let c of cities" [value]="c.id">{{ c.name }}</option>
+                  </select>
+                  <label class="float-lbl">City *</label>
+                  <div *ngIf="editpharmacyForm.get('cityId')?.touched && editpharmacyForm.get('cityId')?.errors?.['required']">City is required.</div>
+                </div>
+          </div>
           </fieldset>
     
     
           <!-- Section 3: Pharmacy Person -->
-          <fieldset formGroupName="user">
+           
+          <!-- <fieldset formGroupName="user">
             <legend>Pharmacy Person</legend>
             <div class="form-grid">
             <div class="input-group mb-4 float">
@@ -196,7 +188,7 @@
                 <input type="file" formControlName="picture" class="form-control" accept="image/*">
               </div>
         </div>
-          </fieldset>
+          </fieldset> -->
       
           <!-- Section 4: Bank Details -->
           <fieldset formGroupName="pharmacyBankDetails">

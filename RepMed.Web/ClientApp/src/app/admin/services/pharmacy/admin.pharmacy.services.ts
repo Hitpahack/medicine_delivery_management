@@ -4,6 +4,9 @@ import { ApiResponse } from "../../../../app/common/api.response";
 import { adminBaseService } from "../admin.baseservice";
 import { admin_apiconfig } from "../../admin.endpoints";
 import { PharmacyDto } from "src/app/viewmodels/pharmacy/Pharmacy.add.dto";
+import { StateDto } from "src/app/viewmodels/address/state.dto";
+import { CityDto } from "src/app/viewmodels/address/city.dto";
+import { CountryDto } from "src/app/viewmodels/address/country.dto";
 
 @Injectable({
     providedIn: 'root'
@@ -31,6 +34,15 @@ export class AdminPharmacyService extends adminBaseService {
     }
     getpharmacybyId(id: number) {
         return this.http.get<ApiResponse<PharmacyDto>>(admin_apiconfig.endpoints.pharmacy.get(id), { headers: admin_apiconfig.requestSettings.header })
+    }
+    getcountry() {
+        return this.http.post<ApiResponse<CountryDto>>(admin_apiconfig.endpoints.pharmacy.getcountries, { headers: admin_apiconfig.requestSettings.header })
+    }
+    getstatebyId(id: number) {
+        return this.http.get<ApiResponse<StateDto>>(admin_apiconfig.endpoints.pharmacy.getstates(id), { headers: admin_apiconfig.requestSettings.header })
+    }
+    getcitiesbyId(id: number) {
+        return this.http.get<ApiResponse<CityDto>>(admin_apiconfig.endpoints.pharmacy.getcities(id), { headers: admin_apiconfig.requestSettings.header })
     }
 
     //#endregion

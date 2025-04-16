@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
     admin_apiv1: 'https://localhost:44379/api/v1/admin',
+    admin_api: 'https://localhost:44379/api/v1',
   secureKey: "7e794937-f63c-493a-9e64-3a12f2cc3028",
   loginSession_Minute: 15,
 }; 
