@@ -155,8 +155,7 @@ namespace RepMed.Core
                         UPDATE {tableName}
                         SET {updateColumns}
                         WHERE Id = @Id;
-                        SELECT * FROM {tableName} WHERE Id = @Id;
-                    ";
+                        SELECT * FROM {tableName} WHERE Id = @Id;";
 
             var parameters = new DynamicParameters(data);
             parameters.Add("Id", id);

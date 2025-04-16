@@ -165,6 +165,7 @@ namespace RepMed.Services
                 {
 
                     #region Update Pharmacy
+
                     var pharmacy = _idbConnection.Update<AddPharmacyDto>(
                                     _idbTransaction,
                                     DbTables.tblPharmacy,

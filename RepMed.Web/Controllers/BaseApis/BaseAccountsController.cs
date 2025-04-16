@@ -154,7 +154,7 @@ namespace RepMed.Web.Controllers.BaseApis
                         if(!person.IsSuccess)
                         {
                             tran.Rollback();
-                            return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Failed to add person." };
+                            return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = person.Message };
                         }
                         using (IUserServices userService = new UserServices(db, tran))
                         {
@@ -167,7 +167,7 @@ namespace RepMed.Web.Controllers.BaseApis
                             if(!user.IsSuccess)
                             {
                                 tran.Rollback();
-                                return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Failed to add user." };
+                                return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = user.Message };
                             }
                             if (!string.IsNullOrEmpty(reqDto.Role))
                             {
@@ -177,7 +177,7 @@ namespace RepMed.Web.Controllers.BaseApis
                                     if (!role.IsSuccess)
                                     {
                                         tran.Rollback();
-                                        return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Failed to add role." };
+                                        return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = role.Message };
                                     }
                                 }
                             }

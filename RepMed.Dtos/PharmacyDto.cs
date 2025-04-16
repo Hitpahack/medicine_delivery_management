@@ -86,15 +86,21 @@ namespace RepMed.Dtos
         public decimal? Longitude { get; set; }
 
     }
-
-    public class PharmacyDto: BasePharmacyDto
-    {
-        public AddPersonDto User { get; set; }
-    }
-
     public class BasePharmacyDto
     {
         public AddPharmacyDto Pharmacy { get; set; }
         public PharmacyBankDetailsDto PharmacyBankDetails { get; set; }
+    }
+    public class PharmacyDto: BasePharmacyDto
+    {
+        public AddPersonDto User { get; set; }
+    }
+    public class API_ADD_PH_DTO : BasePharmacyDto
+    {
+        public API_ADD_USER User { get; set; }
+    }
+    public class API_EDIT_PH_DTO : BasePharmacyDto
+    {
+        public API_EDIT_USER User { get; set; }
     }
 }

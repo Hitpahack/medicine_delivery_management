@@ -38,7 +38,7 @@ namespace RepMed.Services
                 if (personid > 0)
                 {
                     #region Update User
-                    var person = _idbConnection.Update<EntityPersonsDto>(_idbTransaction, DbTables.tblPersons,
+                    var person = _idbConnection.Update<EntityUsersDto>(_idbTransaction, DbTables.tblUser,
                                                new Dictionary<string, string> {
                                                     { "FirstName", reqDto.FirstName },
                                                     { "LastName", reqDto.LastName }
