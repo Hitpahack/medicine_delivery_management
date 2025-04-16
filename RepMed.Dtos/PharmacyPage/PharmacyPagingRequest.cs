@@ -16,7 +16,7 @@ namespace RepMed.Dtos.PharmacyPage
         public string? StatusFilter { get; set; }
         public int? Page => (start / length) + 1;
         public int? PageSize => length;
-        private string? date;
+        //private string? date;
         //public string? Date
         //{
         //    get { return date; }

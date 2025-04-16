@@ -69,14 +69,14 @@ namespace RepMed.Dtos
     public class AddPersonDto : BasicPersonsDto
     {
      
-        [Required]
+        [Core.RequiredIf("Id", "ShouldRequireReason")]
         [MaxLength(25, ErrorMessage = "Maximum 15 characters allow ")]
         [MinLength(3, ErrorMessage = "Minimum 3 characters allow ")]
         //[StandardPassword]
         [DataType(DataType.Password)]
         [Core.IgnoreDapper]
         public string Password { get; set; }
-        [Required]
+        [Core.RequiredIf("Id", "ShouldRequireReason")]
         [MaxLength(25, ErrorMessage = "Maximum 15 characters allow ")]
         [MinLength(3, ErrorMessage = "Minimum 3 characters allow ")]
         //[StandardPassword]
@@ -94,8 +94,13 @@ namespace RepMed.Dtos
         [Core.IgnoreDapper]
         [Required]
         public string Role { get; set; }
+        public long? Id { get; set; } = 0;
 
-		
-	}
+        private bool ShouldRequireReason(object status)
+        {
+            return Id == 0;
+        }
+
+    }
     
 }

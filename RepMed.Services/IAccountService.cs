@@ -14,6 +14,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using static RepMed.Core.Enums;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace RepMed.Services
 {
@@ -24,7 +25,6 @@ namespace RepMed.Services
         Task<APIsResponse<string>> ForgotPassword(string Email);
         Task<APIsResponse<bool>> ResetPassword(ResetPasswordDTO model);
         Task<APIsResponse<bool>> ChangePassword(ChangePasswordDto reqDto);
-
     }
 
     public class AccountService : BaseService, IAccountService
@@ -95,7 +95,7 @@ namespace RepMed.Services
                             var loginObj = _mapper.Map<Login_ResDto, EntityUsersDto>(userObj);
 
                             IJwtManager jwtManager = service.ServiceProvider.GetService<IJwtManager>();
-                            JtwTokenResponse jwtToken = jwtManager.GenerateJWT(userObj.Id, userObj.Email, userObj.Roles.Select(r => r.Name).ToArray());
+                            JtwTokenResponse jwtToken = jwtManager.GenerateJWT(userObj.Id, userObj.Email, userObj.Roles.Select(r => r.RoleName).ToArray());
 
                             loginObj.Token = new JwtTokenDto
                             {
@@ -444,7 +444,6 @@ namespace RepMed.Services
             }
             return usercode;
         }
-
 
 
         public void Dispose()

@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging.Abstractions;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using MySqlConnector;
 using RepMed.Core;
 using RepMed.Dtos;
@@ -36,8 +35,6 @@ namespace RepMed.Web.Controllers.BaseApis
                 }
             }
         }
-
-
         protected async Task<APIsResponse<string>> ForgotPassword(ForgotPasswordDtos reqDto)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
