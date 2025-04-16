@@ -1,16 +1,17 @@
 ﻿using Dapper;
+using Microsoft.AspNetCore.Mvc;
 using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
 using RepMed.Dtos.DataTables;
 using RepMed.Dtos.PharmacyPage;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace RepMed.Services
@@ -194,12 +195,15 @@ namespace RepMed.Services
                 parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
                 parameters.Add("Order_by", reqDto.order_by, DbType.String);
 
-                var result = await _idbConnection.QueryAsync<PharmacyPagingResponse>(
-                    sql: "GET_PHARMACY_PAGED",
-                    param: parameters,
-                    commandType: CommandType.StoredProcedure,
-                    transaction: _idbTransaction 
-                );
+                var result = (await _idbConnection.QueryAsync<PharmacyPagingResponse>(
+                               sql: "GET_PHARMACY_PAGED",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                )).ToList();
+                #endregion
+                var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
+                var output = new Datatable<PharmacyPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
                 #region Get All Pharmacy Commented
 
                 //var sql = @"
@@ -217,13 +221,10 @@ namespace RepMed.Services
                 //        splitOn: "PharmacyId"
                 //);
                 #endregion
-
-                if (result.Any())
-                    apiResponse = new APIsSuccsss<Datatable<PharmacyPagingResponse>>("Pharmacy details retrieved successfully", result);
+                if(result.Any())
+                    return await Task.FromResult(new APIsSuccsss<Datatable<PharmacyPagingResponse>>(_validateMessages.RetriveSuccess, output));
                 else
-                    apiResponse = new APIsSuccsss<Datatable<PharmacyPagingResponse>>("No Pharmacy Found", result);
-                #endregion
-                return await Task.FromResult(apiResponse);
+                    return await Task.FromResult(new APIsSuccsss<Datatable<PharmacyPagingResponse>>(_validateMessages.NotExist));
 
             }
             catch (Exception ex)
