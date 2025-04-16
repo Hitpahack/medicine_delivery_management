@@ -53,6 +53,19 @@
                         </div>
                 </div>
 
+                <div class="input-group mb-3 float">
+                        <select class="form-control" formControlName="Role">
+                            <option value="" disabled selected>Select Role</option>
+                            <option *ngFor="let role of roles" [value]="role.text">
+                                {{ role.text }}
+                            </option>
+                        </select>
+                        <label class="float-lbl">Role *</label>
+                        <div *ngIf="addUserForm.get('Role')?.touched && addUserForm.get('Role')?.errors?.['required']">
+                            Role is required.
+                        </div>
+                    </div>
+
                 <div class="form-actions">
                         <button type="submit">Add User</button>
                 </div>

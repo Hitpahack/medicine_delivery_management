@@ -7,18 +7,21 @@ import { AdminBaseComponent } from "../../admin.base.component";
 import { Helper } from "../../../../app/common/helper.extenstions";
 import { AdminUserService } from "../../services/users/admin.user.services";
 import { AddPersonDto } from "../../../viewmodels/User/Person.add.dto";
+import { Role } from "../../../viewmodels/User/role.model";
 
 @Component({
 selector: 'admin-add-user',
 templateUrl: './admin.adduser.component.html',
 standalone: true,
-styles: [''],
+styleUrls: ['./admin.editprofile.component.css'],
 imports: [CommonModule,ReactiveFormsModule, FormsModule],
 })
 
 export class AddUserComponent extends AdminBaseComponent implements OnInit{
 addUserForm: FormGroup;
 addUserData: AddPersonDto;
+roles: Role[] = [];
+
 constructor(public router: Router, public fb: FormBuilder, public validator: CustomValidator, public adminuserservice:AdminUserService)
 {
     super(router, fb);
@@ -26,17 +29,16 @@ constructor(public router: Router, public fb: FormBuilder, public validator: Cus
 
 ngOnInit(): void {
     this.addUserForm = this.initForm();
-this.addUserForm.get('email')?.disable();
     this.adminuserservice.getRoles().subscribe((res) => {
       if (res?.isSuccess) {
-          //this.roles = res.data;
+          this.roles = res.data;
       }
   });
   }    
 
   initForm(): FormGroup {
     const form = this.fb.group({
-      Role : new FormControl('subadmin'),
+      Role : new FormControl(null, [Validators.required]),
       email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
       mobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
       Password: new FormControl(null, [Validators.required]),
@@ -74,7 +76,6 @@ this.addUserForm.get('email')?.disable();
 
     allowOnlyNumbers(event: KeyboardEvent) {
         const charCode = event.key.charCodeAt(0);
-        // Allow only digits (0�9)
         if (charCode < 48 || charCode > 57) {
             event.preventDefault();
         }

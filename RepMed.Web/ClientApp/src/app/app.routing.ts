@@ -46,8 +46,8 @@ export const routes: Routes = [
       
       { path: 'adduser', component: AddUserComponent },
       { path: 'editprofile/:id', component: EditProfile },
-
-      { path: 'setpassword', component:SetPassword}
+      { path: 'changepassword', component:SetPassword},
+      { path: 'setpassword', component:ChangePassword}
     ]
   },
   {

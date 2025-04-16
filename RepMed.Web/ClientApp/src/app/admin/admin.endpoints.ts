@@ -36,7 +36,7 @@ export const admin_apiconfig =
       get: (id: number) => environment.admin_apiv1 + '/users/get/' + id,
       update: (id: number) => environment.admin_apiv1 + '/users/addedituser/' + id,
       setpassword: environment.admin_apiv1 + '/users/change-password',
-      userroles: environment.admin_apiv1 + '',
+      userroles: 'https://localhost:44379/api/v1/masters/getroles',
       changepassword: environment.admin_apiv1 +'/users/SetPassword'
     }
   }
