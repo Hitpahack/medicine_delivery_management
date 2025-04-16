@@ -62,7 +62,7 @@ export class CustomValidator {
   }
 
   passwordMatchValidator(control: AbstractControl) {
-    const password = control.get('NewPassword')?.value;
+    const password = control.get('Password')?.value;
     const confirmpassword = control.get('ConfirmPassword')?.value;
     return password === confirmpassword ? null : { passwordMismatch: true };
   }

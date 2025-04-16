@@ -16,7 +16,14 @@
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="zmdi zmdi-account-circle"></i></span>
                             </div>
-
+                        </div>
+                        <div *ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.invalid" class="text-danger small mt-1">
+                            <div *ngIf="loginForm.get('email')?.errors?.['required']">
+                                Email is required.
+                            </div>
+                            <div *ngIf="loginForm.get('email')?.errors?.['email']">
+                                {{ loginForm.get('email')?.errors?.['error'] }}
+                            </div>
                         </div>
                         <div class="input-group mb-3 flate-inp float">
                             <input validator type="password" formControlName="password" class="form-control" placeholder=" ">

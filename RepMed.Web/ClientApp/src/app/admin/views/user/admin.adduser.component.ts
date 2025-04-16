@@ -26,21 +26,42 @@ constructor(public router: Router, public fb: FormBuilder, public validator: Cus
 
 ngOnInit(): void {
     this.addUserForm = this.initForm();
+this.addUserForm.get('email')?.disable();
+    this.adminuserservice.getRoles().subscribe((res) => {
+      if (res?.isSuccess) {
+          //this.roles = res.data;
+      }
+  });
   }    
 
   initForm(): FormGroup {
-    return this.fb.group({
+    const form = this.fb.group({
+      Role : new FormControl('subadmin'),
       email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
       mobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
-      Password : new FormControl(null, [Validators.required]),
-      ConfirmPassword : new FormControl(null, [Validators.required]),
+      Password: new FormControl(null, [Validators.required]),
+      ConfirmPassword: new FormControl(null, [Validators.required]),
+    }, {
+      validators: this.validator.passwordMatchValidator
     });
+  
+    // 👇 Re-evaluate the form group validator when password or confirm password changes
+    form.get('Password')?.valueChanges.subscribe(() => {
+      form.updateValueAndValidity({ onlySelf: false });
+    });
+  
+    form.get('ConfirmPassword')?.valueChanges.subscribe(() => {
+      form.updateValueAndValidity({ onlySelf: false });
+    });
+  
+    return form;
   }
 
   onSubmit() {
 
     let isValid = this.validateForm(this.addUserForm);
        if(isValid){
+        console.log(this.addUserForm.value)
         const dto: AddPersonDto = this.addUserForm.value;
            this.adminuserservice.add(dto,0).subscribe({
                next: res => console.log("Success", res),

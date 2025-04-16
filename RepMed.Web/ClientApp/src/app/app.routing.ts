@@ -17,6 +17,7 @@ import { AdminPharmacyDetailsComponent} from './admin/views/pharmacy/admin.pharm
 import { AddUserComponent } from '../app/admin/views/user/admin.adduser.component';
 import { EditProfile } from '../app/admin/views/user/admin.editprofile.component';
 import { SetPassword } from './admin/views/user/admin.setpassword.component';
+import { ChangePassword } from './admin/views/user/admin.changepassword.component';
 
 
 
@@ -44,7 +45,9 @@ export const routes: Routes = [
       { path: 'adduser', component: AddUserComponent },
       { path: 'editprofile/:id', component: EditProfile },
 
-      { path: 'setpassword', component:SetPassword}
+      { path: 'setpassword', component:SetPassword},
+
+      { path: 'changepassword', component:ChangePassword}
     ]
   },
   {
