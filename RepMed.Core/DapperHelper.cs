@@ -124,8 +124,12 @@ namespace RepMed.Core
 
         #region Update Query
 
-        public static TResult Update<TResult>(this IDbConnection con,IDbTransaction tran,
-            string tableName,string updateColumns,object data,
+        public static TResult Update<TResult>(
+            this IDbConnection con,
+            IDbTransaction tran,
+            string tableName,
+            string updateColumns, 
+            object data,
             long id,
             string conditionColumn = "Id"
         ) where TResult : class
@@ -144,6 +148,7 @@ namespace RepMed.Core
 
             return con.QueryFirstOrDefault<TResult>(sql, parameters, tran);
         }
+
 
         public static TResult Update<TResult>(this IDbConnection con, IDbTransaction tran,
              string tableName, string updateColumns,
@@ -231,6 +236,11 @@ namespace RepMed.Core
             var query_ = AsQueryParma(typeof(T), "", excludesProperties);
             return string.Join(",", query_.Select(r => string.Concat(prefix, '"', r, '"')));
 
+        }
+        public static string UpdateQueryAsColumnsParma<T, T2>(string prefix = "", params string[] excludesProperties) where T : class
+        {
+            var columns = AsQueryParma(typeof(T), typeof(T2), "", excludesProperties);
+            return string.Join(", ", columns.Select(r => $"`{r}` = @{r}"));
         }
 
         public static string QueryAsColumnsParma<T, T2>(string prefix = "", params string[] excludesProperties) where T : class

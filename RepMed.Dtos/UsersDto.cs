@@ -60,8 +60,10 @@ namespace RepMed.Dtos
         [DataType(DataType.Password)]
         public string ConfirmPassword { get; set; }
         [JsonIgnore]
+        [Core.IgnoreDapper]
         public byte[] PasswordHash { get; set; }
         [JsonIgnore]
+        [Core.IgnoreDapper]
         public byte[] PasswordSalt { get; set; }
         public DateTime? CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

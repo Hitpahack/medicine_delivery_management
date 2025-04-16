@@ -30,41 +30,44 @@ namespace RepMed.Services
             try
             {
                 APIsResponse<EntityPersonsDto> apiResponse = default(APIsResponse<EntityPersonsDto>);
-                if (Id>0)
+                #region Check Email/Phone exist
+                if ((await IsEmailExist(reqDto.Email, true)))
+                {
+                    return await Task.FromResult(new APIsError<EntityPersonsDto>(
+                        _validateMessages.GetAlreadyExist(reqDto.Email, "Please choose another one")) as APIsResponse<EntityPersonsDto>);
+                }
+
+                if ((await IsPhoneExist(reqDto.Mobile)))
+                {
+                    return await Task.FromResult(new APIsError<EntityPersonsDto>(_validateMessages.GetAlreadyExist(reqDto.Mobile, "Please choose another one")) as APIsResponse<EntityPersonsDto>);
+                }
+                #endregion
+                if (Id > 0)
                 {
                     #region Update Person
                     var person = _idbConnection.Update<EntityPersonsDto>(
-                                    _idbTransaction,
-                                    DbTables.tblPersons,
-                                    DapperHelper.QueryAsColumnsParma<Person, AddPersonDto>(),
-                                    reqDto,
-                                    Id);
+                                _idbTransaction,
+                                DbTables.tblPersons,
+                                DapperHelper.UpdateQueryAsColumnsParma<Person, AddPersonDto>(),
+                                reqDto,
+                                Id,
+                                "Id"
+                            );
+
                     #endregion
                     #region Update Person Address
                     if (reqDto.Address != null)
                     {
                         EntityAddressDto address = _idbConnection.Update<EntityAddressDto>(_idbTransaction,
                         DbTables.tblUserAddress,
-                        DapperHelper.QueryAsColumnsParma<Useraddress, AddAddressDto>(),
-                        reqDto.Address,person.Id, "PersonId");
+                        DapperHelper.UpdateQueryAsColumnsParma<Useraddress, AddAddressDto>(),
+                        reqDto.Address, person.Id, "PersonId");
                     }
                     #endregion
                     apiResponse = new APIsSuccsss<EntityPersonsDto>(_validateMessages.Success, person);
                 }
                 else
                 {
-                    #region Check Email/Phone exist
-                    if ((await IsEmailExist(reqDto.Email, true)))
-                    {
-                        return await Task.FromResult(new APIsError<EntityPersonsDto>(
-                            _validateMessages.GetAlreadyExist(reqDto.Email, "Please choose another one")) as APIsResponse<EntityPersonsDto>);
-                    }
-
-                    if ((await IsPhoneExist(reqDto.Mobile)))
-                    {
-                        return await Task.FromResult(new APIsError<EntityPersonsDto>(_validateMessages.GetAlreadyExist(reqDto.Mobile, "Please choose another one")) as APIsResponse<EntityPersonsDto>);
-                    }
-                    #endregion
                     string sql;
                     #region Add Person
                     EntityPersonsDto person = _idbConnection.Insert<EntityPersonsDto>(_idbTransaction,
@@ -74,7 +77,6 @@ namespace RepMed.Services
                         reqDto);
 
                     #endregion
-
                     #region Add Person Address
                     if (reqDto.Address != null)
                     {
@@ -97,7 +99,7 @@ namespace RepMed.Services
             }
         }
 
-         public async Task<APIsResponse<bool>> IsPersonExist(string email)
+        public async Task<APIsResponse<bool>> IsPersonExist(string email)
         {
             #region Check Email/Phone exist
             if ((await IsEmailExist(email)))

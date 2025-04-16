@@ -168,13 +168,16 @@ namespace RepMed.Web.Controllers.BaseApis
                                 tran.Rollback();
                                 return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Failed to add user." };
                             }
-                            using (IAccountService accountService = new AccountService(db, tran))
+                            if (Id == 0)
                             {
-                                var role = await accountService.AddRoleAsync(user.Data, reqDto.Role);
-                                if (!role.IsSuccess)
+                                using (IAccountService accountService = new AccountService(db, tran))
                                 {
-                                    tran.Rollback();
-                                    return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Failed to add role." };
+                                    var role = await accountService.AddRoleAsync(user.Data, reqDto.Role);
+                                    if (!role.IsSuccess)
+                                    {
+                                        tran.Rollback();
+                                        return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Failed to add role." };
+                                    }
                                 }
                             }
                             tran.Commit();

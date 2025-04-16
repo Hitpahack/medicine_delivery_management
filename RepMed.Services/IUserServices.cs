@@ -40,9 +40,9 @@ namespace RepMed.Services
                     var response = _idbConnection.Update<EntityUsersDto>(
                                     _idbTransaction,
                                     DbTables.tblUser,
-                                    DapperHelper.QueryAsColumnsParma<User, AddUsersDto>(),
+                                    DapperHelper.UpdateQueryAsColumnsParma<User, AddUsersDto>(),
                                     reqDto,
-                                    Id);
+                                    Id,"PersonId");
                     #endregion
                     apiResponse = new APIsSuccsss<EntityUsersDto>(_validateMessages.Success, response);
                 }

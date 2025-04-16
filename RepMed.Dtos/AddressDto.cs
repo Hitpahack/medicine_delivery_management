@@ -45,6 +45,7 @@ namespace RepMed.Dtos
 
     public class AddAddressDto : BasicAddressDto
     {
+        [IgnoreDapper]
         public long PersonId { get; set; }
 
     }
