@@ -66,7 +66,7 @@ public partial class RepMedContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySql("server=localhost;port=3306;database=repmed;user=arka;password=Admin@1234", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.41-mysql"));
+        => optionsBuilder.UseMySql("server=localhost;port=3306;database=repmed;user=arka;password=Admin@1234", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.37-mysql"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -796,9 +796,24 @@ public partial class RepMedContext : DbContext
             entity.Property(e => e.Longitude).HasPrecision(9, 6);
             entity.Property(e => e.Pincode).HasMaxLength(10);
 
+            entity.HasOne(d => d.City).WithMany(p => p.Useraddresses)
+                .HasForeignKey(d => d.CityId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("useraddresses_ibfk_2");
+
+            entity.HasOne(d => d.Country).WithMany(p => p.Useraddresses)
+                .HasForeignKey(d => d.CountryId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("useraddresses_ibfk_5");
+
             entity.HasOne(d => d.Person).WithMany(p => p.Useraddresses)
                 .HasForeignKey(d => d.PersonId)
                 .HasConstraintName("useraddresses_ibfk_3");
+
+            entity.HasOne(d => d.State).WithMany(p => p.Useraddresses)
+                .HasForeignKey(d => d.StateId)
+                .OnDelete(DeleteBehavior.Cascade)
+                .HasConstraintName("useraddresses_ibfk_4");
         });
 
         modelBuilder.Entity<Userjwttokenlog>(entity =>

@@ -22,7 +22,7 @@ namespace RepMed.Dtos.PharmacyPage
             get { return date; }
             set
             {
-                if (!string.IsNullOrEmpty(value) && value.ToLower() != "all")
+                if (!string.IsNullOrEmpty(value) && (value != "string" || value != "all"))
                     date = ParseYearMonth(value);
                 else
                     date = "";

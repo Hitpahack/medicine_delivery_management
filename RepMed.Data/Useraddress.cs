@@ -23,5 +23,11 @@ public partial class Useraddress
 
     public decimal? Longitude { get; set; }
 
+    public virtual City City { get; set; }
+
+    public virtual Country Country { get; set; }
+
     public virtual Person Person { get; set; }
+
+    public virtual State State { get; set; }
 }

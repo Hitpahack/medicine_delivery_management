@@ -7,13 +7,18 @@
 <div class="container mt-4">
     <h3 class="mb-4 text-primary">📋 Pharmacy List</h3>
   
-    <table id="post_pharmacylist_datatable" class="table table-centered m-0">
+    <!-- <table id="post_pharmacylist_datatable" class="table table-centered m-0">
       <thead class="thead-light">
         <tr>
           <th style="width: 40px;"><input type="checkbox" /></th>
           
         </tr>
       </thead>
-    </table>
+    </table> -->
+    <app-dt-table
+    [ajaxUrl]="ajaxUrl"
+    [columns]="dtColumns"
+    [options]="dtOptions"
+  ></app-dt-table>
   </div>
   

@@ -48,9 +48,12 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit  {
        if(isValid){
         console.log("form is valid")
            this.accountservice.login(this.loginForm.value).subscribe(
-               (response)=>{
+               (response)=>{debugger;
                 if(!response.isSuccess){
                     
+                }
+                else{
+                    this.router.navigate(['/admin/dashboard']); // example: /dashboard
                 }
                },
                (err)=>{

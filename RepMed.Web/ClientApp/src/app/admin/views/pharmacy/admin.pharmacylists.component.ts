@@ -11,7 +11,7 @@ declare var $: any;
 
 @Component({
     selector: 'app-post-list',
-    templateUrl: './admin.pharmacylists.component.html',
+    templateUrl: './admin.pharmacylists.component.html'
 })
 export class AdminPharmacyListsComponent extends AdminBaseComponent implements OnInit  {
 
@@ -22,30 +22,41 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
         ) {
         super(router, fb);
     }
+    dtColumns = [
+    { title: 'ID', data: 'id' }
+    ];
+
+    dtOptions = {
+        processing: true,
+        serverSide: true,
+        searching: true
+    };
+
+    ajaxUrl = admin_apiconfig.endpoints.pharmacy.getPaged;
     ngOnInit(): void {
         const url = 'https://dummyjson.com/posts'; // Dummy API URL
 
-        $('#post_pharmacylist_datatable').DataTable({
-            processing: true,
-            serverSide: true,
-            searching: true,
-             drawCallback: function (settings) { },
-            "ajax": {
-                "url": admin_apiconfig.endpoints.pharmacy.getPaged,
-                "type": "POST",
-                contentType: "application/json; charset=utf-8",
-                dataType: "json", // Expect JSON response
-                "data": function (d) {
-                    d.search.value = $('#post-search-input').val();
-                    return JSON.stringify(d);
-                }
-            },
-            columns: [
-                {
-                    data: 'id', render: (data: any) =>
-                        `<input class="item_checkbox" id="${data}" type="checkbox" value="${data}" />`
-                }
-            ]
-        });
+        // $('#post_pharmacylist_datatable').DataTable({
+        //     processing: true,
+        //     serverSide: true,
+        //     searching: true,
+        //      drawCallback: function (settings) { },
+        //     "ajax": {
+        //         "url": admin_apiconfig.endpoints.pharmacy.getPaged,
+        //         "type": "POST",
+        //         contentType: "application/json; charset=utf-8",
+        //         dataType: "json", // Expect JSON response
+        //         "data": function (d) {
+        //             d.search.value = $('#post-search-input').val();
+        //             return JSON.stringify(d);
+        //         }
+        //     },
+        //     columns: [
+        //         {
+        //             data: 'id', render: (data: any) =>
+        //                 `<input class="item_checkbox" id="${data}" type="checkbox" value="${data}" />`
+        //         }
+        //     ]
+        // });
     }
 }
