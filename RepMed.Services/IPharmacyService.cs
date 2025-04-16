@@ -21,6 +21,7 @@ namespace RepMed.Services
         Task<APIsResponse<PharmacyBankDetailsDto>> AddUpdatePharmacyBankDetails(PharmacyBankDetailsDto reqDto, long Id);
         Task<APIsResponse<AddPharmacyDto>> AddUpdatePharmacy(AddPharmacyDto reqDto, long Id);
         Task<APIsResponse<Datatable<PharmacyPagingResponse>>> GetAllPharmacies(PharmacyPagingRequest reqDto);
+        Task<APIsResponse<BasePharmacyDto>> GetPharmacy(long Id);
         Task<APIsResponse<bool>> GenrateEmailToken(long newUserId, string userEmail);
     }
 
@@ -158,7 +159,7 @@ namespace RepMed.Services
                                    DapperHelper.QueryAsValuesParma<Pharmacy, AddPharmacyDto>(),
                                    reqDto);
                     #endregion
-                    apiResponse = new APIsSuccsss<AddPharmacyDto>("Pharmacy created successfully", pharmacy);
+                    apiResponse = new APIsSuccsss<AddPharmacyDto>(_validateMessages.AddSuccess, pharmacy);
                 }
                 else
                 {
@@ -171,7 +172,7 @@ namespace RepMed.Services
                                     reqDto,
                                     reqDto.Id);
                     #endregion
-                    apiResponse = new APIsSuccsss<AddPharmacyDto>("Pharmacy Updated successfully", pharmacy);
+                    apiResponse = new APIsSuccsss<AddPharmacyDto>(_validateMessages.UpdateSuccess, pharmacy);
 
                 }
                 return await Task.FromResult(apiResponse);
@@ -232,12 +233,46 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<Datatable<PharmacyPagingResponse>>(ex.GetActualError()));
             }
         }
+        public async Task<APIsResponse<BasePharmacyDto>> GetPharmacy(long Id)
+        {
+            try
+            {
+                APIsResponse<BasePharmacyDto> apiResponse = default;
+                #region Get All Pharmacy Commented
+                var sql = $@"
+                            SELECT *                             
+                            FROM {DbTables.tblPharmacy} p
+                            LEFT JOIN {DbTables.tblPharmacyBankDetails} b ON p.Id = b.PharmacyId where p.Id = {Id}";
+                var pharmacyDataList = (await _idbConnection.QueryAsync<AddPharmacyDto, PharmacyBankDetailsDto, BasePharmacyDto>(
+                                        sql,
+                                        (pharmacy, bankDetails) => new BasePharmacyDto
+                                        {
+                                            Pharmacy = pharmacy,
+                                            PharmacyBankDetails = bankDetails
+                                        },
+                                        transaction: _idbTransaction,
+                                        splitOn: "PharmacyId"
+                                    )).ToList();
+
+                var pharmacyData = pharmacyDataList.FirstOrDefault();
+                #endregion
+                if (pharmacyData !=null)
+                    apiResponse = new APIsSuccsss<BasePharmacyDto>(_validateMessages.RetriveSuccess, pharmacyData);
+                else
+                    return new APIsSuccsss<BasePharmacyDto>(_validateMessages.NotExist);
+                return await Task.FromResult(apiResponse);
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<BasePharmacyDto>(ex.GetActualError()));
+            }
+        }
 
         public void Dispose()
         {
             GC.SuppressFinalize(this);
         }
-
 
     }
 }
