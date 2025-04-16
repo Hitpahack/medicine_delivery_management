@@ -18,6 +18,7 @@ import { AdminPharmacyListsComponent } from "./views/pharmacy/admin.pharmacylist
 import { BrowserModule } from '@angular/platform-browser';
 import { DataTablesModule } from "angular-datatables";
 import { AppComponent } from "../app.component";
+import { EditPharmacy } from "./views/pharmacy/admin.pharmacyedit.component";
 
 
 @NgModule({
@@ -41,7 +42,8 @@ import { AppComponent } from "../app.component";
     AdminPharmacyListsComponent,
     BrowserModule,
     DataTablesModule,
-    AppComponent
+    AppComponent,
+    EditPharmacy
   ],
   exports: [AdminLayoutComponent]
 

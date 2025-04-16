@@ -27,7 +27,8 @@ export const admin_apiconfig =
 
     pharmacy: {
       add: (id: number) => environment.admin_apiv1 + '/pharmacy/addeditpharmacy/' + id,
-      getPaged: environment.admin_apiv1 + '/pharmacy/getpharmacies/'
+      getPaged: environment.admin_apiv1 + '/pharmacy/getpharmacies/',
+      get: (id: number) => environment.admin_apiv1 + '/pharmacy/get/' + id,
 
     },
     user: {

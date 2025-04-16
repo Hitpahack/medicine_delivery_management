@@ -35,52 +35,50 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
         //console.log('Add Pharmacy Page loaded!');
         this.phForm = this.initForm();
         const today = new Date();
-        this.minExpiryDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
+        this.minExpiryDate = today.toISOString().split('T')[0];
     }
 
     initForm(): FormGroup {
         return this.fb.group({
-            //email: new FormControl(null, [this.validator.ValidateEmail,Validators.required]),
-            ownerName: new FormControl(null, [Validators.required]),
-            storeName: new FormControl(null, [Validators.required]),
-            businessName: new FormControl(null, [Validators.required]),
-            licenseNumber: new FormControl(null, [Validators.required]),
-            //licenseExpiry: new FormControl(null, [Validators.required]),
-            licenseExpiry: [null, [Validators.required, this.validator.futureDateValidator]],
-            gstNumber: new FormControl(null, [Validators.required, Validators.pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/)]),
-            registeredMobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
-            //registeredMobile: ['', [Validators.required,Validators.pattern(/^[0-9]{10}$/)]],  // only 10 digit numbers allowed
-            officialEmail: new FormControl(null, [Validators.required, Validators.email]),
-            storeMobile1: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
-            storeEmail1: new FormControl(null, [Validators.required, Validators.email]),
-            storeEmail2: new FormControl(null, [Validators.required, Validators.email]),
-
-            address1: new FormControl(null, [Validators.required]),
-            address2: new FormControl(null, [Validators.required]),
-            countryId: new FormControl(null, [Validators.required]),
-            stateId: new FormControl(null, [Validators.required]),
-            cityId: new FormControl(null, [Validators.required]),
-
-            firstName: new FormControl(null, [Validators.required]),
-            lastName: new FormControl(null, [Validators.required]),
-            personEmail: new FormControl(null, [Validators.required, Validators.email]),
-            personMobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
-            dateofBirth: new FormControl(null, [Validators.required, this.validator.pastDateOnly]),
-            gender: new FormControl(null, [Validators.required]),
-            picture: new FormControl(null, [Validators.required]),
-
-            bankName: new FormControl(null, [Validators.required]),
-            accountholderName: new FormControl(null, [Validators.required]),
-            accountNumber: new FormControl(null, [Validators.required]),
-            ifscCode: new FormControl(null, [Validators.required]),
-            branchName: new FormControl(null, [Validators.required]),
-            upiId: new FormControl(null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/)])
-        });
+            pharmacy: this.fb.group({
+                ownerName: new FormControl(null, [Validators.required]),
+                storeName: new FormControl(null, [Validators.required]),
+                businessName: new FormControl(null, [Validators.required]),
+                licenseNumber: new FormControl(null, [Validators.required]),
+                licenseExpiry: [null, [Validators.required, this.validator.futureDateValidator]],
+                gstNumber: new FormControl(null, [Validators.required, Validators.pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/)]),
+                registeredMobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
+                officialEmail: new FormControl(null, [Validators.required, Validators.email]),
+                storeMobile1: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
+                storeEmail1: new FormControl(null, [Validators.email]),
+                storeEmail2: new FormControl(null, [Validators.email]),
+                address1: new FormControl(null, [Validators.required]),
+                address2: new FormControl(null, [Validators.required]),
+                countryId: new FormControl(null, [Validators.required]),
+                stateId: new FormControl(null, [Validators.required]),
+                cityId: new FormControl(null, [Validators.required]),
+            }),
+            user: this.fb.group({
+                firstName: new FormControl(null, [Validators.required]),
+                lastName: new FormControl(null, [Validators.required]),
+                email: new FormControl(null, [Validators.required, Validators.email]),
+                mobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
+                dateofBirth: new FormControl(null, [Validators.required, this.validator.pastDateOnly]),
+                gender: new FormControl(null, [Validators.required]),
+                picture: new FormControl(null, []),
+            }),
+            pharmacyBankDetails: this.fb.group({ 
+                bankName: new FormControl(null, [Validators.required]),
+                accountholderName: new FormControl(null, [Validators.required]),
+                accountNumber: new FormControl(null, [Validators.required, Validators.pattern(/^\d{16}$/)]),
+                ifscCode: new FormControl(null, [Validators.required]),
+                branchName: new FormControl(null, [Validators.required]),
+                upiId: new FormControl(null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/)])})
+             });
     }
 
     allowOnlyNumbers(event: KeyboardEvent) {
         const charCode = event.key.charCodeAt(0);
-        // Allow only digits (0–9)
         if (charCode < 48 || charCode > 57) {
             event.preventDefault();
         }
