@@ -20,6 +20,8 @@ import { SetPassword } from './admin/views/user/admin.setpassword.component';
 import { EditPharmacy } from './admin/views/pharmacy/admin.pharmacyedit.component';
 import { ChangePassword } from './admin/views/user/admin.changepassword.component';
 
+import { SubAdminLayoutComponent } from './_layouts/admin/subadmin.layout.component';
+
 
 
 export const routes: Routes = [
@@ -55,6 +57,13 @@ export const routes: Routes = [
     component: PharmacyLayoutComponent,
     children: [
       { path: 'pharmacy', component: PharmacyDashboardComponent }
+    ]
+  },
+  {
+    path: 'admin',
+    component: SubAdminLayoutComponent,
+    children: [
+      //{ path: 'subadmin', component: Sub_Dr_AdminDashboardComponent }
     ]
   },
 
