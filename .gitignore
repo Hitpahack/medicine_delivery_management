@@ -50,3 +50,16 @@
 /RepMed.Data/obj/project.assets.json
 /RepMed.Data/obj/project.nuget.cache
 /RepMed.Data/obj/RepMed.Data.csproj.nuget.dgspec.json
+/RepMed.Data/obj/Release/net8.0/RepMed.Data.AssemblyInfo.cs
+/RepMed.Data/obj/Release/net8.0/RepMed.Data.AssemblyInfoInputs.cache
+/RepMed.Data/obj/Release/net8.0/RepMed.Data.assets.cache
+/RepMed.Data/obj/Release/net8.0/RepMed.Data.csproj.AssemblyReference.cache
+/RepMed.Data/obj/Release/net8.0/RepMed.Data.csproj.CoreCompileInputs.cache
+/RepMed.Data/obj/Release/net8.0/RepMed.Data.csproj.FileListAbsolute.txt
+/RepMed.Data/obj/Release/net8.0/RepMed.Data.dll
+/RepMed.Data/obj/Release/net8.0/RepMed.Data.GeneratedMSBuildEditorConfig.editorconfig
+/RepMed.Data/obj/Release/net8.0/RepMed.Data.pdb
+/RepMed.Data/obj/Release/net8.0/RepMed.Data.genruntimeconfig.cache
+/RepMed.Data/obj/Release/net8.0/RepMed.Data.sourcelink.json
+/RepMed.Web/ClientApp/.angular
+/RepMed.Web/ClientApp/dist
