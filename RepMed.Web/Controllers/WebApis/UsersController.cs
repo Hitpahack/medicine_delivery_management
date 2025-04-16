@@ -17,17 +17,39 @@ namespace RepMed.Web.Controllers.WebApis
         {
 
         }
-        [Route("addedituser/{Id?}")]
+        //[Route("addedituser/{Id?}")]
+        //[HttpPost]
+        //public async Task<IActionResult> AddEditUser(AddPersonDto reqDto)
+        //{
+        //    var data = await base.AddEditUser(reqDto, reqDto.Id ?? 0);
+        //    if (data.IsSuccess)
+        //        return Ok(data);
+
+        //    return BadRequest(data);
+        //}
+        [Route("adduser")]
         [HttpPost]
-        public async Task<IActionResult> AddEditUser(AddPersonDto reqDto)
+        public async Task<IActionResult> AddUser(API_ADD_USER reqDto)
         {
-            var data = await base.AddUser(reqDto, reqDto.Id ??0);
+            var userObj = _mapper.Map<AddPersonDto, API_ADD_USER>(reqDto);
+            var data = await base.AddEditUser(userObj, 0);
             if (data.IsSuccess)
                 return Ok(data);
 
             return BadRequest(data);
         }
-       
+
+        [Route("edituser/{personid}")]
+        [HttpPost]
+        public async Task<IActionResult> EditUser(long personid, API_EDIT_USER reqDto )
+        {
+            var userObj = _mapper.Map<AddPersonDto, API_EDIT_USER>(reqDto);
+            var data = await base.AddEditUser(userObj, personid);
+            if (data.IsSuccess)
+                return Ok(data);
+
+            return BadRequest(data);
+        }
 
         [Route("get/{Id}")]
         [HttpGet]

@@ -11,11 +11,11 @@ public partial class Useraddress
 
     public string AddressLine { get; set; }
 
-    public long? CityId { get; set; }
+    public long CityId { get; set; }
 
-    public long? StateId { get; set; }
+    public long StateId { get; set; }
 
-    public long? CountryId { get; set; }
+    public long CountryId { get; set; }
 
     public string Pincode { get; set; }
 

@@ -34,17 +34,17 @@ namespace RepMed.Dtos.PharmacyPage
             if (string.IsNullOrWhiteSpace(yearMonth) || yearMonth.Length != 6 || !int.TryParse(yearMonth, out int ym))
                 throw new FormatException($"Invalid YearMonth format: {yearMonth}");
 
-        //    // Extract Year and Month
-        //    int year = ym / 100;  // First 4 digits are the year
-        //    int month = ym % 100; // Last 2 digits are the month
+            // Extract Year and Month
+            int year = ym / 100;  // First 4 digits are the year
+            int month = ym % 100; // Last 2 digits are the month
 
-        //    // Validate month range (1-12)
-        //    if (month < 1 || month > 12)
-        //        throw new FormatException($"Invalid month in YearMonth: {yearMonth}");
+            // Validate month range (1-12)
+            if (month < 1 || month > 12)
+                throw new FormatException($"Invalid month in YearMonth: {yearMonth}");
 
-        //    return new DateTime(year, month, 1).ToString("yyyy-mm-dd"); // Set day to 1
+            return new DateTime(year, month, 1).ToString("yyyy-mm-dd"); // Set day to 1
 
-        //}
+        }
     }
 
 }

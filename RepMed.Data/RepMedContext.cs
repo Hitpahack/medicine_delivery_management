@@ -346,24 +346,16 @@ public partial class RepMedContext : DbContext
 
             entity.HasIndex(e => e.Email, "Email").IsUnique();
 
-            entity.HasIndex(e => e.Mobile, "Mobile").IsUnique();
-
             entity.Property(e => e.BloodGroup).HasMaxLength(10);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.Email).IsRequired();
             entity.Property(e => e.EmailVerified).HasDefaultValueSql("'0'");
-            entity.Property(e => e.FirstName)
-                .IsRequired()
-                .HasMaxLength(100);
+            entity.Property(e => e.FirstName).HasMaxLength(100);
             entity.Property(e => e.Gender).HasColumnType("enum('Male','Female','Other')");
-            entity.Property(e => e.LastName)
-                .IsRequired()
-                .HasMaxLength(100);
-            entity.Property(e => e.Mobile)
-                .IsRequired()
-                .HasMaxLength(20);
+            entity.Property(e => e.LastName).HasMaxLength(100);
+            entity.Property(e => e.Mobile).HasMaxLength(20);
             entity.Property(e => e.MobileVerified).HasDefaultValueSql("'0'");
             entity.Property(e => e.MotherName).HasMaxLength(100);
             entity.Property(e => e.Picture).HasMaxLength(255);
@@ -791,19 +783,19 @@ public partial class RepMedContext : DbContext
 
             entity.HasIndex(e => e.StateId, "StateId");
 
-            entity.Property(e => e.AddressLine).HasColumnType("text");
+            entity.Property(e => e.AddressLine)
+                .IsRequired()
+                .HasColumnType("text");
             entity.Property(e => e.Latitude).HasPrecision(9, 6);
             entity.Property(e => e.Longitude).HasPrecision(9, 6);
             entity.Property(e => e.Pincode).HasMaxLength(10);
 
             entity.HasOne(d => d.City).WithMany(p => p.Useraddresses)
                 .HasForeignKey(d => d.CityId)
-                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("useraddresses_ibfk_2");
 
             entity.HasOne(d => d.Country).WithMany(p => p.Useraddresses)
                 .HasForeignKey(d => d.CountryId)
-                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("useraddresses_ibfk_5");
 
             entity.HasOne(d => d.Person).WithMany(p => p.Useraddresses)
@@ -812,7 +804,6 @@ public partial class RepMedContext : DbContext
 
             entity.HasOne(d => d.State).WithMany(p => p.Useraddresses)
                 .HasForeignKey(d => d.StateId)
-                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("useraddresses_ibfk_4");
         });
 

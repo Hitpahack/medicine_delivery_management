@@ -1,7 +1,10 @@
-﻿using RepMed.Core;
+﻿using Dapper;
+using Newtonsoft.Json.Linq;
+using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -14,7 +17,7 @@ namespace RepMed.Services
         /// </summary>
         /// <param name="reqDto">AddPersonDto</param>
         /// <returns>[PersonsContactDto] Person info with contact</returns>
-        Task<APIsResponse<EntityPersonsDto>> AddPerson(AddPersonDto reqDto, long Id);
+        Task<APIsResponse<EntityPersonsDto>> AddEditPerson(AddPersonDto reqDto, long personid);
         Task<APIsResponse<bool>> IsPersonExist(string email);
 
     }
@@ -25,28 +28,57 @@ namespace RepMed.Services
         {
         }
 
-        public async Task<APIsResponse<EntityPersonsDto>> AddPerson(AddPersonDto reqDto, long Id)
+        public async Task<APIsResponse<EntityPersonsDto>> AddEditPerson(AddPersonDto reqDto, long personid)
         {
             try
             {
                 APIsResponse<EntityPersonsDto> apiResponse = default(APIsResponse<EntityPersonsDto>);
-                if (Id>0)
+                if (personid > 0)
                 {
                     #region Update Person
-                    var person = _idbConnection.Update<EntityPersonsDto>(
-                                    _idbTransaction,
-                                    DbTables.tblPersons,
-                                    DapperHelper.QueryAsColumnsParma<Person, AddPersonDto>(),
-                                    reqDto,
-                                    Id);
+                    var person = _idbConnection.Update<EntityPersonsDto>(_idbTransaction, DbTables.tblPersons,
+                                                new Dictionary<string, string> {
+                                                    { "Gender", reqDto.Gender },
+                                                    { "DateOfBirth", reqDto.DateOfBirth?.ToString("yyyy-MM-dd HH:MM:ss") },
+                                                    { "FirstName", reqDto.FirstName },
+                                                    { "LastName", reqDto.LastName },
+                                                    { "Picture", reqDto.Picture }                                                    
+                                                }, $@"ID='{personid}'");
+
+                   
                     #endregion
                     #region Update Person Address
                     if (reqDto.Address != null)
                     {
-                        EntityAddressDto address = _idbConnection.Update<EntityAddressDto>(_idbTransaction,
-                        DbTables.tblUserAddress,
-                        DapperHelper.QueryAsColumnsParma<Useraddress, AddAddressDto>(),
-                        reqDto.Address,person.Id, "PersonId");
+                        if (personid > 0)
+                        {
+                            string sql = $@"SELECT a.Id FROM {DbTables.tblUserAddress} a WHERE a.{nameof(Useraddress.PersonId)} = {personid}";
+                            var addres = await _idbConnection.QueryFirstOrDefaultAsync<EntityAddressDto>(sql, transaction: _idbTransaction);
+
+                            if (addres != null)
+                            {
+                                EntityAddressDto address = _idbConnection.Update<EntityAddressDto>(_idbTransaction,
+                                DbTables.tblUserAddress,
+                                DapperHelper.QueryAsColumnsParma<Useraddress, AddAddressDto>(),
+                                reqDto.Address, person.Id, "PersonId");
+                            }
+                            else
+                            {
+                                #region Add Person Address
+                                if (reqDto.Address != null)
+                                {
+                                    reqDto.Address.PersonId = person.Id;
+                                    EntityAddressDto address = _idbConnection.Insert<EntityAddressDto>(_idbTransaction,
+                                    DbTables.tblUserAddress,
+                                    DapperHelper.QueryAsColumnsParma<Useraddress, AddAddressDto>(),
+                                    DapperHelper.QueryAsValuesParma<Useraddress, AddAddressDto>(),
+                                    reqDto.Address);
+                                }
+                                #endregion
+                            }
+                        }
+
+
                     }
                     #endregion
                     apiResponse = new APIsSuccsss<EntityPersonsDto>(_validateMessages.Success, person);
@@ -97,7 +129,7 @@ namespace RepMed.Services
             }
         }
 
-         public async Task<APIsResponse<bool>> IsPersonExist(string email)
+        public async Task<APIsResponse<bool>> IsPersonExist(string email)
         {
             #region Check Email/Phone exist
             if ((await IsEmailExist(email)))

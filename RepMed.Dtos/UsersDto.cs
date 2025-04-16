@@ -10,7 +10,8 @@ namespace RepMed.Dtos
         public string Email { get; set; }
         public bool? EmailConfirmed { get; set; }
         public long PersonId { get; set; }
-
+        public string? FirstName { get; set; }
+        public string? LastName { get; set; }
     }
 
     public class EntityUsersDto : BasicUsersDto
@@ -63,10 +64,7 @@ namespace RepMed.Dtos
         public byte[] PasswordHash { get; set; }
         [JsonIgnore]
         public byte[] PasswordSalt { get; set; }
-        public DateTime? CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
         public string Status { get; set; }
-        public DateTime? LastLoginDate { get; set; }
 
     }
 
@@ -74,5 +72,36 @@ namespace RepMed.Dtos
     {
         public long Id{ get; set; }
 
+    }
+
+    public class API_ADD_USER
+    {
+
+        [Required]
+        [EmailAddress]
+        public string Email { get; set; }
+        [Required]
+        [MaxLength(25, ErrorMessage = "Maximum 15 characters allow ")]
+        [MinLength(3, ErrorMessage = "Minimum 3 characters allow ")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+        ErrorMessage = "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.")]
+        [Core.IgnoreDapper]
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+        [Required]
+        [MaxLength(25, ErrorMessage = "Maximum 15 characters allow ")]
+        [MinLength(3, ErrorMessage = "Minimum 3 characters allow ")]
+        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
+        ErrorMessage = "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.")]
+        [Compare("Password")]
+        [Core.IgnoreDapper]
+        [DataType(DataType.Password)]
+        public string ConfirmPassword { get; set; }
+        [Required]
+        public string Role { get; set; }
+    }
+    public class API_EDIT_USER : BasicPersonsDto
+    {
+        public AddAddressDto? Address { get; set; }
     }
 }

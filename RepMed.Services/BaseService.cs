@@ -49,16 +49,16 @@ namespace RepMed.Services
         public Task<bool> IsEmailExist(string email, bool checkUserTbl = false)
         {
             string sqlExist = DbTables.tblPersons.Select(
-                                new string[] { nameof(BasePerson.Email) },
-                                whereQuery: $@" `{nameof(BasePerson.Email)}` = '{email}' ");
+                                new string[] { nameof(BasicPersonsDto.Email) },
+                                whereQuery: $@" `{nameof(BasicPersonsDto.Email)}` = '{email}' ");
 
             if (checkUserTbl)
             {
-                string whereUser = DbTables.tblUser.Select(new string[] { nameof(BasePerson.Email) }, tblPrefix: "u",
-                    whereQuery: $@" u.`{nameof(BasePerson.Email)}` = '{email}' ");
+                string whereUser = DbTables.tblUser.Select(new string[] { nameof(BasicPersonsDto.Email) }, tblPrefix: "u",
+                    whereQuery: $@" u.`{nameof(BasicPersonsDto.Email)}` = '{email}' ");
 
-                sqlExist = DbTables.tblPersons.Select(new string[] { nameof(BasePerson.Email) },
-                    whereQuery: $@" `{nameof(BasePerson.Email)}` = ({whereUser}) ");
+                sqlExist = DbTables.tblPersons.Select(new string[] { nameof(BasicPersonsDto.Email) },
+                    whereQuery: $@" `{nameof(BasicPersonsDto.Email)}` = ({whereUser}) ");
             }
 
             BasicPersonsDto isExist = _idbConnection.Query<BasicPersonsDto>(sqlExist, transaction: _idbTransaction).SingleOrDefault();
@@ -81,7 +81,7 @@ namespace RepMed.Services
         public bool IsUserExist(Guid? userid)
         {
             string sqlExist = DbTables.tblUser.Select(
-                                new string[] { nameof(BasePerson.Email) },
+                                new string[] { nameof(BasicPersonsDto.Email) },
                                 whereQuery: $@" ""Id"" = '{userid}' ");
 
             BasicPersonsDto isExist = _idbConnection.Query<BasicPersonsDto>(sqlExist, transaction: _idbTransaction).SingleOrDefault();

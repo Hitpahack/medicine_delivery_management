@@ -130,6 +130,7 @@ namespace RepMed.Core
             string conditionColumn = "Id"
         ) where TResult : class
         {
+
             string sql = $@"
                             UPDATE {tableName}
                             SET {updateColumns}
@@ -153,12 +154,12 @@ namespace RepMed.Core
             string sql = $@"
                         UPDATE {tableName}
                         SET {updateColumns}
-                        WHERE Id = @__Id;
-                        SELECT * FROM {tableName} WHERE Id = @__Id;
+                        WHERE Id = @Id;
+                        SELECT * FROM {tableName} WHERE Id = @Id;
                     ";
 
             var parameters = new DynamicParameters(data);
-            parameters.Add("__Id", id);
+            parameters.Add("Id", id);
 
             return con.QueryFirstOrDefault<TResult>(sql, parameters, tran);
         }

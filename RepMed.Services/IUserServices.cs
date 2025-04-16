@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 using Org.BouncyCastle.Crypto.Generators;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.Ess;
+using System.Collections.Generic;
 
 namespace RepMed.Services
 {
     public interface IUserServices : IDisposable
     {
-        Task<APIsResponse<EntityUsersDto>> AddUser(AddUsersDto reqDto, long Id);
+        Task<APIsResponse<EntityUsersDto>> AddEditUser(AddUsersDto reqDto, long Id);
         Task<APIsResponse<bool>> SetPassword(SetPasswordDto dto);
         Task<APIsResponse<GetUserDto>> GetUser(long Id);
     }
@@ -29,22 +30,22 @@ namespace RepMed.Services
 
         }
 
-        public async Task<APIsResponse<EntityUsersDto>> AddUser(AddUsersDto reqDto, long Id)
+        public async Task<APIsResponse<EntityUsersDto>> AddEditUser(AddUsersDto reqDto, long personid)
         {
             try
             {
                 APIsResponse<EntityUsersDto> apiResponse = default(APIsResponse<EntityUsersDto>);
-                if (Id > 0)
+                if (personid > 0)
                 {
                     #region Update User
-                    var response = _idbConnection.Update<EntityUsersDto>(
-                                    _idbTransaction,
-                                    DbTables.tblUser,
-                                    DapperHelper.QueryAsColumnsParma<User, AddUsersDto>(),
-                                    reqDto,
-                                    Id);
+                    var person = _idbConnection.Update<EntityPersonsDto>(_idbTransaction, DbTables.tblPersons,
+                                               new Dictionary<string, string> {
+                                                    { "FirstName", reqDto.FirstName },
+                                                    { "LastName", reqDto.LastName }
+                                               }, $@"PersonId='{personid}'");
+                   
                     #endregion
-                    apiResponse = new APIsSuccsss<EntityUsersDto>(_validateMessages.Success, response);
+                    apiResponse = new APIsSuccsss<EntityUsersDto>(_validateMessages.Success, person);
                 }
                 else
                 {

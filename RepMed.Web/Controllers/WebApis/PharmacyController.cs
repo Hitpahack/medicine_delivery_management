@@ -32,7 +32,7 @@ namespace RepMed.Web.Controllers.WebApis
                     using (IPersonService personService = new PersonService(db, tran))
                     {
                         reqDto.User.Role = "pharmacy";
-                        var user = await base.AddUser(reqDto.User, Id);
+                        var user = await base.AddEditUser(reqDto.User, Id);
                         if (!user.IsSuccess)
                         {
                             tran.Rollback();
