@@ -176,7 +176,7 @@ namespace RepMed.Core
                 sql = string.Concat(sql, $" WHERE {wherQuery} ");
 
             sql = sql + $"; SELECT * FROM {tableName} WHERE {wherQuery}";
-            using (var multi = con.QueryMultiple(sql, new { UserId = 1 }))
+            using (var multi = con.QueryMultiple(sql, new { UserId = 1 }, transaction: tran))
             {
                 return multi.ReadFirstOrDefault<TResult>();
                 

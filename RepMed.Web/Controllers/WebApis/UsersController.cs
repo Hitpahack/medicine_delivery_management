@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MySqlConnector;
-using Org.BouncyCastle.Crypto.Generators;
 using RepMed.Core;
 using RepMed.Dtos;
 using RepMed.Services;
