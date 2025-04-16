@@ -11,10 +11,12 @@ import { AdminDashboardComponent } from './admin/views/admindashboard/admin.dash
 import { AdminAddPharmacyComponent } from './admin/views/pharmacy/admin.addpharmacy.component';
 import { PharmacyLayoutComponent } from './_layouts/admin/pharmacy.layout.component';
 import { PharmacyDashboardComponent } from './admin/views/pharmacydashboard/pharmacy.dashboard.component';
-import { AdminPharmacyListComponent } from './admin/views/pharmacy/admin.pharmacylist.component';
-import { AddUserComponent } from '../app/admin/views/user/admin.adduser.component';
+import { AdminPharmacyListsComponent } from './admin/views/pharmacy/admin.pharmacylists.component';
 import { AdminPharmacyDetailsComponent} from './admin/views/pharmacy/admin.pharmacydetails.component';
 
+import { AddUserComponent } from '../app/admin/views/user/admin.adduser.component';
+import { EditProfile } from '../app/admin/views/user/admin.editprofile.component';
+import { SetPassword } from './admin/views/user/admin.setpassword.component';
 
 
 
@@ -36,9 +38,13 @@ export const routes: Routes = [
       { path: 'shifts', component: AdminShiftsComponent },
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'addpharmacy', component: AdminAddPharmacyComponent },
-      { path: 'pharmacylist', component: AdminPharmacyListComponent },
-     { path: 'pharmacydetails/:id', component: AdminPharmacyDetailsComponent },
+      { path: 'pharmacylist', component: AdminPharmacyListsComponent },
+      { path: 'pharmacydetails/:id', component: AdminPharmacyDetailsComponent },
+      
       { path: 'adduser', component: AddUserComponent },
+      { path: 'editprofile/:id', component: EditProfile },
+
+      { path: 'setpassword', component:SetPassword}
     ]
   },
   {

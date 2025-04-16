@@ -169,7 +169,7 @@ namespace RepMed.Core
             string tableName, Dictionary<string, string> updateData,
             string wherQuery = "", string returningData = "") where TResult : class
         {
-            var updatecolumQury = string.Join(",", updateData.Select(r => string.Concat(@$" ""{r.Key}""='{r.Value}'")));
+            var updatecolumQury = string.Join(",", updateData.Select(r => string.Concat(@$" {r.Key}='{r.Value}'")));
             string sql = $@"UPDATE {tableName} SET {updatecolumQury} ";
 
             if (!string.IsNullOrEmpty(wherQuery))

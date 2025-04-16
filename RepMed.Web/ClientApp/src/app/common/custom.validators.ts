@@ -8,7 +8,6 @@ export class CustomValidator {
   constructor() { }
 
   public ValidateEmail(control: AbstractControl) {
-
     if (!control.value || control.value.length == 0) {
       return null;
     }
@@ -42,6 +41,17 @@ export class CustomValidator {
     return null;
   }
 
+  public pastDateOnly(control: AbstractControl): { [key: string]: any } | null {
+    const dob = new Date(control.value);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // remove time part
+  
+    if (dob > today) {
+      return { futureDate: true };
+    }
+    return null;
+  }
+
   public markInvalidFieldsTouched(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {
       const control = formGroup.get(field);
@@ -49,6 +59,12 @@ export class CustomValidator {
         control.markAsTouched({ onlySelf: true });
       }
     });
+  }
+
+  passwordMatchValidator(control: AbstractControl) {
+    const password = control.get('NewPassword')?.value;
+    const confirmpassword = control.get('ConfirmPassword')?.value;
+    return password === confirmpassword ? null : { passwordMismatch: true };
   }
   
 }

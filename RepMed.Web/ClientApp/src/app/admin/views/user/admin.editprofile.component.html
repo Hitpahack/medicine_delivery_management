@@ -1,0 +1,48 @@
+<form class="card auth_form form_validation" [formGroup]="editUserForm" (ngSubmit)="onSubmit()">
+
+    <legend>User</legend>
+
+    <div class="form-grid">
+
+        <div class="input-group mb-3 float">
+            <input type="text" placeholder="" formControlName="firstname" class="form-control" required>
+            <label class="float-lbl">First Name *</label>
+            <div *ngIf="editUserForm.get('firstname')?.touched && editUserForm.get('firstname')?.errors?.['required']">FirstName is
+                required.</div>
+        </div>
+        <div class="input-group mb-3 float">
+            <input type="text" placeholder="" formControlName="lastname" class="form-control" required>
+            <label class="float-lbl">Last Name *</label>
+            <div *ngIf="editUserForm.get('lastname')?.touched && editUserForm.get('lastname')?.errors?.['required']">LastName is
+                required.</div>
+        </div>
+
+        <div class="input-group mb-3 float">
+            <input type="text" class="form-control" placeholder=" " formControlName="email">
+            <label class="float-lbl">Email *</label>
+            <div *ngIf="editUserForm.get('email')?.touched && editUserForm.get('email')?.errors">
+                <div *ngIf="editUserForm.get('email')?.errors?.['required'] && editUserForm.get('email')?.touched">
+                    Email is required.
+                </div>
+                <div *ngIf="editUserForm.get('email')?.errors['email']">
+                    {{ editUserForm.get('email')?.errors['error'] }}
+                </div>
+            </div>
+        </div>
+
+        <div class="input-group mb-3 float">
+            <input type="text" class="form-control" placeholder=" " formControlName="mobile" required maxlength="10"
+                (keypress)="allowOnlyNumbers($event)">
+            <label class="float-lbl">Mobile *</label>
+            <div *ngIf="editUserForm.get('mobile')?.touched && editUserForm.get('mobile')?.errors?.['required']">Mobile
+                is required.</div>
+            <div *ngIf="editUserForm.get('mobile')?.errors?.['pattern'] && editUserForm.get('mobile')?.touched">
+                Only digits allowed.
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit">Update User</button>
+        </div>
+    </div>
+</form>
+<div style="margin-top:30px;"></div>

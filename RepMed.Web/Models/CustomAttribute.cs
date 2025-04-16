@@ -138,7 +138,7 @@ namespace RepMed.Web.Models
 
             if (string.IsNullOrEmpty(culture))
             {
-                context.Result = new CustomUnauthorizedResult("Required Accept-Language parma in header");
+                //context.Result = new CustomUnauthorizedResult("Required Accept-Language parma in header");
             }
 
             return;

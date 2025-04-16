@@ -68,7 +68,7 @@ namespace RepMed.Dtos
 
     public class AddPersonDto : BasicPersonsDto
     {
-        
+     
         [Required]
         [MaxLength(25, ErrorMessage = "Maximum 15 characters allow ")]
         [MinLength(3, ErrorMessage = "Minimum 3 characters allow ")]
@@ -93,9 +93,9 @@ namespace RepMed.Dtos
         public AddAddressDto Address { get; set; }
         [Core.IgnoreDapper]
         [Required]
-        public string Role { get; set; } 
+        public string Role { get; set; }
 
-
-    }
+		
+	}
     
 }
