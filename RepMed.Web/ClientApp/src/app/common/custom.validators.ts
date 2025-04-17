@@ -67,5 +67,16 @@ export class CustomValidator {
     const confirmpassword = control.get('ConfirmPassword')?.value;
     return password === confirmpassword ? null : { passwordMismatch: true };
   }
+
+   validateStrongPassword(control: AbstractControl): ValidationErrors | null {
+    const password = control.value;
+    if (!password) return null;
+
+    const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
+    
+    return strongPasswordPattern.test(password)
+      ? null
+      : { strongPassword: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.' };
+  }
   
 }

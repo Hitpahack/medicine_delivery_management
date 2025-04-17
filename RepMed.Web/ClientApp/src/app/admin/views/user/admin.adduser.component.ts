@@ -40,7 +40,7 @@ ngOnInit(): void {
     const form = this.fb.group({
       Role : new FormControl(null, [Validators.required]),
       email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
-      Password: new FormControl(null, [Validators.required]),
+      Password: new FormControl(null, [Validators.required, this.validator.validateStrongPassword]),
       ConfirmPassword: new FormControl(null, [Validators.required]),
     }, {
       validators: this.validator.passwordMatchValidator
