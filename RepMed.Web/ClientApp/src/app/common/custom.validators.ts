@@ -53,10 +53,11 @@ export class CustomValidator {
   }
 
   public markInvalidFieldsTouched(formGroup: FormGroup) {
-    Object.keys(formGroup.controls).forEach(field => {
-      const control = formGroup.get(field);
-      if (control && control.invalid) {
-        control.markAsTouched({ onlySelf: true });
+    Object.values(formGroup.controls).forEach(control => {
+      if (control instanceof FormGroup) {
+        this.markInvalidFieldsTouched(control);
+      } else {
+        control.markAsTouched();
       }
     });
   }

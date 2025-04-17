@@ -46,6 +46,7 @@ export class EditPharmacy extends AdminBaseComponent implements OnInit {
     cities: any[] = [];
 
     ngOnInit(): void {
+        this.editpharmacyForm = this.initForm();
         const today = new Date();
         this.minExpiryDate = today.toISOString().split('T')[0];
 
@@ -88,17 +89,12 @@ export class EditPharmacy extends AdminBaseComponent implements OnInit {
                         stateId: pharmacydata.pharmacy.stateId,
                         cityId: pharmacydata.pharmacy.cityId,
                     },
-                    // user: {
-                    //     firstName: pharmacydata.person.firstName,
-                    //     lastName: pharmacydata.person.lastName,
-                    //     email: pharmacydata.person.email,
-                    //     mobile: pharmacydata.person.mobile,
-                    //     dateofBirth: pharmacydata.person.dateOfBirth,
-                    //     gender: pharmacydata.person.gender,
-                    //     picture: pharmacydata.person.picture,
-                    //     //Password: pharmacydata.person.password,
-                    //     //ConfirmPassword: pharmacydata.person.confirmPassword
-                    // },
+                    user: {
+                        firstName: pharmacydata.person.firstName,
+                        lastName: pharmacydata.person.lastName,
+                        email: pharmacydata.person.email,
+                        mobile: pharmacydata.person.mobile,
+                    },
                     pharmacyBankDetails: {
                         bankName: pharmacydata.pharmacyBankDetails.bankName,
                         accountholderName: pharmacydata.pharmacyBankDetails.accountHolderName,
@@ -134,15 +130,15 @@ export class EditPharmacy extends AdminBaseComponent implements OnInit {
                 stateId: new FormControl(null, [Validators.required]),
                 cityId: new FormControl(null, [Validators.required]),
             }),
-            // user: this.fb.group({
-            //     firstName: new FormControl(null, [Validators.required]),
-            //     lastName: new FormControl(null, [Validators.required]),
-            //     email: new FormControl(null, [Validators.required, Validators.email]),
-            //     mobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
-            //     dateofBirth: new FormControl(null, [Validators.required, this.validator.pastDateOnly]),
-            //     gender: new FormControl(null, [Validators.required]),
-            //     picture: new FormControl(null, []),
-            // }),
+            user: this.fb.group({
+                firstName: new FormControl(null, [Validators.required]),
+                lastName: new FormControl(null, [Validators.required]),
+                email: new FormControl(null, [Validators.required, Validators.email]),
+                mobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
+                dateofBirth: new FormControl(null, [Validators.required, this.validator.pastDateOnly]),
+                gender: new FormControl(null, [Validators.required]),
+                picture: new FormControl(null, []),
+            }),
             pharmacyBankDetails: this.fb.group({
                 bankName: new FormControl(null, [Validators.required]),
                 accountholderName: new FormControl(null, [Validators.required]),
@@ -161,7 +157,7 @@ export class EditPharmacy extends AdminBaseComponent implements OnInit {
         if (isValid) {
             const pharmacyId = this.route.snapshot.params['id'];
             const dto: PharmacyDto = this.editpharmacyForm.value;
-            this.adminpharmacyservice.add(dto, pharmacyId).subscribe(response => {
+            this.adminpharmacyservice.editpharmacy(dto, pharmacyId).subscribe(response => {
                 console.log("Pharmacy updated successfully!")
             })
         }

@@ -63,7 +63,8 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
             },
             {
                 validators: this.validator.passwordMatchValidator
-            }),
+            }
+        ),
             pharmacyBankDetails: this.fb.group({
                 bankName: new FormControl(null, [Validators.required]),
                 accountholderName: new FormControl(null, [Validators.required]),
@@ -88,7 +89,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
             return;
         }
         const dto: PharmacyDto = this.phForm.value;
-        this.PharmacyService.add(dto, 0).subscribe({
+        this.PharmacyService.add(dto).subscribe({
             next: res => console.log("Success", res),
             error: err => console.error("Error", err)
         })
