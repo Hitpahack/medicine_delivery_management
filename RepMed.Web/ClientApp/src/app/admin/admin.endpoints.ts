@@ -35,11 +35,11 @@ export const admin_apiconfig =
 
     },
     user: {
-      add: (id: number) => environment.admin_apiv1 + '/users/addedituser/' + id,
+      add: environment.admin_apiv1 + '/users/adduser/',
       get: (id: number) => environment.admin_apiv1 + '/users/get/' + id,
-      update: (id: number) => environment.admin_apiv1 + '/users/addedituser/' + id,
+      update: (id: number) => environment.admin_apiv1 + '/users/edituser/' + id,
       setpassword: environment.admin_apiv1 + '/users/change-password',
-      userroles: 'https://localhost:44379/api/v1/masters/getroles',
+      userroles: environment.admin_api + '/masters/getroles',
       changepassword: environment.admin_apiv1 +'/users/SetPassword'
     }
   }

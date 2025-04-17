@@ -60,10 +60,11 @@
 .alert {
     border: 0;
     border-radius: 3px !important;
-    color: #fff;
+    color: black;
     padding: 8px 30px 8px 10px !important;
     position: relative;
-    box-shadow: 0 10px 23px rgb(0 0 0 / 30%);
+    box-shadow: 0 10px 23px #0000004d;
+    background: #db5a5a;
 }
 .alert.bootstrap-notify-container .close{
     top: 7px !important;

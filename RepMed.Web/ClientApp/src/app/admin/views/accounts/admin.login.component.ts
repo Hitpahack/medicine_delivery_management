@@ -13,33 +13,33 @@ import { adminAccountsService } from "../../services/accounts/admin.accountsserv
     templateUrl: './admin.login.component.html',
     styles: [''],
     standalone: true,
-    imports: [CommonModule,ReactiveFormsModule, FormsModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule],
 })
 
-export class AdminLoginComponent extends AdminBaseComponent implements OnInit  {
-    
+export class AdminLoginComponent extends AdminBaseComponent implements OnInit {
+
     constructor(
-        public router: Router, public fb:FormBuilder,
+        public router: Router, public fb: FormBuilder,
         public validator: CustomValidator,
         public accountservice: adminAccountsService
-        
-        ) {
-        super(router,fb);
+
+    ) {
+        super(router, fb);
     }
 
-   loginForm: FormGroup;
+    loginForm: FormGroup;
     ngOnInit(): void {
         this.loginForm = this.initForm();
     }
 
 
-   initForm():FormGroup{
-    return this.fb.group({
-        email: new FormControl(null, [this.validator.ValidateEmail,Validators.required]),
-        password: new FormControl(null, [Validators.required]),
-        remamber: new FormControl(false, [Validators.required]),
-      });
-   }
+    initForm(): FormGroup {
+        return this.fb.group({
+            email: new FormControl(null, [this.validator.ValidateEmail, Validators.required]),
+            password: new FormControl(null, [Validators.required]),
+            remamber: new FormControl(false, [Validators.required]),
+        });
+    }
 
     onSubmit() {
        let isValid = this.validateForm(this.loginForm);

@@ -94,10 +94,10 @@ namespace RepMed.Services
             try
             {
                 var sql = $@"
-                            SELECT u.Id, p.FirstName,p.LastName,p.Email,p.Mobile,p.Gender,p.DateOfBirth
+                            SELECT u.Id, p.FirstName,p.LastName,p.Email,p.Mobile,p.Gender,p.DateOfBirth, p.Email
                             FROM {DbTables.tblUser} u
                             INNER JOIN {DbTables.tblPersons} p ON u.PersonId = p.Id
-                            WHERE u.Id = @Id;
+                            WHERE u.PersonId = @Id;
                         ";
                 var userData = await _idbConnection.QueryFirstOrDefaultAsync<GetUserDto>(sql, new { Id = id },transaction:_idbTransaction);
 

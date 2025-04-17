@@ -7,7 +7,7 @@ import { CustomValidator } from "../../../common/custom.validators";
 import { Helper } from "../../../common/helper.extenstions";
 import { adminAccountsService } from "../../services/accounts/admin.accountsservice";
 import { AdminPharmacyService } from "../../services/pharmacy/admin.pharmacy.services";
-import { PharmacyDto } from 'src/app/viewmodels/pharmacy/Pharmacy.add.dto';
+import { PharmacyDto } from '../../../viewmodels/pharmacy/Pharmacy.add.dto';
 
 @Component({
     selector: 'app-admin-addpharmacy',

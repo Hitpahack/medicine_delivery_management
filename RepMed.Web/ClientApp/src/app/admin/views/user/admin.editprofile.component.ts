@@ -30,6 +30,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
         if (userId) {
             this.adminuserservice.getUserbyId(userId).subscribe((response) => {
                 if (response?.isSuccess && response.data) {
+                    console.log("email", response.data.email)
                     const user = response.data;
                     this.editUserForm.patchValue({
                       firstname: user.firstName,
@@ -49,25 +50,20 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
     initForm(): FormGroup {
         return this.fb.group({
             id : new FormControl(null),
-            firstname: new FormControl(null, [Validators.required]),
-            lastname: new FormControl(null, [Validators.required]),
+            firstname: new FormControl(null),
+            lastname: new FormControl(null),
             email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
-            mobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
+            mobile: new FormControl(null),
         });
     }
 
     onSubmit() {
-        console.log("form submited")
-        let isValid = this.validateForm(this.editUserForm);
-        if (isValid) {
             const userId = this.route.snapshot.params['id'];
             const dto: AddPersonDto = this.editUserForm.value;
-            this.adminuserservice.add(dto, userId).subscribe(response =>{
+            console.log(userId)
+            this.adminuserservice.edituser(dto, userId).subscribe(response =>{
                 console.log("User udated successfully!")
             })
-        }
-        else
-            Helper.ShowError('Please fill the required fields');
     }
 
 

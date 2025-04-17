@@ -40,7 +40,6 @@ ngOnInit(): void {
     const form = this.fb.group({
       Role : new FormControl(null, [Validators.required]),
       email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
-      mobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
       Password: new FormControl(null, [Validators.required]),
       ConfirmPassword: new FormControl(null, [Validators.required]),
     }, {
@@ -65,13 +64,17 @@ ngOnInit(): void {
        if(isValid){
         console.log(this.addUserForm.value)
         const dto: AddPersonDto = this.addUserForm.value;
-           this.adminuserservice.add(dto,0).subscribe({
-               next: res => console.log("Success", res),
+           this.adminuserservice.add(dto).subscribe({
+               next: res => this.router.navigate(['/admin/dashboard']),
                error: err => console.error("Error", err)
            });
        }
-       else
-       Helper.ShowError('Please fill the required fields');
+       else{
+         Helper.ShowError('Please fill the required fields');
+          this.validator.markInvalidFieldsTouched(this.addUserForm)
+          Helper.ShowError('Please fill the required fields');
+          return;
+       }
     }
 
     allowOnlyNumbers(event: KeyboardEvent) {

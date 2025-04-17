@@ -9,14 +9,11 @@
                     <input type="hidden" formControlName="id"  />
                     <input type="text" placeholder=" " formControlName="firstname" class="form-control" required>
                     <label class="float-lbl">First Name *</label>
-                    <div *ngIf="editUserForm.get('firstname')?.touched && editUserForm.get('firstname')?.errors?.['required']">FirstName is
-                        required.</div>
                 </div>
                 <div class="input-group mb-3 float">
                     <input type="text" placeholder=" " formControlName="lastname" class="form-control" required>
                     <label class="float-lbl">Last Name *</label>
-                    <div *ngIf="editUserForm.get('lastname')?.touched && editUserForm.get('lastname')?.errors?.['required']">LastName is
-                        required.</div>
+
                 </div>
         
                 <div class="input-group mb-3 float">
@@ -36,12 +33,8 @@
                     <input type="text" class="form-control" placeholder=" " formControlName="mobile" required maxlength="10"
                         (keypress)="allowOnlyNumbers($event)">
                     <label class="float-lbl">Mobile *</label>
-                    <div *ngIf="editUserForm.get('mobile')?.touched && editUserForm.get('mobile')?.errors?.['required']">Mobile
-                        is required.</div>
-                    <div *ngIf="editUserForm.get('mobile')?.errors?.['pattern'] && editUserForm.get('mobile')?.touched">
-                        Only digits allowed.
-                    </div>
                 </div>
+
                 <div class="form-actions">
                     <button type="submit">Update User</button>
                 </div>

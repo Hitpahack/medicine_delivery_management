@@ -19,19 +19,6 @@
                 </div>
 
                 <div class="input-group mb-3 float">
-                        <input type="text" class="form-control" placeholder=" " formControlName="mobile" required
-                                maxlength="10" (keypress)="allowOnlyNumbers($event)">
-                        <label class="float-lbl">Mobile *</label>
-                        <div
-                                *ngIf="addUserForm.get('mobile')?.touched && addUserForm.get('mobile')?.errors?.['required']">
-                                Mobile is required.</div>
-                        <div
-                                *ngIf="addUserForm.get('mobile')?.errors?.['pattern'] && addUserForm.get('mobile')?.touched">
-                                Only digits allowed.
-                        </div>
-                </div>
-
-                <div class="input-group mb-3 float">
                         <input type="text" class="form-control" placeholder=" " formControlName="Password">
                         <label class="float-lbl">Password *</label>
                         <div

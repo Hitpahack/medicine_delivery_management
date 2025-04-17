@@ -43,7 +43,7 @@ export class SetPassword extends AdminBaseComponent implements OnInit {
 
     onSubmit() {
       let isValid = this.validateForm(this.SetPasswordForm)
-      if(isValid){ 
+      if(isValid){
         this.adminuserservice.setpassword(this.SetPasswordForm.value).subscribe(response =>{
                 console.log("User udated successfully!")
             })
