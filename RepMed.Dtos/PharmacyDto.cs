@@ -68,11 +68,11 @@ namespace RepMed.Dtos
         public string Address1 { get; set; }
 
         public string Address2 { get; set; }
-        
+
         public long? CityId { get; set; }
-        
+
         public long? StateId { get; set; }
-        
+
         public long? CountryId { get; set; }
 
         public bool? Otpverified { get; set; }
@@ -93,7 +93,7 @@ namespace RepMed.Dtos
         public AddPharmacyDto Pharmacy { get; set; }
         public PharmacyBankDetailsDto PharmacyBankDetails { get; set; }
     }
-    public class PharmacyDto: BasePharmacyDto
+    public class PharmacyDto : BasePharmacyDto
     {
         public AddPersonDto User { get; set; }
     }
@@ -104,5 +104,9 @@ namespace RepMed.Dtos
     public class API_EDIT_PH_DTO : BasePharmacyDto
     {
         public API_EDIT_USER User { get; set; }
+    }
+    public class GetPharmacyDto:BasePharmacyDto
+    {
+        public GetUserDto User { get; set; }
     }
 }

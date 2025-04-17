@@ -21,8 +21,6 @@ namespace RepMed.Services
         Task<APIsResponse<GetUserDto>> GetUser(long Id);
     }
 
-
-
     public class UserServices : BaseService, IUserServices
     {
         public UserServices(IDbConnection connection, IDbTransaction dbTransaction) : base(connection, dbTransaction)
@@ -89,17 +87,17 @@ namespace RepMed.Services
             GC.SuppressFinalize(this);
         }
 
-        public async Task<APIsResponse<GetUserDto>> GetUser(long id)
+        public async Task<APIsResponse<GetUserDto>> GetUser(long personid)
         {
             try
             {
                 var sql = $@"
-                            SELECT u.Id, p.FirstName,p.LastName,p.Email,p.Mobile,p.Gender,p.DateOfBirth
+                            SELECT u.Id as UserId , p.Id as PersonId, p.FirstName,p.LastName,p.Email,p.Mobile,p.Gender,p.DateOfBirth,p.Email
                             FROM {DbTables.tblUser} u
                             INNER JOIN {DbTables.tblPersons} p ON u.PersonId = p.Id
-                            WHERE u.Id = @Id;
+                            WHERE u.PersonId = @Id;
                         ";
-                var userData = await _idbConnection.QueryFirstOrDefaultAsync<GetUserDto>(sql, new { Id = id },transaction:_idbTransaction);
+                var userData = await _idbConnection.QueryFirstOrDefaultAsync<GetUserDto>(sql, new { Id = personid },transaction:_idbTransaction);
 
                 if (userData == null)
                     return new APIsError<GetUserDto>(_validateMessages.NotExist);
