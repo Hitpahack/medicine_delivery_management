@@ -75,3 +75,12 @@
 .text-danger[_ngcontent-ng-c2590355164], .input-group[_ngcontent-ng-c2590355164] div[_ngcontent-ng-c2590355164] {
     font-size: 16px !important;
 }
+.addph{
+    background-color: #007bff;
+    color: #fff;
+    padding: 12px 30px;
+    font-size: 1rem;
+     border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
