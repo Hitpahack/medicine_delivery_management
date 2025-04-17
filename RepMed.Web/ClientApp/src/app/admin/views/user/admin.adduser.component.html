@@ -27,6 +27,12 @@
                         </div>
                 </div>
 
+                <div *ngIf="addUserForm.get('Password')?.hasError('strongPassword') && addUserForm.get('Password')?.touched">
+                        <small class="text-danger">
+                          Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.
+                        </small>
+                      </div>
+
                 <div class="input-group mb-3 float">
                         <input type="text" class="form-control" placeholder=" " formControlName="ConfirmPassword">
                         <label class="float-lbl">ConfirmPassword *</label>

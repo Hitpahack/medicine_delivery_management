@@ -70,3 +70,8 @@
     top: 7px !important;
     right: -9px !IMPORTANT;
 }
+
+
+.text-danger[_ngcontent-ng-c2590355164], .input-group[_ngcontent-ng-c2590355164] div[_ngcontent-ng-c2590355164] {
+    font-size: 16px !important;
+}
