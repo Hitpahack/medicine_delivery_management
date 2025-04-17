@@ -59,6 +59,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                 gender: new FormControl(null, [Validators.required]),
                 picture: new FormControl(null, []),
                 Password: new FormControl(null, [Validators.required]),
+                Role: new FormControl("pharmacy"),
                 ConfirmPassword: new FormControl(null, [Validators.required]),
             },
             {
