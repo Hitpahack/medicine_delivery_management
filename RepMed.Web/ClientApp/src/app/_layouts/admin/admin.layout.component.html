@@ -2,32 +2,23 @@
 
 <div class="sidebar">
   <h2>Admin</h2>
-  <a href="/admin/dashboard">Dashboard</a>
-
-  <a onclick="toggleSubmenu()">Users ▾</a>
-  <div class="submenu" id="pharmacySubmenu">
-    <a routerLink="/admin/adduser">Add SubAdmin</a>
+  <a [routerLink]="['/admin/dashboard']">Dashboard</a>
+  <a (click)="toggleSubmenu('userSubmenu')">Users ▾</a>
+  <div class="submenu" id="userSubmenu">
+    <a [routerLink]="['/admin/user/add']">Add SubAdmin</a>
   </div>
-
-  <a onclick="toggleSubmenu()">Pharmacy ▾</a>
+  <a (click)="toggleSubmenu('pharmacySubmenu')">Pharmacy ▾</a>
   <div class="submenu" id="pharmacySubmenu">
-    <a href="/admin/addpharmacy">Add</a>
-    <a href="/admin/pharmacylist">List</a>
+    <a [routerLink]="['/admin/pharmacy/add']">Add</a>
+    <a [routerLink]="['/admin/pharmacy']">List</a>
   </div>
-
-  <a href="">Product</a>
-  <a href="#">Order </a>
-  <a href="#">Payment & Transaction</a>
-  <a href="#">Discount & Coupon Management</a>
-  <a href="#">Logout</a>
+  <a [routerLink]="['']">Product</a>
+  <a [routerLink]="['']">Order</a>
+  <a [routerLink]="['']">Payment & Transaction</a>
+  <a [routerLink]="['']">Discount & Coupon Management</a>
+  <a [routerLink]="['']">Logout</a>
 </div>
 
-<script>
-  function toggleSubmenu() {
-    const submenu = document.getElementById("pharmacySubmenu");
-    submenu.style.display = submenu.style.display === "block" ? "none" : "block";
-  }
-</script>
 <div class="main-content" style="margin-left: 220px; margin-right: 100px; padding: 20px;">
   <router-outlet></router-outlet>
 </div>

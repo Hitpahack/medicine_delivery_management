@@ -35,6 +35,8 @@ export interface PharmacyDto {
         dateOfBirth?: Date;
         gender?: string;
         picture?: string;
+        password?: string;
+        confirmPassword?: string;
     }
     pharmacyBankDetails: {
       id?: number; // JsonIgnore in C#

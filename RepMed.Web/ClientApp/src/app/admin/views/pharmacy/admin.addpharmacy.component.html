@@ -1,7 +1,6 @@
 <div class="authentication">
   <div class="pharmacy-form-container">
-    <form formvalidator class="card auth_form form_validation" *ngIf="phForm" [formGroup]="phForm" #phForm_html="ngForm"
-      (ngSubmit)="onSubmit()">
+    <form formvalidator class="card auth_form form_validation" *ngIf="phForm" [formGroup]="phForm" #phForm_html="ngForm" (ngSubmit)="onSubmit()">
       <!-- Section 1: Pharmacy -->
       <fieldset formGroupName="pharmacy">
         <legend>Pharmacy Details</legend>
@@ -9,28 +8,27 @@
           <div class="input-group mb-4 float">
             <input type="text" placeholder="" formControlName="ownerName" class="form-control" required>
             <label class="float-lbl">Owner Name *</label>
-            <div *ngIf="phForm.get('ownerName')?.touched && phForm.get('ownerName')?.errors?.['required']">OwnerName is
+            <div *ngIf="phForm.get('pharmacy.ownerName')?.touched && phForm.get('pharmacy.ownerName')?.errors?.['required']">OwnerName is
               required.</div>
           </div>
 
           <div class="input-group mb-4 float">
             <input type="text" placeholder="" formControlName="storeName" class="form-control" required>
             <label class="float-lbl">Store Name *</label>
-            <div *ngIf="phForm.get('storeName')?.touched && phForm.get('storeName')?.errors?.['required']">StoreName is
-              required.</div>
+            <div *ngIf="phForm.get('pharmacy.storeName')?.touched && phForm.get('pharmacy.storeName')?.errors?.['required']">StoreName is required.</div>
           </div>
 
           <div class="input-group mb-4 float">
             <input type="text" placeholder=" " formControlName="businessName" class="form-control" required>
             <label class="float-lbl">Business Name *</label>
-            <div *ngIf="phForm.get('businessName')?.touched && phForm.get('businessName')?.errors?.['required']">
+            <div *ngIf="phForm.get('pharmacy.businessName')?.touched && phForm.get('pharmacy.businessName')?.errors?.['required']">
               BusinessName is required.</div>
           </div>
 
           <div class="input-group mb-4 float">
             <input type="text" placeholder=" " formControlName="licenseNumber" class="form-control" required>
             <label class="float-lbl">License Number *</label>
-            <div *ngIf="phForm.get('licenseNumber')?.touched && phForm.get('licenseNumber')?.errors?.['required']">
+            <div *ngIf="phForm.get('pharmacy.licenseNumber')?.touched && phForm.get('pharmacy.licenseNumber')?.errors?.['required']">
               LicenseNumber is required.</div>
           </div>
 
@@ -38,10 +36,10 @@
             <input type="date" placeholder=" " formControlName="licenseExpiry" class="form-control" required
               [min]="minExpiryDate">
             <label class="float-lbl">License Expiry *</label>
-            <div *ngIf="phForm.get('licenseExpiry')?.touched && phForm.get('licenseExpiry')?.errors?.['required']">
+            <div *ngIf="phForm.get('pharmacy.licenseExpiry')?.touched && phForm.get('pharmacy.licenseExpiry')?.errors?.['required']">
               LicenseExpiry date is required.</div>
             <div
-              *ngIf="phForm.get('licenseExpiry')?.errors?.['pastDate'] && (phForm.get('licenseExpiry')?.touched || phForm.get('licenseExpiry')?.dirty)">
+              *ngIf="phForm.get('pharmacy.licenseExpiry')?.errors?.['pastDate'] && (phForm.get('pharmacy.licenseExpiry')?.touched || phForm.get('pharmacy.licenseExpiry')?.dirty)">
               Expiry date cannot be in the past.
             </div>
 
@@ -50,9 +48,9 @@
           <div class="input-group mb-4 float">
             <input type="text" placeholder=" " formControlName="gstNumber" class="form-control" required>
             <label class="float-lbl">GST Number *</label>
-            <div *ngIf="phForm.get('gstNumber')?.touched && phForm.get('gstNumber')?.errors?.['required']">GSTNumber is
+            <div *ngIf="phForm.get('pharmacy.gstNumber')?.touched && phForm.get('pharmacy.gstNumber')?.errors?.['required']">GSTNumber is
               required.</div>
-            <div *ngIf="phForm.get('gstNumber')?.touched && phForm.get('gstNumber')?.errors?.['pattern']">
+            <div *ngIf="phForm.get('pharmacy.gstNumber')?.touched && phForm.get('pharmacy.gstNumber')?.errors?.['pattern']">
               Enter a valid GST Number (15 characters).
             </div>
           </div>
@@ -62,9 +60,9 @@
               maxlength="10" (keypress)="allowOnlyNumbers($event)">
             <label class="float-lbl">Registered Mobile *</label>
             <div
-              *ngIf="phForm.get('registeredMobile')?.touched && phForm.get('registeredMobile')?.errors?.['required']">
+              *ngIf="phForm.get('pharmacy.registeredMobile')?.touched && phForm.get('pharmacy.registeredMobile')?.errors?.['required']">
               RegisteredMobile is required.</div>
-            <div *ngIf="phForm.get('registeredMobile')?.errors?.['pattern'] && phForm.get('registeredMobile')?.touched">
+            <div *ngIf="phForm.get('pharmacy.registeredMobile')?.errors?.['pattern'] && phForm.get('pharmacy.registeredMobile')?.touched">
               Only digits allowed.
             </div>
           </div>
@@ -72,135 +70,58 @@
           <div class="input-group mb-4 float">
             <input type="email" placeholder=" " formControlName="officialEmail" class="form-control" required>
             <label class="float-lbl">Official Email *</label>
-            <div *ngIf="phForm.get('officialEmail')?.touched && phForm.get('officialEmail')?.errors?.['required']">
+            <div *ngIf="phForm.get('pharmacy.officialEmail')?.touched && phForm.get('pharmacy.officialEmail')?.errors?.['required']">
               Official Email is required.
             </div>
-            <div *ngIf="phForm.get('officialEmail')?.touched && phForm.get('officialEmail')?.errors?.['email']">
+            <div *ngIf="phForm.get('pharmacy.officialEmail')?.touched && phForm.get('pharmacy.officialEmail')?.errors?.['email']">
               Please enter a valid email address.
             </div>
-
           </div>
 
-          <div class="input-group mb-4 float">
-            <input type="text" placeholder=" " formControlName="storeMobile1" class="form-control" required
-              maxlength="10" (keypress)="allowOnlyNumbers($event)">
-            <label class="float-lbl">Store Mobile 1 *</label>
-            <div *ngIf="phForm.get('storeMobile1')?.touched && phForm.get('storeMobile1')?.errors?.['required']">Mobile
-              number is required.</div>
-            <div *ngIf="phForm.get('storeMobile1')?.errors?.['pattern'] && phForm.get('storeMobile1')?.touched">
-              Only digits allowed.
-            </div>
-          </div>
-
-          <div class="input-group mb-4 float">
-            <input type="email" placeholder=" " formControlName="storeEmail1" class="form-control">
-            <label class="float-lbl">Store Email 1 *</label>
-            <div *ngIf="phForm.get('storeEmail1')?.touched && phForm.get('storeEmail1')?.errors?.['email']">Please enter
-              a valid email address.</div>
-
-          </div>
-
-          <div class="input-group mb-4 float">
-            <input type="email" placeholder=" " formControlName="storeEmail2" class="form-control">
-            <label class="float-lbl">Store Email 2 *</label>
-            <div *ngIf="phForm.get('storeEmail2')?.touched && phForm.get('storeEmail2')?.errors?.['email']">Please enter
-              a valid email address.</div>
-          </div>
         </div>
       </fieldset>
 
-      <!-- Section 2: Pharmacy Address -->
-      <fieldset formGroupName="pharmacy">
-        <legend>Pharmacy Address</legend>
-        <div class="form-grid">
-          <div class="input-group mb-4 float">
-            <textarea rows="2" placeholder=" " formControlName="address1" class="form-control" style="width: 90%;"
-              required></textarea>
-            <label class="float-lbl">Address 1 *</label>
-            <div *ngIf="phForm.get('address1')?.touched && phForm.get('address1')?.errors?.['required']">Address is
-              required.</div>
-          </div>
-
-          <div class="input-group mb-4 float">
-            <textarea rows="2" placeholder=" " formControlName="address2" class="form-control" style="width: 90%;"
-              required></textarea>
-            <label class="float-lbl">Address 2 *</label>
-            <div *ngIf="phForm.get('address2')?.touched && phForm.get('address2')?.errors?.['required']">Address is
-              required.</div>
-          </div>
-        </div>
-        <div class="form-grid mt-3" style="margin-top: 2rem !important;">
-            <div class="input-group mb-4 float">
-                <select formControlName="countryId" class="form-control" required>
-                  <option value="" disabled selected>-- Select Country --</option>
-                  <option *ngFor="let c of countries" [value]="c.id">{{ c.name }}</option>
-                </select>
-                <label class="float-lbl">Country *</label>
-                <div *ngIf="phForm.get('countryId')?.touched && phForm.get('countryId')?.errors?.['required']">Country is required.</div>
-              </div>
-
-              <div class="input-group mb-4 float">
-                <select formControlName="stateId" [disabled]="!states.length" class="form-control" required>
-                  <option value="" disabled selected>-- Select State --</option>
-                  <option *ngFor="let s of states" [value]="s.id">{{ s.name }}</option>
-                </select>
-                <label class="float-lbl">State *</label>
-                <div *ngIf="phForm.get('stateId')?.touched && phForm.get('stateId')?.errors?.['required']">State is required.</div>
-              </div>
-
-              <div class="input-group mb-4 float">
-                <select formControlName="cityId" [disabled]="!cities.length" class="form-control" required>
-                 <option value="" disabled selected>-- Select City --</option>
-                 <option *ngFor="let c of cities" [value]="c.id">{{ c.name }}</option>
-                </select>
-                <label class="float-lbl">City *</label>
-                <div *ngIf="phForm.get('cityId')?.touched && phForm.get('cityId')?.errors?.['required']">City is required.</div>
-              </div>
-        </div>
-      </fieldset>
-
-
-      <!-- Section 3: Pharmacy Person -->
+      <!-- Section 2: Pharmacy Person -->
       <fieldset formGroupName="user">
         <legend>Pharmacy Person</legend>
         <div class="form-grid">
           <div class="input-group mb-4 float">
             <input type="text" placeholder="" formControlName="firstName" class="form-control" required>
             <label class="float-lbl">First Name *</label>
-            <div *ngIf="phForm.get('firstName')?.touched && phForm.get('firstName')?.errors?.['required']">FirstName is
+            <div *ngIf="phForm.get('user.firstName')?.touched && phForm.get('user.firstName')?.errors?.['required']">FirstName is
               required.</div>
           </div>
           <div class="input-group mb-4 float">
             <input type="text" placeholder="" formControlName="lastName" class="form-control" required>
             <label class="float-lbl">Last Name *</label>
-            <div *ngIf="phForm.get('lastName')?.touched && phForm.get('lastName')?.errors?.['required']">LastName is
+            <div *ngIf="phForm.get('user.lastName')?.touched && phForm.get('user.lastName')?.errors?.['required']">LastName is
               required.</div>
           </div>
           <div class="input-group mb-4 float">
             <input type="email" placeholder="" formControlName="email" class="form-control" required>
             <label class="float-lbl">Email *</label>
-            <div *ngIf="phForm.get('email')?.touched && phForm.get('email')?.errors?.['required']">Email is required.
+            <div *ngIf="phForm.get('user.email')?.touched && phForm.get('user.email')?.errors?.['required']">Email is required.
             </div>
-            <div *ngIf="phForm.get('email')?.touched && phForm.get('email')?.errors?.['email']">Please enter a valid
+            <div *ngIf="phForm.get('user.email')?.touched && phForm.get('user.email')?.errors?.['email']">Please enter a valid
               email address.</div>
           </div>
           <div class="input-group mb-4 float">
             <input type="text" placeholder="" formControlName="mobile" class="form-control" required maxlength="10"
               (keypress)="allowOnlyNumbers($event)">
             <label class="float-lbl">Mobile *</label>
-            <div *ngIf="phForm.get('mobile')?.touched && phForm.get('mobile')?.errors?.['required']">Mobile is required.
+            <div *ngIf="phForm.get('user.mobile')?.touched && phForm.get('user.mobile')?.errors?.['required']">Mobile is required.
             </div>
-            <div *ngIf="phForm.get('mobile')?.errors?.['pattern'] && phForm.get('mobile')?.touched">
+            <div *ngIf="phForm.get('user.mobile')?.errors?.['pattern'] && phForm.get('user.mobile')?.touched">
               Only digits allowed.
             </div>
           </div>
           <div class="input-group mb-4 float">
             <input type="date" formControlName="dateofBirth" class="form-control" required [max]="maxDate">
             <label class="float-lbl">Date Of Birth *</label>
-            <div *ngIf="phForm.get('dateofBirth')?.touched && phForm.get('dateofBirth')?.errors?.['required']">Date of
+            <div *ngIf="phForm.get('user.dateofBirth')?.touched && phForm.get('user.dateofBirth')?.errors?.['required']">Date of
               Birth is required</div>
             <div
-              *ngIf="phForm.get('dateofBirth')?.errors?.['futureDate'] && (phForm.get('dateofBirth')?.touched || phForm.get('dateofBirth')?.dirty)">
+              *ngIf="phForm.get('user.dateofBirth')?.errors?.['futureDate'] && (phForm.get('user.dateofBirth')?.touched || phForm.get('user.dateofBirth')?.dirty)">
               Date of Birth cannot be in the future</div>
           </div>
 
@@ -212,12 +133,21 @@
               <option value="Other">Other</option>
             </select>
             <label class="float-lbl">Gender *</label>
-            <div *ngIf="phForm.get('gender')?.touched && phForm.get('gender')?.errors?.['required']">Gender is required.
-            </div>
+            <div *ngIf="phForm.get('user.gender')?.touched && phForm.get('user.gender')?.errors?.['required']">Gender is required.</div>
           </div>
           <div class="input-group mb-4">
             <label class="form-label">Upload Picture *</label>
             <input type="file" formControlName="picture" class="form-control" accept="image/*">
+          </div>
+          <div class="input-group mb-4 float">
+            <input type="text" placeholder="" formControlName="Password" class="form-control" required>
+            <label class="float-lbl">Password *</label>
+            <div *ngIf="phForm.get('user.Password')?.touched && phForm.get('user.Password')?.errors?.['required']">Password is required.</div>
+          </div>
+          <div class="input-group mb-4 float">
+            <input type="text" placeholder="" formControlName="ConfirmPassword" class="form-control" required>
+            <label class="float-lbl">ConfirmPassword *</label>
+            <div *ngIf="phForm.get('user.ConfirmPassword')?.touched && phForm.get('user.ConfirmPassword')?.errors?.['required']">confirmPassword is required.</div>
           </div>
         </div>
       </fieldset>
@@ -229,7 +159,7 @@
           <div class="input-group mb-4 float">
             <input type="text" placeholder=" " formControlName="bankName" class="form-control" required>
             <label class="float-lbl">Bank Name *</label>
-            <div *ngIf="phForm.get('bankName')?.touched && phForm.get('bankName')?.errors?.['required']">Bank Name is
+            <div *ngIf="phForm.get('pharmacyBankDetails.bankName')?.touched && phForm.get('pharmacyBankDetails.bankName')?.errors?.['required']">Bank Name is
               required.</div>
           </div>
 
@@ -237,10 +167,10 @@
             <input type="text" placeholder=" " formControlName="accountholderName" class="form-control" required>
             <label class="float-lbl">Account Holder Name *</label>
             <div
-              *ngIf="phForm.get('accountholderName')?.touched && phForm.get('accountholderName')?.errors?.['required']">
+              *ngIf="phForm.get('pharmacyBankDetails.accountholderName')?.touched && phForm.get('pharmacyBankDetails.accountholderName')?.errors?.['required']">
               AccountHolderName is required.</div>
             <div
-              *ngIf="phForm.get('accountholderName')?.errors?.['pattern'] && phForm.get('accountholderName')?.touched">
+              *ngIf="phForm.get('pharmacyBankDetails.accountholderName')?.errors?.['pattern'] && phForm.get('pharmacyBankDetails.accountholderName')?.touched">
               Only digits allowed.
             </div>
           </div>
@@ -249,30 +179,30 @@
             <input type="text" placeholder=" " formControlName="accountNumber" class="form-control" maxlength="16"
               required required (keypress)="allowOnlyNumbers($event)">
             <label class="float-lbl">Account Number *</label>
-            <div *ngIf="phForm.get('accountNumber')?.touched && phForm.get('accountNumber')?.errors?.['required']">
+            <div *ngIf="phForm.get('pharmacyBankDetails.accountNumber')?.touched && phForm.get('pharmacyBankDetails.accountNumber')?.errors?.['required']">
               AccountNumber is required.</div>
           </div>
 
           <div class="input-group mb-4 float">
             <input type="text" placeholder=" " formControlName="ifscCode" class="form-control" required>
             <label class="float-lbl">IFSC Code *</label>
-            <div *ngIf="phForm.get('ifscCode')?.touched && phForm.get('ifscCode')?.errors?.['required']">IFSCCode is
+            <div *ngIf="phForm.get('pharmacyBankDetails.ifscCode')?.touched && phForm.get('pharmacyBankDetails.ifscCode')?.errors?.['required']">IFSCCode is
               required.</div>
           </div>
 
           <div class="input-group mb-4 float">
             <input type="text" placeholder=" " formControlName="branchName" class="form-control" required>
             <label class="float-lbl">Branch Name *</label>
-            <div *ngIf="phForm.get('branchName')?.touched && phForm.get('branchName')?.errors?.['required']">BranchName
+            <div *ngIf="phForm.get('pharmacyBankDetails.branchName')?.touched && phForm.get('pharmacyBankDetails.branchName')?.errors?.['required']">BranchName
               is required.</div>
           </div>
 
           <div class="input-group mb-4 float">
             <input type="text" placeholder=" " formControlName="upiId" class="form-control" required>
             <label class="float-lbl">UPI ID *</label>
-            <div *ngIf="phForm.get('upiId')?.touched && phForm.get('upiId')?.errors?.['required']">UPI_ID is required.
+            <div *ngIf="phForm.get('pharmacyBankDetails.upiId')?.touched && phForm.get('pharmacyBankDetails.upiId')?.errors?.['required']">UPI_ID is required.
             </div>
-            <div *ngIf="phForm.get('upiId')?.errors?.['pattern'] && phForm.get('upiId')?.touched">
+            <div *ngIf="phForm.get('pharmacyBankDetails.upiId')?.errors?.['pattern'] && phForm.get('pharmacyBankDetails.upiId')?.touched">
               Please enter a valid UPI ID.
             </div>
           </div>

@@ -33,7 +33,7 @@ export class AdminPharmacyService extends adminBaseService {
         return this.http.post(admin_apiconfig.endpoints.pharmacy.getPaged, reqData, { headers: admin_apiconfig.requestSettings.header })
     }
     getpharmacybyId(id: number) {
-        return this.http.get<ApiResponse<PharmacyDto>>(admin_apiconfig.endpoints.pharmacy.get(id), { headers: admin_apiconfig.requestSettings.header })
+        return this.http.get<PharmacyDto>(admin_apiconfig.endpoints.pharmacy.get(id), { headers: admin_apiconfig.requestSettings.header })
     }
     getcountry() {
         return this.http.post<ApiResponse<CountryDto>>(admin_apiconfig.endpoints.pharmacy.getcountries, { headers: admin_apiconfig.requestSettings.header })
