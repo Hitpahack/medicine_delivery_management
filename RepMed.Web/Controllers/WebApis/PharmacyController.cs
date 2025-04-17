@@ -104,7 +104,7 @@ namespace RepMed.Web.Controllers.WebApis
                         }
                     }
                     tran.Commit();
-                    return Ok();
+                    return Ok("Pharmacy Added Successfully");
                 }
 
             }
@@ -147,7 +147,7 @@ namespace RepMed.Web.Controllers.WebApis
                         }
                     }
                     tran.Commit();
-                    return Ok();
+                    return Ok("Pharmacy Updated Successfully");
                 }
 
             }

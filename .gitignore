@@ -69,3 +69,10 @@
 /RepMed.Data/obj/Debug/net8.0/RepMed.Data.genruntimeconfig.cache
 /RepMed.Data/obj/Debug/net8.0/RepMed.Data.GeneratedMSBuildEditorConfig.editorconfig
 /RepMed.Data/obj/Debug/net8.0/RepMed.Data.genruntimeconfig.cache
+/RepMed.Data/bin/Release/net8.0/RepMed.Data.dll
+/RepMed.Data/bin/Release/net8.0/RepMed.Data.deps.json
+/RepMed.Data/bin/Release/net8.0/RepMed.Data.pdb
+/RepMed.Data/bin/Release/net8.0/RepMed.Data.runtimeconfig.json
+/RepMed.Data/obj/Release/net8.0/ref/RepMed.Data.dll
+/RepMed.Data/obj/Release/net8.0/refint/RepMed.Data.dll
+/RepMed.Data/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs

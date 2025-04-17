@@ -47,14 +47,20 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="ClientApp\src\app\admin\shared\datatables\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="ClientApp\src\app\admin\shared\datatables\**" />
+    <EmbeddedResource Remove="ClientApp\src\app\admin\shared\datatables\**" />
     <None Remove="$(SpaRoot)**" />
+    <None Remove="ClientApp\src\app\admin\shared\datatables\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Compile Remove="Controllers\WeatherForecastController.cs" />
   </ItemGroup>
+
+
 
   <ItemGroup>
     <ProjectReference Include="..\RepMed.Core\RepMed.Core.csproj" />
