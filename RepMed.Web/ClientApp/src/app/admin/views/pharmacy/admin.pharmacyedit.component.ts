@@ -18,12 +18,12 @@ import { ActivatedRoute } from '@angular/router';
 })
 
 export class EditPharmacy extends AdminBaseComponent implements OnInit {
-    
+
     constructor(public router: Router,
-         public fb: FormBuilder, 
-         public validator: CustomValidator, 
-         public adminpharmacyservice: AdminPharmacyService, 
-         private route: ActivatedRoute) {
+        public fb: FormBuilder,
+        public validator: CustomValidator,
+        public adminpharmacyservice: AdminPharmacyService,
+        private route: ActivatedRoute) {
         super(router, fb);
     }
     editpharmacyForm: FormGroup
@@ -47,66 +47,68 @@ export class EditPharmacy extends AdminBaseComponent implements OnInit {
 
     ngOnInit(): void {
         const today = new Date();
-        this.minExpiryDate = today.toISOString().split('T')[0]; // YYYY-MM-DD
+        this.minExpiryDate = today.toISOString().split('T')[0];
 
         const pharmacyGroup = this.editpharmacyForm.get('pharmacy');
         pharmacyGroup?.get('countryId')?.valueChanges.subscribe(countryId => {
-            this.states = this.getStatesByCountry(countryId); // Replace this with API if needed
+            this.states = this.getStatesByCountry(countryId);
             pharmacyGroup.get('stateId')?.reset();
             pharmacyGroup.get('cityId')?.reset();
             this.cities = [];
         });
 
         pharmacyGroup?.get('stateId')?.valueChanges.subscribe(stateId => {
-            this.cities = this.getCitiesByState(stateId); // Replace this with API if needed
+            this.cities = this.getCitiesByState(stateId);
             pharmacyGroup.get('cityId')?.reset();
         });
         this.editpharmacyForm = this.initForm();
         const userId = this.route.snapshot.params['id'];
-        console.log("userids", userId)
         if (userId) {
             this.adminpharmacyservice.getpharmacybyId(userId).subscribe((response) => {
-                if (response?.isSuccess && response.data) {
-                    const pharmacydto = response.data;
-                    console.log("User data received:", pharmacydto.pharmacy.ownerName);
 
-                    this.editpharmacyForm.patchValue({
-                        ownerName: pharmacydto.pharmacy.ownerName,
-                        storeName: pharmacydto.pharmacy.storeName,
-                        businessName: pharmacydto.pharmacy.businessName,
-                        licenseNumber: pharmacydto.pharmacy.licenseNumber,
-                        licenseExpiry: pharmacydto.pharmacy.licenseExpiry,
-                        gstNumber: pharmacydto.pharmacy.gstnumber,
-                        registeredMobile: pharmacydto.pharmacy.registeredMobile,
-                        officialEmail: pharmacydto.pharmacy.officialEmail,
-                        storeMobile1: pharmacydto.pharmacy.storeMobile1,
-                        storeEmail1: pharmacydto.pharmacy.storeEmail1,
-                        storeEmail2: pharmacydto.pharmacy.storeEmail2,
-                        address1: pharmacydto.pharmacy.address1,
-                        address2: pharmacydto.pharmacy.address2,
-                        //countryId: pharmacydto.pharmacy.countryId,
-                        //stateId: pharmacydto.pharmacy.stateId,
-                        //cityId: pharmacydto.pharmacy.cityId,
+                const pharmacydata = response;
+                console.log("User data received:", pharmacydata.pharmacy.ownerName);
 
-                        // firstName: pharmacydto.person.firstName,
-                        // lastName: pharmacydto.person.lastName,
-                        // email: pharmacydto.person.email,
-                        // mobile: pharmacydto.person.mobile,
-                        // dateofBirth: pharmacydto.person.dateOfBirth,
-                        // gender: pharmacydto.person.gender,
-                        // picture: pharmacydto.person.picture,
+                this.editpharmacyForm.patchValue({
+                    pharmacy: {
+                        ownerName: pharmacydata.pharmacy.ownerName,
+                        storeName: pharmacydata.pharmacy.storeName,
+                        businessName: pharmacydata.pharmacy.businessName,
+                        licenseNumber: pharmacydata.pharmacy.licenseNumber,
+                        licenseExpiry: pharmacydata.pharmacy.licenseExpiry,
+                        gstNumber: pharmacydata.pharmacy.gstnumber,
+                        registeredMobile: pharmacydata.pharmacy.registeredMobile,
+                        officialEmail: pharmacydata.pharmacy.officialEmail,
+                        storeMobile1: pharmacydata.pharmacy.storeMobile1,
+                        storeEmail1: pharmacydata.pharmacy.storeEmail1,
+                        storeEmail2: pharmacydata.pharmacy.storeEmail2,
+                        address1: pharmacydata.pharmacy.address1,
+                        address2: pharmacydata.pharmacy.address2,
+                        countryId: pharmacydata.pharmacy.countryId,
+                        stateId: pharmacydata.pharmacy.stateId,
+                        cityId: pharmacydata.pharmacy.cityId,
+                    },
+                    // user: {
+                    //     firstName: pharmacydata.person.firstName,
+                    //     lastName: pharmacydata.person.lastName,
+                    //     email: pharmacydata.person.email,
+                    //     mobile: pharmacydata.person.mobile,
+                    //     dateofBirth: pharmacydata.person.dateOfBirth,
+                    //     gender: pharmacydata.person.gender,
+                    //     picture: pharmacydata.person.picture,
+                    //     //Password: pharmacydata.person.password,
+                    //     //ConfirmPassword: pharmacydata.person.confirmPassword
+                    // },
+                    pharmacyBankDetails: {
+                        bankName: pharmacydata.pharmacyBankDetails.bankName,
+                        accountholderName: pharmacydata.pharmacyBankDetails.accountHolderName,
+                        accountNumber: pharmacydata.pharmacyBankDetails.accountNumber,
+                        ifscCode: pharmacydata.pharmacyBankDetails.ifsccode,
+                        branchName: pharmacydata.pharmacyBankDetails.branchName,
+                        upiId: pharmacydata.pharmacyBankDetails.upiId,
+                    }
 
-                        bankName: pharmacydto.pharmacyBankDetails.bankName,
-                        accountholderName: pharmacydto.pharmacyBankDetails.accountHolderName,
-                        accountNumber: pharmacydto.pharmacyBankDetails.accountNumber,
-                        ifscCode: pharmacydto.pharmacyBankDetails.ifsccode,
-                        branchName: pharmacydto.pharmacyBankDetails.branchName,
-                        upiId: pharmacydto.pharmacyBankDetails.upiId,
-
-                    });
-                } else {
-                    console.error("Failed to load pharmacy data", response);
-                }
+                });
             });
         }
     }
@@ -141,7 +143,7 @@ export class EditPharmacy extends AdminBaseComponent implements OnInit {
             //     gender: new FormControl(null, [Validators.required]),
             //     picture: new FormControl(null, []),
             // }),
-            pharmacyBankDetails: this.fb.group({ 
+            pharmacyBankDetails: this.fb.group({
                 bankName: new FormControl(null, [Validators.required]),
                 accountholderName: new FormControl(null, [Validators.required]),
                 accountNumber: new FormControl(null, [Validators.required, Validators.pattern(/^\d{16}$/)]),
@@ -158,7 +160,6 @@ export class EditPharmacy extends AdminBaseComponent implements OnInit {
         console.log("isValid")
         if (isValid) {
             const pharmacyId = this.route.snapshot.params['id'];
-
             const dto: PharmacyDto = this.editpharmacyForm.value;
             this.adminpharmacyservice.add(dto, pharmacyId).subscribe(response => {
                 console.log("Pharmacy updated successfully!")

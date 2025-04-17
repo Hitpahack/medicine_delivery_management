@@ -34,6 +34,7 @@ body {
   
   .submenu {
     background-color: #444;
+    display: none;
   }
   
   .submenu a {
@@ -45,4 +46,9 @@ body {
   .submenu a:hover {
     background-color: #555;
   }
+  
+  .submenu.active {
+    display: block;
+  }
+  
   

@@ -268,13 +268,15 @@ namespace RepMed.Services
                 var sql = $@"
                             SELECT *                             
                             FROM {DbTables.tblPharmacy} p
-                            LEFT JOIN {DbTables.tblPharmacyBankDetails} b ON p.Id = b.PharmacyId where p.Id = {Id}";
+                            LEFT JOIN {DbTables.tblPharmacyBankDetails} b ON p.Id = b.PharmacyId 
+                            where p.Id = {Id}";
+
                 var pharmacyDataList = (await _idbConnection.QueryAsync<AddPharmacyDto, PharmacyBankDetailsDto, BasePharmacyDto>(
                                         sql,
                                         (pharmacy, bankDetails) => new BasePharmacyDto
                                         {
                                             Pharmacy = pharmacy,
-                                            PharmacyBankDetails = bankDetails
+                                            PharmacyBankDetails = bankDetails,
                                         },
                                         transaction: _idbTransaction,
                                         splitOn: "PharmacyId"
@@ -282,8 +284,19 @@ namespace RepMed.Services
 
                 var pharmacyData = pharmacyDataList.FirstOrDefault();
                 #endregion
+                        
+                var query = $@"
+                            SELECT u.Id as UserId, per.Id as PersonId ,     per.FirstName,per.LastName,per.Email,per.Mobile,per.Gender,per.DateOfBirth,per.Email            
+                            FROM {DbTables.tblPharmacy} p
+                            LEFT JOIN {DbTables.tblPharmacyBankDetails} b ON p.Id = b.PharmacyId    
+                            LEFT JOIN {DbTables.tblUser} u ON u.Id = p.UserId
+                            LEFT JOIN {DbTables.tblPersons} per ON per.Id = u.PersonId
+                            where p.Id = {Id}";
+
+                var userData = await _idbConnection.QueryFirstOrDefaultAsync<GetUserDto>(query, transaction: _idbTransaction);
+
                 if (pharmacyData !=null)
-                    apiResponse = new APIsSuccsss<BasePharmacyDto>(_validateMessages.RetriveSuccess, pharmacyData);
+                    apiResponse = new APIsSuccsss<BasePharmacyDto>(_validateMessages.RetriveSuccess, new GetPharmacyDto {Pharmacy=pharmacyData.Pharmacy, PharmacyBankDetails=pharmacyData.PharmacyBankDetails, User=userData });
                 else
                     return new APIsSuccsss<BasePharmacyDto>(_validateMessages.NotExist);
                 return await Task.FromResult(apiResponse);

@@ -74,8 +74,9 @@ namespace RepMed.Dtos
     }
 
     public class GetUserDto : BasicPersonsDto
-	{
-        public long Id{ get; set; }
+    {
+        public long UserId{ get; set; }
+        public long PersonId{ get; set; }
 
     }
 

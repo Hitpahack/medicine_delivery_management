@@ -41,12 +41,13 @@ export const routes: Routes = [
     children: [
       { path: 'shifts', component: AdminShiftsComponent },
       { path: 'dashboard', component: AdminDashboardComponent },
-      { path: 'addpharmacy', component: AdminAddPharmacyComponent },
-      { path: 'pharmacylist', component: AdminPharmacyListsComponent },
-      { path: 'pharmacydetails/:id', component: AdminPharmacyDetailsComponent },
-      { path: 'pharmacyedit/:id', component: EditPharmacy},
+      { path: 'pharmacy/add', component: AdminAddPharmacyComponent },
+      { path: 'pharmacy/edit/:id', component: EditPharmacy },
+      { path: 'pharmacy', component: AdminPharmacyListsComponent },
+      { path: 'pharmacy/view', component: AdminPharmacyDetailsComponent },
       
-      { path: 'adduser', component: AddUserComponent },
+      { path: 'user/add', component: AddUserComponent },
+      { path: 'user/edit/:id', component: AddUserComponent },
       { path: 'editprofile/:id', component: EditProfile },
       { path: 'changepassword', component:SetPassword},
       { path: 'setpassword', component:ChangePassword}
@@ -56,7 +57,7 @@ export const routes: Routes = [
     path: 'admin',
     component: PharmacyLayoutComponent,
     children: [
-      { path: 'pharmacy', component: PharmacyDashboardComponent }
+      { path: 'pharmacy/dashboard', component: PharmacyDashboardComponent }
     ]
   },
   {

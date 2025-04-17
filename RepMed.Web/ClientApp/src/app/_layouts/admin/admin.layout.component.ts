@@ -19,8 +19,11 @@ export class AdminLayoutComponent implements OnInit {
     this.renderer.appendChild(document.head, script);
   }
 
-  toggleSubmenu() {
-    this.isPharmacySubmenuVisible = !this.isPharmacySubmenuVisible;
-  }
+  toggleSubmenu(id: string): void {
+    const submenu = document.getElementById(id);
+    if (submenu) {
+      submenu.classList.toggle('active');
+    }
+  }  
 
 }
