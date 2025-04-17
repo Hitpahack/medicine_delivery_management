@@ -62,8 +62,8 @@ namespace RepMed.Services
                                               { "Ifsccode", reqDto.Ifsccode },
                                               { "BranchName", reqDto.BranchName },
                                               { "UpiId", reqDto.UpiId },
-                                       },
-                                    reqDto.Id);
+                                       }, $@"Id='{reqDto.Id}'"
+                                    );
                     #endregion
                     apiResponse = new APIsSuccsss<PharmacyBankDetailsDto>("Pharmacy bank details Updated successfully", pharmacyBank);
 
@@ -169,7 +169,11 @@ namespace RepMed.Services
                 else
                 {
                     #region Check Pharmacy Exist
-                    string sql = $@"SELECT a.Id FROM {DbTables.tblPharmacy} a WHERE a.{nameof(Pharmacy.Id)} = {Id}";
+                    string sql = $@"SELECT a.Id FROM {DbTables.tblPharmacy} a 
+                                 JOIN {DbTables.tblUser} u on u.{nameof(User.Id)} = a.{nameof(Pharmacy.UserId)}
+                                 JOIN {DbTables.tblPersons} p on p.{nameof(Person.Id)}=u.{nameof(User.PersonId)}
+                                 WHERE p.{nameof(Pharmacy.Id)} = {Id}";
+
                     var pharmacyData = await _idbConnection.QueryFirstOrDefaultAsync<AddPharmacyDto>(sql, transaction: _idbTransaction);
                     if (pharmacyData == null)
                     {
@@ -191,8 +195,8 @@ namespace RepMed.Services
                                           { "CityId", reqDto.CityId.ToString() },
                                           { "StateId", reqDto.StateId.ToString() },
                                           { "CountryId", reqDto.CountryId.ToString() },
-                                    },
-                                    reqDto.Id);
+                                    }, $@"Id='{pharmacyData.Id}'"
+                                    );
                     #endregion
                     apiResponse = new APIsSuccsss<AddPharmacyDto>(_validateMessages.UpdateSuccess, pharmacy);
 

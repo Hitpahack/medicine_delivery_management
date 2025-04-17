@@ -38,7 +38,7 @@ namespace RepMed.Services
                 if (personid > 0)
                 {
                     #region Check User Exist
-                    string sql = $@"SELECT p.Id FROM {DbTables.tblUser} a WHERE a.{nameof(User.PersonId)} = {personid}";
+                    string sql = $@"SELECT a.Id FROM {DbTables.tblUser} a WHERE a.{nameof(User.PersonId)} = {personid}";
                     var userData = await _idbConnection.QueryFirstOrDefaultAsync<EntityUsersDto>(sql, transaction: _idbTransaction);
                     if (userData == null)
                     {
@@ -66,6 +66,8 @@ namespace RepMed.Services
                     reqDto.PasswordHash = passHas;
                     reqDto.PasswordSalt = passSalt;
                     reqDto.Status = "Active";
+                    reqDto.CreatedAt = DateTime.Now;
+                    reqDto.UpdatedAt = DateTime.Now;
                     EntityUsersDto response = _idbConnection.Insert<EntityUsersDto>(_idbTransaction,
                      DbTables.tblUser,
                      DapperHelper.QueryAsColumnsParma<User, AddUsersDto>(),

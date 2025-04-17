@@ -77,6 +77,8 @@ namespace RepMed.Dtos
 
         public bool? Otpverified { get; set; }
 
+        [RegularExpression("^(Active|Inactive|Suspended|Pending|Rejected)$",
+        ErrorMessage = "Status must be either Active, Inactive, Suspended, Pending, or Rejected.")]
         public string Status { get; set; }
 
         public DateTime? CreatedAt { get; set; }

@@ -162,6 +162,7 @@ namespace RepMed.Web.Controllers.BaseApis
                             {
                                 d.PersonId = person.Data.Id;
                                 d.ConfirmPassword = reqDto.ConfirmPassword;
+                                d.Email = reqDto.Email;
                             });
                             var user = await userService.AddEditUser(userObj, personid);
                             if(!user.IsSuccess)

@@ -61,7 +61,9 @@ namespace RepMed.Services
                                                     { "DateOfBirth", reqDto.DateOfBirth?.ToString("yyyy-MM-dd HH:MM:ss") },
                                                     { "FirstName", reqDto.FirstName },
                                                     { "LastName", reqDto.LastName },
-                                                    { "Picture", reqDto.Picture }                                                    
+                                                    { "Picture", reqDto.Picture },                                                    
+                                                    { "Mobile", reqDto.Mobile },                                                    
+                                                    { "UpdatedAt", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}                                               
                                                 }, $@"ID='{personid}'");
 
                    
@@ -76,10 +78,19 @@ namespace RepMed.Services
 
                             if (addres != null)
                             {
-                                EntityAddressDto address = _idbConnection.Update<EntityAddressDto>(_idbTransaction,
-                                DbTables.tblUserAddress,
-                                DapperHelper.QueryAsColumnsParma<Useraddress, AddAddressDto>(),
-                                reqDto.Address, person.Id, "PersonId");
+                                
+                                #region Update Address
+                                var address = _idbConnection.Update<AddAddressDto>(_idbTransaction,DbTables.tblUserAddress,
+                                new Dictionary<string, string> {
+                                                    { "AddressLine", reqDto.Address.AddressLine },
+                                                    { "CityId", reqDto.Address.CityId.ToString() },
+                                                    { "StateId", reqDto.Address.StateId.ToString() },
+                                                    { "CountryId", reqDto.Address.CountryId.ToString() },
+                                                    { "Pincode", reqDto.Address.Pincode },
+                                                    { "Latitude", reqDto.Address.Latitude.ToString()},
+                                                    { "Longitude", reqDto.Address.Longitude.ToString()},
+                                }, $@"PersonId='{person.Id}'" );
+                                #endregion
                             }
                             else
                             {
@@ -104,7 +115,7 @@ namespace RepMed.Services
                 }
                 else
                 {
-                    string sql;
+                    
                     #region Add Person
                     EntityPersonsDto person = _idbConnection.Insert<EntityPersonsDto>(_idbTransaction,
                         DbTables.tblPersons,
@@ -124,7 +135,7 @@ namespace RepMed.Services
                         reqDto.Address);
                     }
                     #endregion
-                    apiResponse = new APIsSuccsss<EntityPersonsDto>(_validateMessages.Success, person);
+                     apiResponse = new APIsSuccsss<EntityPersonsDto>(_validateMessages.Success, person);
                 }
 
                 return await Task.FromResult(apiResponse);

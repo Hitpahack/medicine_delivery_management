@@ -1,5 +1,6 @@
 ﻿using RepMed.Core;
 using System;
+using System.Text.Json.Serialization;
 
 namespace RepMed.Dtos
 {
@@ -45,7 +46,7 @@ namespace RepMed.Dtos
 
     public class AddAddressDto : BasicAddressDto
     {
-        [IgnoreDapper]
+        [JsonIgnore]
         public long PersonId { get; set; }
 
     }
