@@ -53,6 +53,15 @@ export interface PharmacyDto {
   
   // You should also define AddPersonDto separately like this:
   export interface AddPersonDto {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    mobile?: string;
+    dateOfBirth?: Date;
+    gender?: string;
+    picture?: string;
+    password?: string;
+    confirmPassword?: string;
     // AddPersonDto properties here
   }
   

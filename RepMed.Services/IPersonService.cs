@@ -33,17 +33,6 @@ namespace RepMed.Services
             try
             {
                 APIsResponse<EntityPersonsDto> apiResponse = default(APIsResponse<EntityPersonsDto>);
-                #region Check Email/Phone exist
-                if ((await IsEmailExist(reqDto.Email, true)))
-                {
-                    return await Task.FromResult(new APIsError<EntityPersonsDto>(
-                        _validateMessages.GetAlreadyExist(reqDto.Email, "Please choose another one")) as APIsResponse<EntityPersonsDto>);
-                }
-                if ((await IsPhoneExist(reqDto.Mobile)))
-                {
-                    return await Task.FromResult(new APIsError<EntityPersonsDto>(_validateMessages.GetAlreadyExist(reqDto.Mobile, "Please choose another one")) as APIsResponse<EntityPersonsDto>);
-                }
-                #endregion
                 if (personid > 0)
                 {
                     #region Check Person Exist
@@ -51,7 +40,7 @@ namespace RepMed.Services
                     var personData = await _idbConnection.QueryFirstOrDefaultAsync<EntityPersonsDto>(sql, transaction: _idbTransaction);
                     if(personData ==null)
                     {
-                        apiResponse = new APIsSuccsss<EntityPersonsDto>(_validateMessages.NotExist);
+                        return new APIsSuccsss<EntityPersonsDto>(_validateMessages.NotExist);
                     }
                     #endregion
                     #region Update Person
@@ -115,7 +104,17 @@ namespace RepMed.Services
                 }
                 else
                 {
-                    
+                    #region Check Email/Phone exist
+                    if ((await IsEmailExist(reqDto.Email, true)))
+                    {
+                        return await Task.FromResult(new APIsError<EntityPersonsDto>(
+                            _validateMessages.GetAlreadyExist(reqDto.Email, "Please choose another one")) as APIsResponse<EntityPersonsDto>);
+                    }
+                    if ((await IsPhoneExist(reqDto.Mobile)))
+                    {
+                        return await Task.FromResult(new APIsError<EntityPersonsDto>(_validateMessages.GetAlreadyExist(reqDto.Mobile, "Please choose another one")) as APIsResponse<EntityPersonsDto>);
+                    }
+                    #endregion
                     #region Add Person
                     EntityPersonsDto person = _idbConnection.Insert<EntityPersonsDto>(_idbTransaction,
                         DbTables.tblPersons,

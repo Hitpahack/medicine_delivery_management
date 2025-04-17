@@ -50,16 +50,17 @@ export class EditPharmacy extends AdminBaseComponent implements OnInit {
         const today = new Date();
         this.minExpiryDate = today.toISOString().split('T')[0];
 
+        // this code for country, state, city
         const pharmacyGroup = this.editpharmacyForm.get('pharmacy');
         pharmacyGroup?.get('countryId')?.valueChanges.subscribe(countryId => {
-            this.states = this.getStatesByCountry(countryId);
+            this.states = this.getStatesByCountry(countryId); // Replace this with API if needed
             pharmacyGroup.get('stateId')?.reset();
             pharmacyGroup.get('cityId')?.reset();
             this.cities = [];
         });
 
         pharmacyGroup?.get('stateId')?.valueChanges.subscribe(stateId => {
-            this.cities = this.getCitiesByState(stateId);
+            this.cities = this.getCitiesByState(stateId); // Replace this with API if needed
             pharmacyGroup.get('cityId')?.reset();
         });
         this.editpharmacyForm = this.initForm();
@@ -90,10 +91,10 @@ export class EditPharmacy extends AdminBaseComponent implements OnInit {
                         cityId: pharmacydata.pharmacy.cityId,
                     },
                     user: {
-                        firstName: pharmacydata.person.firstName,
-                        lastName: pharmacydata.person.lastName,
-                        email: pharmacydata.person.email,
-                        mobile: pharmacydata.person.mobile,
+                        firstName: pharmacydata.user.firstName,
+                        lastName: pharmacydata.user.lastName,
+                        email: pharmacydata.user.email,
+                        mobile: pharmacydata.user.mobile,
                     },
                     pharmacyBankDetails: {
                         bankName: pharmacydata.pharmacyBankDetails.bankName,
@@ -105,6 +106,11 @@ export class EditPharmacy extends AdminBaseComponent implements OnInit {
                     }
 
                 });
+                const countryId = pharmacydata.pharmacy.countryId;
+                this.states = this.getStatesByCountry(countryId);
+
+                const stateId = pharmacydata.pharmacy.stateId;
+                this.cities = this.getCitiesByState(stateId);
             });
         }
     }
@@ -148,29 +154,6 @@ export class EditPharmacy extends AdminBaseComponent implements OnInit {
                 upiId: new FormControl(null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/)])
             })
         });
-    }
-
-    onSubmit() {
-        console.log("form submited")
-        let isValid = this.validateForm(this.editpharmacyForm);
-        console.log("isValid")
-        if (isValid) {
-            const pharmacyId = this.route.snapshot.params['id'];
-            const dto: PharmacyDto = this.editpharmacyForm.value;
-            this.adminpharmacyservice.editpharmacy(dto, pharmacyId).subscribe(response => {
-                console.log("Pharmacy updated successfully!")
-            })
-        }
-        else
-            Helper.ShowError('Please fill the required fields');
-    }
-
-
-    allowOnlyNumbers(event: KeyboardEvent) {
-        const charCode = event.key.charCodeAt(0);
-        if (charCode < 48 || charCode > 57) {
-            event.preventDefault();
-        }
     }
 
     getStatesByCountry(countryId: number) {
@@ -243,5 +226,44 @@ export class EditPharmacy extends AdminBaseComponent implements OnInit {
             { id: 40, name: 'Glasgow', stateId: 20 }
         ];
         return allCities.filter(c => c.stateId == stateId);
+    }
+
+    // onSubmit() {
+    //     console.log("form submited")
+    //     let isValid = this.validateForm(this.editpharmacyForm);
+    //     console.log("isValid")
+    //     if (isValid) {
+    //         const pharmacyId = this.route.snapshot.params['id'];
+    //         const dto: PharmacyDto = this.editpharmacyForm.value;
+    //         this.adminpharmacyservice.editpharmacy(dto, pharmacyId).subscribe(response => {
+    //             console.log("Pharmacy updated successfully!")
+    //         })
+    //     }
+    //     else
+    //         Helper.ShowError('Please fill the required fields');
+    // }
+
+    onSubmit() {
+        if (this.editpharmacyForm.invalid) {
+            this.validator.markInvalidFieldsTouched(this.editpharmacyForm);
+            return;
+        }
+        const pharmacyId = this.route.snapshot.params['id'];
+        const dto: PharmacyDto = this.editpharmacyForm.value;
+        console.log("dto", dto)
+        this.adminpharmacyservice.editpharmacy(dto, pharmacyId).subscribe({
+            next: res => console.log("Success", res),
+            error: err => console.error("Error", err)
+        })
+        // Submit the form
+        console.log('Form submitted:', this.editpharmacyForm.value);
+    }
+
+
+    allowOnlyNumbers(event: KeyboardEvent) {
+        const charCode = event.key.charCodeAt(0);
+        if (charCode < 48 || charCode > 57) {
+            event.preventDefault();
+        }
     }
 }

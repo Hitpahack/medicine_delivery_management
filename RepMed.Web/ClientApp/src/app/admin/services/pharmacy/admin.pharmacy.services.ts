@@ -30,7 +30,8 @@ export class AdminPharmacyService extends adminBaseService {
         return this.http.post(admin_apiconfig.endpoints.pharmacy.add,formData ,{ headers: admin_apiconfig.requestSettings.header })
     }
     editpharmacy(formData: any, id: number) {
-        return this.http.post(admin_apiconfig.endpoints.user.update(id), formData, { headers: admin_apiconfig.requestSettings.header })
+        console.log("formData", formData)
+        return this.http.post(admin_apiconfig.endpoints.pharmacy.update(id), formData, { headers: admin_apiconfig.requestSettings.header })
       }
     getPaged(reqData: any, id: number) {
         return this.http.post(admin_apiconfig.endpoints.pharmacy.getPaged, reqData, { headers: admin_apiconfig.requestSettings.header })
