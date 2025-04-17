@@ -63,5 +63,9 @@
 /RepMed.Data/obj/Release/net8.0/RepMed.Data.sourcelink.json
 /RepMed.Web/ClientApp/.angular
 /RepMed.Web/ClientApp/dist
+/.vs/ProjectEvaluation
+/RepMed.Data/obj/RepMed.Data.csproj.nuget.g.props
+/RepMed.Data/obj/Debug/net8.0/RepMed.Data.GeneratedMSBuildEditorConfig.editorconfig
+/RepMed.Data/obj/Debug/net8.0/RepMed.Data.genruntimeconfig.cache
 /RepMed.Data/obj/Debug/net8.0/RepMed.Data.GeneratedMSBuildEditorConfig.editorconfig
 /RepMed.Data/obj/Debug/net8.0/RepMed.Data.genruntimeconfig.cache

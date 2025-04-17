@@ -10,12 +10,13 @@ using System.Threading.Tasks;
 using Org.BouncyCastle.Crypto.Generators;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.Ess;
+using System.Collections.Generic;
 
 namespace RepMed.Services
 {
     public interface IUserServices : IDisposable
     {
-        Task<APIsResponse<EntityUsersDto>> AddUser(AddUsersDto reqDto, long Id);
+        Task<APIsResponse<EntityUsersDto>> AddEditUser(AddUsersDto reqDto, long Id);
         Task<APIsResponse<bool>> SetPassword(SetPasswordDto dto);
         Task<APIsResponse<GetUserDto>> GetUser(long Id);
     }
@@ -29,22 +30,30 @@ namespace RepMed.Services
 
         }
 
-        public async Task<APIsResponse<EntityUsersDto>> AddUser(AddUsersDto reqDto, long Id)
+        public async Task<APIsResponse<EntityUsersDto>> AddEditUser(AddUsersDto reqDto, long personid)
         {
             try
             {
                 APIsResponse<EntityUsersDto> apiResponse = default(APIsResponse<EntityUsersDto>);
-                if (Id > 0)
+                if (personid > 0)
                 {
-                    #region Update User
-                    var response = _idbConnection.Update<EntityUsersDto>(
-                                    _idbTransaction,
-                                    DbTables.tblUser,
-                                    DapperHelper.UpdateQueryAsColumnsParma<User, AddUsersDto>(),
-                                    reqDto,
-                                    Id,"PersonId");
+                    #region Check User Exist
+                    string sql = $@"SELECT p.Id FROM {DbTables.tblUser} a WHERE a.{nameof(User.PersonId)} = {personid}";
+                    var userData = await _idbConnection.QueryFirstOrDefaultAsync<EntityUsersDto>(sql, transaction: _idbTransaction);
+                    if (userData == null)
+                    {
+                        apiResponse = new APIsSuccsss<EntityUsersDto>(_validateMessages.NotExist);
+                    }
                     #endregion
-                    apiResponse = new APIsSuccsss<EntityUsersDto>(_validateMessages.Success, response);
+                    #region Update User
+                    var person = _idbConnection.Update<EntityUsersDto>(_idbTransaction, DbTables.tblUser,
+                                               new Dictionary<string, string> {
+                                                    { "FirstName", reqDto.FirstName },
+                                                    { "LastName", reqDto.LastName }
+                                               }, $@"PersonId='{personid}'");
+                   
+                    #endregion
+                    apiResponse = new APIsSuccsss<EntityUsersDto>(_validateMessages.Success, person);
                 }
                 else
                 {

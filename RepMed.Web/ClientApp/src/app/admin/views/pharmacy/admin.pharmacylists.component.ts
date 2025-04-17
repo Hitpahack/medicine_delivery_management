@@ -11,7 +11,7 @@ declare var $: any;
 
 @Component({
     selector: 'app-post-list',
-    templateUrl: './admin.pharmacylists.component.html',
+    templateUrl: './admin.pharmacylists.component.html'
 })
 export class AdminPharmacyListsComponent extends AdminBaseComponent implements OnInit  {
 
@@ -22,6 +22,17 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
         ) {
         super(router, fb);
     }
+    dtColumns = [
+    { title: 'ID', data: 'id' }
+    ];
+
+    dtOptions = {
+        processing: true,
+        serverSide: true,
+        searching: true
+    };
+
+    ajaxUrl = admin_apiconfig.endpoints.pharmacy.getPaged;
     ngOnInit(): void {
 
         $('#post_pharmacylist_datatable').DataTable({

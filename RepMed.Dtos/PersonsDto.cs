@@ -8,14 +8,13 @@ namespace RepMed.Dtos
     {
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        [Required]
-        [DataType(DataType.EmailAddress)]
-        [EmailAddress]
-        public string Email { get; set; }
 
     }
+   
     public class BasePersonDto : BasePerson
     {
+       
+        
         public string? Gender { get; set; }
         public DateTime? DateOfBirth { get; set; }
         [Required]
@@ -25,7 +24,8 @@ namespace RepMed.Dtos
     }
     public class BasicPersonsDto : BasePersonDto
     {
-        public string Picture { get; set; }       
+        public string? Email { get; set; }
+        public string? Picture { get; set; }       
     }
 
     public class EntityPersonsDto : BasicPersonsDto
@@ -67,37 +67,14 @@ namespace RepMed.Dtos
     public class AddPersonDto : BasicPersonsDto
     {
      
-        [Core.RequiredIf("Id", "ShouldRequireReason")]
-        [MaxLength(25, ErrorMessage = "Maximum 15 characters allow ")]
-        [MinLength(3, ErrorMessage = "Minimum 3 characters allow ")]
-        //[StandardPassword]
-        [DataType(DataType.Password)]
-        [Core.IgnoreDapper]
-        public string Password { get; set; }
-        [Core.RequiredIf("Id", "ShouldRequireReason")]
-        [MaxLength(25, ErrorMessage = "Maximum 15 characters allow ")]
-        [MinLength(3, ErrorMessage = "Minimum 3 characters allow ")]
-        //[StandardPassword]
-        [Compare("Password")]
-        [DataType(DataType.Password)]
         [Core.IgnoreDapper]
         public string ConfirmPassword { get; set; }
-
-        public long? CreatedBy { get; set; }
-        public DateTime? CreatedOn { get; set; }
-        public bool? IsActive { get; set; }
-
         [Core.IgnoreDapper]
         public AddAddressDto? Address { get; set; }
         [Core.IgnoreDapper]
         public string Role { get; set; }
-        public long? Id { get; set; } = 0;
-
-        private bool ShouldRequireReason(object status)
-        {
-            return Id == 0;
-        }
 
     }
     
+
 }

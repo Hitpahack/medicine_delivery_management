@@ -141,7 +141,7 @@ namespace RepMed.Web.Controllers.BaseApis
                 }
             }
         }
-        protected async Task<APIsResponse<EntityUsersDto>> AddUser(AddPersonDto reqDto, long Id)
+        protected async Task<APIsResponse<EntityUsersDto>> AddEditUser(AddPersonDto reqDto, long personid)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -150,33 +150,37 @@ namespace RepMed.Web.Controllers.BaseApis
                 {
                     using (IPersonService personService = new PersonService(db, tran))
                     {   
-                        var person = await personService.AddPerson(reqDto,Id);
+                        var person = await personService.AddEditPerson(reqDto,personid);
                         if(!person.IsSuccess)
                         {
                             tran.Rollback();
-                            return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Failed to add person." };
+                            return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = person.Message };
                         }
                         using (IUserServices userService = new UserServices(db, tran))
                         {
-                            var user = await userService.AddUser(new AddUsersDto()
+                            var userObj = _mapper.Map<AddUsersDto, EntityPersonsDto>(person.Data, (d) =>
                             {
-                                PersonId = person.Data.Id,
-                                ConfirmPassword = reqDto.ConfirmPassword
-                            }, Id);
+                                d.PersonId = person.Data.Id;
+                                d.ConfirmPassword = reqDto.ConfirmPassword;
+                            });
+                            var user = await userService.AddEditUser(userObj, personid);
                             if(!user.IsSuccess)
                             {
                                 tran.Rollback();
-                                return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Failed to add user." };
+                                return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = user.Message };
                             }
-                            if (Id == 0)
+                            if (personid == 0)
                             {
-                                using (IAccountService accountService = new AccountService(db, tran))
+                                if (!string.IsNullOrEmpty(reqDto.Role))
                                 {
-                                    var role = await accountService.AddRoleAsync(user.Data, reqDto.Role);
-                                    if (!role.IsSuccess)
+                                    using (IAccountService accountService = new AccountService(db, tran))
                                     {
-                                        tran.Rollback();
-                                        return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Failed to add role." };
+                                        var role = await accountService.AddRoleAsync(user.Data, reqDto.Role);
+                                        if (!role.IsSuccess)
+                                        {
+                                            tran.Rollback();
+                                            return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = role.Message };
+                                        }
                                     }
                                 }
                             }

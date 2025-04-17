@@ -6,6 +6,7 @@ using RepMed.Dtos;
 using RepMed.Dtos.DataTables;
 using RepMed.Dtos.PharmacyPage;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Net;
@@ -52,12 +53,16 @@ namespace RepMed.Services
                 }
                 else
                 {
-                    #region Update Pharmacy
-                    var pharmacyBank = _idbConnection.Update<AddPharmacyDto>(
-                                    _idbTransaction,
-                                    DbTables.tblPharmacy,
-                                    DapperHelper.QueryAsColumnsParma<Pharmacy, AddPharmacyDto>(),
-                                    reqDto,
+                    #region Update Pharmacy Bank Details
+                    var pharmacyBank = _idbConnection.Update<PharmacyBankDetailsDto>(_idbTransaction,DbTables.tblPharmacyBankDetails,
+                                       new Dictionary<string, string> {
+                                              { "BankName", reqDto.BankName },
+                                              { "AccountHolderName", reqDto.AccountHolderName },
+                                              { "AccountNumber", reqDto.AccountNumber },
+                                              { "Ifsccode", reqDto.Ifsccode },
+                                              { "BranchName", reqDto.BranchName },
+                                              { "UpiId", reqDto.UpiId },
+                                       },
                                     reqDto.Id);
                     #endregion
                     apiResponse = new APIsSuccsss<PharmacyBankDetailsDto>("Pharmacy bank details Updated successfully", pharmacyBank);
@@ -163,13 +168,30 @@ namespace RepMed.Services
                 }
                 else
                 {
-
+                    #region Check Pharmacy Exist
+                    string sql = $@"SELECT a.Id FROM {DbTables.tblPharmacy} a WHERE a.{nameof(Pharmacy.Id)} = {Id}";
+                    var pharmacyData = await _idbConnection.QueryFirstOrDefaultAsync<AddPharmacyDto>(sql, transaction: _idbTransaction);
+                    if (pharmacyData == null)
+                    {
+                        apiResponse = new APIsSuccsss<AddPharmacyDto>(_validateMessages.NotExist);
+                    }
+                    #endregion
                     #region Update Pharmacy
-                    var pharmacy = _idbConnection.Update<AddPharmacyDto>(
-                                    _idbTransaction,
-                                    DbTables.tblPharmacy,
-                                    DapperHelper.QueryAsColumnsParma<Pharmacy, AddPharmacyDto>(),
-                                    reqDto,
+                    var pharmacy = _idbConnection.Update<AddPharmacyDto>(_idbTransaction,DbTables.tblPharmacy,
+                                    new Dictionary<string, string> {
+                                          { "LicenseNumber", reqDto.LicenseNumber },
+                                          { "LicenseExpiry", reqDto.LicenseExpiry?.ToString("yyyy-MM-dd HH:MM:ss") },
+                                          { "StoreMobile1", reqDto.StoreMobile1 },
+                                          { "StoreEmail1", reqDto.StoreEmail1 },
+                                          { "StoreEmail2", reqDto.StoreEmail2 },
+                                          { "Address1", reqDto.Address1 },
+                                          { "Address2", reqDto.Address2 },
+                                          { "Latitude", reqDto.Latitude.ToString() },
+                                          { "Longitude", reqDto.Longitude.ToString() },
+                                          { "CityId", reqDto.CityId.ToString() },
+                                          { "StateId", reqDto.StateId.ToString() },
+                                          { "CountryId", reqDto.CountryId.ToString() },
+                                    },
                                     reqDto.Id);
                     #endregion
                     apiResponse = new APIsSuccsss<AddPharmacyDto>(_validateMessages.UpdateSuccess, pharmacy);

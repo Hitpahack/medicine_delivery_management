@@ -16,9 +16,9 @@ import { PharmacyDashboardComponent } from "./views/pharmacydashboard/pharmacy.d
 import { PharmacyLayoutComponent } from "../_layouts/admin/pharmacy.layout.component";
 import { AdminPharmacyListsComponent } from "./views/pharmacy/admin.pharmacylists.component";
 import { BrowserModule } from '@angular/platform-browser';
-import { DataTablesModule } from "angular-datatables";
 import { AppComponent } from "../app.component";
 import { EditPharmacy } from "./views/pharmacy/admin.pharmacyedit.component";
+import { DtTableComponent } from "./shared/datatables/dt-table.component";
 
 
 @NgModule({
@@ -41,11 +41,13 @@ import { EditPharmacy } from "./views/pharmacy/admin.pharmacyedit.component";
     PharmacyLayoutComponent,
     AdminPharmacyListsComponent,
     BrowserModule,
+    AppComponent,
+    DtTableComponent
     DataTablesModule,
     AppComponent,
     EditPharmacy
   ],
-  exports: [AdminLayoutComponent]
+  exports: [AdminLayoutComponent,DtTableComponent]
 
 })
 export class AdminModule {

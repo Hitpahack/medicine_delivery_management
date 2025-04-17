@@ -44,27 +44,23 @@ namespace RepMed.Services
                 using (IPersonService personService = new PersonService(_idbConnection, _idbTransaction))
                 {
 
-                    string sql = $@"
-                                    SELECT {DapperHelper.QueryAsColumnsParma<Person, BasicPersonsDto>("pe.").Replace("\"", "`")}, 
+                    string sql = $@"SELECT {DapperHelper.QueryAsColumnsParma<Person, BasicPersonsDto>("pe.").Replace("\"", "`")}, 
                                            {DapperHelper.QueryAsColumnsParma<User, EntityUsersPassDto>("us.").Replace("\"", "`")}
                                     FROM {DbTables.tblPersons} pe  
                                     LEFT JOIN {DbTables.tblUser} us 
                                         ON pe.`{nameof(EntityUsersDto.Id)}` = us.`{nameof(EntityUsersDto.PersonId)}`
-                                    WHERE pe.`{nameof(BasePerson.Email)}` = '{reqDto.Email}';
+                                    WHERE pe.`{nameof(BasicPersonsDto.Email)}` = '{reqDto.Email}';
 
                                     SELECT * 
                                     FROM {DbTables.tblRole} r
                                     WHERE r.`{nameof(EntityRoleDto.Id)}` IN (
                                         SELECT ur.`{nameof(EntityUserRoleDto.RoleId)}`
                                         FROM {DbTables.tblUserRoles} ur
-                                        WHERE ur.`{nameof(EntityUserRoleDto.UserId)}` = (
-                                            SELECT usr.`{nameof(EntityUsersDto.Id)}`
-                                            FROM {DbTables.tblUser} usr
-                                            WHERE usr.`{nameof(BasePerson.Email)}` = '{reqDto.Email}'
-                                            LIMIT 1
-                                        )
-                                    );
-                                    ";
+                                    WHERE ur.`{nameof(EntityUserRoleDto.UserId)}` = (
+                                        SELECT usr.`{nameof(EntityUsersDto.Id)}`
+                                        FROM {DbTables.tblUser} usr
+                                        WHERE usr.`{nameof(BasicPersonsDto.Email)}` = '{reqDto.Email}'
+                                        LIMIT 1 ));";
 
                     //var mQuery = _idbConnection.QueryMultiple(sql, transaction: _idbTransaction);
                     EntityUsersPassDto response;

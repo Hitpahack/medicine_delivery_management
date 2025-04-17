@@ -14,4 +14,6 @@ public partial class Country
     public virtual ICollection<Pharmacy> Pharmacies { get; set; } = new List<Pharmacy>();
 
     public virtual ICollection<State> States { get; set; } = new List<State>();
+
+    public virtual ICollection<Useraddress> Useraddresses { get; set; } = new List<Useraddress>();
 }

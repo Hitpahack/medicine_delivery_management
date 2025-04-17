@@ -1,7 +1,10 @@
-﻿using RepMed.Core;
+﻿using Dapper;
+using Newtonsoft.Json.Linq;
+using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Threading.Tasks;
 
@@ -14,7 +17,7 @@ namespace RepMed.Services
         /// </summary>
         /// <param name="reqDto">AddPersonDto</param>
         /// <returns>[PersonsContactDto] Person info with contact</returns>
-        Task<APIsResponse<EntityPersonsDto>> AddPerson(AddPersonDto reqDto, long Id);
+        Task<APIsResponse<EntityPersonsDto>> AddEditPerson(AddPersonDto reqDto, long personid);
         Task<APIsResponse<bool>> IsPersonExist(string email);
 
     }
@@ -25,7 +28,7 @@ namespace RepMed.Services
         {
         }
 
-        public async Task<APIsResponse<EntityPersonsDto>> AddPerson(AddPersonDto reqDto, long Id)
+        public async Task<APIsResponse<EntityPersonsDto>> AddEditPerson(AddPersonDto reqDto, long personid)
         {
             try
             {
@@ -36,32 +39,65 @@ namespace RepMed.Services
                     return await Task.FromResult(new APIsError<EntityPersonsDto>(
                         _validateMessages.GetAlreadyExist(reqDto.Email, "Please choose another one")) as APIsResponse<EntityPersonsDto>);
                 }
-
                 if ((await IsPhoneExist(reqDto.Mobile)))
                 {
                     return await Task.FromResult(new APIsError<EntityPersonsDto>(_validateMessages.GetAlreadyExist(reqDto.Mobile, "Please choose another one")) as APIsResponse<EntityPersonsDto>);
                 }
                 #endregion
-                if (Id > 0)
+                if (personid > 0)
                 {
+                    #region Check Person Exist
+                    string sql = $@"SELECT a.Id FROM {DbTables.tblPersons} a WHERE a.{nameof(Person.Id)} = {personid}";
+                    var personData = await _idbConnection.QueryFirstOrDefaultAsync<EntityPersonsDto>(sql, transaction: _idbTransaction);
+                    if(personData ==null)
+                    {
+                        apiResponse = new APIsSuccsss<EntityPersonsDto>(_validateMessages.NotExist);
+                    }
+                    #endregion
                     #region Update Person
-                    var person = _idbConnection.Update<EntityPersonsDto>(
-                                _idbTransaction,
-                                DbTables.tblPersons,
-                                DapperHelper.UpdateQueryAsColumnsParma<Person, AddPersonDto>(),
-                                reqDto,
-                                Id,
-                                "Id"
-                            );
+                    var person = _idbConnection.Update<EntityPersonsDto>(_idbTransaction, DbTables.tblPersons,
+                                                new Dictionary<string, string> {
+                                                    { "Gender", reqDto.Gender },
+                                                    { "DateOfBirth", reqDto.DateOfBirth?.ToString("yyyy-MM-dd HH:MM:ss") },
+                                                    { "FirstName", reqDto.FirstName },
+                                                    { "LastName", reqDto.LastName },
+                                                    { "Picture", reqDto.Picture }                                                    
+                                                }, $@"ID='{personid}'");
 
+                   
                     #endregion
                     #region Update Person Address
                     if (reqDto.Address != null)
                     {
-                        EntityAddressDto address = _idbConnection.Update<EntityAddressDto>(_idbTransaction,
-                        DbTables.tblUserAddress,
-                        DapperHelper.UpdateQueryAsColumnsParma<Useraddress, AddAddressDto>(),
-                        reqDto.Address, person.Id, "PersonId");
+                        if (personid > 0)
+                        {
+                            string sqlquery = $@"SELECT a.Id FROM {DbTables.tblUserAddress} a WHERE a.{nameof(Useraddress.PersonId)} = {personid}";
+                            var addres = await _idbConnection.QueryFirstOrDefaultAsync<EntityAddressDto>(sqlquery, transaction: _idbTransaction);
+
+                            if (addres != null)
+                            {
+                                EntityAddressDto address = _idbConnection.Update<EntityAddressDto>(_idbTransaction,
+                                DbTables.tblUserAddress,
+                                DapperHelper.QueryAsColumnsParma<Useraddress, AddAddressDto>(),
+                                reqDto.Address, person.Id, "PersonId");
+                            }
+                            else
+                            {
+                                #region Add Person Address
+                                if (reqDto.Address != null)
+                                {
+                                    reqDto.Address.PersonId = person.Id;
+                                    EntityAddressDto address = _idbConnection.Insert<EntityAddressDto>(_idbTransaction,
+                                    DbTables.tblUserAddress,
+                                    DapperHelper.QueryAsColumnsParma<Useraddress, AddAddressDto>(),
+                                    DapperHelper.QueryAsValuesParma<Useraddress, AddAddressDto>(),
+                                    reqDto.Address);
+                                }
+                                #endregion
+                            }
+                        }
+
+
                     }
                     #endregion
                     apiResponse = new APIsSuccsss<EntityPersonsDto>(_validateMessages.Success, person);
