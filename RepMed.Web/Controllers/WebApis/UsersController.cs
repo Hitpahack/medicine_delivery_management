@@ -2,7 +2,10 @@
 using Microsoft.Extensions.Options;
 using MySqlConnector;
 using RepMed.Core;
+using RepMed.Data;
 using RepMed.Dtos;
+using RepMed.Dtos.PharmacyPage;
+using RepMed.Dtos.UsersPage;
 using RepMed.Services;
 using RepMed.Web.Controllers.BaseApis;
 using System.Threading.Tasks;
@@ -70,6 +73,26 @@ namespace RepMed.Web.Controllers.WebApis
                         }
                         tran.Commit();
                         return Ok(result);
+                    }
+                }
+            }
+        }
+
+        [Route("getusers")]
+        [HttpPost]
+        public async Task<IActionResult> GetAll([FromBody] UsersPagingRequest search)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IUserServices userService = new UserServices(db, tran))
+                    {
+                        var result = await userService.GetUsers(search);
+                        if (!result.IsSuccess)
+                            return BadRequest();
+                        return Ok(result.Data);
                     }
                 }
             }

@@ -11,6 +11,9 @@ using Org.BouncyCastle.Crypto.Generators;
 using Newtonsoft.Json.Linq;
 using Org.BouncyCastle.Asn1.Ess;
 using System.Collections.Generic;
+using RepMed.Dtos.DataTables;
+using RepMed.Dtos.PharmacyPage;
+using RepMed.Dtos.UsersPage;
 
 namespace RepMed.Services
 {
@@ -19,6 +22,7 @@ namespace RepMed.Services
         Task<APIsResponse<EntityUsersDto>> AddEditUser(AddUsersDto reqDto, long Id);
         Task<APIsResponse<bool>> SetPassword(SetPasswordDto dto);
         Task<APIsResponse<GetUserDto>> GetUser(long Id);
+        Task<APIsResponse<Datatable<UsersPagingResponse>>> GetUsers(UsersPagingRequest reqDto);
     }
 
     public class UserServices : BaseService, IUserServices
@@ -108,6 +112,40 @@ namespace RepMed.Services
             catch (Exception ex)
             {
                 return await Task.FromResult(new APIsError<GetUserDto>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<Datatable<UsersPagingResponse>>> GetUsers(UsersPagingRequest reqDto)
+        {
+            try
+            {
+                APIsResponse<Datatable<UsersPagingResponse>> apiResponse = default;
+                #region Get All Pharmacy 
+                var parameters = new DynamicParameters();
+                parameters.Add("page", reqDto.Page, DbType.Int32);
+                parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
+                parameters.Add("searchText", reqDto.SearchText ?? string.Empty, DbType.String);
+                parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
+                parameters.Add("Order_by", reqDto.order_by, DbType.String);
+
+                var result = (await _idbConnection.QueryAsync<UsersPagingResponse>(
+                               sql: "GET_USERS_PAGED",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                )).ToList();
+                #endregion
+                var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
+                var output = new Datatable<UsersPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
+                if (result.Any())
+                    return await Task.FromResult(new APIsSuccsss<Datatable<UsersPagingResponse>>(_validateMessages.RetriveSuccess, output));
+                else
+                    return await Task.FromResult(new APIsSuccsss<Datatable<UsersPagingResponse>>(_validateMessages.NotExist));
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<Datatable<UsersPagingResponse>>(ex.GetActualError()));
             }
         }
 
