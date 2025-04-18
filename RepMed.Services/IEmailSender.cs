@@ -6,6 +6,7 @@ using System.Data;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace SP.Service.Email
 {
@@ -25,7 +26,7 @@ namespace SP.Service.Email
     public class EmailSender : BaseService, IEmailSender, IDisposable
     {
        
-        public EmailSender(IDbConnection sqlConnection, IDbTransaction dbTransaction, IOptions<AppSettings> appSettings, IOptions<EmailSettings> emailSettings):base(sqlConnection, dbTransaction, appSettings, emailSettings)
+        public EmailSender(IDbConnection sqlConnection, IDbTransaction dbTransaction, IOptions<AppSettings> appSettings, IHttpContextAccessor httpContext, IOptions<EmailSettings> emailSettings):base(sqlConnection, dbTransaction, appSettings, httpContext, emailSettings)
         {
         }
         

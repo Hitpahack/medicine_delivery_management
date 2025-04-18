@@ -17,6 +17,7 @@ using static RepMed.Core.Enums;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 using System.Data.Common;
+using Microsoft.AspNetCore.Http;
 
 namespace RepMed.Services
 {
@@ -256,9 +257,10 @@ namespace RepMed.Services
                 token = Encryption.DecryptTripleDES(token, encKey);
 
                 var param = new Dictionary<string, string> { { "token", token }, { "email", Email } };
-
-                var callback = QueryHelpers.AddQueryString("https://localhost:44379", param);
-                return await Task.FromResult(new APIsSuccsss<string>("Success", callback));
+                var request = _httpContext.HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host.Value}";
+                var callback = QueryHelpers.AddQueryString(baseUrl, param);
+                return await Task.FromResult(new APIsSuccsss<string>("Success", callback)); 
             }
             catch (Exception ex)
             {

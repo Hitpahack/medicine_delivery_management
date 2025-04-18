@@ -97,7 +97,9 @@ namespace RepMed.Services
                             }, transaction: _idbTransaction);
                 #endregion
                 #region send email for set password
-                string url = $"https://localhost:44379/set-password?token={token}";
+                var request = _httpContext.HttpContext.Request;
+                var baseUrl = $"{request.Scheme}://{request.Host.Value}";
+                string url = $"{baseUrl}/set-password?token={token}";
 
                 await SendEmailAsync(userEmail, "Set Your Password", $"Click here to set your password: <a href='{url}'>Set Password</a>");
                 #endregion

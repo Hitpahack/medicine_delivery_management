@@ -8,6 +8,7 @@ using System;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace RepMed.Services
 {
@@ -20,11 +21,13 @@ namespace RepMed.Services
         protected internal AdminSettings _adminSettings;
         protected internal IGenericMapper _mapper;
         protected internal IValidationMessagesServices _validateMessages;
+        protected internal IHttpContextAccessor _httpContext;
         public BaseService(IDbConnection sqlConnection, IDbTransaction dbTransaction,
-            IOptions<AppSettings> appSettings,
+            IOptions<AppSettings> appSettings, IHttpContextAccessor httpContext,
             IOptions<EmailSettings> emailSettings = null
             )
         {
+            _httpContext = httpContext;
             _idbConnection = sqlConnection;
             _idbTransaction = dbTransaction;
             _emailSettings = emailSettings?.Value;
