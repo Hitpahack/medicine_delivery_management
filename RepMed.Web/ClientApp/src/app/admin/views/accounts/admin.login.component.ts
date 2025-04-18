@@ -35,9 +35,9 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit {
 
     initForm(): FormGroup {
         return this.fb.group({
-            email: new FormControl(null, [this.validator.ValidateEmail, Validators.required]),
+            email: new FormControl(null, [Validators.required,this.validator.ValidateEmail]),
             password: new FormControl(null, [Validators.required]),
-            remamber: new FormControl(false, [Validators.required]),
+            remamber: new FormControl(false),
         });
     }
     loginError: string = '';

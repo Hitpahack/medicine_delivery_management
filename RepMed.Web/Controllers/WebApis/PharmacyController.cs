@@ -68,45 +68,71 @@ namespace RepMed.Web.Controllers.WebApis
         [HttpPost]
         public async Task<IActionResult> Addpharmacy([FromBody] API_ADD_PH_DTO reqDto)
         {
-            
+
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
                 db.Open();
                 using (var tran = db.BeginTransaction())
                 {
+                    reqDto.User.Role = "pharmacy";
+                    var userObj = _mapper.Map<AddPersonDto, API_ADD_USER>(reqDto.User);
                     using (IPersonService personService = new PersonService(db, tran))
                     {
-                        reqDto.User.Role = "pharmacy";
-                        var userObj = _mapper.Map<AddPersonDto, API_ADD_USER>(reqDto.User);
-                        var user = await base.AddEditUser(userObj, 0);
-                        if (!user.IsSuccess)
+                        var person = await personService.AddEditPerson(userObj, 0);
+                        if (!person.IsSuccess)
                         {
                             tran.Rollback();
-                            return BadRequest(user);
+                            return BadRequest(person.Message);
                         }
-                        using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
+                        using (IUserServices userService = new UserServices(db, tran))
                         {
-                            reqDto.Pharmacy.UserId = user.Data.Id;
-                            var pharmacy = await pharmacyService.AddUpdatePharmacy(reqDto.Pharmacy, 0);
-                            if (!pharmacy.IsSuccess)
+                            var userData = _mapper.Map<AddUsersDto, EntityPersonsDto>(person.Data, (d) =>
+                            {
+                                d.PersonId = person.Data.Id;
+                                d.ConfirmPassword = reqDto.User.ConfirmPassword;
+                                d.Email = reqDto.User.Email;
+                            });
+                            var user = await userService.AddEditUser(userData, 0);
+                            if (!user.IsSuccess)
                             {
                                 tran.Rollback();
-                                return BadRequest(pharmacy);
+                                return BadRequest(user.Message);
                             }
-                            reqDto.PharmacyBankDetails.PharmacyId = pharmacy.Data.Id;
-                            var pharmacybank = await pharmacyService.AddUpdatePharmacyBankDetails(reqDto.PharmacyBankDetails, 0);
-                            if (!pharmacybank.IsSuccess)
+                            if (!string.IsNullOrEmpty(reqDto.User.Role))
                             {
-                                tran.Rollback();
-                                return BadRequest(pharmacybank);
+                                using (IAccountService accountService = new AccountService(db, tran))
+                                {
+                                    var role = await accountService.AddRoleAsync(user.Data, reqDto.User.Role);
+                                    if (!role.IsSuccess)
+                                    {
+                                        tran.Rollback();
+                                        return BadRequest(role.Message);
+                                    }
+                                }
                             }
-                            var response = await pharmacyService.GenrateEmailToken(reqDto.Pharmacy.UserId, reqDto.Pharmacy.OfficialEmail);
+                            using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
+                            {
+                                reqDto.Pharmacy.UserId = user.Data.Id;
+                                var pharmacy = await pharmacyService.AddUpdatePharmacy(reqDto.Pharmacy, 0);
+                                if (!pharmacy.IsSuccess)
+                                {
+                                    tran.Rollback();
+                                    return BadRequest(pharmacy);
+                                }
+                                reqDto.PharmacyBankDetails.PharmacyId = pharmacy.Data.Id;
+                                var pharmacybank = await pharmacyService.AddUpdatePharmacyBankDetails(reqDto.PharmacyBankDetails, 0);
+                                if (!pharmacybank.IsSuccess)
+                                {
+                                    tran.Rollback();
+                                    return BadRequest(pharmacybank);
+                                }
+                                var response = await pharmacyService.GenrateEmailToken(reqDto.Pharmacy.UserId, reqDto.Pharmacy.OfficialEmail);
+                            }
                         }
+                        tran.Commit();
+                        return Ok("Pharmacy Added Sucessfully");
                     }
-                    tran.Commit();
-                    return Ok("Pharmacy Added Successfully");
                 }
-
             }
         }
 

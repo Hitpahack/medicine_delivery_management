@@ -51,13 +51,13 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                 officialEmail: new FormControl(null, [Validators.required, Validators.email])
             }),
             user: this.fb.group({
-                firstName: new FormControl(null, [Validators.required]),
-                lastName: new FormControl(null, [Validators.required]),
+                //firstName: new FormControl(null, [Validators.required]),
+                //lastName: new FormControl(null, [Validators.required]),
                 email: new FormControl(null, [Validators.required, Validators.email]),
-                mobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
-                dateofBirth: new FormControl(null, [Validators.required, this.validator.pastDateOnly]),
-                gender: new FormControl(null, [Validators.required]),
-                picture: new FormControl(null, []),
+                //mobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
+                //dateofBirth: new FormControl(null, [Validators.required, this.validator.pastDateOnly]),
+                //gender: new FormControl(null, [Validators.required]),
+                //picture: new FormControl(null, []),
                 Password: new FormControl(null, [Validators.required]),
                 Role: new FormControl("pharmacy"),
                 ConfirmPassword: new FormControl(null, [Validators.required]),
@@ -72,7 +72,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                 accountNumber: new FormControl(null, [Validators.required, Validators.pattern(/^\d{16}$/)]),
                 ifscCode: new FormControl(null, [Validators.required]),
                 branchName: new FormControl(null, [Validators.required]),
-                upiId: new FormControl(null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/)])
+                upiId: new FormControl(null, [Validators.pattern(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/)])
             })
         });
     }
