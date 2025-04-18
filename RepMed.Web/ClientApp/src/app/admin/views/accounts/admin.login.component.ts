@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+﻿import { Component, OnInit } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -40,27 +40,28 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit {
             remamber: new FormControl(false, [Validators.required]),
         });
     }
-
+    loginError: string = '';
     onSubmit() {
-       let isValid = this.validateForm(this.loginForm);
-       if(isValid){
-        console.log("form is valid")
-           this.accountservice.login(this.loginForm.value).subscribe(
-               (response)=>{debugger;
-                if(!response.isSuccess){
-                    
-                }
-                else{
-                    this.router.navigate(['/admin/dashboard']); // example: /dashboard
-                }
-               },
-               (err)=>{
-                   Helper.ShowExecptions(err);
-               },
-               () => { }
-           )
-       }
-       else
-       Helper.ShowError('Please fill the required fields');
-   }
+            if (this.loginForm.invalid) {
+                this.loginForm.markAllAsTouched();  
+                return;
+            }
+            this.loginError = ''; 
+
+            this.accountservice.login(this.loginForm.value).subscribe(
+                (response) => {
+                    if (response.isSuccess) {
+                        this.router.navigate(['/admin/dashboard']);
+                    } else {
+                        this.loginError = response.message || 'Invalid username or password.';
+                    }
+                },
+                (err) => {
+                    this.loginError = 'Server error. Please try again later.';
+                    Helper.ShowExecptions(err);
+                },
+                () => { }
+            );
+    }
+
 }
