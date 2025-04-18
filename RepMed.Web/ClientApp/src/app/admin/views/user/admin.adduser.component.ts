@@ -65,7 +65,7 @@ ngOnInit(): void {
         console.log(this.addUserForm.value)
         const dto: AddPersonDto = this.addUserForm.value;
            this.adminuserservice.add(dto).subscribe({
-               next: res => this.router.navigate(['/admin/dashboard']),
+               next: res => this.router.navigate(['/admin/user/list']),
                error: err => console.error("Error", err)
            });
        }

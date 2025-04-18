@@ -42,7 +42,8 @@ export const admin_apiconfig =
       update: (id: number) => environment.admin_apiv1 + '/users/edituser/' + id,
       setpassword: environment.admin_apiv1 + '/users/change-password',
       userroles: environment.admin_api + '/masters/getroles',
-      changepassword: environment.admin_apiv1 +'/users/SetPassword'
+      changepassword: environment.admin_apiv1 +'/users/SetPassword',
+      list: environment.admin_apiv1 + '/users/getusers'
     }
   }
 }

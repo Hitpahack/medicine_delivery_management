@@ -19,6 +19,7 @@ import { EditProfile } from '../app/admin/views/user/admin.editprofile.component
 import { SetPassword } from './admin/views/user/admin.setpassword.component';
 import { EditPharmacy } from './admin/views/pharmacy/admin.pharmacyedit.component';
 import { ChangePassword } from './admin/views/user/admin.changepassword.component';
+import { UserListComponent } from './admin/views/user/admin.userlist.component';
 
 import { SubAdminLayoutComponent } from './_layouts/admin/subadmin.layout.component';
 
@@ -50,7 +51,8 @@ export const routes: Routes = [
       { path: 'user/edit/:id', component: AddUserComponent },
       { path: 'editprofile/:id', component: EditProfile },
       { path: 'changepassword', component:SetPassword},
-      { path: 'setpassword', component:ChangePassword}
+      { path: 'setpassword', component:ChangePassword},
+      {path: 'user/list', component:UserListComponent}
     ]
   },
   {

@@ -1,0 +1,14 @@
+<div class="container mt-4">
+    <h3 class="mb-4 text-primary">📋 User List</h3>
+    <button (click)="router.navigate(['/admin/user/add'])" class="addph" >Add User</button>
+    <table id="UserList_datatable" class="table table-centered m-0"  data-page-length='10'>
+      <thead class="thead-light">
+        <tr>
+          <th>email</th>
+          <th>firstName</th>
+          <th>lastName</th>
+          <th>mobile</th>
+        </tr>
+      </thead>
+    </table>
+  </div>  

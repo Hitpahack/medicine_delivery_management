@@ -25,12 +25,13 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
     }
 
     ngOnInit(): void {
+        console.log("editprofile")
         this.editUserForm = this.initForm();
         const userId = this.route.snapshot.params['id'];
+        console.log(userId, "userid")
         if (userId) {
             this.adminuserservice.getUserbyId(userId).subscribe((response) => {
                 if (response?.isSuccess && response.data) {
-                    console.log("email", response.data.email)
                     const user = response.data;
                     this.editUserForm.patchValue({
                       firstname: user.firstName,
@@ -62,7 +63,6 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
             const dto: AddPersonDto = this.editUserForm.value;
             console.log(userId)
             this.adminuserservice.edituser(dto, userId).subscribe(response =>{
-                console.log("User udated successfully!")
             })
     }
 
