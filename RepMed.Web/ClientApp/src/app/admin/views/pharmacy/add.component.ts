@@ -56,7 +56,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                 //dateofBirth: new FormControl(null, [Validators.required, this.validator.pastDateOnly]),
                 //gender: new FormControl(null, [Validators.required]),
                 //picture: new FormControl(null, []),
-                Password: new FormControl(null, [Validators.required]),
+                Password: new FormControl(null, [Validators.required, this.validator.validateStrongPassword]),
                 Role: new FormControl("pharmacy"),
                 ConfirmPassword: new FormControl(null, [Validators.required]),
             },
@@ -67,7 +67,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
             pharmacyBankDetails: this.fb.group({
                 bankName: new FormControl(null, [Validators.required]),
                 accountholderName: new FormControl(null, [Validators.required]),
-                accountNumber: new FormControl(null, [Validators.required, Validators.pattern(/^\d{16}$/)]),
+                accountNumber: new FormControl(null, [Validators.required, Validators.maxLength(16)]),
                 ifscCode: new FormControl(null, [Validators.required]),
                 branchName: new FormControl(null, [Validators.required]),
                 upiId: new FormControl(null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/)])
