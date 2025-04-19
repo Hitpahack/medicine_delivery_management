@@ -40,7 +40,7 @@ export class AdminPharmacyService extends adminBaseService {
     }
     getcountry() {
         console.log('after call country');
-        return this.http.get<ApiResponse<CountryDto>>(admin_apiconfig.endpoints.pharmacy.getcountries, { headers: admin_apiconfig.requestSettings.header })
+        return this.http.get<ApiResponse<CountryDto>>(this.apiConfig.endpoints.pharmacy.getcountries, { headers: this.apiConfig.requestSettings.header })
     }
     getstatebyId(id: number) {
         return this.http.get<ApiResponse<StateDto>>(this.apiConfig.endpoints.pharmacy.getstates(id), { headers: this.apiConfig.requestSettings.header })

@@ -55,11 +55,12 @@ export function setTitle(title: string) {
 
 export function loadScript(scriptPath: string) {
   const script = document.createElement('script');
-  script.type = 'module';
+  //script.type = 'module';
   script.src = getBaseUrl() + scriptPath;
   if (scriptPath.startsWith('http'))
     script.src = scriptPath;
-  script.async = true;
+
+  //script.async = true;
   script.onerror = () => console.error('Error loading script:', scriptPath);
   document.body.appendChild(script);
 }

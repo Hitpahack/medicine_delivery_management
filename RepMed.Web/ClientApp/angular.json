@@ -46,7 +46,7 @@
               "src/assets/vendor/libs/datatables.net-buttons/js/dataTables.buttons.min.js",
               "src/assets/vendor/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js",
               "src/assets/vendor/libs/bootstrap-notify/bootstrap-notify.js"
-              
+               
             ]
           },
           "configurations": {
