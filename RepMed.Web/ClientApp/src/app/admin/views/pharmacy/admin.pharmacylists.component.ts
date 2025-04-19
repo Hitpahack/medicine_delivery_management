@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { FormBuilder } from "@angular/forms";
 import { CustomValidator } from "../../../../app/common/custom.validators";
-import { admin_apiconfig } from "../../admin.endpoints";
-import 'datatables.net';
-import 'datatables.net-bs4';
 import { AdminBaseComponent } from '../../admin.base.component';
 
 declare var $: any;
@@ -32,7 +29,7 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
         searching: true
     };
 
-    ajaxUrl = admin_apiconfig.endpoints.pharmacy.getPaged;
+    ajaxUrl = this.admin_apiconfig.endpoints.pharmacy.getPaged;
     ngOnInit(): void {
 
         $('#post_pharmacylist_datatable').DataTable({
@@ -41,7 +38,7 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
             searching: true,
              drawCallback: function (settings) { },
             "ajax": {
-                "url": admin_apiconfig.endpoints.pharmacy.getPaged,
+                "url": this.admin_apiconfig.endpoints.pharmacy.getPaged,
                 "type": "POST",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json", // Expect JSON response

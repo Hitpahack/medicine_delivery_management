@@ -2,9 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { FormBuilder } from "@angular/forms";
 import { CustomValidator } from "../../../../app/common/custom.validators";
-import { admin_apiconfig } from "../../admin.endpoints";
-import 'datatables.net';
-import 'datatables.net-bs4';
 import { AdminBaseComponent } from '../../admin.base.component';
 
 declare var $: any;
@@ -15,12 +12,8 @@ declare var $: any;
 })
 
 export class UserListComponent extends AdminBaseComponent implements OnInit {
-    constructor(
-        public router: Router, public fb: FormBuilder,
-        public validator: CustomValidator
-
-    ) {
-        super(router, fb);
+    constructor(public validator: CustomValidator) {
+        super( );
     }
 
     dtColumns = [
@@ -44,7 +37,7 @@ export class UserListComponent extends AdminBaseComponent implements OnInit {
             
             drawCallback: function (settings) { },
             "ajax": {
-                "url": admin_apiconfig.endpoints.user.list,
+                "url": this.admin_apiconfig.endpoints.user.list,
                 "type": "POST",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",

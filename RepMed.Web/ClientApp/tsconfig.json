@@ -17,6 +17,6 @@
       "ES2022",
       "DOM"
     ],
-	"types": ["jquery", "datatables.net"]
+	"types": ["jquery"]
   }
 }

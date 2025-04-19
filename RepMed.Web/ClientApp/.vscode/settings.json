@@ -1,0 +1,15 @@
+{
+    "git.ignoreLimitWarning": true,
+	
+    "debugger.watcher": [
+        {
+            "name": "Jarvis", // must be same as configration name on launch.json
+            "folder": "${workspaceFolder}/jarvis", // folder to watch changes
+            "preLaunchCommand": "<< terminal command >>" // (Optional) will run the command before restart the debugger 
+        },
+        {
+            "name": "Mars",
+            "folder": "${workspaceFolder}/mars"
+        },
+    ]
+}

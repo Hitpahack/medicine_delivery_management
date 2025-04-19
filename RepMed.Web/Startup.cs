@@ -46,7 +46,7 @@ namespace RepMed.Web
                 options.AddPolicy(name: "AllowOrigin",
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200", "https://localhost:4200")
+                        builder.WithOrigins("http://localhost:4200")
                                             .AllowAnyHeader()
                                             .AllowAnyMethod();
                     });
@@ -209,7 +209,7 @@ namespace RepMed.Web
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            app.UseCors("AllowOrigin");
+            
             //app.UseMiddleware<ResponseMiddleware>();
             app.ConfigureExceptionHandler();
             app.UseRequestLocalization(options =>
@@ -243,8 +243,8 @@ namespace RepMed.Web
                 c.InjectStylesheet("/swagger/swagger.custom.css");
                 
             });
-            
 
+            app.UseCors("AllowOrigin");
             app.UseAuthentication();
             app.UseAuthorization();
 

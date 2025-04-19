@@ -101,4 +101,6 @@
     </ItemGroup>
   </Target>
 
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="4" /></VisualStudio></ProjectExtensions>
+
 </Project>

@@ -2,7 +2,6 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ApiResponse } from "../../../../app/common/api.response";
 import { adminBaseService } from "../admin.baseservice";
-import { admin_apiconfig } from "../../admin.endpoints";
 import { PharmacyDto } from "src/app/viewmodels/pharmacy/Pharmacy.add.dto";
 import { StateDto } from "src/app/viewmodels/address/state.dto";
 import { CityDto } from "src/app/viewmodels/address/city.dto";
@@ -27,26 +26,26 @@ export class AdminPharmacyService extends adminBaseService {
     //#region PharmacyApi
     add(formData: any) {
         console.log("called.")
-        return this.http.post(admin_apiconfig.endpoints.pharmacy.add,formData ,{ headers: admin_apiconfig.requestSettings.header })
+        return this.http.post(this.apiConfig.endpoints.pharmacy.add,formData ,{ headers: this.apiConfig.requestSettings.header })
     }
     editpharmacy(formData: any, id: number) {
         console.log("formData", formData)
-        return this.http.post(admin_apiconfig.endpoints.pharmacy.update(id), formData, { headers: admin_apiconfig.requestSettings.header })
+        return this.http.post(this.apiConfig.endpoints.pharmacy.update(id), formData, { headers: this.apiConfig.requestSettings.header })
       }
     getPaged(reqData: any, id: number) {
-        return this.http.post(admin_apiconfig.endpoints.pharmacy.getPaged, reqData, { headers: admin_apiconfig.requestSettings.header })
+        return this.http.post(this.apiConfig.endpoints.pharmacy.getPaged, reqData, { headers: this.apiConfig.requestSettings.header })
     }
     getpharmacybyId(id: number) {
-        return this.http.get<PharmacyDto>(admin_apiconfig.endpoints.pharmacy.get(id), { headers: admin_apiconfig.requestSettings.header })
+        return this.http.get<PharmacyDto>(this.apiConfig.endpoints.pharmacy.get(id), { headers: this.apiConfig.requestSettings.header })
     }
     getcountry() {
-        return this.http.post<ApiResponse<CountryDto>>(admin_apiconfig.endpoints.pharmacy.getcountries, { headers: admin_apiconfig.requestSettings.header })
+        return this.http.post<ApiResponse<CountryDto>>(this.apiConfig.endpoints.pharmacy.getcountries, { headers: this.apiConfig.requestSettings.header })
     }
     getstatebyId(id: number) {
-        return this.http.get<ApiResponse<StateDto>>(admin_apiconfig.endpoints.pharmacy.getstates(id), { headers: admin_apiconfig.requestSettings.header })
+        return this.http.get<ApiResponse<StateDto>>(this.apiConfig.endpoints.pharmacy.getstates(id), { headers: this.apiConfig.requestSettings.header })
     }
     getcitiesbyId(id: number) {
-        return this.http.get<ApiResponse<CityDto>>(admin_apiconfig.endpoints.pharmacy.getcities(id), { headers: admin_apiconfig.requestSettings.header })
+        return this.http.get<ApiResponse<CityDto>>(this.apiConfig.endpoints.pharmacy.getcities(id), { headers: this.apiConfig.requestSettings.header })
     }
 
     //#endregion

@@ -3,7 +3,6 @@ import { Injectable } from "@angular/core";
 import { ApiResponse } from "../../../../app/common/api.response";
 import { adminBaseService } from "../admin.baseservice";
 import { LoginResponse } from "../../../viewmodels/accounts/base.accountsdto";
-import { admin_apiconfig } from "../../admin.endpoints";
 import { AddPersonDto } from "../../../viewmodels/User/Person.add.dto";
 import {Role} from "../../../viewmodels/User/role.model";
 
@@ -24,26 +23,26 @@ export class AdminUserService extends adminBaseService {
   }
 
   add(formData: any) {
-    return this.http.post(admin_apiconfig.endpoints.user.add, formData, { headers: admin_apiconfig.requestSettings.header })
+    return this.http.post(this.apiConfig.endpoints.user.add, formData, { headers: this.apiConfig.requestSettings.header })
   }
 
   edituser(formData: any, id: number) {
-    return this.http.post(admin_apiconfig.endpoints.user.update(id), formData, { headers: admin_apiconfig.requestSettings.header })
+    return this.http.post(this.apiConfig.endpoints.user.update(id), formData, { headers: this.apiConfig.requestSettings.header })
   }
 
   getUserbyId(id: number){
-    return this.http.get<ApiResponse<AddPersonDto>>(admin_apiconfig.endpoints.user.get(id), { headers: admin_apiconfig.requestSettings.header })
+    return this.http.get<ApiResponse<AddPersonDto>>(this.apiConfig.endpoints.user.get(id), { headers: this.apiConfig.requestSettings.header })
   }
 
   setpassword(formData: any){
-    return this.http.post(admin_apiconfig.endpoints.user.setpassword, formData, { headers: admin_apiconfig.requestSettings.header })
+    return this.http.post(this.apiConfig.endpoints.user.setpassword, formData, { headers: this.apiConfig.requestSettings.header })
   }
 
   getRoles(){
-    return this.http.get<ApiResponse<Role[]>>(admin_apiconfig.endpoints.user.userroles, { headers: admin_apiconfig.requestSettings.header })
+    return this.http.get<ApiResponse<Role[]>>(this.apiConfig.endpoints.user.userroles, { headers: this.apiConfig.requestSettings.header })
   }
 
   changepassword(formData: any){
-    return this.http.post(admin_apiconfig.endpoints.user.changepassword, formData, { headers: admin_apiconfig.requestSettings.header })
+    return this.http.post(this.apiConfig.endpoints.user.changepassword, formData, { headers: this.apiConfig.requestSettings.header })
   }
 }

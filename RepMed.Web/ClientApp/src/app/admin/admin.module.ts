@@ -18,6 +18,7 @@ import { AdminPharmacyListsComponent } from "./views/pharmacy/admin.pharmacylist
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from "../app.component";
 import { EditPharmacy } from "./views/pharmacy/admin.pharmacyedit.component";
+import { AutoValidateDirective } from "../common/form.validator";
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { EditPharmacy } from "./views/pharmacy/admin.pharmacyedit.component";
     BrowserModule,
     AppComponent,
     AppComponent,
-    EditPharmacy
+    EditPharmacy,
+    AutoValidateDirective
   ],
   exports: [AdminLayoutComponent]
 

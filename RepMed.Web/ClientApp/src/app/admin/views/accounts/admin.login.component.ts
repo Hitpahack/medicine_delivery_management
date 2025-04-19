@@ -6,6 +6,7 @@ import { CustomValidator } from "../../../../app/common/custom.validators";
 import { Helper } from "../../../../app/common/helper.extenstions";
 import { AdminBaseComponent } from "../../admin.base.component";
 import { adminAccountsService } from "../../services/accounts/admin.accountsservice";
+import { AutoValidateDirective } from "src/app/common/form.validator";
 
 
 @Component({
@@ -13,7 +14,7 @@ import { adminAccountsService } from "../../services/accounts/admin.accountsserv
     templateUrl: './admin.login.component.html',
     styles: [''],
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective],
 })
 
 export class AdminLoginComponent extends AdminBaseComponent implements OnInit {
@@ -52,7 +53,8 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit {
                 (response) => {
                     if (response.isSuccess) {
                         this.router.navigate(['/admin/dashboard']);
-                    } else {
+                    }
+                    if (!response.isSuccess) {
                         this.loginError = response.message || 'Invalid username or password.';
                     }
                 },
