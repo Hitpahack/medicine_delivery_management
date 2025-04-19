@@ -1,66 +1,45 @@
-<form class="card auth_form form_validation" [formGroup]="addUserForm" (ngSubmit)="onSubmit()">
+<div class="authentication">
 
+        <form  class="auth_form form_validation" *ngIf="addUserForm" appAutoValidate [formGroup]="addUserForm" #phForm_html="ngForm" (ngSubmit)="onSubmit()">
+
+      
+<!-- Section 1: Pharmacy -->
+<fieldset>
         <legend>User</legend>
-
         <div class="form-grid">
-                <div class="input-group mb-3 float">
-                        <input type="hidden" formControlName="Role" />
-                        <input type="text" class="form-control" placeholder=" " formControlName="email">
-                        <label class="float-lbl">Email *</label>
-                        <div *ngIf="addUserForm.get('email')?.touched && addUserForm.get('email')?.errors">
-                                <div
-                                        *ngIf="addUserForm.get('email')?.errors?.['required'] && addUserForm.get('email')?.touched">
-                                        Email is required.
-                                </div>
-                                <div *ngIf="addUserForm.get('email')?.errors['email']">
-                                        {{ addUserForm.get('email')?.errors['error'] }}
-                                </div>
-                        </div>
-                </div>
-
-                <div class="input-group mb-3 float">
-                        <input type="text" class="form-control" placeholder=" " formControlName="Password">
-                        <label class="float-lbl">Password *</label>
-                        <div
-                                *ngIf="addUserForm.get('Password')?.errors?.['required'] && addUserForm.get('Password')?.touched">
-                                Password is required.
-                        </div>
-                </div>
-
-                <div *ngIf="addUserForm.get('Password')?.hasError('strongPassword') && addUserForm.get('Password')?.touched">
-                        <small class="text-danger">
-                          Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.
-                        </small>
-                      </div>
-
-                <div class="input-group mb-3 float">
-                        <input type="text" class="form-control" placeholder=" " formControlName="ConfirmPassword">
+            <div class="input-group mb-4 float">
+                <input type="text" class="form-control" placeholder=" " formControlName="email">
+                <label class="float-lbl">Email *</label>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="text" class="form-control" placeholder=" " formControlName="Password">
+                <label class="float-lbl">Password *</label>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="text" class="form-control" placeholder=" " formControlName="ConfirmPassword">
                         <label class="float-lbl">ConfirmPassword *</label>
-                        <div
-                                *ngIf="addUserForm.get('ConfirmPassword')?.errors?.['required'] && addUserForm.get('ConfirmPassword')?.touched">
-                                ConfirmPassword is required.
-                        </div>
-                        <div *ngIf="addUserForm.errors?.['passwordMismatch'] && addUserForm.get('ConfirmPassword')?.touched"
-                                class="text-danger">
-                                Password do not match.
-                        </div>
-                </div>
+            </div>
 
-                <div class="input-group mb-3 float">
-                        <select class="form-control" formControlName="Role">
-                            <option value="" disabled selected>Select Role</option>
-                            <option *ngFor="let role of roles" [value]="role.text">
-                                {{ role.text }}
-                            </option>
-                        </select>
-                        <label class="float-lbl">Role *</label>
-                        <div *ngIf="addUserForm.get('Role')?.touched && addUserForm.get('Role')?.errors?.['required']">
-                            Role is required.
-                        </div>
-                    </div>
+            <div class="input-group mb-4 float">
+                <select class="form-control" formControlName="Role">
+                        <option value="" disabled selected>Select Role</option>
+                        <option *ngFor="let role of roles" [value]="role.text">
+                            {{ role.text }}
+                        </option>
+                    </select>
+                    <label class="float-lbl">Role *</label>
+            </div>
 
-                <div class="form-actions">
-                        <button type="submit">Add User</button>
-                </div>
+            
+           
         </div>
+
+
+</fieldset>
+<div class="row justify-content-end">
+        <div class="col-sm-1">
+            <button class="btn btn-primary" type="submit" >Save</button>
+        </div>
+      </div>
 </form>
+</div>  

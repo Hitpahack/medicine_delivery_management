@@ -112,11 +112,11 @@
   font-size: 12px !important;
 }
 .has-error input.ng-invalid {
-  border-color: red;
+  border-color: red !important;
 }
 
 .has-error .input-group-text{
-  border-color: red;
+  border-color: red !important;
 }
 .bg-prime{
   background-color: #003c32 !important;

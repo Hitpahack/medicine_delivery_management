@@ -70,7 +70,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                 accountNumber: new FormControl(null, [Validators.required, Validators.pattern(/^\d{16}$/)]),
                 ifscCode: new FormControl(null, [Validators.required]),
                 branchName: new FormControl(null, [Validators.required]),
-                upiId: new FormControl(null, [Validators.pattern(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/)])
+                upiId: new FormControl(null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/)])
             })
         });
     }
@@ -92,8 +92,6 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
             next: res => console.log("Success", res),
             error: err => console.error("Error", err)
         })
-        // Submit the form
-        console.log('Form submitted:', this.phForm.value);
     }
 
 

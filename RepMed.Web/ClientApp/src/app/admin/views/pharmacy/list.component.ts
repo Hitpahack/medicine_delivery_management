@@ -52,35 +52,7 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
           ]
     };
 
-    ajaxUrl = this.admin_apiconfig.endpoints.pharmacy.getPaged;
     ngOnInit(): void {
-
-        // $('#post_pharmacylist_datatable').DataTable({
-        //     processing: true,
-        //     serverSide: true,
-        //     searching: true,
-        //     drawCallback: function (settings) { },
-        //     "ajax": {
-        //         "url": this.admin_apiconfig.endpoints.pharmacy.getPaged,
-        //         "type": "POST",
-        //         contentType: "application/json; charset=utf-8",
-        //         dataType: "json", // Expect JSON response
-        //         "data": function (d) {
-        //             d.search.value = $('#post-search-input').val();
-        //             return JSON.stringify(d);
-        //         }
-        //     },
-        //     columns: [
-        //         {
-        //             data: 'id', render: (data: any) =>
-        //                 `<input class="item_checkbox" id="${data}" type="checkbox" value="${data}" />`
-        //         },
-        //         { data: 'storeName' },
-        //         { data: 'ownerName' },
-        //         { data: 'officialEmail' },
-        //         { data: 'cityName' },
-        //         { data: 'registeredMobile' }
-        //     ]
-        // });
+       
     }
 }

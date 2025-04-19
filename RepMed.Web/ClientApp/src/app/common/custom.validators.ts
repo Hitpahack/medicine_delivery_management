@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AbstractControl, FormGroup, ValidationErrors } from "@angular/forms";
+import { AbstractControl, FormArray, FormGroup, ValidationErrors } from "@angular/forms";
 
 @Injectable({
   providedIn: 'root',
@@ -18,7 +18,7 @@ export class CustomValidator {
     }
     return null;
   }
-
+ 
   public futureDateValidator(control: AbstractControl): { [key: string]: any } | null {
     const selectedDate = new Date(control.value);
     const today = new Date();
@@ -52,16 +52,46 @@ export class CustomValidator {
     return null;
   }
 
+  // public markInvalidFieldsTouched(formGroup: FormGroup) {
+  //   Object.values(formGroup.controls).forEach(control => {
+  //     control.markAsTouched();
+    
+  //     if ((control as FormGroup).controls) {
+  //       Object.values((control as FormGroup).controls).forEach(nestedControl => {
+  //         nestedControl.markAsTouched();
+  //       });
+  //     }
+  //   });
+  // }
   public markInvalidFieldsTouched(formGroup: FormGroup) {
-    Object.values(formGroup.controls).forEach(control => {
+    Object.entries(formGroup.controls).forEach(([controlName, control]) => {
+      control.markAsTouched();
+  
+      // Try to focus-blur to trigger UI update
+      const element = document.querySelector(`[formControlName="${controlName}"]`) as HTMLElement;
+      if (element) {
+        element.focus();
+        setTimeout(() => element.blur(), 100); // small delay helps UI
+      }
+  
+      // If nested FormGroup
       if (control instanceof FormGroup) {
-        this.markInvalidFieldsTouched(control);
-      } else {
-        control.markAsTouched();
+        this.markInvalidFieldsTouched(control); // Recursively apply to nested controls
+      }
+  
+      // If FormArray (optional)
+      if (control instanceof FormArray) {
+        control.controls.forEach(ctrl => {
+          if (ctrl instanceof FormGroup) {
+            this.markInvalidFieldsTouched(ctrl);
+          } else {
+            ctrl.markAsTouched();
+          }
+        });
       }
     });
   }
-
+  
   passwordMatchValidator(control: AbstractControl) {
     const password = CustomValidator.findControlByName(control, 'Password');
     const confirmpassword = CustomValidator.findControlByName(control, 'ConfirmPassword');
@@ -111,4 +141,5 @@ export class CustomValidator {
     }
     return null;
   }
+ 
 }

@@ -1,14 +1,8 @@
-<div class="container mt-4">
-    <h3 class="mb-4 text-primary">📋 User List</h3>
-    <button (click)="router.navigate(['/admin/user/add'])" class="addph" >Add User</button>
-    <table id="UserList_datatable" class="table table-centered m-0"  data-page-length='10'>
-      <thead class="thead-light">
-        <tr>
-          <th>email</th>
-          <th>firstName</th>
-          <th>lastName</th>
-          <th>mobile</th>
-        </tr>
-      </thead>
-    </table>
-  </div>  
+<div class="flex-grow-1 container-p-y">
+  <div class="card">
+    <h5 class="card-header"><span class="">Users</span></h5>  
+    <div class="card-body">
+        <app-datatable [options]="tableOptions"></app-datatable>
+    </div>
+  </div>
+</div>

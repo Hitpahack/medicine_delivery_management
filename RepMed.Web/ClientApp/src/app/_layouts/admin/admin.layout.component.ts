@@ -13,7 +13,10 @@ export class AdminLayoutComponent implements OnInit {
   isPharmacySubmenuVisible: boolean = false;
   
   constructor(private renderer: Renderer2) { }
-  scripts: Array<string> = [ ];
+  scripts: Array<string> = [ 
+    "assets/vendor/js/menu.js",
+    "assets/js/appmain.js"
+  ];
   styles: Array<string> = [];
 
   ngOnInit() {
