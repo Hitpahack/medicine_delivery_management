@@ -1,114 +1,121 @@
 <div class="authentication">
-  <div class="pharmacy-form-container">
-    <form class="card auth_form form_validation" *ngIf="phForm" [formGroup]="phForm" #phForm_html="ngForm" (ngSubmit)="onSubmit()">
-      <!-- Section 1: Pharmacy -->
-      <fieldset formGroupName="pharmacy">
-        <legend>Pharmacy Details</legend>
-        <div class="form-grid">
-            <div class="input-group mb-4 float">
-                <input type="text" placeholder="" formControlName="ownerName" class="form-control" required>
-                <label class="float-lbl">Owner Name *</label>
-                <div *ngIf="phForm.get('pharmacy.ownerName')?.touched && phForm.get('pharmacy.ownerName')?.errors?.['required']" class="text-danger" class="text-danger">
-                    OwnerName is
-                    required.
+    <div class="pharmacy-form-container">
+        <form class="card auth_form form_validation" *ngIf="phForm" [formGroup]="phForm" #phForm_html="ngForm"
+            (ngSubmit)="onSubmit()">
+            <!-- Section 1: Pharmacy -->
+            <fieldset formGroupName="pharmacy">
+                <legend>Pharmacy Details</legend>
+                <div class="form-grid">
+                    <div class="input-group mb-4 float">
+                        <input type="text" placeholder="" formControlName="ownerName" class="form-control" required>
+                        <label class="float-lbl">Owner Name *</label>
+                        <div *ngIf="phForm.get('pharmacy.ownerName')?.touched && phForm.get('pharmacy.ownerName')?.errors?.['required']"
+                            class="text-danger" class="text-danger">
+                            OwnerName is
+                            required.
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-4 float">
+                        <input type="text" placeholder="" formControlName="storeName" class="form-control" required>
+                        <label class="float-lbl">Store Name *</label>
+                        <div *ngIf="phForm.get('pharmacy.storeName')?.touched && phForm.get('pharmacy.storeName')?.errors?.['required']"
+                            class="text-danger">StoreName is required.</div>
+                    </div>
+
+                    <div class="input-group mb-4 float">
+                        <input type="text" placeholder=" " formControlName="businessName" class="form-control" required>
+                        <label class="float-lbl">Business Name *</label>
+                        <div *ngIf="phForm.get('pharmacy.businessName')?.touched && phForm.get('pharmacy.businessName')?.errors?.['required']"
+                            class="text-danger">
+                            BusinessName is required.
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-4 float">
+                        <input type="text" placeholder=" " formControlName="licenseNumber" class="form-control"
+                            required>
+                        <label class="float-lbl">License Number *</label>
+                        <div *ngIf="phForm.get('pharmacy.licenseNumber')?.touched && phForm.get('pharmacy.licenseNumber')?.errors?.['required']"
+                            class="text-danger">
+                            LicenseNumber is required.
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-4 float">
+                        <input type="date" placeholder=" " formControlName="licenseExpiry" class="form-control" required
+                            [min]="minExpiryDate">
+                        <label class="float-lbl">License Expiry *</label>
+                        <div *ngIf="phForm.get('pharmacy.licenseExpiry')?.touched && phForm.get('pharmacy.licenseExpiry')?.errors?.['required']"
+                            class="text-danger">
+                            LicenseExpiry date is required.
+                        </div>
+                        <div
+                            *ngIf="phForm.get('pharmacy.licenseExpiry')?.errors?.['pastDate'] && (phForm.get('pharmacy.licenseExpiry')?.touched || phForm.get('pharmacy.licenseExpiry')?.dirty)">
+                            Expiry date cannot be in the past.
+                        </div>
+
+                    </div>
+
+                    <div class="input-group mb-4 float">
+                        <input type="text" placeholder=" " formControlName="gstNumber" class="form-control" required>
+                        <label class="float-lbl">GST Number *</label>
+                        <div *ngIf="phForm.get('pharmacy.gstNumber')?.touched && phForm.get('pharmacy.gstNumber')?.errors?.['required']"
+                            class="text-danger">
+                            GSTNumber is
+                            required.
+                        </div>
+                        <div
+                            *ngIf="phForm.get('pharmacy.gstNumber')?.touched && phForm.get('pharmacy.gstNumber')?.errors?.['pattern']">
+                            Enter a valid GST Number (15 characters).
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-4 float" [formGroup]="phForm.get('pharmacy')">
+                        <input type="text" formControlName="registeredMobile" class="form-control" placeholder=" "
+                            maxlength="10" (keypress)="allowOnlyNumbers($event)">
+
+                        <label class="float-lbl">Registered Mobile *</label>
+
+                        <div *ngIf="phForm.get('pharmacy.registeredMobile')?.touched && phForm.get('pharmacy.registeredMobile')?.hasError('required')"
+                            class="text-danger">
+                            Registered Mobile is required.
+                        </div>
+
+                        <div *ngIf="phForm.get('pharmacy.registeredMobile')?.touched && phForm.get('pharmacy.registeredMobile')?.hasError('pattern')"
+                            class="text-danger">
+                            Mobile number must be exactly 10 digits.
+                        </div>
+                    </div>
+
+
+
+                    <div class="input-group mb-4 float" [formGroup]="phForm.get('pharmacy')">
+                        <input type="email" formControlName="officialEmail" class="form-control" placeholder=" "
+                            required>
+
+                        <label class="float-lbl">Official Email *</label>
+
+                        <div *ngIf="phForm.get('pharmacy.officialEmail')?.touched && phForm.get('pharmacy.officialEmail')?.hasError('required')"
+                            class="text-danger">
+                            Official Email is required.
+                        </div>
+
+                        <div *ngIf="phForm.get('pharmacy.officialEmail')?.touched && phForm.get('pharmacy.officialEmail')?.hasError('email')"
+                            class="text-danger">
+                            Please enter a valid email address.
+                        </div>
+                    </div>
+
+
                 </div>
-            </div>
+            </fieldset>
 
-            <div class="input-group mb-4 float">
-                <input type="text" placeholder="" formControlName="storeName" class="form-control" required>
-                <label class="float-lbl">Store Name *</label>
-                <div *ngIf="phForm.get('pharmacy.storeName')?.touched && phForm.get('pharmacy.storeName')?.errors?.['required']" class="text-danger">StoreName is required.</div>
-            </div>
-
-            <div class="input-group mb-4 float">
-                <input type="text" placeholder=" " formControlName="businessName" class="form-control" required>
-                <label class="float-lbl">Business Name *</label>
-                <div *ngIf="phForm.get('pharmacy.businessName')?.touched && phForm.get('pharmacy.businessName')?.errors?.['required']" class="text-danger">
-                    BusinessName is required.
-                </div>
-            </div>
-
-            <div class="input-group mb-4 float">
-                <input type="text" placeholder=" " formControlName="licenseNumber" class="form-control" required>
-                <label class="float-lbl">License Number *</label>
-                <div *ngIf="phForm.get('pharmacy.licenseNumber')?.touched && phForm.get('pharmacy.licenseNumber')?.errors?.['required']" class="text-danger">
-                    LicenseNumber is required.
-                </div>
-            </div>
-
-            <div class="input-group mb-4 float">
-                <input type="date" placeholder=" " formControlName="licenseExpiry" class="form-control" required
-                       [min]="minExpiryDate">
-                <label class="float-lbl">License Expiry *</label>
-                <div *ngIf="phForm.get('pharmacy.licenseExpiry')?.touched && phForm.get('pharmacy.licenseExpiry')?.errors?.['required']" class="text-danger">
-                    LicenseExpiry date is required.
-                </div>
-                <div *ngIf="phForm.get('pharmacy.licenseExpiry')?.errors?.['pastDate'] && (phForm.get('pharmacy.licenseExpiry')?.touched || phForm.get('pharmacy.licenseExpiry')?.dirty)">
-                    Expiry date cannot be in the past.
-                </div>
-
-            </div>
-
-            <div class="input-group mb-4 float">
-                <input type="text" placeholder=" " formControlName="gstNumber" class="form-control" required>
-                <label class="float-lbl">GST Number *</label>
-                <div *ngIf="phForm.get('pharmacy.gstNumber')?.touched && phForm.get('pharmacy.gstNumber')?.errors?.['required']" class="text-danger">
-                    GSTNumber is
-                    required.
-                </div>
-                <div *ngIf="phForm.get('pharmacy.gstNumber')?.touched && phForm.get('pharmacy.gstNumber')?.errors?.['pattern']">
-                    Enter a valid GST Number (15 characters).
-                </div>
-            </div>
-
-            <div class="input-group mb-4 float" [formGroup]="phForm.get('pharmacy')">
-                <input type="text"
-                       formControlName="registeredMobile"
-                       class="form-control"
-                       placeholder=" "
-                       maxlength="10"
-                       (keypress)="allowOnlyNumbers($event)">
-
-                <label class="float-lbl">Registered Mobile *</label>
-
-                <div *ngIf="phForm.get('pharmacy.registeredMobile')?.touched && phForm.get('pharmacy.registeredMobile')?.hasError('required')" class="text-danger">
-                    Registered Mobile is required.
-                </div>
-
-                <div *ngIf="phForm.get('pharmacy.registeredMobile')?.touched && phForm.get('pharmacy.registeredMobile')?.hasError('pattern')" class="text-danger">
-                    Mobile number must be exactly 10 digits.
-                </div>
-            </div>
-
-
-
-            <div class="input-group mb-4 float" [formGroup]="phForm.get('pharmacy')">
-                <input type="email"
-                       formControlName="officialEmail"
-                       class="form-control"
-                       placeholder=" "
-                       required>
-
-                <label class="float-lbl">Official Email *</label>
-
-                <div *ngIf="phForm.get('pharmacy.officialEmail')?.touched && phForm.get('pharmacy.officialEmail')?.hasError('required')" class="text-danger">
-                    Official Email is required.
-                </div>
-
-                <div *ngIf="phForm.get('pharmacy.officialEmail')?.touched && phForm.get('pharmacy.officialEmail')?.hasError('email')" class="text-danger">
-                    Please enter a valid email address.
-                </div>
-            </div>
-
-
-        </div>
-      </fieldset>
-
-      <!-- Section 2: Pharmacy Person -->
-      <fieldset formGroupName="user">
-          <legend>Pharmacy Person</legend>
-          <div class="form-grid">
-              <!--<div class="input-group mb-4 float">
+            <!-- Section 2: Pharmacy Person -->
+            <fieldset formGroupName="user">
+                <legend>Pharmacy Person</legend>
+                <div class="form-grid">
+                    <!--<div class="input-group mb-4 float">
         <input type="text" placeholder="" formControlName="firstName" class="form-control" required>
         <label class="float-lbl">First Name *</label>
         <div *ngIf="phForm.get('user.firstName')?.touched && phForm.get('user.firstName')?.errors?.['required']" class="text-danger">
@@ -116,7 +123,7 @@
             required.
         </div>
     </div>-->
-              <!--<div class="input-group mb-4 float">
+                    <!--<div class="input-group mb-4 float">
         <input type="text" placeholder="" formControlName="lastName" class="form-control" required>
         <label class="float-lbl">Last Name *</label>
         <div *ngIf="phForm.get('user.lastName')?.touched && phForm.get('user.lastName')?.errors?.['required']" class="text-danger">
@@ -124,25 +131,23 @@
             required.
         </div>
     </div>-->
-              <div class="input-group mb-4 float" [formGroup]="phForm.get('user')">
-                  <input type="email"
-                         formControlName="email"
-                         class="form-control"
-                         placeholder=" "
-                         required>
+                    <div class="input-group mb-4 float" [formGroup]="phForm.get('user')">
+                        <input type="email" formControlName="email" class="form-control" placeholder=" " required>
 
-                  <label class="float-lbl">Email *</label>
+                        <label class="float-lbl">Email *</label>
 
-                  <div *ngIf="phForm.get('user.email')?.touched && phForm.get('user.email')?.hasError('required')" class="text-danger">
-                      Email is required.
-                  </div>
+                        <div *ngIf="phForm.get('user.email')?.touched && phForm.get('user.email')?.hasError('required')"
+                            class="text-danger">
+                            Email is required.
+                        </div>
 
-                  <div *ngIf="phForm.get('user.email')?.touched && phForm.get('user.email')?.hasError('email')" class="text-danger">
-                      Please enter a valid email address.
-                  </div>
-              </div>
+                        <div *ngIf="phForm.get('user.email')?.touched && phForm.get('user.email')?.hasError('email')"
+                            class="text-danger">
+                            Please enter a valid email address.
+                        </div>
+                    </div>
 
-              <!--<div class="input-group mb-4 float">
+                    <!--<div class="input-group mb-4 float">
         <input type="text" placeholder="" formControlName="mobile" class="form-control" required maxlength="10"
                (keypress)="allowOnlyNumbers($event)">
         <label class="float-lbl">Mobile *</label>
@@ -153,7 +158,7 @@
             Only digits allowed.
         </div>
     </div>-->
-              <!--<div class="input-group mb-4 float">
+                    <!--<div class="input-group mb-4 float">
         <input type="date" formControlName="dateofBirth" class="form-control" required [max]="maxDate">
         <label class="float-lbl">Date Of Birth *</label>
         <div *ngIf="phForm.get('user.dateofBirth')?.touched && phForm.get('user.dateofBirth')?.errors?.['required']" class="text-danger">
@@ -164,7 +169,7 @@
             Date of Birth cannot be in the future
         </div>
     </div>-->
-              <!--<div class="input-group mb-4 float">
+                    <!--<div class="input-group mb-4 float">
         <select formControlName="gender" class="form-control" required>
             <option value="" disabled selected>Select Gender</option>
             <option value="Male">Male</option>
@@ -174,118 +179,128 @@
         <label class="float-lbl">Gender *</label>
         <div *ngIf="phForm.get('user.gender')?.touched && phForm.get('user.gender')?.errors?.['required']" class="text-danger">Gender is required.</div>
     </div>-->
-              <!-- Password Field -->
-              <!-- Password Field -->
-              <div class="input-group mb-4 float" [formGroup]="phForm.get('user')">
-                  <input type="password"
-                         formControlName="Password"
-                         class="form-control"
-                         placeholder=" "
-                         required>
-                  <label class="float-lbl">Password *</label>
-                  <div *ngIf="phForm.get('user.Password')?.touched && phForm.get('user.Password')?.hasError('required')" class="text-danger">
-                      Password is required.
-                  </div>
-              </div>
+                    <!-- Password Field -->
+                    <!-- Password Field -->
+                    <div class="input-group mb-4 float" [formGroup]="phForm.get('user')">
+                        <input type="password" formControlName="Password" class="form-control" placeholder=" " required>
+                        <label class="float-lbl">Password *</label>
+                        <div *ngIf="phForm.get('user.Password')?.touched && phForm.get('user.Password')?.hasError('required')"
+                            class="text-danger">
+                            Password is required.
+                        </div>
+                        <div *ngIf="phForm.get('user.Password')?.hasError('strongPassword') && phForm.get('user.Password')?.touched">
+                            <small class="text-danger">
+                              Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.
+                            </small>
+                          </div>
+                    </div>
 
-              <!-- Confirm Password Field -->
-              <div class="input-group mb-4 float" [formGroup]="phForm.get('user')">
-                  <input type="password"
-                         formControlName="ConfirmPassword"
-                         class="form-control"
-                         placeholder=" "
-                         required>
-                  <label class="float-lbl">Confirm Password *</label>
-                  <div *ngIf="phForm.get('user.ConfirmPassword')?.touched && phForm.get('user.ConfirmPassword')?.hasError('required')" class="text-danger">
-                      Confirm Password is required. 
-                  </div>
+                    <!-- Confirm Password Field -->
+                    <div class="input-group mb-4 float" [formGroup]="phForm.get('user')">
+                        <input type="password" formControlName="ConfirmPassword" class="form-control" placeholder=" "
+                            required>
+                        <label class="float-lbl">Confirm Password *</label>
+                        <div *ngIf="phForm.get('user.ConfirmPassword')?.touched && phForm.get('user.ConfirmPassword')?.hasError('required')"
+                            class="text-danger">
+                            Confirm Password is required.
+                        </div>
 
-                  <!-- Password Mismatch Error -->
-                  <div *ngIf="phForm.get('user')?.errors?.['passwordMismatch'] && phForm.get('user.ConfirmPassword')?.touched" class="text-danger">
-                      Passwords do not match.
-                  </div>
-              </div>
+                        <!-- Password Mismatch Error -->
+                        <div *ngIf="phForm.get('user')?.errors?.['passwordMismatch'] && phForm.get('user.ConfirmPassword')?.touched"
+                            class="text-danger">
+                            Passwords do not match.
+                        </div>
+                    </div>
 
 
-          </div>
-          <!--<div class="input-group mb-4 float">
+                </div>
+                <!--<div class="input-group mb-4 float">
               <div class="input-group mb-4">
                   <label class="form-label">Upload Picture *</label>
                   <input type="file" formControlName="picture" class="form-control" accept="image/*">
               </div>
           </div>-->
-      </fieldset>
+            </fieldset>
 
-      <!-- Section 4: Bank Details -->
-      <fieldset formGroupName="pharmacyBankDetails">
-        <legend>Bank Details</legend>
-        <div class="form-grid">
-            <div class="input-group mb-4 float">
-                <input type="text" placeholder=" " formControlName="bankName" class="form-control" required>
-                <label class="float-lbl">Bank Name *</label>
-                <div *ngIf="phForm.get('pharmacyBankDetails.bankName')?.touched && phForm.get('pharmacyBankDetails.bankName')?.errors?.['required']" class="text-danger">
-                    Bank Name is
-                    required.
+            <!-- Section 4: Bank Details -->
+            <fieldset formGroupName="pharmacyBankDetails">
+                <legend>Bank Details</legend>
+                <div class="form-grid">
+                    <div class="input-group mb-4 float">
+                        <input type="text" placeholder=" " formControlName="bankName" class="form-control" required>
+                        <label class="float-lbl">Bank Name *</label>
+                        <div *ngIf="phForm.get('pharmacyBankDetails.bankName')?.touched && phForm.get('pharmacyBankDetails.bankName')?.errors?.['required']"
+                            class="text-danger">
+                            Bank Name is
+                            required.
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-4 float">
+                        <input type="text" placeholder=" " formControlName="accountholderName" class="form-control"
+                            required>
+                        <label class="float-lbl">Account Holder Name *</label>
+                        <div *ngIf="phForm.get('pharmacyBankDetails.accountholderName')?.touched && phForm.get('pharmacyBankDetails.accountholderName')?.errors?.['required']"
+                            class="text-danger">
+                            AccountHolderName is required.
+                        </div>
+                        <div
+                            *ngIf="phForm.get('pharmacyBankDetails.accountholderName')?.errors?.['pattern'] && phForm.get('pharmacyBankDetails.accountholderName')?.touched">
+                            Only digits allowed.
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-4 float">
+                        <input type="text" placeholder=" " formControlName="accountNumber" class="form-control"
+                            maxlength="16" required (keypress)="allowOnlyNumbers($event)">
+                        <label class="float-lbl">Account Number *</label>
+                        <div *ngIf="phForm.get('pharmacyBankDetails.accountNumber')?.touched && phForm.get('pharmacyBankDetails.accountNumber')?.errors?.['required']"
+                            class="text-danger">
+                            AccountNumber is required.
+                        </div>
+                        <div *ngIf="phForm.get('pharmacyBankDetails.accountNumber')?.errors?.['maxlength'] && phForm.get('pharmacyBankDetails.accountNumber')?.touched"
+                            class="text-danger">
+                            Maximum 16 digits allowed
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-4 float">
+                        <input type="text" placeholder=" " formControlName="ifscCode" class="form-control" required>
+                        <label class="float-lbl">IFSC Code *</label>
+                        <div *ngIf="phForm.get('pharmacyBankDetails.ifscCode')?.touched && phForm.get('pharmacyBankDetails.ifscCode')?.errors?.['required']"
+                            class="text-danger">
+                            IFSCCode is
+                            required.
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-4 float">
+                        <input type="text" placeholder=" " formControlName="branchName" class="form-control" required>
+                        <label class="float-lbl">Branch Name *</label>
+                        <div *ngIf="phForm.get('pharmacyBankDetails.branchName')?.touched && phForm.get('pharmacyBankDetails.branchName')?.errors?.['required']"
+                            class="text-danger">
+                            BranchName
+                            is required.
+                        </div>
+                    </div>
+
+                    <div class="input-group mb-4 float">
+                        <input type="text" placeholder=" " formControlName="upiId" class="form-control">
+                        <label class="float-lbl">UPI ID </label>
+
+                        <div *ngIf="phForm.get('pharmacyBankDetails.upiId')?.errors?.['pattern'] && phForm.get('pharmacyBankDetails.upiId')?.touched"
+                            class="text-danger">
+                            Please enter a valid UPI ID.
+                        </div>
+                    </div>
+
                 </div>
+            </fieldset>
+
+            <!-- Submit Button -->
+            <div class="form-actions">
+                <button type="submit">Add Pharmacy</button>
             </div>
-
-            <div class="input-group mb-4 float">
-                <input type="text" placeholder=" " formControlName="accountholderName" class="form-control" required>
-                <label class="float-lbl">Account Holder Name *</label>
-                <div *ngIf="phForm.get('pharmacyBankDetails.accountholderName')?.touched && phForm.get('pharmacyBankDetails.accountholderName')?.errors?.['required']" class="text-danger">
-                    AccountHolderName is required.
-                </div>
-                <div *ngIf="phForm.get('pharmacyBankDetails.accountholderName')?.errors?.['pattern'] && phForm.get('pharmacyBankDetails.accountholderName')?.touched">
-                    Only digits allowed.
-                </div>
-            </div>
-
-            <div class="input-group mb-4 float">
-                <input type="text" placeholder=" " formControlName="accountNumber" class="form-control" maxlength="16"
-                       required (keypress)="allowOnlyNumbers($event)">
-                <label class="float-lbl">Account Number *</label>
-                <div *ngIf="phForm.get('pharmacyBankDetails.accountNumber')?.touched && phForm.get('pharmacyBankDetails.accountNumber')?.errors?.['required']" class="text-danger">
-                    AccountNumber is required.
-                </div>
-            </div>
-
-            <div class="input-group mb-4 float">
-                <input type="text" placeholder=" " formControlName="ifscCode" class="form-control" required>
-                <label class="float-lbl">IFSC Code *</label>
-                <div *ngIf="phForm.get('pharmacyBankDetails.ifscCode')?.touched && phForm.get('pharmacyBankDetails.ifscCode')?.errors?.['required']" class="text-danger">
-                    IFSCCode is
-                    required.
-                </div>
-            </div>
-
-            <div class="input-group mb-4 float">
-                <input type="text" placeholder=" " formControlName="branchName" class="form-control" required>
-                <label class="float-lbl">Branch Name *</label>
-                <div *ngIf="phForm.get('pharmacyBankDetails.branchName')?.touched && phForm.get('pharmacyBankDetails.branchName')?.errors?.['required']" class="text-danger">
-                    BranchName
-                    is required.
-                </div>
-            </div>
-
-            <div class="input-group mb-4 float">
-                <input type="text"
-                       placeholder=" "
-                       formControlName="upiId"
-                       class="form-control">
-                <label class="float-lbl">UPI ID </label>
-
-                <div *ngIf="phForm.get('pharmacyBankDetails.upiId')?.errors?.['pattern'] && phForm.get('pharmacyBankDetails.upiId')?.touched" class="text-danger">
-                    Please enter a valid UPI ID.
-                </div>
-            </div>
-
-        </div>
-      </fieldset>
-
-      <!-- Submit Button -->
-      <div class="form-actions">
-        <button type="submit" >Add Pharmacy</button>
-      </div>
-    </form>
-  </div>
+        </form>
+    </div>
 </div>

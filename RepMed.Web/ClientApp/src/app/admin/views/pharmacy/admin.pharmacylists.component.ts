@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, } from '@angular/core';
 import { Router } from "@angular/router";
 import { FormBuilder } from "@angular/forms";
 import { CustomValidator } from "../../../../app/common/custom.validators";
@@ -13,17 +13,17 @@ declare var $: any;
     selector: 'app-post-list',
     templateUrl: './admin.pharmacylists.component.html'
 })
-export class AdminPharmacyListsComponent extends AdminBaseComponent implements OnInit  {
+export class AdminPharmacyListsComponent extends AdminBaseComponent implements OnInit {
 
     constructor(
-        public router: Router, public fb:FormBuilder,
+        public router: Router, public fb: FormBuilder,
         public validator: CustomValidator
-        
-        ) {
+
+    ) {
         super(router, fb);
     }
     dtColumns = [
-    { title: 'ID', data: 'id' }
+        { title: 'ID', data: 'id' }
     ];
 
     dtOptions = {
@@ -32,6 +32,16 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
         searching: true
     };
 
+    ngAfterViewInit(): void {
+        const self = this;
+    
+        // Handle Edit button click
+        $('#post_pharmacylist_datatable').on('click', '.edit-btn', function () {
+            const id = $(this).data('id');
+            self.router.navigate(['/admin/pharmacy/edit', id]);
+        });
+    }
+
     ajaxUrl = admin_apiconfig.endpoints.pharmacy.getPaged;
     ngOnInit(): void {
 
@@ -39,7 +49,7 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
             processing: true,
             serverSide: true,
             searching: true,
-             drawCallback: function (settings) { },
+            drawCallback: function (settings) { },
             "ajax": {
                 "url": admin_apiconfig.endpoints.pharmacy.getPaged,
                 "type": "POST",
@@ -52,14 +62,29 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
             },
             columns: [
                 {
-                    data: 'id', render: (data: any) =>
-                        `<input class="item_checkbox" id="${data}" type="checkbox" value="${data}" />`
+                    data: null,
+                    render: (data: any, type: any, row: any, meta: any) => {
+                        return meta.row + 1;
+                    },
+                    orderable: false,
+                    searchable: false
                 },
-                { data: 'storeName'},
-                { data: 'ownerName'},
-                {data: 'officialEmail'},
-                {data: 'cityName'},
-                {data: 'registeredMobile'}
+                { data: 'storeName' },
+                { data: 'ownerName' },
+                { data: 'officialEmail' },
+                { data: 'cityName' },
+                { data: 'registeredMobile' },
+                {
+                    data: 'id',
+                    orderable: false,
+                    searchable: false,
+                    render: (data: any, type: any, row: any) => {
+                        return `
+                        <button class="btn btn-primary btn-lg d-flex justify-content-center align-items-center edit-btn" 
+                        style="width: 100px; height: 40px;" data-id="${data}"> Edit </button>
+                        `;
+                    }
+                }
             ]
         });
     }

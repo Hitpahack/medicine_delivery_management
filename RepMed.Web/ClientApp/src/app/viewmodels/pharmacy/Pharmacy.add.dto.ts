@@ -37,6 +37,7 @@ export interface PharmacyDto {
         picture?: string;
         password?: string;
         confirmPassword?: string;
+        Role?: string;
     }
     pharmacyBankDetails: {
       id?: number; // JsonIgnore in C#
@@ -62,6 +63,7 @@ export interface PharmacyDto {
     picture?: string;
     password?: string;
     confirmPassword?: string;
+    Role?: string;
     // AddPersonDto properties here
   }
   

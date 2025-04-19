@@ -1,21 +1,22 @@
-<!-- <script src="../../../../assets/datatables.net/js/jquery.dataTables.min.js"></script>
-<script src="../../../../assets/datatables.net-bs4/js/dataTables.bootstrap4.min.js"></script>
-<link href="../../../../assets/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" /> -->
-
-
 <div class="container mt-4">
-  <h3 class="mb-4 text-primary">📋 Pharmacy List</h3>
-  <button (click)="router.navigate(['/admin/pharmacy/add'])" class="addph" >Add Pharmacy</button>
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="text-primary mb-0">📋 Pharmacy List</h3>
+    <button (click)="router.navigate(['/admin/pharmacy/add'])" class="btn btn-primary">
+      ➕ Add Pharmacy
+    </button>
+  </div>
+
   <table id="post_pharmacylist_datatable" class="table table-centered m-0">
     <thead class="thead-light">
       <tr>
-        <th><input type="checkbox" />#</th>
+        <th>Id</th>
         <th>Store Name</th>
         <th>Owner Name</th>
         <th>Email</th>
         <th>City</th>
         <th>Mobile</th>
+        <th>Action</th>
       </tr>
     </thead>
   </table>
-</div>  
+</div>
