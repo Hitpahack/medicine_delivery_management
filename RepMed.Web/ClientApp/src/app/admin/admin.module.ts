@@ -11,17 +11,19 @@ import { AdminShiftsComponent } from "./shifts/admin.shifts.component";
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormControlErrorsDirective } from "../common/app.directives";
 import { AdminDashboardComponent } from "./views/admindashboard/admin.dashboard.component";
-import { AdminAddPharmacyComponent } from "./views/pharmacy/admin.addpharmacy.component";
-import { PharmacyDashboardComponent } from "./views/pharmacydashboard/pharmacy.dashboard.component";
+import { AdminAddPharmacyComponent } from "./views/pharmacy/add.component";
+import { PharmacyDashboardComponent } from "./views/pharmacy/dashboard.component";
 import { PharmacyLayoutComponent } from "../_layouts/admin/pharmacy.layout.component";
-import { AdminPharmacyListsComponent } from "./views/pharmacy/admin.pharmacylists.component";
+import { AdminPharmacyListsComponent } from "./views/pharmacy/list.component";
 import { BrowserModule } from '@angular/platform-browser';
 import { AppComponent } from "../app.component";
-import { EditPharmacy } from "./views/pharmacy/admin.pharmacyedit.component";
 import { AutoValidateDirective } from "../common/form.validator";
+import { DatatableComponent } from "./shared/datatables/datatable.component";
+import { SharedModule } from "./shared/shared.module";
 
 
 @NgModule({
+  declarations: [],
   imports: [
     CommonModule,
     RouterModule,
@@ -30,10 +32,10 @@ import { AutoValidateDirective } from "../common/form.validator";
     AdminLayoutComponent,
     AdminEmptyLayoutComponent,
     AdminShiftsComponent,
-    AdminLoginComponent,
-    AdminFooterComponent,
-    AdminHeaderComponent,
-    AdminNavComponent,
+    //AdminLoginComponent,
+    //AdminFooterComponent,
+    //AdminHeaderComponent,
+    //AdminNavComponent,
     FormControlErrorsDirective,
     AdminDashboardComponent,
     AdminAddPharmacyComponent,
@@ -43,10 +45,10 @@ import { AutoValidateDirective } from "../common/form.validator";
     BrowserModule,
     AppComponent,
     AppComponent,
-    EditPharmacy,
-    AutoValidateDirective
+    AutoValidateDirective,
+    SharedModule
   ],
-  exports: [AdminLayoutComponent]
+  exports: []
 
 })
 export class AdminModule {

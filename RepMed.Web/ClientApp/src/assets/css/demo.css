@@ -121,7 +121,7 @@
 .bg-prime{
   background-color: #003c32 !important;
 }
-.bg-prime .form-label, .bg-prime .form-check-label {
+.bg-prime .form-label, .bg-prime .form-check-label, .bg-prime .menu-link {
   color: #fff !important;
 }
 

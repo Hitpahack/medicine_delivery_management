@@ -1,0 +1,220 @@
+<div class="authentication">
+
+    <form  class="auth_form form_validation" *ngIf="phForm" appAutoValidate [formGroup]="phForm" #phForm_html="ngForm" (ngSubmit)="onSubmit()">
+      <!-- Section 1: Pharmacy -->
+      <fieldset  formGroupName="pharmacy">
+        <legend>Pharmacy Details</legend>
+        <div class="form-grid">
+            <div class="input-group mb-4 float">
+                <input type="text" placeholder="" formControlName="ownerName" class="form-control">
+                <label class="float-lbl">Owner Name *</label>
+            </div>
+
+            <div class="input-group mb-4 float">
+                <input type="text" placeholder="" formControlName="storeName" class="form-control">
+                <label class="float-lbl">Store Name *</label>
+            </div>
+
+            <div class="input-group mb-4 float">
+                <input type="text" placeholder=" " formControlName="businessName" class="form-control">
+                <label class="float-lbl">Business Name *</label>
+                
+            </div>
+
+            <div class="input-group mb-4 float">
+                <input type="text" placeholder=" " formControlName="licenseNumber" class="form-control">
+                <label class="float-lbl">License Number *</label>
+               
+            </div>
+
+            <div class="input-group mb-4 float">
+                <input type="date" placeholder=" " formControlName="licenseExpiry" class="form-control" 
+                       [min]="minExpiryDate">
+                <label class="float-lbl">License Expiry *</label>
+            </div>
+
+            <div class="input-group mb-4 float">
+                <input type="text" placeholder=" " formControlName="gstNumber" class="form-control" >
+                <label class="float-lbl">GST Number *</label>
+               
+            </div>
+
+            <div class="input-group mb-4 float" [formGroup]="phForm.get('pharmacy')">
+                <input type="text"
+                       formControlName="registeredMobile"
+                       class="form-control"
+                       placeholder=" "
+                       maxlength="10"
+                       (keypress)="allowOnlyNumbers($event)">
+
+                <label class="float-lbl">Registered Mobile *</label>
+
+               
+            </div>
+
+
+
+            <div class="input-group mb-4 float" [formGroup]="phForm.get('pharmacy')">
+                <input type="email"
+                       formControlName="officialEmail"
+                       class="form-control"
+                       placeholder=" " >
+
+                <label class="float-lbl">Official Email *</label>
+
+               
+            </div>
+
+
+        </div>
+      </fieldset>
+
+      <!-- Section 2: Pharmacy Person -->
+      <fieldset formGroupName="user">
+          <legend>Pharmacy Person</legend>
+          <div class="form-grid">
+              <!--<div class="input-group mb-4 float">
+        <input type="text" placeholder="" formControlName="firstName" class="form-control" >
+        <label class="float-lbl">First Name *</label>
+        <div *ngIf="phForm.get('user.firstName')?.touched && phForm.get('user.firstName')?.errors?.['']" class="text-danger">
+            FirstName is
+            .
+        </div>
+    </div>-->
+              <!--<div class="input-group mb-4 float">
+        <input type="text" placeholder="" formControlName="lastName" class="form-control" >
+        <label class="float-lbl">Last Name *</label>
+        <div *ngIf="phForm.get('user.lastName')?.touched && phForm.get('user.lastName')?.errors?.['']" class="text-danger">
+            LastName is
+            .
+        </div>
+    </div>-->
+              <div class="input-group mb-4 float" [formGroup]="phForm.get('user')">
+                  <input type="email"
+                         formControlName="email"
+                         class="form-control"
+                         placeholder=" ">
+
+                  <label class="float-lbl">Email *</label>
+
+                  
+              </div>
+
+              <!--<div class="input-group mb-4 float">
+        <input type="text" placeholder="" formControlName="mobile" class="form-control"  maxlength="10"
+               (keypress)="allowOnlyNumbers($event)">
+        <label class="float-lbl">Mobile *</label>
+        <div *ngIf="phForm.get('user.mobile')?.touched && phForm.get('user.mobile')?.errors?.['']" class="text-danger">
+            Mobile is .
+        </div>
+        <div *ngIf="phForm.get('user.mobile')?.errors?.['pattern'] && phForm.get('user.mobile')?.touched">
+            Only digits allowed.
+        </div>
+    </div>-->
+              <!--<div class="input-group mb-4 float">
+        <input type="date" formControlName="dateofBirth" class="form-control"  [max]="maxDate">
+        <label class="float-lbl">Date Of Birth *</label>
+        <div *ngIf="phForm.get('user.dateofBirth')?.touched && phForm.get('user.dateofBirth')?.errors?.['']" class="text-danger">
+            Date of
+            Birth is 
+        </div>
+        <div *ngIf="phForm.get('user.dateofBirth')?.errors?.['futureDate'] && (phForm.get('user.dateofBirth')?.touched || phForm.get('user.dateofBirth')?.dirty)">
+            Date of Birth cannot be in the future
+        </div>
+    </div>-->
+              <!--<div class="input-group mb-4 float">
+        <select formControlName="gender" class="form-control" >
+            <option value="" disabled selected>Select Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+        <label class="float-lbl">Gender *</label>
+        <div *ngIf="phForm.get('user.gender')?.touched && phForm.get('user.gender')?.errors?.['']" class="text-danger">Gender is .</div>
+    </div>-->
+              <!-- Password Field -->
+              <!-- Password Field -->
+              <div class="input-group mb-4 float" [formGroup]="phForm.get('user')">
+                  <input type="password"
+                         formControlName="Password"
+                         class="form-control"
+                         placeholder=" ">
+                  <label class="float-lbl">Password *</label>
+                 
+              </div>
+
+              <!-- Confirm Password Field -->
+              <div class="input-group mb-4 float" [formGroup]="phForm.get('user')">
+                  <input type="password"
+                         formControlName="ConfirmPassword"
+                         class="form-control"
+                         placeholder=" ">
+                  <label class="float-lbl">Confirm Password *</label>
+                  
+              </div>
+
+
+          </div>
+          <!--<div class="input-group mb-4 float">
+              <div class="input-group mb-4">
+                  <label class="form-label">Upload Picture *</label>
+                  <input type="file" formControlName="picture" class="form-control" accept="image/*">
+              </div>
+          </div>-->
+      </fieldset>
+
+      <!-- Section 4: Bank Details -->
+      <fieldset formGroupName="pharmacyBankDetails">
+        <legend>Bank Details</legend>
+        <div class="form-grid">
+            <div class="input-group mb-4 float">
+                <input type="text" placeholder=" " formControlName="bankName" class="form-control" >
+                <label class="float-lbl">Bank Name *</label>
+                
+            </div>
+
+            <div class="input-group mb-4 float">
+                <input type="text" placeholder=" " formControlName="accountholderName" class="form-control" >
+                <label class="float-lbl">Account Holder Name *</label>
+               
+            </div>
+
+            <div class="input-group mb-4 float">
+                <input type="text" placeholder=" " formControlName="accountNumber" class="form-control" maxlength="16"
+                        (keypress)="allowOnlyNumbers($event)">
+                <label class="float-lbl">Account Number *</label>
+                
+            </div>
+
+            <div class="input-group mb-4 float">
+                <input type="text" placeholder=" " formControlName="ifscCode" class="form-control" >
+                <label class="float-lbl">IFSC Code *</label>
+                
+            </div>
+
+            <div class="input-group mb-4 float">
+                <input type="text" placeholder=" " formControlName="branchName" class="form-control" >
+                <label class="float-lbl">Branch Name *</label>
+                
+            </div>
+
+            <div class="input-group mb-4 float">
+                <input type="text"
+                       placeholder=" "
+                       formControlName="upiId"
+                       class="form-control">
+                <label class="float-lbl">UPI ID </label>
+
+              
+            </div>
+
+        </div>
+      </fieldset>
+
+      <!-- Submit Button -->
+      <div class="form-actions">
+        <button type="submit" >Add Pharmacy</button>
+      </div>
+    </form>
+  
+</div>

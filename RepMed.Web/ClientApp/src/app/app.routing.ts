@@ -8,20 +8,19 @@ import { AdminLayoutComponent } from './_layouts/admin/admin.layout.component';
 import { WebLayoutComponent } from './_layouts/web/web.layout.component';
 import { LoginComponent } from './pages/login/login.component';
 import { AdminDashboardComponent } from './admin/views/admindashboard/admin.dashboard.component';
-import { AdminAddPharmacyComponent } from './admin/views/pharmacy/admin.addpharmacy.component';
+import { AdminAddPharmacyComponent } from './admin/views/pharmacy/add.component';
 import { PharmacyLayoutComponent } from './_layouts/admin/pharmacy.layout.component';
-import { PharmacyDashboardComponent } from './admin/views/pharmacydashboard/pharmacy.dashboard.component';
-import { AdminPharmacyListsComponent } from './admin/views/pharmacy/admin.pharmacylists.component';
-import { AdminPharmacyDetailsComponent} from './admin/views/pharmacy/admin.pharmacydetails.component';
+import { PharmacyDashboardComponent } from './admin/views/pharmacy/dashboard.component';
+import { AdminPharmacyListsComponent } from './admin/views/pharmacy/list.component';
 
 import { AddUserComponent } from '../app/admin/views/user/admin.adduser.component';
 import { EditProfile } from '../app/admin/views/user/admin.editprofile.component';
 import { SetPassword } from './admin/views/user/admin.setpassword.component';
-import { EditPharmacy } from './admin/views/pharmacy/admin.pharmacyedit.component';
 import { ChangePassword } from './admin/views/user/admin.changepassword.component';
 import { UserListComponent } from './admin/views/user/admin.userlist.component';
 
 import { SubAdminLayoutComponent } from './_layouts/admin/subadmin.layout.component';
+import { AdminPharmacyDetailsComponent } from './admin/views/pharmacy/details.component';
 
 
 
@@ -43,7 +42,6 @@ export const routes: Routes = [
       { path: 'shifts', component: AdminShiftsComponent },
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'pharmacy/add', component: AdminAddPharmacyComponent },
-      { path: 'pharmacy/edit/:id', component: EditPharmacy },
       { path: 'pharmacy', component: AdminPharmacyListsComponent },
       { path: 'pharmacy/view', component: AdminPharmacyDetailsComponent },
       
@@ -52,7 +50,7 @@ export const routes: Routes = [
       { path: 'editprofile/:id', component: EditProfile },
       { path: 'changepassword', component:SetPassword},
       { path: 'setpassword', component:ChangePassword},
-      {path: 'user/list', component:UserListComponent}
+      {path: 'user', component:UserListComponent}
     ]
   },
   {

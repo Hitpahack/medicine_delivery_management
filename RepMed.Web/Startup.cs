@@ -42,7 +42,7 @@ namespace RepMed.Web
             services.AddControllersWithViews();
             // Named Policy
             services.AddCors(options =>
-            {
+            { 
                 options.AddPolicy(name: "AllowOrigin",
                     builder =>
                     {

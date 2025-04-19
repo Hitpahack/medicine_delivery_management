@@ -1,11 +1,14 @@
 import { Component, EventEmitter, OnInit } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { APP_DI_CONTAINER } from "../common/app.di.container";
 import { HttpClient } from '@angular/common/http';
 import { AdminApiConfigService } from './admin.endpoints';
+import { CommonModule } from '@angular/common';
+import { AutoValidateDirective } from '../common/form.validator';
 @Component({
-    template: ``,
+    template: ``
+    
 })
 
 export class AdminBaseComponent implements OnInit {
@@ -17,15 +20,19 @@ export class AdminBaseComponent implements OnInit {
 
     public admin_apiconfig: AdminApiConfigService;
     public http: HttpClient;
+    public fb: FormBuilder;
+    public router: Router;
 
-    constructor(public router: Router = null, public fb: FormBuilder = null) {
-        this._router = router;
+    constructor(public router_: Router = null, public fb_: FormBuilder = null) {
+        this._router = router_;
+        this.fb = fb_;
         this.admin_apiconfig = APP_DI_CONTAINER.getInjector().get(AdminApiConfigService);
+        
+        if (this.router == null)
+            this.router = APP_DI_CONTAINER.getInjector().get(Router);
+
         if (this.http == null)
             this.http = APP_DI_CONTAINER.getInjector().get(HttpClient);
-
-        if (this.http == null)
-            this._router = APP_DI_CONTAINER.getInjector().get(Router);
 
         if (this.fb == null)
             this.fb = APP_DI_CONTAINER.getInjector().get(FormBuilder);

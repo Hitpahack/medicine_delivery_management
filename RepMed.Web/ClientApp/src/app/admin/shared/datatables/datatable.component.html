@@ -1,0 +1,9 @@
+<table [id]="options.tableId" class="table table-centered m-0">
+  <thead class="thead-light">
+    <tr>
+      <th *ngFor="let col of options.columns">
+        {{ col.title || col.data }}
+      </th>
+    </tr>
+  </thead>
+</table>

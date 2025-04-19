@@ -1,11 +1,5 @@
-import {
-  Directive,
-  ElementRef,
-  Input,
-  OnInit,
-  Renderer2,
-} from '@angular/core';
-import { FormGroupDirective, FormControlName } from '@angular/forms';
+import { Directive, ElementRef, OnInit, Renderer2 } from '@angular/core';
+import { FormGroupDirective, AbstractControl, FormGroup } from '@angular/forms';
 import { Subscription } from 'rxjs';
 
 @Directive({
@@ -18,19 +12,15 @@ export class AutoValidateDirective implements OnInit {
     private formGroupDir: FormGroupDirective,
     private el: ElementRef,
     private renderer: Renderer2
-  ) {
-
-  }
+  ) {}
 
   ngOnInit() {
     const form = this.formGroupDir.form;
-    const controls = this.el.nativeElement.querySelectorAll(
-      '[formControlName]'
-    );
+    const controls = this.el.nativeElement.querySelectorAll('[formControlName]');
 
     controls.forEach((controlEl: HTMLElement) => {
       const controlName = controlEl.getAttribute('formControlName');
-      const control = form.get(controlName!);
+      const control = this.findControlByName(form, controlName!);
 
       if (!control) return;
 
@@ -49,11 +39,32 @@ export class AutoValidateDirective implements OnInit {
     });
   }
 
+  private findControlByName(form: AbstractControl, controlName: string): AbstractControl | null {
+    // If form is a FormGroup, search inside it
+    if (form instanceof FormGroup) {
+      // Check if the control is directly in this FormGroup
+      if (form.contains(controlName)) {
+        return form.get(controlName);
+      }
+
+      // Recursively search for nested FormGroups
+      for (const controlKey of Object.keys(form.controls)) {
+        const control = form.get(controlKey);
+        if (control instanceof FormGroup) {
+          const nestedControl = this.findControlByName(control, controlName);
+          if (nestedControl) {
+            return nestedControl;
+          }
+        }
+      }
+    }
+    return null;
+  }
+
   private showError(el: HTMLElement, errors: any) {
     const parent = el.parentElement;
     this.removeOldError(el);
 
-    //if (!errors) return;
     const hasErrors = !!errors;
     if (hasErrors) {
       const errorMsg = this.getErrorMessage(errors);
@@ -66,11 +77,8 @@ export class AutoValidateDirective implements OnInit {
       this.renderer.appendChild(div, text);
   
       this.renderer.appendChild(parent, div);
-  
-      // ✅ Add class to parent div
       this.renderer.addClass(parent, 'has-error');
     } else {
-      // ✅ Remove error class from parent div if no errors
       this.renderer.removeClass(parent, 'has-error');
     }
   }
@@ -78,10 +86,7 @@ export class AutoValidateDirective implements OnInit {
   private removeOldError(el: HTMLElement) {
     const parent = el.parentElement;
     const oldMsg = Array.from(parent?.children || []).find(
-      (child: any) =>
-        child.tagName === 'DIV' &&
-        child.innerText &&
-        child.style.color === 'red'
+      (child: any) => child.tagName === 'DIV' && child.innerText && child.style.color === 'red'
     );
     if (oldMsg) {
       this.renderer.removeChild(parent, oldMsg);
@@ -119,7 +124,6 @@ export class AutoValidateDirective implements OnInit {
           messages.push(`Maximum value is ${errorValue.max}`);
           break;
         default:
-          // Handle custom errors or unknown ones
           if (typeof errorValue === 'string') {
             messages.push(errorValue); // Allow custom validator to return string
           } else {
@@ -130,5 +134,4 @@ export class AutoValidateDirective implements OnInit {
 
     return messages.join(', ');
   }
-
 }

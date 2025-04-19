@@ -45,7 +45,7 @@ export class CustomValidator {
     const dob = new Date(control.value);
     const today = new Date();
     today.setHours(0, 0, 0, 0); // remove time part
-  
+
     if (dob > today) {
       return { futureDate: true };
     }
@@ -63,20 +63,52 @@ export class CustomValidator {
   }
 
   passwordMatchValidator(control: AbstractControl) {
-    const password = control.get('Password')?.value;
-    const confirmpassword = control.get('ConfirmPassword')?.value;
-    return password === confirmpassword ? null : { passwordMismatch: true };
+    const password = CustomValidator.findControlByName(control, 'Password');
+    const confirmpassword = CustomValidator.findControlByName(control, 'ConfirmPassword');
+    if(!password.value || !confirmpassword.value)
+      return null;
+
+    let error = null;
+    if (password.value !== confirmpassword.value){
+      error = { passwordMismatch: true, error: "password and confirm password doesn't match!" };
+      confirmpassword.setErrors(error);
+    confirmpassword.markAsTouched();
+    confirmpassword.markAsDirty();
+    }
+
+    
+    return error;
   }
 
-   validateStrongPassword(control: AbstractControl): ValidationErrors | null {
+  validateStrongPassword(control: AbstractControl): ValidationErrors | null {
     const password = control.value;
     if (!password) return null;
 
     const strongPasswordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).{8,}$/;
-    
+
     return strongPasswordPattern.test(password)
       ? null
       : { strongPassword: 'Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.' };
   }
-  
+  static findControlByName(form: AbstractControl, controlName: string): AbstractControl | null {
+    // If form is a FormGroup, search inside it
+    if (form instanceof FormGroup) {
+      // Check if the control is directly in this FormGroup
+      if (form.contains(controlName)) {
+        return form.get(controlName);
+      }
+
+      // Recursively search for nested FormGroups
+      for (const controlKey of Object.keys(form.controls)) {
+        const control = form.get(controlKey);
+        if (control instanceof FormGroup) {
+          const nestedControl = this.findControlByName(control, controlName);
+          if (nestedControl) {
+            return nestedControl;
+          }
+        }
+      }
+    }
+    return null;
+  }
 }

@@ -20,12 +20,11 @@ import { AutoValidateDirective } from "src/app/common/form.validator";
 export class AdminLoginComponent extends AdminBaseComponent implements OnInit {
 
     constructor(
-        public router: Router, public fb: FormBuilder,
         public validator: CustomValidator,
         public accountservice: adminAccountsService
 
     ) {
-        super(router, fb);
+        super();
     }
 
     loginForm: FormGroup;
@@ -38,7 +37,8 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit {
         return this.fb.group({
             email: new FormControl(null, [Validators.required,this.validator.ValidateEmail]),
             password: new FormControl(null, [Validators.required]),
-            remamber: new FormControl(false),
+            remamber: new FormControl(false)
+            
         });
     }
     loginError: string = '';
