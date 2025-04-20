@@ -32,21 +32,27 @@ namespace RepMed.Web
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            allowedOrigins = Configuration.GetSection("AppSettings:AllowOriginsUrls").Get<string[]>();
+            rootPath = Configuration.GetSection("AppSettings:RootPath").Get<string>();
+            sourcePath = Configuration.GetSection("AppSettings:SourcePath").Get<string>();
         }
 
         public IConfiguration Configuration { get; }
-
+        public string[] allowedOrigins { get; }
+        public string rootPath { get; }
+        public string sourcePath { get; }
+        
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
             // Named Policy
             services.AddCors(options =>
-            { 
+            {
                 options.AddPolicy(name: "AllowOrigin",
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200")
+                        builder.WithOrigins(allowedOrigins)
                                             .AllowAnyHeader()
                                             .AllowAnyMethod();
                     });
@@ -54,7 +60,7 @@ namespace RepMed.Web
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
-                configuration.RootPath = "ClientApp/dist";
+                configuration.RootPath = rootPath;
             });
 
             var sqlConnectionString = Configuration.GetConnectionString("default");
@@ -275,7 +281,7 @@ namespace RepMed.Web
                 // To learn more about options for serving an Angular SPA from ASP.NET Core,
                 // see https://go.microsoft.com/fwlink/?linkid=864501
 
-                spa.Options.SourcePath = "ClientApp";
+                spa.Options.SourcePath = sourcePath;
 
                 if (env.IsDevelopment())
                 {

@@ -14,10 +14,11 @@ export class AdminLayoutComponent implements OnInit {
   
   constructor(private renderer: Renderer2) { }
   scripts: Array<string> = [ 
-    "assets/vendor/js/menu.js",
-    "assets/js/appmain.js"
+    
   ];
-  styles: Array<string> = [];
+  styles: Array<string> = [
+    
+  ];
 
   ngOnInit() {
    // const script = this.renderer.createElement('script');

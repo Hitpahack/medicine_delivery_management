@@ -5,7 +5,7 @@ import { CustomValidator } from "../../../common/custom.validators";
 import { AdminBaseComponent } from '../../admin.base.component';
 import { DatatableComponent } from '../../shared/datatables/datatable.component';
 
-declare var $: any;
+
 
 @Component({
     selector: 'app-pharmacy-list',

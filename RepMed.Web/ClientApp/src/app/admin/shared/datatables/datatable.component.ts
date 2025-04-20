@@ -40,7 +40,7 @@ export class DatatableComponent implements AfterViewInit, OnDestroy {
       drawCallback: (settings) => {
         this.initDrawCallback(settings)
       },
-      "ajax": this.options.ajax,
+      ajax: this.options.ajax,
       columns: this.options.columns,
      
     });

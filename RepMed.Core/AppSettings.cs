@@ -13,6 +13,8 @@ namespace RepMed.Core
         public string AdminEmail { get; set; }
         public string[] AllowOriginsUrls { get; set; }
         public bool RequestLog { get; set; }
+        public string RootPath { get; set; }
+        public string SourcePath { get; set; }
         public JwtAuth JwtAuth { get; set; }
         public IList<string> Languages { get; set; }
     }

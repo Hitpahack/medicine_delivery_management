@@ -35,8 +35,6 @@
             ],
             "scripts": [
               "src/assets/vendor/libs/jquery/jquery.min.js",
-              "src/assets/vendor/js/helpers.js",
-              "src/assets/js/config.js",
               "src/assets/vendor/libs/popper/popper.js",
               "src/assets/vendor/js/bootstrap.js",
               "src/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js",
@@ -45,7 +43,12 @@
               "src/assets/vendor/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js",
               "src/assets/vendor/libs/datatables.net-buttons/js/dataTables.buttons.min.js",
               "src/assets/vendor/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js",
-              "src/assets/vendor/libs/bootstrap-notify/bootstrap-notify.js"
+              "src/assets/vendor/libs/bootstrap-notify/bootstrap-notify.js",
+              "src/assets/js/config.js",
+              "src/assets/vendor/js/helpers.js",
+              "src/assets/vendor/js/menu.js",
+              "src/assets/js/appmain.js"
+              
                
             ]
           },

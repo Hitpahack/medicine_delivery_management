@@ -4,22 +4,55 @@
 
 'use strict';
 
-let menu, animate;
+
+
+
 
 (function () {
   // Initialize menu
   //-----------------
-
-  let layoutMenuEl = document.querySelectorAll('#layout-menu');
-  layoutMenuEl.forEach(function (element) {
-    menu = new Menu(element, {
-      orientation: 'vertical',
-      closeChildren: false
+  let menu, animate;
+  function waitForElementAndInitMenu(selector, callback, interval = 100, timeout = 5000) {
+    const startTime = Date.now();
+  
+    const checkExist = setInterval(() => {
+      const element = document.querySelector(selector);
+  
+      if (element) {
+        clearInterval(checkExist);
+        callback();
+      } else if (Date.now() - startTime > timeout) {
+        clearInterval(checkExist);
+        console.warn(`Timeout: Element ${selector} not found within ${timeout}ms`);
+      }
+    }, interval);
+  }
+  
+  // Call this once in Angular (e.g. after ngAfterViewInit)
+  waitForElementAndInitMenu('#layout-menu', () => {
+    let layoutMenuEl = document.querySelectorAll('#layout-menu');
+  
+    layoutMenuEl.forEach(function (element) {
+      menu = new Menu(element, {
+        orientation: 'vertical',
+        closeChildren: false
+      });
+  
+      window.Helpers.scrollToActive((animate = false));
+      window.Helpers.mainMenu = menu;
     });
-    // Change parameter to true if you want scroll animation
-    window.Helpers.scrollToActive((animate = false));
-    window.Helpers.mainMenu = menu;
+  
+    // Initialize menu togglers and bind click on each
+    let menuToggler = document.querySelectorAll('.layout-menu-toggle');
+    menuToggler.forEach(item => {
+      item.addEventListener('click', event => {
+        event.preventDefault();
+        window.Helpers.toggleCollapsed();
+      });
+    });
   });
+
+
 
   // Initialize menu togglers and bind click on each
   let menuToggler = document.querySelectorAll('.layout-menu-toggle');
@@ -28,7 +61,9 @@ let menu, animate;
       event.preventDefault();
       window.Helpers.toggleCollapsed();
     });
-  });
+})
+
+
 
   // Display menu toggle (layout-menu-toggle) on hover with delay
   let delay = function (elem, callback) {
