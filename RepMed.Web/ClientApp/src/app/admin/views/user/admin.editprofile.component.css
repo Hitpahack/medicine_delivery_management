@@ -1,5 +1,5 @@
 .pharmacy-form-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 30px;
   background-color: #ffffff;
@@ -85,5 +85,17 @@ textarea {
 .form-actions {
   text-align: center;
   padding-top: 20px;
+}
+
+.custom-btn {
+  background-color: #003D36;
+  border-color: #003D36;
+  color: white;
+}
+
+.custom-btn:hover {
+  background-color: #0d6efd; /* Bootstrap primary blue */
+  border-color: #0d6efd;
+  color: white;
 }
 

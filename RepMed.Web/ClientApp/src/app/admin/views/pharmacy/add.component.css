@@ -86,4 +86,15 @@ textarea {
     text-align: center;
     padding-top: 20px;
 }
+.custom-btn {
+    background-color: #003D36;
+    border-color: #003D36;
+    color: white;
+  }
+  
+  .custom-btn:hover {
+    background-color: #0d6efd; /* Bootstrap primary blue */
+    border-color: #0d6efd;
+    color: white;
+  }
 

@@ -1,44 +1,34 @@
-<div class="container">
-    <div class="card">
-        <form class="card auth_form form_validation" [formGroup]="editUserForm" (ngSubmit)="onSubmit()">
-
-            <legend>User</legend>
-        
+<div class="authentication">
+    <form class="auth_form form_validation" *ngIf="editUserForm" appAutoValidate [formGroup]="editUserForm"
+        #userForm_html="ngForm" (ngSubmit)="onSubmit()">
+        <fieldset>
+            <legend>Update User</legend>
             <div class="form-grid">
-                <div class="input-group mb-3 float">
-                    <input type="hidden" formControlName="id"  />
-                    <input type="text" placeholder=" " formControlName="firstname" class="form-control" required>
-                    <label class="float-lbl">First Name *</label>
+                <div class="input-group mb-4 float">
+                    <input type="text" placeholder="" formControlName="firstname" class="form-control">
+                    <label class="float-lbl">firstName *</label>
                 </div>
-                <div class="input-group mb-3 float">
-                    <input type="text" placeholder=" " formControlName="lastname" class="form-control" required>
-                    <label class="float-lbl">Last Name *</label>
+                <div class="input-group mb-4 float">
+                    <input type="text" placeholder="" formControlName="lastname" class="form-control">
+                    <label class="float-lbl">lastName *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <input type="email" formControlName="email" class="form-control" placeholder="example@mail.com">
+                    <label class="float-lbl">Email *</label>
+
 
                 </div>
-        
-                <div class="input-group mb-3 float">
-                    <input type="text" class="form-control" placeholder=" " formControlName="email" [readonly]="true">
-                    <label class="float-lbl">Email *</label>
-                    <div *ngIf="editUserForm.get('email')?.touched && editUserForm.get('email')?.errors">
-                        <div *ngIf="editUserForm.get('email')?.errors?.['required'] && editUserForm.get('email')?.touched">
-                            Email is required.
-                        </div>
-                        <div *ngIf="editUserForm.get('email')?.errors['email']">
-                            {{ editUserForm.get('email')?.errors['error'] }}
-                        </div>
-                    </div>
-                </div>
-        
-                <div class="input-group mb-3 float">
-                    <input type="text" class="form-control" placeholder=" " formControlName="mobile" required maxlength="10"
-                        (keypress)="allowOnlyNumbers($event)">
+                <div class="input-group mb-4 float">
+                    <input type="text" formControlName="mobile" class="form-control" placeholder="1234567890"
+                        maxlength="10" (keypress)="allowOnlyNumbers($event)">
                     <label class="float-lbl">Mobile *</label>
                 </div>
-
-                <div class="form-actions">
-                    <button type="submit">Update User</button>
-                </div>
             </div>
-        </form>
-    </div>
+        </fieldset>
+        <div class="row justify-content-end">
+            <div class="col-sm-1">
+                <button class="btn custom-btn" type="submit">Update</button>
+            </div>
+        </div>
+    </form>
 </div>

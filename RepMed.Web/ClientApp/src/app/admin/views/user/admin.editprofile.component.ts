@@ -8,13 +8,15 @@ import { Helper } from "../../../../app/common/helper.extenstions";
 import { AdminUserService } from "../../services/users/admin.user.services";
 import { AddPersonDto } from "../../../viewmodels/User/Person.add.dto";
 import { ActivatedRoute } from  '@angular/router';
+import { AutoValidateDirective } from 'src/app/common/form.validator';
+
 
 @Component({
     selector: 'admin-edit-user',
     templateUrl: 'admin.editprofile.component.html',
     standalone: true,
     styleUrls: ['./admin.editprofile.component.css'],
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, AutoValidateDirective],
 })
 
 export class EditProfile extends AdminBaseComponent implements OnInit {
@@ -32,6 +34,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
         if (userId) {
             this.adminuserservice.getUserbyId(userId).subscribe((response) => {
                 if (response?.isSuccess && response.data) {
+                    console.log(response.data);
                     const user = response.data;
                     this.editUserForm.patchValue({
                       firstname: user.firstName,
@@ -54,7 +57,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
             firstname: new FormControl(null),
             lastname: new FormControl(null),
             email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
-            mobile: new FormControl(null),
+            mobile: new FormControl(null, [Validators.pattern(/^\d{10}$/)]),
         });
     }
 

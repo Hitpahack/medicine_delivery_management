@@ -31,7 +31,8 @@
               "src/assets/vendor/css/pages/page-auth.css",
               "src/assets/vendor/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css",
               "src/assets/vendor/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css",
-              "src/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css"
+              "src/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css",
+              "src/assets/vendor/libs/dttables/bootstrap.min.css"
             ],
             "scripts": [
               "src/assets/vendor/libs/jquery/jquery.min.js",
