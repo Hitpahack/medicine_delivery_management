@@ -217,13 +217,14 @@ namespace RepMed.Services
             try
             {
                 APIsResponse<Datatable<PharmacyPagingResponse>> apiResponse = default;
+                string orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
                 #region Get All Pharmacy 
                 var parameters = new DynamicParameters();
                 parameters.Add("page", reqDto.Page, DbType.Int32);
                 parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
                 parameters.Add("searchText", reqDto.SearchText?? string.Empty, DbType.String);
                 parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
-                parameters.Add("Order_by", reqDto.order_by, DbType.String);
+                parameters.Add("Order_by", orderBy, DbType.String);
 
                 var result = (await _idbConnection.QueryAsync<PharmacyPagingResponse>(
                                sql: "GET_PHARMACY_PAGED",

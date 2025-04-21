@@ -165,7 +165,7 @@ namespace RepMed.Services
             {
                 "male" => "1",
                 "female" => "2",
-                "other" => "3",
+                "others" => "3",
                 "" => null,
                 null => null,
                 _ => null // optional: log or throw if invalid

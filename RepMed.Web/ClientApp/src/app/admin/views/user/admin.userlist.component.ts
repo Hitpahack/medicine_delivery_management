@@ -27,7 +27,6 @@ export class UserListComponent extends AdminBaseComponent implements OnInit {
             contentType: "application/json; charset=utf-8",
             dataType: "json", // Expect JSON response
             data: function (d) {
-                d.search.value = $('#post-search-input').val();
                 return JSON.stringify(d);
             }
 
