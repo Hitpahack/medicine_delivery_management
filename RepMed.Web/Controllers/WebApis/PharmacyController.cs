@@ -82,7 +82,7 @@ namespace RepMed.Web.Controllers.WebApis
                         if (!person.IsSuccess)
                         {
                             tran.Rollback();
-                            return BadRequest(person.Message);
+                            return BadRequest(new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = person.Message });
                         }
                         using (IUserServices userService = new UserServices(db, tran))
                         {
@@ -96,7 +96,7 @@ namespace RepMed.Web.Controllers.WebApis
                             if (!user.IsSuccess)
                             {
                                 tran.Rollback();
-                                return BadRequest(user.Message);
+                                return BadRequest(new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = user.Message });
                             }
                             if (!string.IsNullOrEmpty(reqDto.User.Role))
                             {
@@ -106,7 +106,7 @@ namespace RepMed.Web.Controllers.WebApis
                                     if (!role.IsSuccess)
                                     {
                                         tran.Rollback();
-                                        return BadRequest(role.Message);
+                                        return BadRequest(new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = role.Message });
                                     }
                                 }
                             }
@@ -117,14 +117,14 @@ namespace RepMed.Web.Controllers.WebApis
                                 if (!pharmacy.IsSuccess)
                                 {
                                     tran.Rollback();
-                                    return BadRequest(pharmacy);
+                                    return BadRequest(new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = pharmacy.Message });
                                 }
                                 reqDto.PharmacyBankDetails.PharmacyId = pharmacy.Data.Id;
                                 var pharmacybank = await pharmacyService.AddUpdatePharmacyBankDetails(reqDto.PharmacyBankDetails, 0);
                                 if (!pharmacybank.IsSuccess)
                                 {
                                     tran.Rollback();
-                                    return BadRequest(pharmacybank);
+                                    return BadRequest(new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = pharmacybank.Message });
                                 }
                                 var response = await pharmacyService.GenrateEmailToken(reqDto.Pharmacy.UserId, reqDto.Pharmacy.OfficialEmail);
                             }
