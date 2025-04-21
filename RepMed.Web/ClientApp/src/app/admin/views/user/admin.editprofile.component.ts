@@ -7,6 +7,8 @@ import { AdminBaseComponent } from "../../admin.base.component";
 import { Helper } from "../../../../app/common/helper.extenstions";
 import { AdminUserService } from "../../services/users/admin.user.services";
 import { AddPersonDto } from "../../../viewmodels/User/Person.add.dto";
+
+
 import { ActivatedRoute } from '@angular/router';
 import { AutoValidateDirective } from 'src/app/common/form.validator';
 import { AdminCommonServices } from '../../services/Common/admin.commonservices';
@@ -24,6 +26,7 @@ import { CityDto } from "../../../viewmodels/address/city.dto";
 })
 
 export class EditProfile extends AdminBaseComponent implements OnInit {
+    defaultAvatar: string = '../assets/img/avatars/1.png'; // default image
     editUserForm: FormGroup
     addUserData: AddPersonDto;
 
@@ -130,7 +133,31 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
             this.validator.markInvalidFieldsTouched(this.editUserForm);
         }
     }
+    onFileSelected(event: Event): void {
+        const input = event.target as HTMLInputElement;
 
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const avatar = document.getElementById('uploadedAvatar') as HTMLImageElement;
+                if (avatar) {
+                    avatar.src = e.target?.result as string;
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    onResetImage(): void {
+        const avatar = document.getElementById('uploadedAvatar') as HTMLImageElement;
+        if (avatar) {
+            avatar.src = this.defaultAvatar;
+        }
+        const fileInput = document.getElementById('upload') as HTMLInputElement;
+        if (fileInput) {
+            fileInput.value = '';
+        }
+    }
 
     allowOnlyNumbers(event: KeyboardEvent) {
         const charCode = event.key.charCodeAt(0);

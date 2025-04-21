@@ -47,10 +47,9 @@
               "src/assets/vendor/libs/bootstrap-notify/bootstrap-notify.js",
               "src/assets/js/config.js",
               "src/assets/vendor/js/helpers.js",
+              "src/assets/js/pages-account-settings-account.js",
               "src/assets/vendor/js/menu.js",
               "src/assets/js/appmain.js"
-              
-               
             ]
           },
           "configurations": {
