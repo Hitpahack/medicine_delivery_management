@@ -7,6 +7,9 @@ import { Helper } from "../../../../app/common/helper.extenstions";
 import { AdminBaseComponent } from "../../admin.base.component";
 import { adminAccountsService } from "../../services/accounts/admin.accountsservice";
 import { AutoValidateDirective } from "src/app/common/form.validator";
+import { AfterViewInit } from '@angular/core';
+declare const window: any;
+
 
 
 @Component({
@@ -17,7 +20,7 @@ import { AutoValidateDirective } from "src/app/common/form.validator";
     imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective],
 })
 
-export class AdminLoginComponent extends AdminBaseComponent implements OnInit {
+export class AdminLoginComponent extends AdminBaseComponent implements OnInit, AfterViewInit {
 
     constructor(
         public validator: CustomValidator,
@@ -27,6 +30,11 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit {
         super();
     }
 
+    ngAfterViewInit(): void {
+        if (window.Helpers && typeof window.Helpers.initPasswordToggle === 'function') {
+            window.Helpers.initPasswordToggle();
+        }
+    }
     loginForm: FormGroup;
     ngOnInit(): void {
         this.loginForm = this.initForm();
