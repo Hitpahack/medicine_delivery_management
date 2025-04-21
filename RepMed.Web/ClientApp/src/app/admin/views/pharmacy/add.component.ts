@@ -15,7 +15,7 @@ import { AutoValidateDirective } from 'src/app/common/form.validator';
     templateUrl: './add.component.html',
     styleUrls: ['./add.component.css'],
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule,AutoValidateDirective],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective],
 })
 export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnInit {
     constructor(
@@ -61,10 +61,10 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                 Role: new FormControl("pharmacy"),
                 ConfirmPassword: new FormControl(null, [Validators.required]),
             },
-            {
-                validators: this.validator.passwordMatchValidator
-            }
-        ),
+                {
+                    validators: this.validator.passwordMatchValidator
+                }
+            ),
             pharmacyBankDetails: this.fb.group({
                 bankName: new FormControl(null, [Validators.required]),
                 accountholderName: new FormControl(null, [Validators.required]),

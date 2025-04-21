@@ -38,7 +38,6 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
     maxDate = new Date().toISOString().split('T')[0];
 
     ngOnInit(): void {
-        console.log("editprofile")
         this.editUserForm = this.initForm();
         const userId = this.route.snapshot.params['id'];
         if (userId) {
@@ -51,6 +50,12 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
                         email: user.email,
                         mobile: user.mobile,
                         id: user.id,
+                        gender: user.gender,
+                        dateofBirth: user.dateOfBirth,
+                        picture: user.picture
+                    });
+
+                    this.editUserForm.get('address')?.patchValue({
                     });
                 } else {
                     console.error("Failed to load user data", response);
@@ -65,8 +70,6 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
                 }
             })
         }
-
-        this.editUserForm.get('')
     }
 
     selectedCountry: number;
@@ -93,41 +96,38 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
         })
     }
 
-    // onUpload(): void {
-    //     if (this.selectedFile) {
-
-    //     }
-    // }
-
 
     initForm(): FormGroup {
         return this.fb.group({
-            id: new FormControl(null),
-            firstname: new FormControl(null, [Validators.required]),
-            lastname: new FormControl(null, [Validators.required]),
-            email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
-            mobile: new FormControl(null, [Validators.pattern(/^\d{10}$/)]),
-            gender: new FormControl(null),
-            dateofBirth: new FormControl(null),
-            addressline: new FormControl(null),
-            country: new FormControl(null),
-            stateId: new FormControl(null),
-            cityId: new FormControl(null),
-            pincode: new FormControl(null),
-            picture: new FormControl(null)
+                id: new FormControl(null),
+                firstname: new FormControl(null, [Validators.required]),
+                lastname: new FormControl(null, [Validators.required]),
+                email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
+                mobile: new FormControl(null, [Validators.pattern(/^\d{10}$/)]),
+                gender: new FormControl(null),
+                dateofBirth: new FormControl(null),
+                picture: new FormControl(null),
+            address: this.fb.group({
+                addressline: new FormControl(null),
+                countryId: new FormControl(),
+                stateId: new FormControl(null),
+                cityId: new FormControl(null),
+                pincode: new FormControl(null),
+                latitude:new FormControl(0),
+                longitude:new FormControl(0),
+            }),
         });
     }
 
     onSubmit() {
         if (this.editUserForm.valid) {
             const userId = this.route.snapshot.params['id'];
-            const dto: AddPersonDto = this.editUserForm.value;
-            this.adminuserservice.edituser(dto, userId)
+            console.log("edituserform", this.editUserForm.value)
+            this.adminuserservice.edituser(this.editUserForm.value, userId)
                 .subscribe(response => { })
         }
         else {
             this.validator.markInvalidFieldsTouched(this.editUserForm);
-
         }
     }
 

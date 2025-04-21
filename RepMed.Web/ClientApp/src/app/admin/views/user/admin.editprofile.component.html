@@ -73,9 +73,8 @@
                     <input type="file" formControlName="picture" class="form-control" accept="image/*">
                 </div>
             </div>
-        </fieldset>
 
-        <fieldset>
+        <fieldset formGroupName="address">
             <div class="input-group mb-4 float">
                 <textarea formControlName="addressline" class="form-control"></textarea>
                 <label class="float-lbl">Address *</label>
@@ -83,7 +82,7 @@
 
             <div class="form-grid">
                 <div class="input-group mb-4 float">
-                    <select formControlName="country" class="form-control" (change)="onCountryDropdownChange($event)">
+                    <select formControlName="countryId" class="form-control" (change)="onCountryDropdownChange($event)">
                         <option value="" disabled selected>Select Country</option>
                         <option *ngFor="let country of countries" [value]="country.value">{{ country.text }}</option>
                     </select>
