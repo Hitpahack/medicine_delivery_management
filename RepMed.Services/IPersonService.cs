@@ -46,7 +46,7 @@ namespace RepMed.Services
                     #region Update Person
                     var person = _idbConnection.Update<EntityPersonsDto>(_idbTransaction, DbTables.tblPersons,
                                                 new Dictionary<string, string> {
-                                                    { "Gender", reqDto.Gender },
+                                                    { "Gender", MapGender(reqDto.Gender) },
                                                     { "DateOfBirth", reqDto.DateOfBirth.HasValue ? reqDto.DateOfBirth.Value.ToString("yyyy-MM-dd") : null },
                                                     { "FirstName", reqDto.FirstName },
                                                     { "LastName", reqDto.LastName },
@@ -159,5 +159,18 @@ namespace RepMed.Services
         {
             GC.SuppressFinalize(this);
         }
+        private static string? MapGender(string? gender)
+        {
+            return gender?.ToLower() switch
+            {
+                "male" => "1",
+                "female" => "2",
+                "other" => "3",
+                "" => null,
+                null => null,
+                _ => null // optional: log or throw if invalid
+            };
+        }
+
     }
 }
