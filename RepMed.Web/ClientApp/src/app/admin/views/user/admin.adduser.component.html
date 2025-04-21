@@ -3,46 +3,51 @@
 </div>
 <div class="authentication">
 
-        <form  class="auth_form form_validation" *ngIf="addUserForm" appAutoValidate [formGroup]="addUserForm" #phForm_html="ngForm" (ngSubmit)="onSubmit()">
-
-      
-<!-- Section 1: Pharmacy -->
-<fieldset>
-        <legend>User</legend>
-        <div class="form-grid">
-            <div class="input-group mb-4 float">
-                <input type="text" class="form-control" placeholder=" " formControlName="email">
-                <label class="float-lbl">Email *</label>
-            </div>
-            <div class="input-group mb-4 float">
-                <input type="text" class="form-control" placeholder=" " formControlName="Password">
-                <label class="float-lbl">Password *</label>
-            </div>
-            <div class="input-group mb-4 float">
-                <input type="text" class="form-control" placeholder=" " formControlName="ConfirmPassword">
-                        <label class="float-lbl">ConfirmPassword *</label>
-            </div>
-
-            <div class="input-group mb-4 float">
-                <select class="form-control" formControlName="Role">
+    <form class="auth_form form_validation" *ngIf="addUserForm" appAutoValidate [formGroup]="addUserForm"
+        #phForm_html="ngForm" (ngSubmit)="onSubmit()">
+        <!-- Section 1: Pharmacy -->
+        <fieldset>
+            <legend>User</legend>
+            <div class="form-grid">
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="email">
+                    <label class="float-lbl">Email *</label>
+                </div>
+                <div class="mb-3 form-password-toggle">
+                    <div class="input-group input-group-merge">
+                        <input type="password" id="Password" class="form-control" style="width: 50% !important;"
+                            name="Password" formControlName="Password"
+                            placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                            aria-describedby="password" />
+                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        <label class="float-lbl">Password *</label>
+                    </div>
+                </div>
+                <div class="mb-3 form-password-toggle">
+                    <div class="input-group input-group-merge">
+                        <input type="password" id="ConfirmPassword" class="form-control" style="width: 50% !important;"
+                            name="ConfirmPassword" formControlName="ConfirmPassword"
+                            placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                            aria-describedby="ConfirmPassword" />
+                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        <label class="float-lbl">Confirm Password *</label>
+                    </div>
+                </div>
+                <div class="input-group mb-4 float">
+                    <select class="form-control" formControlName="Role">
                         <option value="" disabled selected>Select Role</option>
                         <option *ngFor="let role of roles" [value]="role.text">
                             {{ role.text }}
                         </option>
                     </select>
                     <label class="float-lbl">Role *</label>
+                </div>
             </div>
-
-            
-           
+        </fieldset>
+        <div class="row justify-content-end">
+            <div class="col-sm-1">
+                <button class="btn custom-btn" type="submit">Save</button>
+            </div>
         </div>
-
-
-</fieldset>
-<div class="row justify-content-end">
-        <div class="col-sm-1">
-            <button class="btn custom-btn" type="submit" >Save</button>
-        </div>
-      </div>
-</form>
-</div>  
+    </form>
+</div>

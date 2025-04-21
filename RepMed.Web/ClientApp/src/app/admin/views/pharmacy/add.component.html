@@ -135,25 +135,22 @@
         <label class="float-lbl">Gender *</label>
         <div *ngIf="phForm.get('user.gender')?.touched && phForm.get('user.gender')?.errors?.['']" class="text-danger">Gender is .</div>
     </div>-->
-              <!-- Password Field -->
-              <!-- Password Field -->
-              <div class="input-group mb-4 float" [formGroup]="phForm.get('user')">
-                  <input type="password"
-                         formControlName="Password"
-                         class="form-control"
-                         placeholder=" ">
-                  <label class="float-lbl">Password *</label>
-                 
+              <div class="mb-3 form-password-toggle">
+              <div class="input-group input-group-merge">
+                <input  type="password" id="Password" class="form-control" style="width: 50% !important;" name="Password" formControlName="Password"
+                  placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" />
+                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                <label class="float-lbl">Password *</label>
               </div>
-
-              <!-- Confirm Password Field -->
-              <div class="input-group mb-4 float" [formGroup]="phForm.get('user')">
-                  <input type="password"
-                         formControlName="ConfirmPassword"
-                         class="form-control"
-                         placeholder=" ">
-                  <label class="float-lbl">Confirm Password *</label>
-                  
+              </div>
+              
+              <div class="mb-3 form-password-toggle">
+              <div class="input-group input-group-merge">
+                <input  type="password" id="ConfirmPassword" class="form-control" style="width: 50% !important;" name="ConfirmPassword" formControlName="ConfirmPassword"
+                  placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="ConfirmPassword" />
+                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                <label class="float-lbl">Confirm Password *</label>
+              </div>
               </div>
 
 
