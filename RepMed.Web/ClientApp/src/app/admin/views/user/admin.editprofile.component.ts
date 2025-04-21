@@ -113,6 +113,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
             country: new FormControl(null),
             stateId: new FormControl(null),
             cityId: new FormControl(null),
+            pincode: new FormControl(null),
             picture: new FormControl(null)
         });
     }
