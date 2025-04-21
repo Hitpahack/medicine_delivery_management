@@ -7,7 +7,7 @@ import { AdminBaseComponent } from "../../admin.base.component";
 import { Helper } from "../../../../app/common/helper.extenstions";
 import { AdminUserService } from "../../services/users/admin.user.services";
 import { AddPersonDto } from "../../../viewmodels/User/Person.add.dto";
-import { ActivatedRoute } from  '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { AutoValidateDirective } from 'src/app/common/form.validator';
 
 
@@ -37,36 +37,41 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
                     console.log(response.data);
                     const user = response.data;
                     this.editUserForm.patchValue({
-                      firstname: user.firstName,
-                      lastname: user.lastName,
-                      email: user.email,
-                      mobile: user.mobile,
-                      id:user.id,
+                        firstname: user.firstName,
+                        lastname: user.lastName,
+                        email: user.email,
+                        mobile: user.mobile,
+                        id: user.id,
                     });
-                  } else {
+                } else {
                     console.error("Failed to load user data", response);
-                  }
+                }
             });
-          }
+        }
     }
 
 
     initForm(): FormGroup {
         return this.fb.group({
-            id : new FormControl(null),
-            firstname: new FormControl(null),
-            lastname: new FormControl(null),
+            id: new FormControl(null),
+            firstname: new FormControl(null, [Validators.required]),
+            lastname: new FormControl(null, [Validators.required]),
             email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
             mobile: new FormControl(null, [Validators.pattern(/^\d{10}$/)]),
         });
     }
 
     onSubmit() {
+        if (this.editUserForm.valid) {
             const userId = this.route.snapshot.params['id'];
             const dto: AddPersonDto = this.editUserForm.value;
-            console.log(userId)
-            this.adminuserservice.edituser(dto, userId).subscribe(response =>{
-            })
+            this.adminuserservice.edituser(dto, userId)
+                .subscribe(response => { })
+        }
+        else{
+            this.validator.markInvalidFieldsTouched(this.editUserForm);
+ 
+        }
     }
 
 
