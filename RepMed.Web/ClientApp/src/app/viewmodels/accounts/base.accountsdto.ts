@@ -1,4 +1,5 @@
 import { EntityRoleDto } from "../roles.dto";
+import { BasicPersonsDto } from "../User/Person.add.dto";
 
 export class BaseAccountsDto {
     id: string;
@@ -10,6 +11,7 @@ export class BaseAccountsDto {
     isDeleted: boolean;
     lastLoginDate: Date | null;
     roles:EntityRoleDto[]|null;
+    person:BasicPersonsDto|null;
     constructor(values: Object = {}) {
         Object.assign(this, values);
       }

@@ -2,6 +2,7 @@ export interface BasePerson {
     firstName?: string;
     lastName?: string;
     email: string;
+    id?: number;
   }
   
   export interface BasePersonDto extends BasePerson {

@@ -72,7 +72,7 @@ namespace RepMed.Core
             return con.QueryFirstOrDefault<TResult>(sql, data, tran);
         }
 
-        public static TResult Insert<TResult>(this IDbConnection con, IDbTransaction tran,string tableName, Dictionary<string, string> updateData) where TResult : class
+        public static TResult Insert<TResult>(this IDbConnection con, IDbTransaction tran, string tableName, Dictionary<string, string> updateData) where TResult : class
         {
             // Build columns and values
             var tblcolumns = string.Join(",", updateData.Select(r => $"`{r.Key}`"));
@@ -128,7 +128,7 @@ namespace RepMed.Core
             this IDbConnection con,
             IDbTransaction tran,
             string tableName,
-            string updateColumns, 
+            string updateColumns,
             object data,
             long id,
             string conditionColumn = "Id"
@@ -171,22 +171,28 @@ namespace RepMed.Core
 
 
         public static TResult Update<TResult>(this IDbConnection con, IDbTransaction tran,
-            string tableName, Dictionary<string, string> updateData,
-            string wherQuery = "", string returningData = "") where TResult : class
+         string tableName, Dictionary<string, string?> updateData,
+         string wherQuery = "", string returningData = "") where TResult : class
         {
-            var updatecolumQury = string.Join(",", updateData.Select(r => string.Concat(@$" {r.Key}='{r.Value}'")));
-            string sql = $@"UPDATE {tableName} SET {updatecolumQury} ";
+            var updatecolumQury = string.Join(",", updateData.Select(kv =>
+                kv.Value == null
+                    ? $"{kv.Key}=NULL"
+                    : $"{kv.Key}='{kv.Value.Replace("'", "''")}'" // Escape single quotes
+            ));
+
+            string sql = $@"UPDATE {tableName} SET {updatecolumQury}";
 
             if (!string.IsNullOrEmpty(wherQuery))
-                sql = string.Concat(sql, $" WHERE {wherQuery} ");
+                sql += $" WHERE {wherQuery}";
 
-            sql = sql + $"; SELECT * FROM {tableName} WHERE {wherQuery}";
-            using (var multi = con.QueryMultiple(sql, new { UserId = 1 }, transaction: tran))
+            sql += $"; SELECT * FROM {tableName} WHERE {wherQuery}";
+
+            using (var multi = con.QueryMultiple(sql, transaction: tran))
             {
                 return multi.ReadFirstOrDefault<TResult>();
-                
             }
         }
+
 
         public static TResult Update<TResult>(this IDbConnection con, IDbTransaction tran,
           string tableName, Dictionary<string, object> updateData,
@@ -351,10 +357,10 @@ namespace RepMed.Core
         public const string tblCustomFields = "`CustomFields`";
         public const string tblUserCustomFields = "`UserCustomFields`";
         public const string tblUserAssessments = "`UserAssessments`";
-        public const string tblPharmacy= "`Pharmacies`";
+        public const string tblPharmacy = "`Pharmacies`";
         public const string tblPharmacyBankDetails = "`PharmacyBankDetails`";
-        public const string tblUserAddress= "`UserAddresses`";
-        public const string tblUserTokens= "`UserTokens`";
+        public const string tblUserAddress = "`UserAddresses`";
+        public const string tblUserTokens = "`UserTokens`";
     }
 
 

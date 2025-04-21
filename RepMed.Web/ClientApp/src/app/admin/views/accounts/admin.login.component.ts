@@ -61,6 +61,7 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
                 (response) => {
                     if (response.isSuccess) {
                         sessionStorage.setItem('userId', response.data.id.toString());
+                        sessionStorage.setItem('personid', response.data.person.id.toString());
                         this.router.navigate(['/admin/dashboard']);
                     }
                     if (!response.isSuccess) {

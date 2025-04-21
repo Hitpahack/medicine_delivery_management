@@ -15,7 +15,7 @@ namespace RepMed.Dtos
         public bool IsLocked { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime? LastLoginDate { get; set; }
-
+        public BasicPersonsDto Person { get; set; }
     }
 
     public class Login_ReqDto

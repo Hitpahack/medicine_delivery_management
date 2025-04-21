@@ -47,7 +47,7 @@ namespace RepMed.Services
                     var person = _idbConnection.Update<EntityPersonsDto>(_idbTransaction, DbTables.tblPersons,
                                                 new Dictionary<string, string> {
                                                     { "Gender", reqDto.Gender },
-                                                    { "DateOfBirth", reqDto.DateOfBirth?.ToString("yyyy-MM-dd HH:MM:ss") },
+                                                    { "DateOfBirth", reqDto.DateOfBirth.HasValue ? reqDto.DateOfBirth.Value.ToString("yyyy-MM-dd") : null },
                                                     { "FirstName", reqDto.FirstName },
                                                     { "LastName", reqDto.LastName },
                                                     { "Picture", reqDto.Picture },                                                    
