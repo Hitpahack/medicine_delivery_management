@@ -156,9 +156,10 @@ namespace RepMed.Services
             try
             {
                 APIsResponse<AddPharmacyDto> apiResponse = default;
-
                 if (Id == 0)
                 {
+                    reqDto.Status = "Active";
+                    reqDto.CreatedAt = DateTime.Now;
                     #region Add Pharmacy
                     var pharmacy = _idbConnection.Insert<AddPharmacyDto>(_idbTransaction,
                                    DbTables.tblPharmacy,
@@ -288,7 +289,7 @@ namespace RepMed.Services
                 #endregion
                         
                 var query = $@"
-                            SELECT u.Id as UserId, per.Id as PersonId ,     per.FirstName,per.LastName,per.Email,per.Mobile,per.Gender,per.DateOfBirth,per.Email            
+                            SELECT u.Id as UserId, per.Id as PersonId ,per.FirstName,per.LastName,per.Email,per.Mobile,per.Gender,per.DateOfBirth,per.Email            
                             FROM {DbTables.tblPharmacy} p
                             LEFT JOIN {DbTables.tblPharmacyBankDetails} b ON p.Id = b.PharmacyId    
                             LEFT JOIN {DbTables.tblUser} u ON u.Id = p.UserId
