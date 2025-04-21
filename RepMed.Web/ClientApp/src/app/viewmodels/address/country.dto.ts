@@ -1,4 +1,4 @@
 export interface CountryDto {
-    id: number;
-    countryname: string;
-  }
+  id: number;
+  name: string;
+}

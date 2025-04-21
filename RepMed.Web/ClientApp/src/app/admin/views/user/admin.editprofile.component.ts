@@ -9,6 +9,10 @@ import { AdminUserService } from "../../services/users/admin.user.services";
 import { AddPersonDto } from "../../../viewmodels/User/Person.add.dto";
 import { ActivatedRoute } from '@angular/router';
 import { AutoValidateDirective } from 'src/app/common/form.validator';
+import { AdminCommonServices } from '../../services/Common/admin.commonservices';
+import { CountryDto } from "../../../viewmodels/address/country.dto";
+import { StateDto } from "../../../viewmodels/address/state.dto";
+import { CityDto } from "../../../viewmodels/address/city.dto";
 
 
 @Component({
@@ -22,19 +26,24 @@ import { AutoValidateDirective } from 'src/app/common/form.validator';
 export class EditProfile extends AdminBaseComponent implements OnInit {
     editUserForm: FormGroup
     addUserData: AddPersonDto;
-    constructor(public router: Router, public fb: FormBuilder, public validator: CustomValidator, public adminuserservice: AdminUserService, private route: ActivatedRoute) {
+
+    countries: CountryDto[] = [];
+    states: StateDto[] = [];
+    cities: CityDto[] = [];
+
+    constructor(public router: Router, public fb: FormBuilder, public validator: CustomValidator, public adminuserservice: AdminUserService, public AdminCommonServices: AdminCommonServices, private route: ActivatedRoute) {
         super(router, fb);
     }
+
+    maxDate = new Date().toISOString().split('T')[0];
 
     ngOnInit(): void {
         console.log("editprofile")
         this.editUserForm = this.initForm();
         const userId = this.route.snapshot.params['id'];
-        console.log(userId, "userid")
         if (userId) {
             this.adminuserservice.getUserbyId(userId).subscribe((response) => {
                 if (response?.isSuccess && response.data) {
-                    console.log(response.data);
                     const user = response.data;
                     this.editUserForm.patchValue({
                         firstname: user.firstName,
@@ -47,8 +56,48 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
                     console.error("Failed to load user data", response);
                 }
             });
+
+            this.AdminCommonServices.getcountry().subscribe((response) => {
+                if (response?.isSuccess && response.data) {
+                    this.countries = response.data;
+                } else {
+                    console.error("Failed to load country data", response);
+                }
+            })
         }
+
+        this.editUserForm.get('')
     }
+
+    selectedCountry: number;
+    onCountryDropdownChange(event: any) {
+        this.selectedCountry = event.target.value;
+        this.AdminCommonServices.getstatebyId(this.selectedCountry).subscribe((response) => {
+            if (response?.isSuccess && response.data) {
+                this.states = response.data;
+            } else {
+                console.error("Failed to load country data", response);
+            }
+        })
+    }
+
+    selectedCity: number;
+    onCityDropdownChange(event: any) {
+        this.selectedCity = event.target.value;
+        this.AdminCommonServices.getcitiesbyId(this.selectedCity).subscribe((response) => {
+            if (response?.isSuccess && response.data) {
+                this.cities = response.data;
+            } else {
+                console.error("Failed to load country data", response);
+            }
+        })
+    }
+
+    // onUpload(): void {
+    //     if (this.selectedFile) {
+
+    //     }
+    // }
 
 
     initForm(): FormGroup {
@@ -58,6 +107,13 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
             lastname: new FormControl(null, [Validators.required]),
             email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
             mobile: new FormControl(null, [Validators.pattern(/^\d{10}$/)]),
+            gender: new FormControl(null),
+            dateofBirth: new FormControl(null),
+            addressline: new FormControl(null),
+            country: new FormControl(null),
+            stateId: new FormControl(null),
+            cityId: new FormControl(null),
+            picture: new FormControl(null)
         });
     }
 
@@ -68,9 +124,9 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
             this.adminuserservice.edituser(dto, userId)
                 .subscribe(response => { })
         }
-        else{
+        else {
             this.validator.markInvalidFieldsTouched(this.editUserForm);
- 
+
         }
     }
 
