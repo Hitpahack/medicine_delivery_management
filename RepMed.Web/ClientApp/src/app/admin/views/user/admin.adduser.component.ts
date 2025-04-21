@@ -22,6 +22,7 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit {
   addUserForm: FormGroup;
   addUserData: AddPersonDto;
   roles: Role[] = [];
+  errorMessage: string = '';
 
   constructor(public validator: CustomValidator, public adminuserservice: AdminUserService) {
     super();
@@ -65,11 +66,22 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit {
     }
     const dto: AddPersonDto = this.addUserForm.value;
     this.adminuserservice.add(dto).subscribe({
-      next: res => this.router.navigate(['/admin/user/list']),
-      error: err => Helper.ShowError(err)
+      next: (response) => {
+        if (response.isSuccess) {
+          console.log('Success:', response.data);
+          this.router.navigate(['/admin/user']);
+        } else {
+          console.error('API returned isSuccess: false');
+          this.errorMessage = response.message || 'Failed to add user.';
+          Helper.ShowError(this.errorMessage);  // Optional toast/popup
+        }
+      },
+      error: (err) => {
+        console.error('HTTP Error:', err);
+        this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
+        Helper.ShowError(this.errorMessage);  // Optional toast/popup
+      }
     });
-
-   
   }
 
   allowOnlyNumbers(event: KeyboardEvent) {

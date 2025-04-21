@@ -23,7 +23,7 @@ export class AdminUserService extends adminBaseService {
   }
 
   add(formData: any) {
-    return this.http.post(this.apiConfig.endpoints.user.add, formData, { headers: this.apiConfig.requestSettings.header })
+    return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.user.add, formData, { headers: this.apiConfig.requestSettings.header })
   }
 
   edituser(formData: any, id: number) {

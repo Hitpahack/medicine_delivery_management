@@ -29,6 +29,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
     phForm: FormGroup;
     PharmacyDto: PharmacyDto;
     maxDate = new Date().toISOString().split('T')[0];
+    errorMessage: string = '';
 
     ngOnInit(): void {
         this.phForm = this.initForm();
@@ -88,10 +89,28 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
             return;
         }
         const dto: PharmacyDto = this.phForm.value;
+        // this.PharmacyService.add(dto).subscribe({
+        //     next: res => console.log("Success", res),
+        //     error: err => console.error("Error", err)
+        // })
+
         this.PharmacyService.add(dto).subscribe({
-            next: res => console.log("Success", res),
-            error: err => console.error("Error", err)
-        })
+            next: (response) => {
+              if (response.isSuccess) {
+                console.log('Success:', response.data);
+                this.router.navigate(['/admin/pharmacy']);
+              } else {
+                console.error('API returned isSuccess: false');
+                this.errorMessage = response.message || 'Failed to add user.';
+                Helper.ShowError(this.errorMessage);  // Optional toast/popup
+              }
+            },
+            error: (err) => {
+              console.error('HTTP Error:', err);
+              this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
+              Helper.ShowError(this.errorMessage);  // Optional toast/popup
+            }
+          });
     }
 
 

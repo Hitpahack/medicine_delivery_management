@@ -1,3 +1,6 @@
+<div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+</div>
 <div class="authentication">
 
     <form  class="auth_form form_validation" *ngIf="phForm" appAutoValidate [formGroup]="phForm" #phForm_html="ngForm" (ngSubmit)="onSubmit()">
@@ -34,7 +37,7 @@
             </div>
 
             <div class="input-group mb-4 float">
-                <input type="text" placeholder="09AAACH7409R1ZZ" formControlName="gstNumber" class="form-control" >
+                <input type="text" placeholder="09AAACH7409R1ZZ" formControlName="gstNumber" class="form-control" maxlength="15">
                 <label class="float-lbl">GST Number *</label>
                
             </div>

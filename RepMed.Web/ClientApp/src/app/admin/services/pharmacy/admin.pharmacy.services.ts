@@ -26,7 +26,7 @@ export class AdminPharmacyService extends adminBaseService {
     //#region PharmacyApi
     add(formData: any) {
         console.log("called.")
-        return this.http.post(this.apiConfig.endpoints.pharmacy.add,formData ,{ headers: this.apiConfig.requestSettings.header })
+        return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.pharmacy.add,formData ,{ headers: this.apiConfig.requestSettings.header })
     }
     editpharmacy(formData: any, id: number) {
         console.log("formData", formData)
