@@ -126,7 +126,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                 accountNumber: new FormControl(null, [Validators.required, Validators.maxLength(16)]),
                 ifscCode: new FormControl(null, [Validators.required, Validators.pattern(/^[A-Z]{4}0[A-Z0-9]{6}$/)]),
                 branchName: new FormControl(null, [Validators.required]),
-                upiId: new FormControl(null, [Validators.required, Validators.pattern(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/)])
+                upiId: new FormControl(null, [Validators.pattern(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/)])
             })
         });
     }

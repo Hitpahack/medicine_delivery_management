@@ -10,15 +10,15 @@
             <legend>Pharmacy Details</legend>
             <div class="form-grid">
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder="" formControlName="ownerName" class="form-control" minlength="3" maxlength="30">
+                    <input type="text" placeholder="" formControlName="ownerName" class="form-control" minlength="3" maxlength="25">
                     <label class="float-lbl">Owner Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder="" formControlName="storeName" class="form-control" minlength="2" maxlength="40">
+                    <input type="text" placeholder="" formControlName="storeName" class="form-control" minlength="2" maxlength="30">
                     <label class="float-lbl">Store Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="businessName" class="form-control" minlength="2" maxlength="30">
+                    <input type="text" placeholder=" " formControlName="businessName" class="form-control" minlength="2" maxlength="25">
                     <label class="float-lbl">Business Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
@@ -47,7 +47,7 @@
                 </div>
                 <div class="input-group mb-4 float" [formGroup]="phForm.get('pharmacy')">
                     <input type="email" formControlName="officialEmail" class="form-control"
-                        placeholder="example@mail.com">
+                        placeholder="example@mail.com" maxlength="30">
                     <label class="float-lbl">Official Email *</label>
                 </div>
             </div>
@@ -99,7 +99,7 @@
             <legend>Pharmacy Person</legend>
             <div class="form-grid">
                 <div class="input-group mb-4 float" [formGroup]="phForm.get('user')">
-                    <input type="email" formControlName="email" class="form-control" placeholder=" ">
+                    <input type="email" formControlName="email" class="form-control" placeholder=" " maxlength="30">
                     <label class="float-lbl">Email *</label>
                 </div>
                 <div class="mb-3 form-password-toggle">
@@ -127,12 +127,12 @@
             <legend>Bank Details</legend>
             <div class="form-grid">
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="bankName" class="form-control" minlength="3" maxlength="30">
+                    <input type="text" placeholder=" " formControlName="bankName" class="form-control" minlength="3" maxlength="25">
                     <label class="float-lbl">Bank Name *</label>
                 </div>
 
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="accountholderName" class="form-control" minlength="3" maxlength="30">
+                    <input type="text" placeholder=" " formControlName="accountholderName" class="form-control" minlength="3" maxlength="25">
                     <label class="float-lbl">Account Holder Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
@@ -145,11 +145,11 @@
                     <label class="float-lbl">IFSC Code *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="branchName" class="form-control" minlength="3" maxlength="30">
+                    <input type="text" placeholder=" " formControlName="branchName" class="form-control" minlength="3" maxlength="25">
                     <label class="float-lbl">Branch Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="upiId" class="form-control" maxlength="30">
+                    <input type="text" placeholder=" " formControlName="upiId" class="form-control" maxlength="20">
                     <label class="float-lbl">UPI ID </label>
                 </div>
             </div>
