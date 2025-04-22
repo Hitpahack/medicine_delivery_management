@@ -47,6 +47,9 @@ export class AdminApiConfigService {
         userroles: `${api}/masters/getroles`,
         changepassword: `${v1}/users/SetPassword`,
         list: `${v1}/users/getusers`
+      },
+      product: {
+        get: `${v1}/users/getproducts`,
       }
     };
   }

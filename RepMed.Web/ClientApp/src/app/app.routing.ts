@@ -21,6 +21,7 @@ import { UserListComponent } from './admin/views/user/admin.userlist.component';
 
 import { SubAdminLayoutComponent } from './_layouts/admin/subadmin.layout.component';
 import { AdminPharmacyDetailsComponent } from './admin/views/pharmacy/details.component';
+import { ProductListsComponent } from './admin/views/product/list.component';
 
 
 
@@ -50,7 +51,9 @@ export const routes: Routes = [
       { path: 'editprofile/:id', component: EditProfile },
       { path: 'changepassword', component:SetPassword},
       { path: 'setpassword', component:ChangePassword},
-      {path: 'user', component:UserListComponent}
+      {path: 'user', component:UserListComponent},
+
+      {path:  'productlist', component:ProductListsComponent}
     ]
   },
   {

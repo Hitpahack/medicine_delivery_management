@@ -9,6 +9,8 @@ import { AdminUserService } from "../../services/users/admin.user.services";
 import { AddPersonDto } from "../../../viewmodels/User/Person.add.dto";
 import { Role } from "../../../viewmodels/User/role.model";
 import { AutoValidateDirective } from "src/app/common/form.validator";
+import { AfterViewInit } from '@angular/core';
+declare const window: any;
 
 @Component({
   selector: 'admin-add-user',
@@ -18,7 +20,7 @@ import { AutoValidateDirective } from "src/app/common/form.validator";
   imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective],
 })
 
-export class AddUserComponent extends AdminBaseComponent implements OnInit {
+export class AddUserComponent extends AdminBaseComponent implements OnInit, AfterViewInit {
   addUserForm: FormGroup;
   addUserData: AddPersonDto;
   roles: Role[] = [];
@@ -26,6 +28,15 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit {
 
   constructor(public validator: CustomValidator, public adminuserservice: AdminUserService) {
     super();
+  }
+  ngAfterViewInit(): void {
+    if (window.Helpers && typeof window.Helpers.initPasswordToggle === 'function') {
+      window.Helpers.initPasswordToggle();
+    }
+    $('.menu-toggle').on('click', function () {
+      $(this).next('.menu-sub').slideToggle();
+      $(this).parent().toggleClass('open');
+    });
   }
 
   ngOnInit(): void {
