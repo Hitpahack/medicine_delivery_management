@@ -27,6 +27,21 @@ export class CustomValidator {
     if (selectedDate < today) {
       return { pastDate: true };
     }
+
+    if (!control.value) return null;
+  today.setHours(0, 0, 0, 0); // remove time part
+
+  const maxAllowedDate = new Date();
+  maxAllowedDate.setFullYear(today.getFullYear() + 100); // 100 years from today
+  maxAllowedDate.setHours(0, 0, 0, 0);
+
+  if (selectedDate < today) {
+    return { pastDate: true };
+  }
+
+  if (selectedDate > maxAllowedDate) {
+    return { tooFar: true };
+  }
     return null;
   }
 
