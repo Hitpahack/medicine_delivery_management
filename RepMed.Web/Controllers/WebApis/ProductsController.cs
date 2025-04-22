@@ -30,9 +30,9 @@ namespace RepMed.Web.Controllers.WebApis
                 db.Open();
                 using (var tran = db.BeginTransaction())
                 {
-                    using (IProductService userService = new ProductService(db, tran))
+                    using (IProductService productService = new ProductService(db, tran))
                     {
-                        var result = await userService.GetProducts(search);
+                        var result = await productService.GetProducts(search);
                         if (!result.IsSuccess)
                             return BadRequest(new APIsResponse<string> { IsSuccess = false, Message = result.Message });
                         return Ok(result.Data);
