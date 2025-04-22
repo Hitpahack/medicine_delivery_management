@@ -9,6 +9,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 
 namespace RepMed.Services
 {
@@ -79,6 +80,34 @@ namespace RepMed.Services
                 return Task.FromResult(true);
 
             return Task.FromResult(false);
+        }
+        public Task<bool> IsPharmacyFieldExist(string fieldName, string fieldValue)
+        {
+            // Sanitize column name to prevent SQL injection from fieldName
+            var validFields = new[] { "LicenseNumber", "GSTNumber", "OfficialEmail", "RegisteredMobile" };
+            if (!validFields.Contains(fieldName))
+                throw new ArgumentException("Invalid field name");
+            string sql = $@"
+                SELECT `{fieldName}`
+                FROM {DbTables.tblPharmacy}
+                WHERE `{fieldName}` = @Value
+                LIMIT 1;";
+
+            var result = _idbConnection.QueryFirstOrDefault<string>(sql, new { Value = fieldValue }, transaction: _idbTransaction);
+
+            return Task.FromResult(result != null);
+        }
+        public Task<bool> IsAccountNumberExist(string accountNumber)
+        {
+            string sql = $@"
+                SELECT 1
+                FROM {DbTables.tblPharmacyBankDetails}
+                WHERE AccountNumber = @AccountNumber
+                LIMIT 1;";
+
+            var result = _idbConnection.ExecuteScalar(sql, new { AccountNumber = accountNumber }, transaction: _idbTransaction);
+
+            return Task.FromResult(result != null);
         }
 
         public bool IsUserExist(Guid? userid)
