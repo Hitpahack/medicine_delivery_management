@@ -126,11 +126,16 @@ namespace RepMed.Web.Controllers.WebApis
                                     tran.Rollback();
                                     return BadRequest(new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = pharmacybank.Message });
                                 }
-                                var response = await pharmacyService.GenrateEmailToken(reqDto.Pharmacy.UserId, reqDto.Pharmacy.OfficialEmail);
+                                //var response = await pharmacyService.GenrateEmailToken(reqDto.Pharmacy.UserId, reqDto.Pharmacy.OfficialEmail);
+                                //if(!response.IsSuccess)
+                                //{
+                                //    tran.Rollback();
+                                //    return BadRequest(new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = response.Message });
+                                //}
                             }
                         }
                         tran.Commit();
-                        return Ok("Pharmacy Added Sucessfully");
+                        return Ok(new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Pharmacy Added Sucessfully" });
                     }
                 }
             }
