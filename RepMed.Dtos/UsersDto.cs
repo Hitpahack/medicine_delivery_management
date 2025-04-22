@@ -76,8 +76,8 @@ namespace RepMed.Dtos
     public class GetUserDto : BasicPersonsDto
     {
         public long UserId{ get; set; }
-        public long PersonId{ get; set; }
-
+        public long PersonId { get; set; }
+        public BasicAddressDto? Address { get; set; }
     }
 
     public class API_ADD_USER

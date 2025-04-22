@@ -96,13 +96,25 @@ namespace RepMed.Services
             try
             {
                 var sql = $@"
-                            SELECT u.Id as UserId , p.Id as PersonId, p.FirstName,p.LastName,p.Email,p.Mobile,p.Gender,p.DateOfBirth,p.Email
+                            SELECT u.Id as UserId , p.Id as PersonId, p.FirstName,p.LastName,p.Email,p.Mobile,p.Gender,p.DateOfBirth,p.Email,a.AddressLine,a.CityId,a.StateId,a.CountryId,a.Pincode
                             FROM {DbTables.tblUser} u
                             INNER JOIN {DbTables.tblPersons} p ON u.PersonId = p.Id
+                            INNER JOIN {DbTables.tblUserAddress} a ON a.PersonId = p.Id
                             WHERE u.PersonId = @Id;
                         ";
-                var userData = await _idbConnection.QueryFirstOrDefaultAsync<GetUserDto>(sql, new { Id = personid },transaction:_idbTransaction);
+                var result = await _idbConnection.QueryAsync<GetUserDto, BasicAddressDto, GetUserDto>(
+                                sql,
+                                (user, address) =>
+                                {
+                                    user.Address = address;
+                                    return user;
+                                },
+                                new { Id = personid },
+                                splitOn: "AddressLine", // this tells Dapper where to start splitting the object
+                                transaction: _idbTransaction
+                            );
 
+                var userData = result.FirstOrDefault();
                 if (userData == null)
                     return new APIsError<GetUserDto>(_validateMessages.NotExist);
 

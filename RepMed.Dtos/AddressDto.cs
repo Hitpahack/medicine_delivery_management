@@ -23,9 +23,6 @@ namespace RepMed.Dtos
     public class EntityAddressDto 
     {
         public int Id { get; set; }
-
-        public int UserId { get; set; }
-
         public long PersonId { get; set; }
 
         public string AddressLine { get; set; }
