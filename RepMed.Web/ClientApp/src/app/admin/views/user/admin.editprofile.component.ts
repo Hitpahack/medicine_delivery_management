@@ -47,6 +47,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
             this.adminuserservice.getUserbyId(userId).subscribe((response) => {
                 if (response?.isSuccess && response.data) {
                     const user = response.data;
+                    const address = response.data.address;
                     this.editUserForm.patchValue({
                         firstname: user.firstName,
                         lastname: user.lastName,
@@ -55,17 +56,17 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
                         id: user.id,
                         gender: user.gender,
                         dateofBirth: user.dateOfBirth,
-                        picture: user.picture,
-                        addressline:response.data.address.addressline
+                        picture: user.picture
                     });
 
                     this.editUserForm.get('address').patchValue({
-                        addressline: response.data.address.addressline,
-                        city: response.data.address.city,
-                        state: response.data.address.state,
-                        country:response.data.address.country,
-                        pincode:response.data.address.pincode
+                        addressline: response.data.address.addressLine,
+                        countryId: response.data.address.countryId,
+                        stateId: response.data.address.stateId,
+                        cityId: response.data.address.cityId,
+                        pincode: response.data.address.pincode
                     });
+
                 } else {
                     console.error("Failed to load user data", response);
                 }
@@ -79,6 +80,29 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
                 }
             })
         }
+    }
+
+
+
+
+    onValueChanged(value: any) {
+        this.AdminCommonServices.getstatebyId(value).subscribe((response) => {
+            if (response?.isSuccess && response.data) {
+                this.states = response.data;
+            } else {
+                console.error("Failed to load country data", response);
+            }
+        })
+    }
+
+    onValueChaanged(value: any) {
+        this.AdminCommonServices.getcitiesbyId(value).subscribe((response) => {
+            if (response?.isSuccess && response.data) {
+                this.cities = response.data;
+            } else {
+                console.error("Failed to load country data", response);
+            }
+        })
     }
 
     selectedCountry: number;
@@ -105,43 +129,43 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
         })
     }
 
-    selectedfile: string;
     onFileSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
 
         if (input.files && input.files[0]) {
             const file = input.files[0];
-            this.selectedfile = file.name;
+            console.log("picture url", file.name)
+            this.editUserForm.get('picture')?.setValue(file.name);
             const reader = new FileReader();
             reader.onload = e => {
                 const avatar = document.getElementById('uploadedAvatar') as HTMLImageElement;
                 if (avatar) {
                     avatar.src = e.target?.result as string;
                 }
-            };
+            };  
             reader.readAsDataURL(input.files[0]);
-        }
+       }
     }
 
 
     initForm(): FormGroup {
         return this.fb.group({
-                id: new FormControl(null),
-                firstname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
-                lastname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
-                email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
-                mobile: new FormControl(null, [Validators.pattern(/^\d{10}$/)]),
-                gender: new FormControl(null),
-                dateofBirth: new FormControl(null),
-                picture: new FormControl(this.selectedfile),
+            id: new FormControl(null),
+            firstname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+            lastname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+            email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
+            mobile: new FormControl(null, [Validators.pattern(/^\d{10}$/)]),
+            gender: new FormControl(null),
+            dateofBirth: new FormControl(null),
+            picture: new FormControl(),
             address: this.fb.group({
                 addressline: new FormControl(null),
                 countryId: new FormControl(),
                 stateId: new FormControl(null),
                 cityId: new FormControl(null),
                 pincode: new FormControl(null),
-                latitude:new FormControl(0),
-                longitude:new FormControl(0),
+                latitude: new FormControl(0),
+                longitude: new FormControl(0),
             }),
         });
     }
@@ -149,7 +173,6 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
     onSubmit() {
         if (this.editUserForm.valid) {
             const userId = this.route.snapshot.params['id'];
-            console.log("edituserform", this.editUserForm.value)
             this.adminuserservice.edituser(this.editUserForm.value, userId)
                 .subscribe(response => { })
         }
