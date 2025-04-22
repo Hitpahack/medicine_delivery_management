@@ -40,5 +40,24 @@ namespace RepMed.Web.Controllers.WebApis
                 }
             }
         }
+        [Route("getcount")]
+        [HttpPost]
+        public async Task<IActionResult> GetCount()
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IProductService productService = new ProductService(db, tran))
+                    {
+                        var result = await productService.GetCount();
+                        if (!result.IsSuccess)
+                            return BadRequest(new APIsResponse<string> { IsSuccess = false, Message = result.Message });
+                        return Ok(result.Data);
+                    }
+                }
+            }
+        }
     }
 }   
