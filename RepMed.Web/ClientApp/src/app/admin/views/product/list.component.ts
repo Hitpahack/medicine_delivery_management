@@ -32,9 +32,17 @@ export class ProductListsComponent extends AdminBaseComponent implements OnInit 
         searching: true,
         columns: [
             { data: 'id', title: '#', render: (data: any) =>`<input class="item_checkbox" id="${data}" type="checkbox" value="${data}" />`},
-            { data: '', title: 'name' },
-            { data: '', title: 'price' },
-            { data: '', title: 'img' },
+            { data: 'productName', title: 'name' },
+            { data: 'price', title: 'price' },
+            { 
+                data: 'imageUrl', // or keep it empty if no image URL is coming
+                title: 'img',
+                render: (data: any, type: any, row: any) => {
+                  const imageUrl = data || 'assets/img/medicine/medicine.jpg'; // 👈 your dummy image path  assets/img/medicine/medicine.jpg
+                  return `<img src="${imageUrl}" alt="Product" width="40" height="40" style="object-fit: cover; border-radius: 4px;" />`;
+                }
+              }
+            //{ data: '', title: 'img' },
         ],
         //searchInputId: 'post-search-input',
         // customButtons: [
