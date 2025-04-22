@@ -36,11 +36,13 @@ export interface BasePerson {
   
   export interface AddAddressDto {
     // Add address properties here
+    addressline?:string
     street?: string;
     city?: string;
     state?: string;
     postalCode?: string;
     country?: string;
+    pincode?: string
   }
   
   export interface AddPersonDto extends BasicPersonsDto {

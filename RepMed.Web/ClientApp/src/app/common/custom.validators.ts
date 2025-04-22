@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { AbstractControl, FormArray, FormGroup, ValidationErrors } from "@angular/forms";
+import { AbstractControl, FormArray, FormGroup, ValidationErrors, ValidatorFn } from "@angular/forms";
 
 @Injectable({
   providedIn: 'root',
@@ -18,6 +18,14 @@ export class CustomValidator {
     }
     return null;
   }
+
+  public forbidNameValidator(nameRe: RegExp): ValidatorFn{
+    return (control: AbstractControl): ValidationErrors | null =>{
+     const forbidden = nameRe.test(control.value);
+     return forbidden ? {forbidden: {value: control.value}} : null; 
+    }
+  }
+
  
   public futureDateValidator(control: AbstractControl): { [key: string]: any } | null {
     const selectedDate = new Date(control.value);

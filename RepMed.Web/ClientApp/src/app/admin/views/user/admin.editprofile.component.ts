@@ -26,7 +26,7 @@ import { CityDto } from "../../../viewmodels/address/city.dto";
 })
 
 export class EditProfile extends AdminBaseComponent implements OnInit {
-    defaultAvatar: string = '../assets/img/avatars/1.png'; // default image
+    defaultAvatar: string = '../assets/img/avatars/1.png';
     editUserForm: FormGroup
     addUserData: AddPersonDto;
 
@@ -55,10 +55,16 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
                         id: user.id,
                         gender: user.gender,
                         dateofBirth: user.dateOfBirth,
-                        picture: user.picture
+                        picture: user.picture,
+                        addressline:response.data.address.addressline
                     });
 
-                    this.editUserForm.get('address')?.patchValue({
+                    this.editUserForm.get('address').patchValue({
+                        addressline: response.data.address.addressline,
+                        city: response.data.address.city,
+                        state: response.data.address.state,
+                        country:response.data.address.country,
+                        pincode:response.data.address.pincode
                     });
                 } else {
                     console.error("Failed to load user data", response);
@@ -99,17 +105,35 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
         })
     }
 
+    selectedfile: string;
+    onFileSelected(event: Event): void {
+        const input = event.target as HTMLInputElement;
+
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            this.selectedfile = file.name;
+            const reader = new FileReader();
+            reader.onload = e => {
+                const avatar = document.getElementById('uploadedAvatar') as HTMLImageElement;
+                if (avatar) {
+                    avatar.src = e.target?.result as string;
+                }
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
 
     initForm(): FormGroup {
         return this.fb.group({
                 id: new FormControl(null),
-                firstname: new FormControl(null, [Validators.required]),
-                lastname: new FormControl(null, [Validators.required]),
+                firstname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+                lastname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
                 email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
                 mobile: new FormControl(null, [Validators.pattern(/^\d{10}$/)]),
                 gender: new FormControl(null),
                 dateofBirth: new FormControl(null),
-                picture: new FormControl(null),
+                picture: new FormControl(this.selectedfile),
             address: this.fb.group({
                 addressline: new FormControl(null),
                 countryId: new FormControl(),
@@ -131,31 +155,6 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
         }
         else {
             this.validator.markInvalidFieldsTouched(this.editUserForm);
-        }
-    }
-    onFileSelected(event: Event): void {
-        const input = event.target as HTMLInputElement;
-
-        if (input.files && input.files[0]) {
-            const reader = new FileReader();
-            reader.onload = e => {
-                const avatar = document.getElementById('uploadedAvatar') as HTMLImageElement;
-                if (avatar) {
-                    avatar.src = e.target?.result as string;
-                }
-            };
-            reader.readAsDataURL(input.files[0]);
-        }
-    }
-
-    onResetImage(): void {
-        const avatar = document.getElementById('uploadedAvatar') as HTMLImageElement;
-        if (avatar) {
-            avatar.src = this.defaultAvatar;
-        }
-        const fileInput = document.getElementById('upload') as HTMLInputElement;
-        if (fileInput) {
-            fileInput.value = '';
         }
     }
 
