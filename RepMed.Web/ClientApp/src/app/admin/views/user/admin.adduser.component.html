@@ -10,7 +10,7 @@
             <legend>User</legend>
             <div class="form-grid">
                 <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder=" " formControlName="email">
+                    <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="30">
                     <label class="float-lbl">Email *</label>
                 </div>
                 <div class="mb-3 form-password-toggle">
@@ -18,7 +18,7 @@
                         <input type="password" id="Password" class="form-control" style="width: 50% !important;"
                             name="Password" formControlName="Password"
                             placeholder=""
-                            aria-describedby="password" />
+                            aria-describedby="password" maxlength="16" />
                         <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                         <label class="float-lbl">Password *</label>
                     </div>
@@ -28,7 +28,7 @@
                         <input type="password" id="ConfirmPassword" class="form-control" style="width: 50% !important;"
                             name="ConfirmPassword" formControlName="ConfirmPassword"
                             placeholder=""
-                            aria-describedby="ConfirmPassword" />
+                            aria-describedby="ConfirmPassword" maxlength="16" />
                         <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                         <label class="float-lbl">Confirm Password *</label>
                     </div>
