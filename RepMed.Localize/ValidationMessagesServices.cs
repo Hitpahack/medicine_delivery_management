@@ -73,7 +73,7 @@ namespace RepMed.Localize
         }
         public string GetAlreadyExist(string name, params object[] parma)
         {
-            return _localizer[name + " name already exist, {0}", parma];
+            return _localizer[name + " already exist, {0}", parma];
         }
     }
 }
