@@ -21,7 +21,7 @@ export class ProductService extends adminBaseService {
 
     //#region PharmacyApi
     getProductList(reqData: any, id: number) {
-        return this.http.post(this.apiConfig.endpoints.product.get, reqData, { headers: this.apiConfig.requestSettings.header })
+        return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.product.get, reqData, { headers: this.apiConfig.requestSettings.header })
     }
 
     //#endregion

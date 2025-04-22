@@ -14,6 +14,7 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
   // Show/hide pharmacy submenu
   isPharmacySubmenuVisible: boolean = false;
   id: string | null = null;
+  Userid: string | null = null;
 
   constructor(private renderer: Renderer2, private router: Router) { }
   scripts: Array<string> = [
@@ -36,9 +37,17 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
     //script.src = `https://cdnjs.cloudflare.com/ajax/libs/le_js/0.0.3/le.min.js`;
     //this.renderer.appendChild(document.head, script);
     this.id = sessionStorage.getItem('personid');
+    this.Userid = sessionStorage.getItem('userId');
     setTitle(':: REPMED :: ');
     loadStylesheets(this.styles);
     loadScripts(this.scripts);
+    if(this.Userid == null)
+    {
+      this.router.navigate(['/admin/login']);
+    }
+    else{
+      this.router.navigate(['/admin/dashboard']);
+    }
   }
 
   toggleSubmenu(id: string): void {
@@ -53,6 +62,7 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
     localStorage.removeItem('authToken'); // ya jo bhi token ka naam ho
     sessionStorage.clear(); // optional
     sessionStorage.removeItem('userId');
+    sessionStorage.removeItem('personid');
 
     // Redirect to login page
     this.router.navigate(['/admin/login']);
