@@ -1,94 +1,67 @@
 ﻿<div class="authentication">
-    <form class="auth_form form_validation"
-          *ngIf="editUserForm"
-          appAutoValidate
-          [formGroup]="editUserForm"
-          #userForm_html="ngForm"
-          (ngSubmit)="onSubmit()">
+    <form class="auth_form form_validation" *ngIf="editUserForm" appAutoValidate [formGroup]="editUserForm"
+        #userForm_html="ngForm" (ngSubmit)="onSubmit()">
         <div>
-            <!-- 👈 Wrapper added to avoid form closing issue -->
-
             <legend>Update User</legend>
             <div class="card mb-4">
                 <div class="card-body">
                     <div class="d-flex align-items-start align-items-sm-center gap-4">
-                        <img src="assets/img/avatars/1.png"
-                             alt="user-avatar"
-                             class="d-block rounded"
-                             height="100"
-                             width="100"
-                             id="uploadedAvatar" />
+                        <img src="assets/img/avatars/1.png" alt="user-avatar" class="d-block rounded" height="100"
+                            width="100" id="uploadedAvatar" />
                         <div class="button-wrapper">
                             <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
                                 <span class="d-none d-sm-block">Upload new photo</span>
                                 <i class="bx bx-upload d-block d-sm-none"></i>
-                                <input type="file"
-                                       id="upload"
-                                       class="account-file-input"
-                                       hidden
-                                       accept="image/png, image/jpeg"
-                                       (change)="onFileSelected($event)" />
+                                <input type="file" id="upload" class="account-file-input" hidden
+                                    accept="image/png, image/jpeg" (change)="onFileSelected($event)" />
                             </label>
-                            <button type="button"
-                                    class="btn btn-outline-secondary account-image-reset mb-4"
-                                    (click)="onResetImage()">
-                                <i class="bx bx-reset d-block d-sm-none"></i>
-                                <span class="d-none d-sm-block">Reset</span>
-                            </button>
                             <p class="text-muted mb-0">Allowed JPG or PNG. Max size 800K</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="form-grid">
-                <div class="input-group mb-4 float">
-                    <input type="text" placeholder="" formControlName="firstname" class="form-control" />
-                    <label class="float-lbl">firstName *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" placeholder="" formControlName="lastname" class="form-control" />
-                    <label class="float-lbl">lastName *</label>
-                </div>
+            <fieldset>
+                <div class="form-grid">
+                    <div class="input-group mb-4 float">
+                        <input type="text" formControlName="firstname" class="form-control" minlength="3"
+                            maxlength="12" />
+                        <label class="float-lbl">first Name *</label>
 
-                <div class="input-group mb-4 float">
-                    <select formControlName="gender" class="form-control">
-                        <option value="" disabled>Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Others">Others</option>
-                    </select>
-                    <label class="float-lbl">Gender *</label>
-                </div>
+                    </div>
+                    <div class="input-group mb-4 float">
+                        <input type="text" placeholder="" formControlName="lastname" class="form-control" minlength="3"
+                            maxlength="12" />
+                        <label class="float-lbl">lastName *</label>
+                    </div>
 
-                <div class="input-group mb-4 float">
-                    <input type="date" formControlName="dateofBirth" class="form-control" [max]="maxDate" />
-                    <label class="float-lbl">Date Of Birth *</label>
-                </div>
+                    <div class="input-group mb-4 float">
+                        <select formControlName="gender" class="form-control">
+                            <option value="" disabled>Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Others">Others</option>
+                        </select>
+                        <label class="float-lbl">Gender *</label>
+                    </div>
 
-                <div class="input-group mb-4 float">
-                    <input type="email"
-                           formControlName="email"
-                           class="form-control"
-                           placeholder="example@mail.com"
-                           [readonly]="true" />
-                    <label class="float-lbl">Email *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text"
-                           formControlName="mobile"
-                           class="form-control"
-                           placeholder="1234567890"
-                           maxlength="10"
-                           (keypress)="allowOnlyNumbers($event)" />
-                    <label class="float-lbl">Mobile *</label>
-                </div>
+                    <div class="input-group mb-4 float">
+                        <input type="date" formControlName="dateofBirth" class="form-control" [max]="maxDate" />
+                        <label class="float-lbl">Date Of Birth *</label>
+                    </div>
 
-                <div class="input-group mb-4 float">
-                    <label class="float-lbl">Upload Picture *</label>
-                    <input type="file" formControlName="picture" class="form-control" accept="image/*" />
+                    <div class="input-group mb-4 float">
+                        <input type="email" formControlName="email" class="form-control" placeholder="example@mail.com"
+                            [readonly]="true" />
+                        <label class="float-lbl">Email *</label>
+                    </div>
+                    <div class="input-group mb-4 float">
+                        <input type="text" formControlName="mobile" class="form-control" placeholder="1234567890"
+                            maxlength="10" (keypress)="allowOnlyNumbers($event)" />
+                        <label class="float-lbl">Mobile *</label>
+                    </div>
                 </div>
-            </div>
+            </fieldset>
 
             <fieldset formGroupName="address">
                 <div class="input-group mb-4 float">
@@ -98,9 +71,11 @@
 
                 <div class="form-grid">
                     <div class="input-group mb-4 float">
-                        <select formControlName="countryId" class="form-control" (change)="onCountryDropdownChange($event)">
+                        <select formControlName="countryId" class="form-control"
+                            (change)="onCountryDropdownChange($event)">
                             <option value="" disabled>Select Country</option>
-                            <option *ngFor="let country of countries" [value]="country.value">{{ country.text }}</option>
+                            <option *ngFor="let country of countries" [value]="country.value">{{ country.text }}
+                            </option>
                         </select>
                         <label class="float-lbl">Country *</label>
                     </div>
@@ -121,11 +96,8 @@
                         <label class="float-lbl">City *</label>
                     </div>
                     <div class="input-group mb-4 float">
-                        <input type="text"
-                               formControlName="pincode"
-                               class="form-control"
-                               (keypress)="allowOnlyNumbers($event)"
-                               maxlength="6" />
+                        <input type="text" formControlName="pincode" class="form-control"
+                            (keypress)="allowOnlyNumbers($event)" maxlength="6" />
                         <label class="float-lbl">Pincode *</label>
                     </div>
                 </div>
