@@ -1,13 +1,15 @@
 import { Component, OnInit, Renderer2 } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { getBaseUrl, loadScript, loadScripts, loadStylesheets, setTitle } from '../../../main';
+import { AfterViewInit } from '@angular/core';
+declare const window: any;
 @Component({
   selector: 'app-admin-layout',
   imports: [RouterModule],
   templateUrl: './admin.layout.component.html',
   styleUrls: ['./admin.layout.component.css']
 })
-export class AdminLayoutComponent implements OnInit {
+export class AdminLayoutComponent implements OnInit, AfterViewInit {
 
   // Show/hide pharmacy submenu
   isPharmacySubmenuVisible: boolean = false;
@@ -17,9 +19,17 @@ export class AdminLayoutComponent implements OnInit {
   scripts: Array<string> = [
 
   ];
-  styles: Array<string> = [
+  styles: Array<string> = [];
 
-  ];
+  ngAfterViewInit(): void {
+    if (window.Helpers && typeof window.Helpers.initPasswordToggle === 'function') {
+      window.Helpers.initPasswordToggle();
+    }
+    $('.menu-toggle').on('click', function () {
+      $(this).next('.menu-sub').slideToggle();
+      $(this).parent().toggleClass('open');
+    });
+  }
 
   ngOnInit() {
     // const script = this.renderer.createElement('script');

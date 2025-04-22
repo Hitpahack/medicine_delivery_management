@@ -9,8 +9,6 @@ import { adminAccountsService } from "../../services/accounts/admin.accountsserv
 import { AdminPharmacyService } from "../../services/pharmacy/admin.pharmacy.services";
 import { PharmacyDto } from '../../../viewmodels/pharmacy/Pharmacy.add.dto';
 import { AutoValidateDirective } from 'src/app/common/form.validator';
-import { AfterViewInit } from '@angular/core';
-declare const window: any;
 
 @Component({
     selector: 'app-admin-addpharmacy',
@@ -19,7 +17,7 @@ declare const window: any;
     standalone: true,
     imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective],
 })
-export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnInit, AfterViewInit {
+export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnInit {
     constructor(
         public validator: CustomValidator,
         public accountservice: adminAccountsService,
@@ -33,11 +31,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
     maxDate = new Date().toISOString().split('T')[0];
     errorMessage: string = '';
 
-    ngAfterViewInit(): void {
-        if (window.Helpers && typeof window.Helpers.initPasswordToggle === 'function') {
-            window.Helpers.initPasswordToggle();
-        }
-    }
+    
     ngOnInit(): void {
         this.phForm = this.initForm();
         const today = new Date();
