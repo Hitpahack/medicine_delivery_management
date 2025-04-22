@@ -100,6 +100,8 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                 gstNumber: new FormControl(null, [Validators.required, Validators.pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/)]),
                 registeredMobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
                 officialEmail: new FormControl(null, [Validators.required, Validators.email]),
+                address1: new FormControl(null),
+                address2:new FormControl(null),
                 countryId: new FormControl(null),
                 stateId: new FormControl(null),
                 cityId: new FormControl(null),

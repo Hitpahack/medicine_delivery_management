@@ -19,16 +19,17 @@ export class AdminDashboardComponent extends AdminBaseComponent implements OnIni
         super(router,fb);
     }
     pharmacyCount: number = 0;
+    productCount: number = 0;
 
   ngOnInit(): void {
     // This runs when the dashboard loads.
     console.log('Dashboard loaded!');
-    // this.ProductService.getProductList({}, 0).subscribe((response) => {
-    //   if (response?.isSuccess && response.data) {
-    //     this.pharmacyCount = response;  // ✅ Get count of products
-    //   } else {
-    //     console.error("Failed to load product data", response);
-    //   }
-    // });
+    this.ProductService.getcountrecord({}, 0).subscribe((response) => {
+      if (response?.isSuccess && response.data) {
+        //this.pharmacyCount = response.data.;  // ✅ Get count of products
+      } else {
+        console.error("Failed to load product data", response);
+      }
+    });
   }
 }

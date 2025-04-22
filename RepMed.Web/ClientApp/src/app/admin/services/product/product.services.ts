@@ -23,6 +23,9 @@ export class ProductService extends adminBaseService {
     getProductList(reqData: any, id: number) {
         return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.product.get, reqData, { headers: this.apiConfig.requestSettings.header })
     }
+    getcountrecord(reqData: any, id: number) {
+        return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.product.getcount, reqData, { headers: this.apiConfig.requestSettings.header })
+    }
 
     //#endregion
 }

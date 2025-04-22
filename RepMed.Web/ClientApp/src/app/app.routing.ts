@@ -29,6 +29,8 @@ import { NotFoundComponent } from './admin/views/pagenotfound/not-found.componen
 export const routes: Routes = [
 
   //Admin routes goes here 
+
+  { path: '', redirectTo: '/admin/login', pathMatch: 'full' },
   {
     path: 'admin',
     component: AdminEmptyLayoutComponent,
