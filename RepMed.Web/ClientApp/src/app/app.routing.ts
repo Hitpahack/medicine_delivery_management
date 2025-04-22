@@ -22,6 +22,7 @@ import { UserListComponent } from './admin/views/user/admin.userlist.component';
 import { SubAdminLayoutComponent } from './_layouts/admin/subadmin.layout.component';
 import { AdminPharmacyDetailsComponent } from './admin/views/pharmacy/details.component';
 import { ProductListsComponent } from './admin/views/product/list.component';
+import { NotFoundComponent } from './admin/views/pagenotfound/not-found.component';
 
 
 
@@ -81,10 +82,9 @@ export const routes: Routes = [
   //  ]
   //},
   { path: 'login', component: LoginComponent },
-
-
+  
   // otherwise redirect to home
-  { path: '**', redirectTo: '' }
+  { path: '**', component: NotFoundComponent }
 ];
 
 //export const routing = RouterModule.forRoot(appRoutes);

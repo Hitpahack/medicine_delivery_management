@@ -21,6 +21,7 @@ import { AutoValidateDirective } from "../common/form.validator";
 import { DatatableComponent } from "./shared/datatables/datatable.component";
 import { SharedModule } from "./shared/shared.module";
 import { ProductListsComponent } from "./views/product/list.component";
+import { NotFoundComponent } from "./views/pagenotfound/not-found.component";
 
 
 @NgModule({
@@ -48,7 +49,8 @@ import { ProductListsComponent } from "./views/product/list.component";
     AppComponent,
     AutoValidateDirective,
     SharedModule,
-    ProductListsComponent
+    ProductListsComponent,
+    NotFoundComponent
   ],
   exports: []
 

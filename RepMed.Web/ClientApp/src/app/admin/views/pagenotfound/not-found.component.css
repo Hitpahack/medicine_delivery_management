@@ -1,0 +1,35 @@
+.not-found-container {
+    text-align: center;
+    padding: 100px 20px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+  }
+  
+  .not-found-container h1 {
+    font-size: 120px;
+    margin-bottom: 0;
+    color: #d9534f;
+  }
+  
+  .not-found-container h2 {
+    font-size: 36px;
+    margin: 10px 0;
+  }
+  
+  .not-found-container p {
+    font-size: 18px;
+    margin-bottom: 30px;
+  }
+  
+  .back-home-btn {
+    background-color: #007bff;
+    padding: 10px 20px;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+  }
+  
+  .back-home-btn:hover {
+    background-color: #0056b3;
+  }
+  
