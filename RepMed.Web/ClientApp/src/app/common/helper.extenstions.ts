@@ -8,6 +8,10 @@ export class Helper
         this.showNotification('alert-danger', message, 'bottom', 'right',null,null);
     }
 
+    public static ShowSuccess(message: string): void {
+        this.showNotification('alert-success', message, 'bottom', 'right', null, null);
+    }
+
     private static showNotification(colorName, text, placementFrom, placementAlign, animateEnter, animateExit) {
         if (colorName === null || colorName === '') { colorName = 'bg-black'; }
         if (text === null || text === '') { text = 'Turning standard Bootstrap alerts'; }

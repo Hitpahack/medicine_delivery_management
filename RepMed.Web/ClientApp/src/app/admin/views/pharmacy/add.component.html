@@ -22,7 +22,7 @@
                     <label class="float-lbl">Business Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="licenseNumber" class="form-control"  maxlength="12">
+                    <input type="text" placeholder=" " formControlName="licenseNumber" class="form-control"  maxlength="16">
                     <label class="float-lbl">License Number *</label>
                 </div>
 
@@ -137,11 +137,11 @@
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="text" placeholder=" " formControlName="accountNumber" class="form-control" minlength="10"
-                        maxlength="16" (keypress)="allowOnlyNumbers($event)">
+                        maxlength="16" (keypress)="allowOnlyNumbers($event)" (paste)="disablePaste($event)">
                     <label class="float-lbl">Account Number *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="ifscCode" class="form-control" maxlength="11">
+                    <input type="text" placeholder=" " formControlName="ifscCode" class="form-control" maxlength="16">
                     <label class="float-lbl">IFSC Code *</label>
                 </div>
                 <div class="input-group mb-4 float">

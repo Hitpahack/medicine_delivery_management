@@ -28,28 +28,25 @@ export class CustomValidator {
 
  
   public futureDateValidator(control: AbstractControl): { [key: string]: any } | null {
-    const selectedDate = new Date(control.value);
+    const value = control.value;
+    if (!value) return null;
+  
+    const selectedDate = new Date(value);
     const today = new Date();
-    today.setHours(0, 0, 0, 0); // remove time part
-
+    today.setHours(0, 0, 0, 0);
+  
+    const maxAllowedDate = new Date();
+    maxAllowedDate.setFullYear(today.getFullYear() + 100);
+    maxAllowedDate.setHours(0, 0, 0, 0);
+  
     if (selectedDate < today) {
       return { pastDate: true };
     }
-
-    if (!control.value) return null;
-  today.setHours(0, 0, 0, 0); // remove time part
-
-  const maxAllowedDate = new Date();
-  maxAllowedDate.setFullYear(today.getFullYear() + 100); // 100 years from today
-  maxAllowedDate.setHours(0, 0, 0, 0);
-
-  if (selectedDate < today) {
-    return { pastDate: true };
-  }
-
-  if (selectedDate > maxAllowedDate) {
-    return { tooFar: true };
-  }
+  
+    if (selectedDate > maxAllowedDate) {
+      return { tooFar: true };
+    }
+  
     return null;
   }
 

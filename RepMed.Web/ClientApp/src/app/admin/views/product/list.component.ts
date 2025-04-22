@@ -41,7 +41,7 @@ export class ProductListsComponent extends AdminBaseComponent implements OnInit 
                 }
             },
             { data: 'productName', title: 'name' },
-            { data: 'price', title: 'price' },
+            { data: 'price', title: 'price', render: (data: any) => `${data}₹`  },
             
             //{ data: '', title: 'img' },
         ],

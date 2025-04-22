@@ -32,7 +32,8 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
     ) {
         super();
     }
-    minExpiryDate: string = '';
+    minExpiryDate!: string;
+    maxExpiryDate!: string;
     phForm: FormGroup;
     PharmacyDto: PharmacyDto;
     maxDate = new Date().toISOString().split('T')[0];
@@ -43,19 +44,24 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
 
     ngAfterViewInit(): void {
         if (window.Helpers && typeof window.Helpers.initPasswordToggle === 'function') {
-          window.Helpers.initPasswordToggle();
+            window.Helpers.initPasswordToggle();
         }
         $('.menu-toggle').on('click', function () {
-          $(this).next('.menu-sub').slideToggle();
-          $(this).parent().toggleClass('open');
+            $(this).next('.menu-sub').slideToggle();
+            $(this).parent().toggleClass('open');
         });
-      }
-    
+    }
+
 
     ngOnInit(): void {
         this.phForm = this.initForm();
         const today = new Date();
+        const maxDate = new Date();
         this.minExpiryDate = today.toISOString().split('T')[0];
+        maxDate.setFullYear(today.getFullYear() + 100);
+        this.minExpiryDate = today.toISOString().split('T')[0];
+        this.maxExpiryDate = maxDate.toISOString().split('T')[0];
+
         this.AdminCommonServices.getcountry().subscribe((response) => {
             if (response?.isSuccess && response.data) {
                 this.countries = response.data;
@@ -95,13 +101,13 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                 ownerName: new FormControl(null, [Validators.required]),
                 storeName: new FormControl(null, [Validators.required]),
                 businessName: new FormControl(null, [Validators.required]),
-                licenseNumber: new FormControl(null, [Validators.required, Validators.pattern(/^[A-Z]{2}-\d{2}[A-Z]-\d{5}$/)]),
+                licenseNumber: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9]+$')]),
                 licenseExpiry: [null, [Validators.required, this.validator.futureDateValidator]],
                 gstNumber: new FormControl(null, [Validators.required, Validators.pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/)]),
                 registeredMobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
                 officialEmail: new FormControl(null, [Validators.required, Validators.email]),
                 address1: new FormControl(null),
-                address2:new FormControl(null),
+                address2: new FormControl(null),
                 countryId: new FormControl(null),
                 stateId: new FormControl(null),
                 cityId: new FormControl(null),
@@ -126,7 +132,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                 bankName: new FormControl(null, [Validators.required]),
                 accountholderName: new FormControl(null, [Validators.required]),
                 accountNumber: new FormControl(null, [Validators.required, Validators.maxLength(16)]),
-                ifscCode: new FormControl(null, [Validators.required, Validators.pattern(/^[A-Z]{4}0[A-Z0-9]{6}$/)]),
+                ifscCode: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9]+$')]),
                 branchName: new FormControl(null, [Validators.required]),
                 upiId: new FormControl(null, [Validators.pattern(/^[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}$/)])
             })
@@ -142,11 +148,11 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
 
     disableKeyInput(event: KeyboardEvent): void {
         event.preventDefault();
-      }
-      
-      disablePaste(event: ClipboardEvent): void {
+    }
+
+    disablePaste(event: ClipboardEvent): void {
         event.preventDefault();
-      }
+    }
 
     onSubmit() {
         if (this.phForm.invalid) {
@@ -157,7 +163,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
         this.PharmacyService.add(dto).subscribe({
             next: (response) => {
                 if (response.isSuccess) {
-                    console.log('Success:', response.data);
+                    Helper.ShowSuccess(response.message || 'Pharmacy added successfully.');
                     this.router.navigate(['/admin/pharmacy']);
                 } else {
                     console.error('API returned isSuccess: false');

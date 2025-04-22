@@ -79,7 +79,7 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
     this.adminuserservice.add(dto).subscribe({
       next: (response) => {
         if (response.isSuccess) {
-          console.log('Success:', response.data);
+          Helper.ShowSuccess(response.message || 'user added successfully.');
           this.router.navigate(['/admin/user']);
         } else {
           console.error('API returned isSuccess: false');
