@@ -12,7 +12,7 @@ export class CustomValidator {
       return null;
     }
 
-    let regularExp = /^([\w-\.]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([\w-]+\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\]?)$/;
+    let regularExp = /^([a-z0-9_\.-]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-z0-9-]+\.)+))([a-z]{2,4}|[0-9]{1,3})(\]?)$/;
     if (control.value !== undefined && !regularExp.test(control.value.trim())) {
       return { email: true, error: "invalid email address entered!" };
     }

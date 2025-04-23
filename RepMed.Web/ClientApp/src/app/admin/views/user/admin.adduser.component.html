@@ -1,12 +1,24 @@
-
 <div class="authentication">
 
     <form class="auth_form form_validation" *ngIf="addUserForm" appAutoValidate [formGroup]="addUserForm"
         #phForm_html="ngForm" (ngSubmit)="onSubmit()">
         <!-- Section 1: Pharmacy -->
         <fieldset>
-            <legend>User</legend>
+            <legend>Staff</legend>
             <div class="form-grid">
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="firstname" maxlength="25" minlength="3">
+                    <label class="float-lbl">First Name *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="lastname" maxlength="25" minlength="3">
+                    <label class="float-lbl">Last Name *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="mobile" maxlength="30" placeholder="1234567890"
+                    maxlength="10" (keypress)="allowOnlyNumbers($event)">
+                    <label class="float-lbl">mobile Name *</label>
+                </div>
                 <div class="input-group mb-4 float">
                     <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="30">
                     <label class="float-lbl">Email *</label>
@@ -14,9 +26,8 @@
                 <div class="mb-3 form-password-toggle">
                     <div class="input-group input-group-merge">
                         <input type="password" id="Password" class="form-control" style="width: 50% !important;"
-                            name="Password" formControlName="Password"
-                            placeholder=""
-                            aria-describedby="password" maxlength="16" />
+                            name="Password" formControlName="Password" placeholder="" aria-describedby="password"
+                            maxlength="16" />
                         <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                         <label class="float-lbl">Password *</label>
                     </div>
@@ -24,8 +35,7 @@
                 <div class="mb-3 form-password-toggle">
                     <div class="input-group input-group-merge">
                         <input type="password" id="ConfirmPassword" class="form-control" style="width: 50% !important;"
-                            name="ConfirmPassword" formControlName="ConfirmPassword"
-                            placeholder=""
+                            name="ConfirmPassword" formControlName="ConfirmPassword" placeholder=""
                             aria-describedby="ConfirmPassword" maxlength="16" />
                         <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                         <label class="float-lbl">Confirm Password *</label>
