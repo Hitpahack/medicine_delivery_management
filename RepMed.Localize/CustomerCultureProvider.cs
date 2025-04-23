@@ -14,20 +14,20 @@ namespace RepMed.Localize
 		{
 			//Go away and do a bunch of work to find out what culture we should do. 
 			//await Task.Yield();
-			//string culture = Convert.ToString(httpContext.Request.Headers["Accept-Language"]).Split(',')[0] ?? "en";
+			string culture = Convert.ToString(httpContext.Request.Headers["Accept-Language"]).Split(',')[0] ?? "en";
 
-			//if (!string.IsNullOrEmpty(culture))
-			//{
-			//   //httpContext.Response.Cookies.Append(
-			//   //CookieRequestCultureProvider.DefaultCookieName,
-			//   //CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
-			//   //new CookieOptions { Expires = DateTimeOffset.UtcNow.AddHours(1) });
+			if (!string.IsNullOrEmpty(culture))
+			{
+				//httpContext.Response.Cookies.Append(
+				//CookieRequestCultureProvider.DefaultCookieName,
+				//CookieRequestCultureProvider.MakeCookieValue(new RequestCulture(culture)),
+				//new CookieOptions { Expires = DateTimeOffset.UtcNow.AddHours(1) });
 
-			//	CultureInfo.CurrentCulture = new CultureInfo(culture);
-			//	return new ProviderCultureResult(culture);
+				CultureInfo.CurrentCulture = new CultureInfo(culture);
+				return new ProviderCultureResult(culture);
 
-			//}
-            
+			}
+
 
 
 			//Return a provider culture result. 
