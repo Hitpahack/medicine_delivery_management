@@ -32,6 +32,7 @@ export interface BasePerson {
     qualification?: string;
     createdAt?: Date;
     updatedAt?: Date;
+    persionId?:number;
   }
   
   export interface AddAddressDto {
@@ -42,7 +43,8 @@ export interface BasePerson {
     stateId?: string;
     postalCode?: string;
     countryId?: string;
-    pincode?: string
+    pincode?: string;
+    personId:number;
   }
   
   export interface AddPersonDto extends BasicPersonsDto {
@@ -54,5 +56,6 @@ export interface BasePerson {
     isActive?: boolean;
     address?: AddAddressDto;
     Role?: string;
+    personId:number;    
   }
   

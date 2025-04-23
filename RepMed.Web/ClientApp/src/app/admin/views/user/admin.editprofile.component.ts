@@ -86,6 +86,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
                         email: user.email,
                         mobile: user.mobile,
                         id: user.id,
+                        personId: user.personId,
                         gender: user.gender,
                         dateofBirth: this.dateMethod(user.dateOfBirth),
                         picture: user.picture
@@ -163,7 +164,8 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
 
         if (input.files && input.files[0]) {
             const file = input.files[0];
-            this.editUserForm.get('picture')?.setValue(file.name);
+            this.editUserForm.get('picture')?.setValue(file);
+            //this.editUserForm.get('needcolumnnamehere')?.setValue(file.name);
             const reader = new FileReader();
             reader.onload = e => {
                 const avatar = document.getElementById('uploadedAvatar') as HTMLImageElement;

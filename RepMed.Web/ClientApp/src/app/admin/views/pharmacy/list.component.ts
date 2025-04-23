@@ -4,13 +4,14 @@ import { FormBuilder } from "@angular/forms";
 import { CustomValidator } from "../../../common/custom.validators";
 import { AdminBaseComponent } from '../../admin.base.component';
 import { DatatableComponent } from '../../shared/datatables/datatable.component';
+import { RouterModule } from '@angular/router';
 
 
 
 @Component({
     selector: 'app-pharmacy-list',
     templateUrl: './list.component.html',
-    imports: [DatatableComponent]
+    imports: [DatatableComponent, RouterModule]
 })
 export class AdminPharmacyListsComponent extends AdminBaseComponent implements OnInit {
 

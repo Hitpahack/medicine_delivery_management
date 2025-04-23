@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
+import { RouterModule } from '@angular/router';
 import { FormBuilder } from "@angular/forms";
 import { CustomValidator } from "../../../../app/common/custom.validators";
 import { AdminBaseComponent } from '../../admin.base.component';
@@ -10,7 +11,7 @@ declare var $: any;
 @Component({
     selector: 'app-User-list',
     templateUrl: 'admin.userlist.component.html',
-    imports:[DatatableComponent]
+    imports:[DatatableComponent, RouterModule]
 })
 
 export class UserListComponent extends AdminBaseComponent implements OnInit {
