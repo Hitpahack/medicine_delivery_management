@@ -24,11 +24,18 @@ export class AdminDashboardComponent extends AdminBaseComponent implements OnIni
   ngOnInit(): void {
     // This runs when the dashboard loads.
     console.log('Dashboard loaded!');
-    this.ProductService.getcountrecord({}, 0).subscribe((response) => {
-      if (response?.isSuccess && response.data) {
-        //this.pharmacyCount = response.data.;  // ✅ Get count of products
-      } else {
-        console.error("Failed to load product data", response);
+    this.ProductService.getcountrecord({}, 0).subscribe({
+      next: (response) => {
+        if (response?.isSuccess && response?.data) {
+          this.pharmacyCount = response.data.pharmacyCount;
+          this.productCount = response.data.productCount;
+          console.log('Counts:', this.pharmacyCount, this.productCount);
+        } else {
+          console.error('API returned isSuccess: false', response);
+        }
+      },
+      error: (err) => {
+        console.error('HTTP Error:', err);
       }
     });
   }
