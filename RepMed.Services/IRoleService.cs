@@ -13,7 +13,7 @@ namespace RepMed.Services
 {
     public interface IRoleService : IDisposable
     {
-        Task<APIsResponse<EntityRoleDto>> CreateRole(BasicRoleDto reqDto);
+        Task<APIsResponse<EntityRoleDto>> CreateRole(CreateRoleDto reqDto);
     }
     public class RoleService : BaseService, IRoleService
     {
@@ -22,19 +22,19 @@ namespace RepMed.Services
 
         }
 
-        public async Task<APIsResponse<EntityRoleDto>> CreateRole(BasicRoleDto reqDto)
+        public async Task<APIsResponse<EntityRoleDto>> CreateRole(CreateRoleDto reqDto)
         {
             try
             {
                 APIsResponse<EntityRoleDto> apiResponse = default(APIsResponse<EntityRoleDto>);
-                #region Check UserExist
+                #region Check RoleExist
 
                 #endregion
                 #region Add Role
                 EntityRoleDto response = _idbConnection.Insert<EntityRoleDto>(_idbTransaction,
                     DbTables.tblRole,
-                    DapperHelper.QueryAsColumnsParma<Role, BasicRoleDto>(),
-                    DapperHelper.QueryAsValuesParma<Role, BasicRoleDto>(),
+                    DapperHelper.QueryAsColumnsParma<Role, CreateRoleDto>(),
+                    DapperHelper.QueryAsValuesParma<Role, CreateRoleDto>(),
                     reqDto);
                 #endregion
                 apiResponse = new APIsSuccsss<EntityRoleDto>(_validateMessages.RetriveSuccess, response);

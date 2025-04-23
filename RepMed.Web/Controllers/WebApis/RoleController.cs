@@ -21,7 +21,7 @@ namespace RepMed.Web.Controllers.WebApis
         }
         [Route("addrole")]
         [HttpPost]
-        public async Task<IActionResult> AddRole(BasicRoleDto reqDto)
+        public async Task<IActionResult> AddRole(CreateRoleDto reqDto)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
