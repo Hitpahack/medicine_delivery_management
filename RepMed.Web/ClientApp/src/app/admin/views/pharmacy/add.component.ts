@@ -46,10 +46,6 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
         if (window.Helpers && typeof window.Helpers.initPasswordToggle === 'function') {
             window.Helpers.initPasswordToggle();
         }
-        $('.menu-toggle').on('click', function () {
-            $(this).next('.menu-sub').slideToggle();
-            $(this).parent().toggleClass('open');
-        });
     }
 
 
