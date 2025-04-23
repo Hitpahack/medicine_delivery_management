@@ -38,7 +38,9 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
             { data: 'ownerName', title: 'Owner' },
             { data: 'officialEmail', title: 'Email' },
             { data: 'cityName', title: 'City' },
-            { data: 'registeredMobile', title: 'Mobile' }
+            { data: 'registeredMobile', title: 'Mobile' },
+            { data: 'address1', title:'Address'},
+            { data: 'countryName', title: 'Country' }
         ],
     };
 

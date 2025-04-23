@@ -81,7 +81,8 @@
                     </div>
 
                     <div class="input-group mb-4 float">
-                        <select formControlName="stateId" class="form-control" (change)="onCityDropdownChange($event)" (ngModelChange)="onValueChaanged($event)">
+                        <select formControlName="stateId" class="form-control" (change)="onCityDropdownChange($event)"
+                            (ngModelChange)="onValueChaanged($event)">
                             <option value="" disabled>Select State</option>
                             <option *ngFor="let st of states" [value]="st.value">{{ st.text }}</option>
                         </select>

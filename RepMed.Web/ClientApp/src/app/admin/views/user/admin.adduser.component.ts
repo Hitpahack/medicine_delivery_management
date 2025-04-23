@@ -33,10 +33,6 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
     if (window.Helpers && typeof window.Helpers.initPasswordToggle === 'function') {
       window.Helpers.initPasswordToggle();
     }
-    $('.menu-toggle').on('click', function () {
-      $(this).next('.menu-sub').slideToggle();
-      $(this).parent().toggleClass('open');
-    });
   }
 
   ngOnInit(): void {
