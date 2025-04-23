@@ -40,15 +40,6 @@ export class UserListComponent extends AdminBaseComponent implements OnInit {
             { data: 'mobile' },
         ],
         //searchInputId: 'post-search-input',
-        customButtons: [
-            {
-                text: 'Add User',
-                action: (dttable) => {
-                    this.router.navigate(['/admin/user/add']);
-                },
-                className: 'btn btn-sm btn-primary'
-            }
-        ]
     };
 
 

@@ -30,6 +30,7 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
             }
             
         },
+        order: [[0, 'desc']],
         searching: true,
         columns: [
             { data: 'id', title: '#', render: (data: any) =>`<input class="item_checkbox" id="${data}" type="checkbox" value="${data}" />`},
@@ -39,16 +40,6 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
             { data: 'cityName', title: 'City' },
             { data: 'registeredMobile', title: 'Mobile' }
         ],
-        //searchInputId: 'post-search-input',
-        customButtons: [
-            {
-              text: 'Add Pharmacy',
-              action: (dttable) => {
-                this.router.navigate(['/admin/pharmacy/add']);
-              },
-              className: 'btn btn-sm btn-primary'
-            }
-          ]
     };
 
     ngOnInit(): void {
