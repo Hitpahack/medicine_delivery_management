@@ -243,7 +243,11 @@ namespace RepMed.Services
             try
             {
                 APIsResponse<Datatable<PharmacyPagingResponse>> apiResponse = default;
-                string orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
+                string orderBy;
+                if (reqDto.Order[0].Column == 0)
+                    orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|desc" ;
+                else
+                    orderBy= reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
                 #region Get All Pharmacy 
                 var parameters = new DynamicParameters();
                 parameters.Add("page", reqDto.Page, DbType.Int32);
