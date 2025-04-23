@@ -135,7 +135,7 @@ namespace RepMed.Web.Controllers.WebApis
                             }
                         }
                         tran.Commit();
-                        return Ok(new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = "Pharmacy Added Sucessfully" });
+                        return Ok(new APIsResponse<EntityUsersDto> { IsSuccess = true, Message = "Pharmacy Added Sucessfully" });
                     }
                 }
             }
