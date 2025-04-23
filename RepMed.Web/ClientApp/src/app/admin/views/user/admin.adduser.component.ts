@@ -46,6 +46,9 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
 
   initForm(): FormGroup {
     const form = this.fb.group({
+      firstname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+      lastname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+      mobile: new FormControl(null, [Validators.required]),
       Role: new FormControl(null, [Validators.required]),
       email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
       Password: new FormControl(null, [Validators.required, this.validator.validateStrongPassword]),

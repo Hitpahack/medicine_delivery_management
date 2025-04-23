@@ -106,7 +106,7 @@ export class AutoValidateDirective implements OnInit {
           messages.push('This field is required');
           break;
         case 'email':
-          messages.push('Invalid email address');
+         // messages.push('Invalid email address');
           break;
         case 'minlength':
           messages.push(`Minimum ${errorValue.requiredLength} characters required`);
@@ -122,7 +122,10 @@ export class AutoValidateDirective implements OnInit {
           break;
         case 'max':
           messages.push(`Maximum value is ${errorValue.max}`);
-          break;
+              break;
+          case 'date':
+              messages.push(`Enter a valid date`);
+              break;
         default:
           if (typeof errorValue === 'string') {
             messages.push(errorValue); // Allow custom validator to return string

@@ -57,16 +57,16 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
       dateRangeValidator(control: FormControl) {
         const value = control.value;
         if (!value) return null;
-    
+      
         const date = new Date(value);
         if (isNaN(date.getTime())) {
           return { invalidDate: true };
         }
-    
+      
         if (date < this.minDate || date > this.maxxDate) {
-          return { outOfRange: true };
+          return { InValidDate: true };
         }
-    
+      
         return null;
       }
     

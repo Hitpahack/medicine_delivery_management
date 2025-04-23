@@ -68,4 +68,6 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
     this.router.navigate(['/admin/login']);
   }
 
+  
+
 }
