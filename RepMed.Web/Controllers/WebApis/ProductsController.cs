@@ -54,7 +54,7 @@ namespace RepMed.Web.Controllers.WebApis
                         var result = await productService.GetCount();
                         if (!result.IsSuccess)
                             return BadRequest(new APIsResponse<string> { IsSuccess = false, Message = result.Message });
-                        return Ok(new APIsResponse<DashboardDto> { IsSuccess = false, Message = result.Message, Data= result.Data });
+                        return Ok(new APIsResponse<DashboardDto> { IsSuccess = true, Message = result.Message, Data= result.Data });
                     }
                 }
             }
