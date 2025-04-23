@@ -49,8 +49,12 @@ export class AdminApiConfigService {
         list: `${v1}/users/getusers`
       },
       product: {
-        get: `${v1}/users/getproducts`,
-        getcount: `${v1}/users/getcount`,
+        get: `${v1}/products/getproducts`,
+        getcount: `${v1}/products/getcount`,
+      }, 
+      role: {
+        add: `${v1}/roles/addrole`,
+        getcomponent: `${v1}/roles/getpermissions/`,
       }
     };
   }

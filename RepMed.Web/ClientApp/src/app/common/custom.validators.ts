@@ -19,34 +19,34 @@ export class CustomValidator {
     return null;
   }
 
-  public forbidNameValidator(nameRe: RegExp): ValidatorFn{
-    return (control: AbstractControl): ValidationErrors | null =>{
-     const forbidden = nameRe.test(control.value);
-     return forbidden ? {forbidden: {value: control.value}} : null; 
+  public forbidNameValidator(nameRe: RegExp): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const forbidden = nameRe.test(control.value);
+      return forbidden ? { forbidden: { value: control.value } } : null;
     }
   }
 
- 
+
   public futureDateValidator(control: AbstractControl): { [key: string]: any } | null {
     const value = control.value;
     if (!value) return null;
-  
+
     const selectedDate = new Date(value);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
-  
+
     const maxAllowedDate = new Date();
     maxAllowedDate.setFullYear(today.getFullYear() + 100);
     maxAllowedDate.setHours(0, 0, 0, 0);
-  
+
     if (selectedDate < today) {
       return { pastDate: true };
     }
-  
+
     if (selectedDate > maxAllowedDate) {
       return { tooFar: true };
     }
-  
+
     return null;
   }
 
@@ -75,7 +75,7 @@ export class CustomValidator {
   // public markInvalidFieldsTouched(formGroup: FormGroup) {
   //   Object.values(formGroup.controls).forEach(control => {
   //     control.markAsTouched();
-    
+
   //     if ((control as FormGroup).controls) {
   //       Object.values((control as FormGroup).controls).forEach(nestedControl => {
   //         nestedControl.markAsTouched();
@@ -86,19 +86,19 @@ export class CustomValidator {
   public markInvalidFieldsTouched(formGroup: FormGroup) {
     Object.entries(formGroup.controls).forEach(([controlName, control]) => {
       control.markAsTouched();
-  
+
       // Try to focus-blur to trigger UI update
       const element = document.querySelector(`[formControlName="${controlName}"]`) as HTMLElement;
       if (element) {
         element.focus();
         setTimeout(() => element.blur(), 100); // small delay helps UI
       }
-  
+
       // If nested FormGroup
       if (control instanceof FormGroup) {
         this.markInvalidFieldsTouched(control); // Recursively apply to nested controls
       }
-  
+
       // If FormArray (optional)
       if (control instanceof FormArray) {
         control.controls.forEach(ctrl => {
@@ -111,22 +111,22 @@ export class CustomValidator {
       }
     });
   }
-  
+
   passwordMatchValidator(control: AbstractControl) {
     const password = CustomValidator.findControlByName(control, 'Password');
     const confirmpassword = CustomValidator.findControlByName(control, 'ConfirmPassword');
-    if(!password.value || !confirmpassword.value)
+    if (!password.value || !confirmpassword.value)
       return null;
 
     let error = null;
-    if (password.value !== confirmpassword.value){
+    if (password.value !== confirmpassword.value) {
       error = { passwordMismatch: true, error: "password and confirm password doesn't match!" };
       confirmpassword.setErrors(error);
-    confirmpassword.markAsTouched();
-    confirmpassword.markAsDirty();
+      confirmpassword.markAsTouched();
+      confirmpassword.markAsDirty();
     }
 
-    
+
     return error;
   }
 
@@ -161,5 +161,15 @@ export class CustomValidator {
     }
     return null;
   }
- 
+
+  public checkboxRequiredValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      // Check if no values are selected
+      if (!control.value || control.value.length === 0) {
+        return { checkboxRequired: true };
+      }
+      return null;
+    };
+  }
+
 }

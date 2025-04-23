@@ -59,6 +59,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
         this.maxExpiryDate = maxDate.toISOString().split('T')[0];
 
         this.AdminCommonServices.getcountry().subscribe((response) => {
+            console.log('hello', response);
             if (response?.isSuccess && response.data) {
                 this.countries = response.data;
             } else {

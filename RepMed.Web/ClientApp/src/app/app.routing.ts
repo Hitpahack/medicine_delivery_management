@@ -23,6 +23,7 @@ import { SubAdminLayoutComponent } from './_layouts/admin/subadmin.layout.compon
 import { AdminPharmacyDetailsComponent } from './admin/views/pharmacy/details.component';
 import { ProductListsComponent } from './admin/views/product/list.component';
 import { NotFoundComponent } from './admin/views/pagenotfound/not-found.component';
+import { AddRoleComponent } from './admin/views/rolemanage/addrole.component';
 
 
 
@@ -56,7 +57,9 @@ export const routes: Routes = [
       { path: 'setpassword', component:ChangePassword},
       {path: 'user', component:UserListComponent},
 
-      {path:  'productlist', component:ProductListsComponent}
+      {path:  'productlist', component:ProductListsComponent},
+
+      {path: 'role/add', component: AddRoleComponent },
     ]
   },
   {

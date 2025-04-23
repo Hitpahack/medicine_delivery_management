@@ -1,0 +1,52 @@
+<div class="authentication">
+    <form class="auth_form form_validation" *ngIf="addroleForm" appAutoValidate [formGroup]="addroleForm"
+        #roleForm_html="ngForm" (ngSubmit)="onSubmit()">
+        <!-- Section 1: -->
+        <fieldset>
+            <legend>Add Role</legend>
+            <div class="form-grid">
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="roleName" maxlength="20"
+                        required>
+                    <label class="float-lbl">role *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <textarea placeholder=" " formControlName="description" class="form-control"
+                        maxlength="100"></textarea>
+                    <label class="float-lbl">description</label>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label fw-bold mb-2">Select Components</label>
+                    <div class="border rounded p-3 shadow-sm bg-light">
+                        <div class="row">
+                            <div class="col-md-6 mb-2" *ngFor="let comp of componentList; let i = index">
+                                <div class="form-check d-flex align-items-center gap-3">
+                                    <input class="form-check-input" type="checkbox" [value]="comp.id"
+                                        (change)="onCheckboxChange($event)" id="comp-{{ comp.id }}"
+                                        [checked]="addroleForm.get('componentid').value.includes(comp.id)">
+                                    <label class="form-check-label mb-0" for="comp-{{ comp.id }}">
+                                        {{ comp.name }}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Show the error message when the checkbox is required and touched -->
+                    <div *ngIf="addroleForm.get('componentid').hasError('checkboxRequired') && addroleForm.get('componentid').touched"
+                        class="text-danger small mt-1">
+                        Please select at least one component.
+                    </div>
+                </div>
+                
+                          
+            </div>
+        </fieldset>
+        <div class="row justify-content-end">
+            <div class="col-sm-1">
+                <button class="btn custom-btn" type="submit">create</button>
+            </div>
+        </div>
+    </form>
+</div>

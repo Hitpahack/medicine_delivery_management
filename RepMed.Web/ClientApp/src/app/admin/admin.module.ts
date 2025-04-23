@@ -22,6 +22,7 @@ import { DatatableComponent } from "./shared/datatables/datatable.component";
 import { SharedModule } from "./shared/shared.module";
 import { ProductListsComponent } from "./views/product/list.component";
 import { NotFoundComponent } from "./views/pagenotfound/not-found.component";
+import { AddRoleComponent } from "./views/rolemanage/addrole.component";
 
 
 @NgModule({
@@ -50,7 +51,8 @@ import { NotFoundComponent } from "./views/pagenotfound/not-found.component";
     AutoValidateDirective,
     SharedModule,
     ProductListsComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    AddRoleComponent
   ],
   exports: []
 
