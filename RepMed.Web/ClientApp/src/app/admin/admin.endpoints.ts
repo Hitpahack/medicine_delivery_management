@@ -50,7 +50,7 @@ export class AdminApiConfigService {
       },
       product: {
         get: `${v1}/users/getproducts`,
-        getcount: `${v1}/users/`,
+        getcount: `${v1}/users/getcount`,
       }
     };
   }
