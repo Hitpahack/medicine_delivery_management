@@ -32,6 +32,8 @@ public partial class RepMedContext : DbContext
 
     public virtual DbSet<Payment> Payments { get; set; }
 
+    public virtual DbSet<Permission> Permissions { get; set; }
+
     public virtual DbSet<Person> Persons { get; set; }
 
     public virtual DbSet<Pharmacy> Pharmacies { get; set; }
@@ -46,9 +48,13 @@ public partial class RepMedContext : DbContext
 
     public virtual DbSet<Product> Products { get; set; }
 
+    public virtual DbSet<Productcategory> Productcategories { get; set; }
+
     public virtual DbSet<Refund> Refunds { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
+
+    public virtual DbSet<Rolepermission> Rolepermissions { get; set; }
 
     public virtual DbSet<Settlement> Settlements { get; set; }
 
@@ -66,7 +72,7 @@ public partial class RepMedContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseMySql("server=localhost;port=3306;database=repmed;user=arka;password=Admin@1234", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.37-mysql"));
+        => optionsBuilder.UseMySql("server=localhost;port=3306;database=repmed;user=root;password=Hitesh", Microsoft.EntityFrameworkCore.ServerVersion.Parse("8.0.41-mysql"));
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -80,10 +86,6 @@ public partial class RepMedContext : DbContext
 
             entity.ToTable("category");
 
-            entity.HasIndex(e => e.CreatedBy, "fk_category_createdby");
-
-            entity.HasIndex(e => e.UpdatedBy, "fk_category_updatedby");
-
             entity.Property(e => e.CategoryName).HasMaxLength(200);
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -91,24 +93,12 @@ public partial class RepMedContext : DbContext
             entity.Property(e => e.IsActive)
                 .HasDefaultValueSql("b'1'")
                 .HasColumnType("bit(1)");
-            entity.Property(e => e.IsDeleted).HasDefaultValueSql("'0'");
             entity.Property(e => e.UpdatedDate)
-                .ValueGeneratedOnAddOrUpdate()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.Url)
                 .HasMaxLength(1000)
                 .HasColumnName("url");
-
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.CategoryCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_category_createdby");
-
-            entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.CategoryUpdatedByNavigations)
-                .HasForeignKey(d => d.UpdatedBy)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_category_updatedby");
         });
 
         modelBuilder.Entity<City>(entity =>
@@ -338,6 +328,19 @@ public partial class RepMedContext : DbContext
                 .HasConstraintName("payments_ibfk_1");
         });
 
+        modelBuilder.Entity<Permission>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("permissions");
+
+            entity.Property(e => e.Description).HasColumnType("text");
+            entity.Property(e => e.Module).HasMaxLength(100);
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(100);
+        });
+
         modelBuilder.Entity<Person>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -346,6 +349,8 @@ public partial class RepMedContext : DbContext
 
             entity.HasIndex(e => e.Email, "Email").IsUnique();
 
+            entity.HasIndex(e => e.Mobile, "Mobile").IsUnique();
+
             entity.Property(e => e.BloodGroup).HasMaxLength(10);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -353,7 +358,7 @@ public partial class RepMedContext : DbContext
             entity.Property(e => e.Email).IsRequired();
             entity.Property(e => e.EmailVerified).HasDefaultValueSql("'0'");
             entity.Property(e => e.FirstName).HasMaxLength(100);
-            entity.Property(e => e.Gender).HasColumnType("enum('Male','Female','Other')");
+            entity.Property(e => e.Gender).HasColumnType("enum('Male','Female','Others')");
             entity.Property(e => e.LastName).HasMaxLength(100);
             entity.Property(e => e.Mobile).HasMaxLength(20);
             entity.Property(e => e.MobileVerified).HasDefaultValueSql("'0'");
@@ -607,35 +612,24 @@ public partial class RepMedContext : DbContext
 
             entity.ToTable("product");
 
-            entity.HasIndex(e => e.CreatedBy, "fk_product_createdby");
-
-            entity.HasIndex(e => e.UpdatedBy, "fk_product_updatedby");
-
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
             entity.Property(e => e.Discount).HasPrecision(18, 2);
             entity.Property(e => e.Image).HasMaxLength(100);
-            entity.Property(e => e.IsDeleted).HasDefaultValueSql("'0'");
             entity.Property(e => e.Mrp)
                 .HasPrecision(18, 2)
                 .HasColumnName("MRP");
             entity.Property(e => e.Name).HasMaxLength(300);
             entity.Property(e => e.Price).HasPrecision(18, 2);
-            entity.Property(e => e.UpdatedAt)
-                .ValueGeneratedOnAddOrUpdate()
+        });
+
+        modelBuilder.Entity<Productcategory>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("productcategory");
+
+            entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
-
-            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.ProductCreatedByNavigations)
-                .HasForeignKey(d => d.CreatedBy)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_product_createdby");
-
-            entity.HasOne(d => d.UpdatedByNavigation).WithMany(p => p.ProductUpdatedByNavigations)
-                .HasForeignKey(d => d.UpdatedBy)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("fk_product_updatedby");
         });
 
         modelBuilder.Entity<Refund>(entity =>
@@ -679,6 +673,25 @@ public partial class RepMedContext : DbContext
             entity.Property(e => e.RoleName)
                 .IsRequired()
                 .HasMaxLength(50);
+        });
+
+        modelBuilder.Entity<Rolepermission>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("rolepermissions");
+
+            entity.HasIndex(e => e.PermissionId, "PermissionId");
+
+            entity.HasIndex(e => e.RoleId, "RoleId");
+
+            entity.HasOne(d => d.Permission).WithMany(p => p.Rolepermissions)
+                .HasForeignKey(d => d.PermissionId)
+                .HasConstraintName("rolepermissions_ibfk_2");
+
+            entity.HasOne(d => d.Role).WithMany(p => p.Rolepermissions)
+                .HasForeignKey(d => d.RoleId)
+                .HasConstraintName("rolepermissions_ibfk_1");
         });
 
         modelBuilder.Entity<Settlement>(entity =>
@@ -816,6 +829,10 @@ public partial class RepMedContext : DbContext
             entity.HasIndex(e => e.UserId, "UserId");
 
             entity.Property(e => e.CreatedDate).HasColumnType("datetime");
+            entity.Property(e => e.IsActive)
+                .IsRequired()
+                .HasDefaultValueSql("'1'");
+            entity.Property(e => e.RevokedOn).HasColumnType("datetime");
             entity.Property(e => e.Token)
                 .IsRequired()
                 .HasColumnType("text");

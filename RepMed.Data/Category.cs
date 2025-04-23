@@ -19,15 +19,5 @@ public partial class Category
 
     public string Url { get; set; }
 
-    public long? TotalPages { get; set; }
-
-    public long? CreatedBy { get; set; }
-
-    public long? UpdatedBy { get; set; }
-
-    public bool? IsDeleted { get; set; }
-
-    public virtual User CreatedByNavigation { get; set; }
-
-    public virtual User UpdatedByNavigation { get; set; }
+    public int? TotalPages { get; set; }
 }

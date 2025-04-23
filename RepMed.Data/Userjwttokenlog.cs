@@ -17,5 +17,9 @@ public partial class Userjwttokenlog
 
     public DateTime? TokenValidTill { get; set; }
 
+    public bool? IsActive { get; set; }
+
+    public DateTime? RevokedOn { get; set; }
+
     public virtual User User { get; set; }
 }

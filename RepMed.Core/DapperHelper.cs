@@ -342,25 +342,26 @@ namespace RepMed.Core
     {
         public const string tblUser = "`Users`";
         public const string tblPersons = "`Persons`";
-        public const string tblUserContacts = "`UserContacts`";
-        public const string tblUserRolePermission = "`UserRolePermission`";
+        //public const string tblUserRolePermission = "`UserRolePermission`";
         public const string tblUserRoles = "`UserRoles`";
         public const string tblUserJWTTokenLog = "`UserJWTTokenLog`";
         public const string tblRole = "`Roles`";
         public const string tblCountry = "`Countries`";
         public const string tblStates = "`States`";
         public const string tblCity = "`Cities`";
-        public const string tblProviders = "`Providers`";
+        //public const string tblProviders = "`Providers`";
         public const string tblCodeRequest = "`CodeRequest`";
-        public const string tblProviderCategory = "`ProviderCategories`";
-        public const string tblAssessments = "`Assessments`";
-        public const string tblCustomFields = "`CustomFields`";
-        public const string tblUserCustomFields = "`UserCustomFields`";
-        public const string tblUserAssessments = "`UserAssessments`";
+        //public const string tblProviderCategory = "`ProviderCategories`";
+        //public const string tblAssessments = "`Assessments`";
+        //public const string tblCustomFields = "`CustomFields`";
+        //public const string tblUserCustomFields = "`UserCustomFields`";
+        //public const string tblUserAssessments = "`UserAssessments`";
         public const string tblPharmacy = "`Pharmacies`";
         public const string tblPharmacyBankDetails = "`PharmacyBankDetails`";
         public const string tblUserAddress = "`UserAddresses`";
         public const string tblUserTokens = "`UserTokens`";
+        public const string tblRolePermissions = "`RolePermissions`";
+        public const string tblPermissions = "`Permissions`";
     }
 
 

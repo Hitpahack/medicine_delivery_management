@@ -109,6 +109,19 @@ namespace RepMed.Services
 
             return Task.FromResult(result != null);
         }
+        public Task<bool> IsRoleExist(string roleName)
+        {
+            string sql = $@"
+                SELECT 1
+                FROM {DbTables.tblRole}
+                WHERE RoleName = @RoleName
+                LIMIT 1;";
+
+            var result = _idbConnection.ExecuteScalar(sql, new { RoleName = roleName }, transaction: _idbTransaction);
+
+            return Task.FromResult(result != null);
+        }
+
 
         public bool IsUserExist(Guid? userid)
         {

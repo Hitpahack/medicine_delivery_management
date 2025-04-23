@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace RepMed.Web.Controllers.WebApis
 {
     [ApiExplorerSettings(GroupName = "admin")]
-    [Route("api/v1/admin/users")]
+    [Route("api/v1/admin/products")]
     public class ProductsController : BaseAccountsController
     {
         public ProductsController(IOptions<AppSettings> appSettings) : base(appSettings)

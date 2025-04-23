@@ -5,23 +5,13 @@ namespace RepMed.Data;
 
 public partial class Rolepermission
 {
-    public int Id { get; set; }
+    public long Id { get; set; }
 
-    public string Permission { get; set; }
+    public long? RoleId { get; set; }
 
-    public string Description { get; set; }
+    public long? PermissionId { get; set; }
 
-    public string Action { get; set; }
+    public virtual Permission Permission { get; set; }
 
-    public string Controller { get; set; }
-
-    public string Route { get; set; }
-
-    public string Title { get; set; }
-
-    public bool? IsApis { get; set; }
-
-    public string Parma { get; set; }
-
-    public virtual ICollection<Userrolepermission> Userrolepermissions { get; set; } = new List<Userrolepermission>();
+    public virtual Role Role { get; set; }
 }

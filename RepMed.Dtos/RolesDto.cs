@@ -21,9 +21,14 @@ namespace RepMed.Dtos
         public int RoleId { get; set; }
 
     }
-    public class CreateRoleDto :BasicRoleDto
+    public class CreateRoleDto : BasicRoleDto
     {
-        public List<long> PermissionIds { get; set; }
+        public List<long>? PermissionIds { get; set; }
+    }
+
+    public class GetRoleDto
+    {
+
     }
 
 

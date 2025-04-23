@@ -31,10 +31,6 @@ public partial class User
 
     public bool? IsDeleted { get; set; }
 
-    public virtual ICollection<Category> CategoryCreatedByNavigations { get; set; } = new List<Category>();
-
-    public virtual ICollection<Category> CategoryUpdatedByNavigations { get; set; } = new List<Category>();
-
     public virtual ICollection<Deliveryperson> Deliverypeople { get; set; } = new List<Deliveryperson>();
 
     public virtual ICollection<Order> Orders { get; set; } = new List<Order>();
@@ -46,10 +42,6 @@ public partial class User
     public virtual ICollection<Pharmacy> Pharmacies { get; set; } = new List<Pharmacy>();
 
     public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
-
-    public virtual ICollection<Product> ProductCreatedByNavigations { get; set; } = new List<Product>();
-
-    public virtual ICollection<Product> ProductUpdatedByNavigations { get; set; } = new List<Product>();
 
     public virtual ICollection<Userjwttokenlog> Userjwttokenlogs { get; set; } = new List<Userjwttokenlog>();
 }

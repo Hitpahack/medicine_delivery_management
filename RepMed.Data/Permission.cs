@@ -3,11 +3,13 @@ using System.Collections.Generic;
 
 namespace RepMed.Data;
 
-public partial class Role
+public partial class Permission
 {
     public long Id { get; set; }
 
-    public string RoleName { get; set; }
+    public string Name { get; set; }
+
+    public string Module { get; set; }
 
     public string Description { get; set; }
 
