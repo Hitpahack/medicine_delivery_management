@@ -30,15 +30,46 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
     editUserForm: FormGroup
     addUserData: AddPersonDto;
 
+    errorMessage: string = '';
+
     countries: CountryDto[] = [];
     states: StateDto[] = [];
     cities: CityDto[] = [];
+
+    today = new Date();
+    minDate = new Date(this.today.getFullYear() - 100, this.today.getMonth(), this.today.getDate());
+    maxxDate = this.today;
 
     constructor(public router: Router, public fb: FormBuilder, public validator: CustomValidator, public adminuserservice: AdminUserService, public AdminCommonServices: AdminCommonServices, private route: ActivatedRoute) {
         super(router, fb);
     }
 
     maxDate = new Date().toISOString().split('T')[0];
+
+    dateMethod(dateString: Date): string {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+
+      dateRangeValidator(control: FormControl) {
+        const value = control.value;
+        if (!value) return null;
+    
+        const date = new Date(value);
+        if (isNaN(date.getTime())) {
+          return { invalidDate: true };
+        }
+    
+        if (date < this.minDate || date > this.maxxDate) {
+          return { outOfRange: true };
+        }
+    
+        return null;
+      }
+    
 
     ngOnInit(): void {
         this.editUserForm = this.initForm();
@@ -47,6 +78,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
             this.adminuserservice.getUserbyId(userId).subscribe((response) => {
                 if (response?.isSuccess && response.data) {
                     const user = response.data;
+                    console.log("dob", user.dateOfBirth)
                     const address = response.data.address;
                     this.editUserForm.patchValue({
                         firstname: user.firstName,
@@ -55,7 +87,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
                         mobile: user.mobile,
                         id: user.id,
                         gender: user.gender,
-                        dateofBirth: user.dateOfBirth,
+                        dateofBirth: this.dateMethod(user.dateOfBirth),
                         picture: user.picture
                     });
 
@@ -81,9 +113,6 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
             })
         }
     }
-
-
-
 
     onValueChanged(value: any) {
         this.AdminCommonServices.getstatebyId(value).subscribe((response) => {
@@ -134,7 +163,6 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
 
         if (input.files && input.files[0]) {
             const file = input.files[0];
-            console.log("picture url", file.name)
             this.editUserForm.get('picture')?.setValue(file.name);
             const reader = new FileReader();
             reader.onload = e => {
@@ -142,9 +170,9 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
                 if (avatar) {
                     avatar.src = e.target?.result as string;
                 }
-            };  
+            };
             reader.readAsDataURL(input.files[0]);
-       }
+        }
     }
 
 
@@ -156,7 +184,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
             email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
             mobile: new FormControl(null, [Validators.pattern(/^\d{10}$/)]),
             gender: new FormControl(null),
-            dateofBirth: new FormControl(null),
+            dateofBirth: new FormControl(null, this.dateRangeValidator.bind(this)),
             picture: new FormControl(),
             address: this.fb.group({
                 addressline: new FormControl(null),
@@ -174,7 +202,23 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
         if (this.editUserForm.valid) {
             const userId = this.route.snapshot.params['id'];
             this.adminuserservice.edituser(this.editUserForm.value, userId)
-                .subscribe(response => { })
+            .subscribe({
+                next: (response) => {
+                    if (response.isSuccess) {
+                        Helper.ShowSuccess(response.message || 'user Updated successfully.');
+                        this.router.navigate(['/admin/dashboard']);
+                    } else {
+                        console.error('API returned isSuccess: false');
+                        this.errorMessage = response.message || 'Failed to add user.';
+                        Helper.ShowError(this.errorMessage);
+                    }
+                },
+                error: (err) => {
+                    console.error('HTTP Error:', err);
+                    this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
+                    Helper.ShowError(this.errorMessage);
+                }
+            });
         }
         else {
             this.validator.markInvalidFieldsTouched(this.editUserForm);
