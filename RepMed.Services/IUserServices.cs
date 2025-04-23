@@ -55,7 +55,7 @@ namespace RepMed.Services
                                                }, $@"PersonId='{personid}'");
                    
                     #endregion
-                    apiResponse = new APIsSuccsss<EntityUsersDto>(_validateMessages.Success, person);
+                    apiResponse = new APIsSuccsss<EntityUsersDto>(_validateMessages.UpdateSuccess, person);
                 }
                 else
                 {
@@ -75,7 +75,7 @@ namespace RepMed.Services
                      DapperHelper.QueryAsColumnsParma<User, AddUsersDto>(),
                      DapperHelper.QueryAsValuesParma<User, AddUsersDto>(),
                      reqDto);
-                    apiResponse = new APIsSuccsss<EntityUsersDto>(_validateMessages.RetriveSuccess, response);
+                    apiResponse = new APIsSuccsss<EntityUsersDto>(_validateMessages.AddSuccess, response);
 
                 }
                 return await Task.FromResult(apiResponse);
