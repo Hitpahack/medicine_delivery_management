@@ -186,7 +186,7 @@ namespace RepMed.Web.Controllers.BaseApis
                                 }
                             }
                             tran.Commit();
-                            return new APIsResponse<EntityUsersDto> { IsSuccess = true, Data= user.Data, Message = "Successfuly Added User Details" };
+                            return new APIsResponse<EntityUsersDto> { IsSuccess = true, Data= user.Data, Message = user.Message};
                         }
                     }
                     

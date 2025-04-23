@@ -31,7 +31,7 @@ export class ProductListsComponent extends AdminBaseComponent implements OnInit 
         },
         searching: true,
         columns: [
-            { data: 'id', title: '#', render: (data: any) =>`<input class="item_checkbox" id="${data}" type="checkbox" value="${data}" />`},
+            // { data: 'id', title: '#', render: (data: any) =>`<input class="item_checkbox" id="${data}" type="checkbox" value="${data}" />`},
             { 
                 data: 'imageUrl', // or keep it empty if no image URL is coming
                 title: '',
