@@ -3,6 +3,7 @@ export interface BasePerson {
     lastName?: string;
     email: string;
     id?: number;
+    name: string;
   }
   
   export interface BasePersonDto extends BasePerson {

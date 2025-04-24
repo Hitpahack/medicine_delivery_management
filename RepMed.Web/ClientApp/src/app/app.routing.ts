@@ -24,6 +24,8 @@ import { AdminPharmacyDetailsComponent } from './admin/views/pharmacy/details.co
 import { ProductListsComponent } from './admin/views/product/list.component';
 import { NotFoundComponent } from './admin/views/pagenotfound/not-found.component';
 import { AddRoleComponent } from './admin/views/rolemanage/addrole.component';
+import { DoctorComponent } from './admin/views/doctor/doctor.component';
+import { PharmacyUserComponent } from './admin/views/pharmacyuser/pharmacyuser.component';
 
 
 
@@ -60,6 +62,10 @@ export const routes: Routes = [
       {path:  'productlist', component:ProductListsComponent},
 
       {path: 'role/add', component: AddRoleComponent },
+
+      {path: 'doctor', component: DoctorComponent},
+
+      {path: 'pharmacy/user', component: PharmacyUserComponent},
     ]
   },
   {
