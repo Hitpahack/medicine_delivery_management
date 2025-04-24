@@ -127,21 +127,21 @@
             <legend>Bank Details</legend>
             <div class="form-grid">
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="bankName" class="form-control" minlength="3" maxlength="25">
+                    <input type="text" placeholder=" " formControlName="bankName" class="form-control" minlength="3" maxlength="25" required>
                     <label class="float-lbl">Bank Name *</label>
                 </div>
 
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="accountholderName" class="form-control" minlength="3" maxlength="25">
+                    <input type="text" placeholder=" " formControlName="accountholderName" class="form-control" minlength="3" maxlength="25" required>
                     <label class="float-lbl">Account Holder Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="text" placeholder=" " formControlName="accountNumber" class="form-control" minlength="10"
-                        maxlength="16" (keypress)="allowOnlyNumbers($event)" (paste)="disablePaste($event)">
+                        maxlength="16" (keypress)="allowOnlyNumbers($event)" (paste)="disablePaste($event)" required>
                     <label class="float-lbl">Account Number *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="ifscCode" class="form-control" maxlength="16">
+                    <input type="text" placeholder=" " formControlName="ifscCode" class="form-control" maxlength="16" required>
                     <label class="float-lbl">IFSC Code *</label>
                 </div>
                 <div class="input-group mb-4 float">
