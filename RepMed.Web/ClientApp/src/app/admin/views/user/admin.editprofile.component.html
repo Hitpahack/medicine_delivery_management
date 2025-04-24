@@ -72,7 +72,7 @@
                 <div class="form-grid">
                     <div class="input-group mb-4 float">
                         <select formControlName="countryId" class="form-control"
-                            (change)="onCountryDropdownChange($event)" (ngModelChange)="onValueChanged($event)">
+                            (change)="onCountryDropdownChange($event)" (ngModelChange)="onValueChanged($event)" required>
                             <option value="" disabled>Select Country</option>
                             <option *ngFor="let country of countries" [value]="country.value">{{ country.text }}
                             </option>
@@ -82,7 +82,7 @@
 
                     <div class="input-group mb-4 float">
                         <select formControlName="stateId" class="form-control" (change)="onCityDropdownChange($event)"
-                            (ngModelChange)="onValueChaanged($event)">
+                            (ngModelChange)="onValueChaanged($event)" required>
                             <option value="" disabled>Select State</option>
                             <option *ngFor="let st of states" [value]="st.value">{{ st.text }}</option>
                         </select>
@@ -90,7 +90,7 @@
                     </div>
 
                     <div class="input-group mb-4 float">
-                        <select formControlName="cityId" class="form-control">
+                        <select formControlName="cityId" class="form-control" required>
                             <option value="" disabled>Select city</option>
                             <option *ngFor="let city of cities" [value]="city.value">{{ city.text }}</option>
                         </select>
