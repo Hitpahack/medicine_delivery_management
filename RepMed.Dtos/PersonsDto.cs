@@ -20,8 +20,13 @@ namespace RepMed.Dtos
         public string? Gender { get; set; }
         public DateTime? DateOfBirth { get; set; } 
         [RegularExpression(@"^(\d{10})|(\d{4}[- ])(\d{3}[- ])(\d{3})|(\d{1,3}[- ])(\d{4}[- ]\d{3}[- ]\d{3})|(\+\d{1,3}[- ])(\d{4}[- ]\d{3}[- ]\d{3})|(\d{1,3}[- ])(\d{7,10})|(\d{1,3}[- ])(\d{3}[- ])(\d{4})|(\+\d{1,3}[- ]?)(\d{7,12})|(\+\d{1,3}[- ]?)(\d{3}[- ])(\d{4})$/", ErrorMessage = "Invalid phone no")]
-        public string? Mobile { get; set; }
-        
+        private string? _mobile;
+        public string? Mobile
+        {
+            get => _mobile;
+            set => _mobile = string.IsNullOrWhiteSpace(value) ? null : value;
+        }
+
     }
     public class BasicPersonsDto : BasePersonDto
     {
