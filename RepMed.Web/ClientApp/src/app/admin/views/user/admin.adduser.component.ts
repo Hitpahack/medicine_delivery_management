@@ -94,6 +94,10 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
     });
   }
 
+  disablePaste(event: ClipboardEvent): void {
+    event.preventDefault();
+  }
+
   allowOnlyNumbers(event: KeyboardEvent) {
     const charCode = event.key.charCodeAt(0);
     if (charCode < 48 || charCode > 57) {

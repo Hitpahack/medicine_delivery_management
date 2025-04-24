@@ -57,7 +57,7 @@
                     </div>
                     <div class="input-group mb-4 float">
                         <input type="text" formControlName="mobile" class="form-control" placeholder="1234567890"
-                            maxlength="10" (keypress)="allowOnlyNumbers($event)" />
+                            maxlength="10" (keypress)="allowOnlyNumbers($event)" (paste)="disablePaste($event)" />
                         <label class="float-lbl">Mobile *</label>
                     </div>
                 </div>
