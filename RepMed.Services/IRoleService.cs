@@ -17,7 +17,7 @@ namespace RepMed.Services
     {
         Task<APIsResponse<EntityRoleDto>> CreateRole(CreateRoleDto reqDto);
         Task<APIsResponse<bool>> UpdateRolePermission(CreateRoleDto reqDto, long Id);
-        Task<APIsResponse<bool>> GetRole(long roleId);
+        Task<APIsResponse<List<EntityPermissionDto>>> GetRole(long roleId);
         Task<APIsResponse<List<EntityPermissionDto>>> GetAllPermissions();
     }
     public class RoleService : BaseService, IRoleService
@@ -88,41 +88,33 @@ namespace RepMed.Services
 
         }
 
-        public Task<APIsResponse<bool>> GetRole(long roleId)
+        public async Task<APIsResponse<List<EntityPermissionDto>>> GetRole(long roleId)
         {
-            throw new NotImplementedException();    
-            //try
-            //{
-            //    var sql = $@"
-            //                SELECT 
-            //                FROM {DbTables.tblRole} r
-            //                INNER JOIN {DbTables.tblPersons} p ON u.PersonId = p.Id
-            //                INNER JOIN {DbTables.tblUserAddress} a ON a.PersonId = p.Id
-            //                WHERE u.PersonId = @Id;
-            //            ";
-            //    var result = await _idbConnection.QueryAsync<GetUserDto, BasicAddressDto, GetUserDto>(
-            //                    sql,
-            //                    (user, address) =>
-            //                    {
-            //                        user.Address = address;
-            //                        return user;
-            //                    },
-            //                    new { Id = personid },
-            //                    splitOn: "AddressLine", // this tells Dapper where to start splitting the object
-            //                    transaction: _idbTransaction
-            //                );
+            try
+            {
+                var sql = $@" 
+                            SELECT p.Id,p.Name,p.Module,p.Description
+                            FROM {DbTables.tblRole} r
+                            INNER JOIN {DbTables.tblRolePermissions} rp ON r.Id = rp.RoleId
+                            INNER JOIN {DbTables.tblPermissions} p ON p.Id = rp.PermissionId
+                            WHERE r.Id = @Id;
+                        ";
+                var result = await _idbConnection.QueryAsync<EntityPermissionDto>(
+                                sql,
+                                new { Id = roleId },
+                                transaction: _idbTransaction
+                            );
 
-            //    var userData = result.FirstOrDefault();
-            //    if (userData == null)
-            //        return new APIsError<GetUserDto>(_validateMessages.NotExist);
+                if (result == null || !result.Any())
+                    return new APIsError<List<EntityPermissionDto>> (_validateMessages.NotExist);
 
-            //    return new APIsSuccsss<GetUserDto>(_validateMessages.RetriveSuccess, userData);
+                return new APIsSuccsss<List<EntityPermissionDto>>(_validateMessages.RetriveSuccess, result);
 
-            //}
-            //catch (Exception ex)
-            //{
-            //    return await Task.FromResult(new APIsError<GetUserDto>(ex.GetActualError()));
-            //}
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<List<EntityPermissionDto>>(ex.GetActualError()));
+            }
         }
 
         public async Task<APIsResponse<bool>> UpdateRolePermission(CreateRoleDto reqDto, long Id)

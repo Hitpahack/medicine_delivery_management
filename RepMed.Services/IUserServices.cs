@@ -98,8 +98,8 @@ namespace RepMed.Services
                 var sql = $@"
                             SELECT u.Id as UserId , p.Id as PersonId, p.FirstName,p.LastName,p.Email,p.Mobile,p.Gender,p.DateOfBirth,p.Email,a.AddressLine,a.CityId,a.StateId,a.CountryId,a.Pincode
                             FROM {DbTables.tblUser} u
-                            INNER JOIN {DbTables.tblPersons} p ON u.PersonId = p.Id
-                            INNER JOIN {DbTables.tblUserAddress} a ON a.PersonId = p.Id
+                            LEFT JOIN {DbTables.tblPersons} p ON u.PersonId = p.Id
+                            LEFT JOIN {DbTables.tblUserAddress} a ON a.PersonId = p.Id
                             WHERE u.PersonId = @Id;
                         ";
                 var result = await _idbConnection.QueryAsync<GetUserDto, BasicAddressDto, GetUserDto>(
