@@ -62,7 +62,7 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
             componentIdControl?.updateValueAndValidity();
 
             if (componentIdControl?.hasError('checkboxRequired')) {
-                this.errorMessage = 'Please select at least one component.';
+                this.errorMessage = 'Please select at least one module.';
                 Helper.ShowError(this.errorMessage);
             }
             return;
