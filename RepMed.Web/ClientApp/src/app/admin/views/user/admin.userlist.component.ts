@@ -11,7 +11,7 @@ declare var $: any;
 @Component({
     selector: 'app-User-list',
     templateUrl: 'admin.userlist.component.html',
-    imports:[DatatableComponent, RouterModule]
+    imports: [DatatableComponent, RouterModule]
 })
 
 export class UserListComponent extends AdminBaseComponent implements OnInit {
@@ -36,9 +36,11 @@ export class UserListComponent extends AdminBaseComponent implements OnInit {
         columns: [
             { data: 'id', title: '#', render: (data: any) => `<input class="item_checkbox" id="${data}" type="checkbox" value="${data}" />` },
             { data: 'email' },
+            { data: 'roleName' },
             { data: 'firstName' },
             { data: 'lastName' },
             { data: 'mobile' },
+
         ],
         //searchInputId: 'post-search-input',
     };
