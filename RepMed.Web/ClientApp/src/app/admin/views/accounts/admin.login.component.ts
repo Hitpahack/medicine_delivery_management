@@ -71,19 +71,19 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
                     //this.rolename = (sessionStorage.getItem('rolename') || '').toLowerCase();
                     this.rolename = (sessionStorage.getItem('rolename') || '').toLowerCase().trim();
                     console.log('ROlE:', this.rolename);
-                    if (this.rolename == 'admin') {
+                    if (this.rolename === 'admin') {
                         //this.router.navigate(['/admin/dashboard']);
-                        console.log('enter in admin',this.rolename);
-                        this.zone.run(() => this.router.navigate(['/admin/dashboard']));
+                        console.log('enter in admin section',this.rolename);
+                        this.router.navigate(['/admin/dashboard']);
                     }
-                    else if (this.rolename == 'pharmacy') {
-                        console.log('enter in pharmacy',this.rolename);
+                    else if (this.rolename === 'pharmacy') {
+                        console.log('enter in pharmacy section',this.rolename);
                         //this.router.navigate(['/admin/pharmacy/user']);
-                        this.zone.run(() => this.router.navigate(['/admin/pharmacy/user']));
+                        this.router.navigate(['/pharmacy/dashboard']);
                     }
-                    else if (this.rolename == 'doctor') {
-                       // this.router.navigate(['/admin/doctor']);
-                       this.zone.run(() => this.router.navigate(['/admin/doctor']));
+                    else if (this.rolename === 'doctor') {
+                        console.log('enter in doctor section',this.rolename);
+                       this.router.navigate(['/doctor/dashboard']);
                     }
 
                 }

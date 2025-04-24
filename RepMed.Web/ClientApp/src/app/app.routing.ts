@@ -69,6 +69,20 @@ export const routes: Routes = [
     ]
   },
   {
+    path: 'doctor',
+    component: AdminLayoutComponent,
+    children: [
+      { path: 'dashboard', component: DoctorComponent }
+    ]
+  },
+  {
+    path: 'pharmacy',
+    component: AdminLayoutComponent,
+    children: [
+      { path: 'dashboard', component: PharmacyUserComponent }
+    ]
+  },
+  {
     path: 'admin',
     component: PharmacyLayoutComponent,
     children: [
