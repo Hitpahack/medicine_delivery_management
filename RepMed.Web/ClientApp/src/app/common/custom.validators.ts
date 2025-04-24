@@ -172,4 +172,12 @@ export class CustomValidator {
     };
   }
 
+  public minSelectedCheckboxes(min = 1) {
+    return (formArray: FormArray) => {
+      const totalSelected = formArray.controls.length;
+      return totalSelected >= min ? null : { required: true };
+    };
+  }
+
+
 }

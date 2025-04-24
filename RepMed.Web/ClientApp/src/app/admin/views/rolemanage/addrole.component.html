@@ -25,7 +25,7 @@
                                 <div class="form-check d-flex align-items-center gap-3">
                                     <input class="form-check-input" type="checkbox" [value]="comp.id"
                                         (change)="onCheckboxChange($event)" id="comp-{{ comp.id }}"
-                                        [checked]="addroleForm.get('componentid').value.includes(comp.id)">
+                                        [checked]="addroleForm.get('PermissionIds').value.includes(comp.id)" required>
                                     <label class="form-check-label mb-0" for="comp-{{ comp.id }}">
                                         {{ comp.name }}
                                     </label>
@@ -33,14 +33,7 @@
                             </div>
                         </div>
                     </div>
-                    <!-- Show the error message when the checkbox is required and touched -->
-                    <div *ngIf="addroleForm.get('componentid').hasError('checkboxRequired') && addroleForm.get('componentid').touched"
-                        class="text-danger small mt-1">
-                        Please select at least one component.
-                    </div>
                 </div>
-                
-                          
             </div>
         </fieldset>
         <div class="row justify-content-end">

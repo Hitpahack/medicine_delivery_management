@@ -25,7 +25,7 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
     errorMessage: string = '';
     selectedComponentIds: number[] = [];
     componentList: ComponentDto[] = [];
-    
+
 
     constructor(public validator: CustomValidator, public RoleService: RoleService) {
         super();
@@ -48,7 +48,7 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
         return this.fb.group({
             roleName: new FormControl(null, [Validators.required]),
             description: new FormControl(null),
-            componentid: new FormControl([], [Validators.required, this.validator.checkboxRequiredValidator])  // Ensure it's an empty array initially
+            PermissionIds: new FormControl([], [Validators.required, this.validator.checkboxRequiredValidator])  // Ensure it's an empty array initially
         });
     }
 
@@ -57,7 +57,7 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
         this.validator.markInvalidFieldsTouched(this.addroleForm);
         // Check if the form is invalid
         if (this.addroleForm.invalid) {
-            const componentIdControl = this.addroleForm.get('componentid');
+            const componentIdControl = this.addroleForm.get('PermissionIds');
             if (componentIdControl?.hasError('checkboxRequired')) {
                 // Error handling when checkbox is not selected
                 this.errorMessage = 'Please select at least one component.';
@@ -65,9 +65,10 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
             }
             return;
         }
-    
+
         // Proceed with form submission if valid
         const dto: AddRoleDto = this.addroleForm.value;
+        console.log("role",this.addroleForm)
         this.RoleService.add(dto).subscribe({
             next: (response) => {
                 if (response.isSuccess) {
@@ -80,7 +81,7 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
                     Helper.ShowError(this.errorMessage);
                 }
             },
-            error: (err) => { 
+            error: (err) => {
                 console.log('api error add')
                 console.error('HTTP Error:', err);
                 this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
@@ -88,22 +89,29 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
             }
         });
     }
-    
-    
+
+    // minSelectedCheckboxes(min = 1) {
+    //     return (formArray: FormArray) => {
+    //       const totalSelected = formArray.controls.length;
+    //       return totalSelected >= min ? null : { required: true };
+    //     };
+    //   }
 
     onCheckboxChange(event: any) {
         const id = +event.target.value;
-        const componentIds = this.addroleForm.get('componentid').value;
+        let componentIds = [...this.addroleForm.get('PermissionIds').value]; // clone
+    
         if (event.target.checked) {
             if (!componentIds.includes(id)) {
                 componentIds.push(id);
             }
         } else {
-            const index = componentIds.indexOf(id);
-            if (index > -1) {
-                componentIds.splice(index, 1);
-            }
+            componentIds = componentIds.filter(x => x !== id);
         }
-        this.addroleForm.get('componentid').setValue(componentIds);
+    
+        const control = this.addroleForm.get('PermissionIds');
+        control.setValue(componentIds);
+        control.markAsTouched(); // important
+        control.updateValueAndValidity(); // trigger validator
     }
 }

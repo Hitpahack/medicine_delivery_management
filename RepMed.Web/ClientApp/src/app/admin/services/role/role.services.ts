@@ -17,7 +17,6 @@ export class RoleService extends adminBaseService {
     }
     //#region RoleApi
     add(formData: any) {
-        console.log("called.")
         return this.http.post<ApiResponse<AddRoleDto>>(this.apiConfig.endpoints.role.add, formData, { headers: this.apiConfig.requestSettings.header })
     }
     getcomponent() {
