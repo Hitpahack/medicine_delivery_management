@@ -12,9 +12,9 @@ export class CustomValidator {
       return null;
     }
 
-    let regularExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    let regularExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
     if (control.value !== undefined && !regularExp.test(control.value.trim())) {
-      return { email: true, error: "Invalid email. Use only letters, numbers, ., _, %, +, -, and a valid domain (e.g., user@example.com)." };
+      return { email: true, error: "Please enter a valid email address using only lowercase letters (e.g., john.doe@example.com). Uppercase letters are not allowed." };
     }
     return null;
   }
@@ -162,21 +162,20 @@ export class CustomValidator {
     return null;
   }
 
-  public checkboxRequiredValidator(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      // Check if no values are selected
-      if (!control.value || control.value.length === 0) {
+  checkboxRequiredValidator(control: AbstractControl): ValidationErrors | null {
+    console.log('checkbox validator called with value:', control.value);
+    if (Array.isArray(control.value) && control.value.length === 0) {
+        console.log('Returning checkboxRequired error');
         return { checkboxRequired: true };
-      }
-      return null;
-    };
-  }
+    }
+    return null;
+}
 
-  public minSelectedCheckboxes(min = 1) {
-    return (formArray: FormArray) => {
-      const totalSelected = formArray.controls.length;
-      return totalSelected >= min ? null : { required: true };
-    };
+  static markInvalidFieldsTouched(formGroup: any) {
+    Object.keys(formGroup.controls).forEach(field => {
+      const control = formGroup.get(field);
+      control.markAsTouched({ onlySelf: true });
+    });
   }
 
 
