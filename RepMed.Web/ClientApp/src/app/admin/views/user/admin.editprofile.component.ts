@@ -88,8 +88,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
                         id: user.id,
                         personId: user.personId,
                         gender: user.gender,
-                        dateofBirth: this.dateMethod(user.dateOfBirth),
-                        picture: user.picture
+                        dateofBirth: this.dateMethod(user.dateOfBirth)
                     });
 
                     this.editUserForm.get('address').patchValue({
@@ -161,7 +160,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
 
     onFileSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
-
+        console.log("file", input)
         if (input.files && input.files[0]) {
             const file = input.files[0];
             this.editUserForm.get('imageFile')?.setValue(file);
@@ -188,7 +187,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
             mobile: new FormControl(null, [Validators.pattern(/^\d{10}$/)]),
             gender: new FormControl(null),
             dateofBirth: new FormControl(null, this.dateRangeValidator.bind(this)),
-            picture: new FormControl(),
+            imageFile: new FormControl(),
             address: this.fb.group({
                 addressline: new FormControl(null),
                 countryId: new FormControl(),
