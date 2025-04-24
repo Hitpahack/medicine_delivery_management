@@ -148,6 +148,7 @@ namespace RepMed.Services
                                                WHERE RP.{nameof(Rolepermission.RoleId)} = @RoleId",
                                                 new { RoleId = response.Roles[0].Id }, _idbTransaction)).ToList();
                             loginObj.RoleId = response.Roles[0].Id;
+                            loginObj.RoleName = response.Roles[0].RoleName;
 
                             return await Task.FromResult(new APIsSuccsss<Login_ResDto>(_validateMessages.Success, loginObj, jwtToken.Claims));
                         }
