@@ -80,7 +80,7 @@ namespace RepMed.Dtos
         public BasicAddressDto? Address { get; set; }
     }
 
-    public class API_ADD_USER
+    public class API_ADD_USER :BasicPersonsDto
     {
 
         [Required]

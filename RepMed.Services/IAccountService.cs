@@ -141,7 +141,13 @@ namespace RepMed.Services
 
                                 loginObj.Token.TokenId = _idbConnection.QuerySingle<int>(tokenSql, transaction: _idbTransaction);
                             }
-
+                            loginObj.Permissions = (await _idbConnection.QueryAsync<string>(
+                                            $@"SELECT P.{nameof(Permission.Module)}, P.{nameof(Permission.Name)}
+                                               FROM {DbTables.tblPermissions} P
+                                               INNER JOIN {DbTables.tblRolePermissions} RP ON RP.{nameof(Rolepermission.PermissionId)} = P.{nameof(Permission.Id)}
+                                               WHERE RP.{nameof(Rolepermission.RoleId)} = @RoleId",
+                                                new { RoleId = response.Roles[0].Id }, _idbTransaction)).ToList();
+                            loginObj.RoleId = response.Roles[0].Id;
 
                             return await Task.FromResult(new APIsSuccsss<Login_ResDto>(_validateMessages.Success, loginObj, jwtToken.Claims));
                         }

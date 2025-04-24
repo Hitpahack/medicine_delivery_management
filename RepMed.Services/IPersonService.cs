@@ -115,6 +115,7 @@ namespace RepMed.Services
                         return await Task.FromResult(new APIsError<EntityPersonsDto>(_validateMessages.GetAlreadyExist(reqDto.Mobile, "Please choose another one")) as APIsResponse<EntityPersonsDto>);
                     }
                     #endregion
+                    reqDto.Gender=MapGender(reqDto.Gender);
                     #region Add Person
                     EntityPersonsDto person = _idbConnection.Insert<EntityPersonsDto>(_idbTransaction,
                         DbTables.tblPersons,

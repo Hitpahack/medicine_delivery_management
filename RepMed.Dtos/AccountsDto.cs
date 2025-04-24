@@ -1,5 +1,6 @@
 ﻿using RepMed.Localize;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace RepMed.Dtos
@@ -32,6 +33,8 @@ namespace RepMed.Dtos
     public class Login_ResDto : BaseAccountsDto
     {
         public JwtTokenDto Token { get; set; }
+        public long RoleId { get; set; }
+        public List<string> Permissions { get; set; }
 
     }
     public class JwtTokenDto
