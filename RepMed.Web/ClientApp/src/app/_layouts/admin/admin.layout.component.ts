@@ -2,10 +2,11 @@ import { Component, OnInit, Renderer2 } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { getBaseUrl, loadScript, loadScripts, loadStylesheets, setTitle } from '../../../main';
 import { AfterViewInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 declare const window: any;
 @Component({
   selector: 'app-admin-layout',
-  imports: [RouterModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './admin.layout.component.html',
   styleUrls: ['./admin.layout.component.css']
 })
@@ -15,6 +16,7 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
   isPharmacySubmenuVisible: boolean = false;
   id: string | null = null;
   Userid: string | null = null;
+  roleaccess: string | null = null;
 
   constructor(private renderer: Renderer2, private router: Router) { }
   scripts: Array<string> = [
@@ -32,12 +34,18 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
     });
   }
 
+  userRole: string = '';
   ngOnInit() {
     // const script = this.renderer.createElement('script');
     //script.src = `https://cdnjs.cloudflare.com/ajax/libs/le_js/0.0.3/le.min.js`;
     //this.renderer.appendChild(document.head, script);
     this.id = sessionStorage.getItem('personid');
     this.Userid = sessionStorage.getItem('userId');
+    //this.roleaccess = sessionStorage.getItem('rolename');
+   // this.userRole = sessionStorage.getItem('rolename');
+    
+    this.userRole = (sessionStorage.getItem('rolename') || '').toLowerCase();
+    console.log('userRole', this.userRole);
     setTitle(':: REPMED :: ');
     loadStylesheets(this.styles);
     loadScripts(this.scripts);

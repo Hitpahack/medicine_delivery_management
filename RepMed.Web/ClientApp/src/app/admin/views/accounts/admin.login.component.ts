@@ -1,4 +1,4 @@
-﻿import { Component, OnInit } from "@angular/core";
+﻿import { Component, OnInit, NgZone  } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -24,10 +24,12 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
 
     constructor(
         public validator: CustomValidator,
-        public accountservice: adminAccountsService
+        public accountservice: adminAccountsService,
+        public  router: Router,
+        private zone: NgZone
 
     ) {
-        super();
+        super(router);
     }
 
     ngAfterViewInit(): void {
@@ -39,41 +41,62 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
     ngOnInit(): void {
         this.loginForm = this.initForm();
     }
-
+    rolename: string;
 
     initForm(): FormGroup {
         return this.fb.group({
-            email: new FormControl(null, [Validators.required,this.validator.ValidateEmail]),
+            email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
             password: new FormControl(null, [Validators.required]),
             remamber: new FormControl(false)
-            
+
         });
     }
     loginError: string = '';
     onSubmit() {
-            if (this.loginForm.invalid) {
-                this.loginForm.markAllAsTouched();  
-                return;
-            }
-            this.loginError = ''; 
+        if (this.loginForm.invalid) {
+            this.loginForm.markAllAsTouched();
+            return;
+        }
+        this.loginError = '';
 
-            this.accountservice.login(this.loginForm.value).subscribe(
-                (response) => {
-                    if (response.isSuccess) {
-                        sessionStorage.setItem('userId', response.data.id.toString());
-                        sessionStorage.setItem('personid', response.data.person.id.toString());
-                        this.router.navigate(['/admin/dashboard']);
+        this.accountservice.login(this.loginForm.value).subscribe(
+            (response) => {
+                if (response.isSuccess) {
+                    sessionStorage.setItem('userId', response.data.id.toString());
+                    sessionStorage.setItem('personid', response.data.person.id.toString());
+                    //sessionStorage.setItem('rolename'), response.data.roleName;
+                    console.log('rolename', response.data.roleName);
+                    sessionStorage.setItem('rolename', response.data.roleName);
+                    //this.rolename =  response.data.roleName;
+                    //this.rolename = (sessionStorage.getItem('rolename') || '').toLowerCase();
+                    this.rolename = (sessionStorage.getItem('rolename') || '').toLowerCase().trim();
+                    console.log('ROlE:', this.rolename);
+                    if (this.rolename == 'admin') {
+                        //this.router.navigate(['/admin/dashboard']);
+                        console.log('enter in admin',this.rolename);
+                        this.zone.run(() => this.router.navigate(['/admin/dashboard']));
                     }
-                    if (!response.isSuccess) {
-                        this.loginError = response.message || 'Invalid username or password.';
+                    else if (this.rolename == 'pharmacy') {
+                        console.log('enter in pharmacy',this.rolename);
+                        //this.router.navigate(['/admin/pharmacy/user']);
+                        this.zone.run(() => this.router.navigate(['/admin/pharmacy/user']));
                     }
-                },
-                (err) => {
-                    this.loginError = 'Server error. Please try again later.';
-                    Helper.ShowExecptions(err);
-                },
-                () => { }
-            );
+                    else if (this.rolename == 'doctor') {
+                       // this.router.navigate(['/admin/doctor']);
+                       this.zone.run(() => this.router.navigate(['/admin/doctor']));
+                    }
+
+                }
+                if (!response.isSuccess) {
+                    this.loginError = response.message || 'Invalid username or password.';
+                }
+            },
+            (err) => {
+                this.loginError = 'Server error. Please try again later.';
+                Helper.ShowExecptions(err);
+            },
+            () => { }
+        );
     }
 
 }

@@ -95,14 +95,14 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
     initForm(): FormGroup {
         return this.fb.group({
             pharmacy: this.fb.group({
-                ownerName: new FormControl(null, [Validators.required]),
-                storeName: new FormControl(null, [Validators.required]),
-                businessName: new FormControl(null, [Validators.required]),
+                ownerName: new FormControl(null, [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]),
+                storeName: new FormControl(null, [Validators.required, Validators.pattern(/^[A-Za-z0-9\s]+$/)]),
+                businessName: new FormControl(null, [Validators.required, Validators.pattern(/^[A-Za-z0-9\s]+$/)]),
                 licenseNumber: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9]+$')]),
                 licenseExpiry: [null, [Validators.required, this.validator.futureDateValidator]],
                 gstNumber: new FormControl(null, [Validators.required, Validators.pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/)]),
                 registeredMobile: new FormControl(null, [Validators.required, Validators.pattern(/^\d{10}$/)]),
-                officialEmail: new FormControl(null, [Validators.required, Validators.email]),
+                officialEmail: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
                 address1: new FormControl(null),
                 address2: new FormControl(null),
                 countryId: new FormControl(null),
@@ -127,7 +127,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
             ),
             pharmacyBankDetails: this.fb.group({
                 bankName: new FormControl(null, [Validators.required]),
-                accountholderName: new FormControl(null, [Validators.required]),
+                accountholderName: new FormControl(null, [Validators.required, Validators.pattern(/^[a-zA-Z\s]+$/)]),
                 accountNumber: new FormControl(null, [Validators.required, Validators.maxLength(16)]),
                 ifscCode: new FormControl(null, [Validators.required, Validators.pattern('^[A-Za-z0-9]+$')]),
                 branchName: new FormControl(null, [Validators.required]),
