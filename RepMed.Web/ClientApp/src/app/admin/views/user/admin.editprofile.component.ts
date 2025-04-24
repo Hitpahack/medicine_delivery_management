@@ -157,13 +157,14 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
             }
         })
     }
-
+    imageFile: File;
     onFileSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
         console.log("file", input)
         if (input.files && input.files[0]) {
             const file = input.files[0];
-            this.editUserForm.get('imageFile')?.setValue(file);
+            this.imageFile = input.files[0];
+            this.editUserForm.get('imageFile')?.setValue(this.imageFile);
             console.log("file", file)
             //this.editUserForm.get('needcolumnnamehere')?.setValue(file.name);
             const reader = new FileReader();
