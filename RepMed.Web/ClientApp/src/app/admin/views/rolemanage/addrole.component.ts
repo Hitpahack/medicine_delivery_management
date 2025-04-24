@@ -27,7 +27,7 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
     componentList: ComponentDto[] = [];
 
 
-    constructor(public validator: CustomValidator, public RoleService: RoleService) {
+    constructor(public validator: CustomValidator, public RoleService: RoleService, public fb: FormBuilder) {
         super();
     }
 
@@ -48,27 +48,29 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
         return this.fb.group({
             roleName: new FormControl(null, [Validators.required]),
             description: new FormControl(null),
-            PermissionIds: new FormControl([], [Validators.required, this.validator.checkboxRequiredValidator])  // Ensure it's an empty array initially
+            PermissionIds: [[], [this.validator.checkboxRequiredValidator]]  // Ensure it's an empty array initially
         });
     }
 
     onSubmit() {
-        // Manually mark all fields as touched to trigger validation messages
         this.validator.markInvalidFieldsTouched(this.addroleForm);
-        // Check if the form is invalid
-        if (this.addroleForm.invalid) {
+        
+        if (this.addroleForm.invalid && this.validator.checkboxRequiredValidator) {
+            
             const componentIdControl = this.addroleForm.get('PermissionIds');
+            
+            componentIdControl?.updateValueAndValidity();
+
             if (componentIdControl?.hasError('checkboxRequired')) {
-                // Error handling when checkbox is not selected
                 this.errorMessage = 'Please select at least one component.';
-                Helper.ShowError(this.errorMessage);  // Show the error message
+                Helper.ShowError(this.errorMessage);
             }
             return;
         }
 
         // Proceed with form submission if valid
         const dto: AddRoleDto = this.addroleForm.value;
-        console.log("role",this.addroleForm)
+        console.log("role", this.addroleForm)
         this.RoleService.add(dto).subscribe({
             next: (response) => {
                 if (response.isSuccess) {
@@ -93,7 +95,7 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
     onCheckboxChange(event: any) {
         const id = +event.target.value;
         let componentIds = [...this.addroleForm.get('PermissionIds').value]; // clone
-    
+
         if (event.target.checked) {
             if (!componentIds.includes(id)) {
                 componentIds.push(id);
@@ -101,7 +103,7 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
         } else {
             componentIds = componentIds.filter(x => x !== id);
         }
-    
+
         const control = this.addroleForm.get('PermissionIds');
         control.setValue(componentIds);
         control.markAsTouched(); // important

@@ -182,8 +182,8 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
     initForm(): FormGroup {
         return this.fb.group({
             id: new FormControl(null),
-            firstname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
-            lastname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+            firstname: new FormControl(null, [Validators.pattern('^[a-zA-Z\s]*$')]),
+            lastname: new FormControl(null, [Validators.pattern('^[a-zA-Z\s]*$')]),
             email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
             mobile: new FormControl(null, [Validators.pattern(/^\d{10}$/)]),
             gender: new FormControl(null),
