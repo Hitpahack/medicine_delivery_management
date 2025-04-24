@@ -76,9 +76,9 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
         const userId = this.route.snapshot.params['id'];
         if (userId) {
             this.adminuserservice.getUserbyId(userId).subscribe((response) => {
+                console.log("userId", userId)
                 if (response?.isSuccess && response.data) {
                     const user = response.data;
-                    console.log("dob", user.dateOfBirth)
                     const address = response.data.address;
                     this.editUserForm.patchValue({
                         firstname: user.firstName,
@@ -164,7 +164,8 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
 
         if (input.files && input.files[0]) {
             const file = input.files[0];
-            this.editUserForm.get('picture')?.setValue(file);
+            this.editUserForm.get('imageFile')?.setValue(file);
+            console.log("file", file)
             //this.editUserForm.get('needcolumnnamehere')?.setValue(file.name);
             const reader = new FileReader();
             reader.onload = e => {
@@ -208,7 +209,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
                 next: (response) => {
                     if (response.isSuccess) {
                         Helper.ShowSuccess(response.message || 'user Updated successfully.');
-                        this.router.navigate(['/admin/dashboard']);
+                        //this.router.navigate(['/admin/dashboard']);
                     } else {
                         console.error('API returned isSuccess: false');
                         this.errorMessage = response.message || 'Failed to add user.';

@@ -90,13 +90,6 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
         });
     }
 
-    // minSelectedCheckboxes(min = 1) {
-    //     return (formArray: FormArray) => {
-    //       const totalSelected = formArray.controls.length;
-    //       return totalSelected >= min ? null : { required: true };
-    //     };
-    //   }
-
     onCheckboxChange(event: any) {
         const id = +event.target.value;
         let componentIds = [...this.addroleForm.get('PermissionIds').value]; // clone

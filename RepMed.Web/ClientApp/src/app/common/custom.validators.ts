@@ -12,9 +12,9 @@ export class CustomValidator {
       return null;
     }
 
-    let regularExp = /^([a-z0-9_\.-]+)@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.)|(([a-z0-9-]+\.)+))([a-z]{2,4}|[0-9]{1,3})(\]?)$/;
+    let regularExp = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (control.value !== undefined && !regularExp.test(control.value.trim())) {
-      return { email: true, error: "invalid email address entered!" };
+      return { email: true, error: "Invalid email. Use only letters, numbers, ., _, %, +, -, and a valid domain (e.g., user@example.com)." };
     }
     return null;
   }
