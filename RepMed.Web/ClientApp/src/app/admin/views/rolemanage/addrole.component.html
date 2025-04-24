@@ -18,7 +18,7 @@
             </div>
             <div class="form-grid">
                 <div class="form-group">
-                    <label class="form-label fw-bold mb-2">Select Components</label>
+                    <label class="form-label fw-bold mb-2">Select module</label>
                     <div class="border rounded p-3 shadow-sm bg-light">
                         <div class="row">
                             <div class="col-md-6 mb-2" *ngFor="let comp of componentList; let i = index">
@@ -36,7 +36,7 @@
                     <!-- Show the error message when the checkbox is required and touched -->
                     <div *ngIf="addroleForm.get('PermissionIds').hasError('checkboxRequired') && addroleForm.get('PermissionIds').touched"
                         class="text-danger small mt-1">
-                        Please select at least one component.
+                        Please select at least one module.
                     </div>
                 </div>
                 
