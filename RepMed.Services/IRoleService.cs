@@ -58,7 +58,7 @@ namespace RepMed.Services
                 else
                     return new APIsError<EntityRoleDto>("At least one permission required");
                 #endregion
-                apiResponse = new APIsSuccsss<EntityRoleDto>(_validateMessages.AddSuccess, response);
+                apiResponse = new APIsSuccsss<EntityRoleDto>("Role Created Successfully", response);
                 return await Task.FromResult(apiResponse);
             }
             catch (Exception ex)
