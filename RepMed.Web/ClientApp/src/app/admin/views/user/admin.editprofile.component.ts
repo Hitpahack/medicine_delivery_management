@@ -90,7 +90,7 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
                         gender: user.gender,
                         dateofBirth: this.dateMethod(user.dateOfBirth)
                     });
-
+                    console.log(address, "address")
                     this.editUserForm.get('address').patchValue({
                         addressline: response.data.address.addressLine,
                         countryId: response.data.address.countryId,
@@ -134,16 +134,19 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
         })
     }
 
-    selectedCountry: number;
+    selectedCountry: number = 0;
+
     onCountryDropdownChange(event: any) {
-        this.selectedCountry = event.target.value;
+        const selectedValue = event.target.value;
+        this.selectedCountry = selectedValue ? Number(selectedValue) : 0;
+    
         this.AdminCommonServices.getstatebyId(this.selectedCountry).subscribe((response) => {
             if (response?.isSuccess && response.data) {
                 this.states = response.data;
             } else {
                 console.error("Failed to load country data", response);
             }
-        })
+        });
     }
 
     selectedCity: number;
@@ -152,11 +155,13 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
         this.AdminCommonServices.getcitiesbyId(this.selectedCity).subscribe((response) => {
             if (response?.isSuccess && response.data) {
                 this.cities = response.data;
-            } else {
+            } else {    
                 console.error("Failed to load country data", response);
             }
         })
     }
+
+
     imageFile: File;
     onFileSelected(event: Event): void {
         const input = event.target as HTMLInputElement;
@@ -192,8 +197,8 @@ export class EditProfile extends AdminBaseComponent implements OnInit {
             address: this.fb.group({
                 addressline: new FormControl(null),
                 countryId: new FormControl(),
-                stateId: new FormControl(null),
-                cityId: new FormControl(null),
+                stateId: new FormControl(),
+                cityId: new FormControl(),
                 pincode: new FormControl(null),
                 latitude: new FormControl(0),
                 longitude: new FormControl(0),
