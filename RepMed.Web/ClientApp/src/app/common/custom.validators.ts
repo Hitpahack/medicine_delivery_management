@@ -14,7 +14,7 @@ export class CustomValidator {
 
     let regularExp = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
     if (control.value !== undefined && !regularExp.test(control.value.trim())) {
-      return { email: true, error: "Please enter a valid email address using only lowercase letters (e.g., john.doe@example.com). Uppercase letters are not allowed." };
+      return { email: true, error: "Enter a valid email using only lowercase letters, numbers, and allowed symbols before and after '@' (e.g., john.doe@example.com)."};
     }
     return null;
   }
