@@ -229,15 +229,13 @@ namespace RepMed.Services
         {
             try
             {
-
-
                 #region Validate User
                 if (!(await IsEmailExist(Email, true)))
                 {
                     return await Task.FromResult(new APIsError<string>("User doesn't exist"));
                 }
 
-                string sqlExist = DbTables.tblUser.SelectAll($@" ""{nameof(BasicPersonsDto.Email)}"" = '{Email}' ");
+                string sqlExist = DbTables.tblUser.SelectAll($@" {nameof(BasicPersonsDto.Email)} = '{Email}' ");
                 EntityUsersPassDto response = _idbConnection.QueryFirstOrDefault<EntityUsersPassDto>(sqlExist, transaction: _idbTransaction);
 
                 if (response == null)
@@ -264,9 +262,9 @@ namespace RepMed.Services
                 token = Encryption.DecryptTripleDES(token, encKey);
 
                 var param = new Dictionary<string, string> { { "token", token }, { "email", Email } };
-                var request = _httpContext.HttpContext.Request;
-                var baseUrl = $"{request.Scheme}://{request.Host.Value}";
-                var callback = QueryHelpers.AddQueryString(baseUrl, param);
+                var baseUrl = _appSettings.MainSiteURL;
+                var callback = QueryHelpers.AddQueryString($"{baseUrl}/forgot-password", param);
+                await SendEmailAsync(Email, "Reset Your Password", $"Click here to set your password: <a href='{callback}'>Set Password</a>");
                 return await Task.FromResult(new APIsSuccsss<string>("Success", callback)); 
             }
             catch (Exception ex)
@@ -319,15 +317,13 @@ namespace RepMed.Services
         {
             try
             {
-
-
                 #region Validate User
                 if (!(await IsEmailExist(model.Email, true)))
                 {
                     return await Task.FromResult(new APIsError<bool>("User doesn't exist"));
                 }
 
-                string sqlExist = DbTables.tblUser.SelectAll($@" ""{nameof(BasicPersonsDto.Email)}"" = '{model.Email}' ");
+                string sqlExist = DbTables.tblUser.SelectAll($@" {nameof(BasicPersonsDto.Email)} = '{model.Email}' ");
                 EntityUsersPassDto response = _idbConnection.QueryFirstOrDefault<EntityUsersPassDto>(sqlExist, transaction: _idbTransaction);
 
                 if (response == null)
@@ -344,9 +340,9 @@ namespace RepMed.Services
                 string encKey = _appSettings.AppSecreateKey;
                 string encryptToken = Encryption.EncryptTripleDES(model.Token, encKey);
 
-                sqlExist = DbTables.tblCodeRequest.SelectAll($@" ""{nameof(CodeRequestDtos.Userid)}"" = '{response.Id}' ");
+                sqlExist = DbTables.tblUserSecurityCode.SelectAll($@" {nameof(UserSecurityCodeDto.UserId)} = '{response.Id}' ");
 
-                CodeRequestDtos token = _idbConnection.QueryFirstOrDefault<CodeRequestDtos>(sqlExist, transaction: _idbTransaction);
+                UserSecurityCodeDto token = _idbConnection.QueryFirstOrDefault<UserSecurityCodeDto>(sqlExist, transaction: _idbTransaction);
                 if (token == null)
                     return await Task.FromResult(new APIsError<bool>(_validateMessages.GetNotExist("Token")));
 
@@ -359,31 +355,20 @@ namespace RepMed.Services
                 if (!model.ConfirmPassword.IsValidPassword(out var message))
                     return await Task.FromResult(new APIsError<bool>(message));
 
-
-
-                //change password
                 Encryption.CreatePasswordHash(model.ConfirmPassword, out var passHas, out var passSalt);
-                //EntityUsersDto entityUsersDto = _idbConnection.Update<EntityUsersDto>(_idbTransaction, DbTables.tblUser,
-                //    new Dictionary<string, string> {
-                //    { "PasswordHash", "PasswordHash" },
-                //    { "PasswordSalt", "PasswordSalt" }
-                //    }, data: new Dictionary<string, object> {
-                //    { "PasswordHash", passHas },
-                //    { "PasswordSalt", passSalt }
-                //    }, $@" ""Id""='{response.Id}' ", "RETURNING *");
-
+               
                 EntityUsersDto entityUsersDto = _idbConnection.Update<EntityUsersDto>(_idbTransaction, DbTables.tblUser,
                     new Dictionary<string, object> {
                     { nameof(EntityUsersPassDto.PasswordHash), passHas },
                     { nameof(EntityUsersPassDto.PasswordSalt), passSalt }
-                   }, $@" ""{nameof(EntityUsersPassDto.Id)}""='{response.Id}' ", "RETURNING *");
+                   }, $@" {nameof(EntityUsersPassDto.Id)}='{response.Id}' ", "RETURNING *");
 
 
-                UserTokenLogDto userToken = _idbConnection.Update<UserTokenLogDto>(_idbTransaction, DbTables.tblCodeRequest,
+                UserSecurityCodeDto userToken = _idbConnection.Update<UserSecurityCodeDto>(_idbTransaction, DbTables.tblUserSecurityCode,
                    new Dictionary<string, object> {
-                    { nameof(CodeRequestDtos.ValidTo), DateTime.UtcNow.AddDays(-1) },
-                    { nameof(CodeRequestDtos.IsExpired),  true }
-                   }, $@" ""{nameof(CodeRequestDtos.Userid)}""='{response.Id}' ", "RETURNING *");
+                    { nameof(UserSecurityCodeDto.ValidTo), DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-dd HH:mm:ss") },
+                    { nameof(UserSecurityCodeDto.IsExpired),  1 }
+                   }, $@" {nameof(UserSecurityCodeDto.UserId)}='{response.Id}' ", "RETURNING *");
 
 
                 //var xml = await _templatesService.GetTemplate();
@@ -418,36 +403,35 @@ namespace RepMed.Services
             }
         }
 
-        private BaseCodeRequestDtos AddEditResetPassToken(string userId, string token)
+        private BaseUserSecurityCodeDto AddEditResetPassToken(string userId, string token)
         {
 
-            string sql = DapperHelper.SelectAll(DbTables.tblCodeRequest, @$" ""Userid"" = '{userId}'");
-            CodeRequestDtos usercode = _idbConnection.QueryFirstOrDefault<CodeRequestDtos>(sql, transaction: _idbTransaction);
+            string sql = DapperHelper.SelectAll(DbTables.tblUserSecurityCode, @$" Userid = '{userId}'");
+            UserSecurityCodeDto usercode = _idbConnection.QueryFirstOrDefault<UserSecurityCodeDto>(sql, transaction: _idbTransaction);
 
             // Adding expiry for todays midnight
             var validTokenTime = DateTime.UtcNow.AddMinutes(_adminSettings.PasswordResetTokenExpiredInMiniute);
 
             if (usercode == null)
             {
-                //usercode = _idbConnection.Insert<CodeRequestDtos>(_idbTransaction, DbTables.tblCodeRequest,
-                //    //DapperHelper.QueryAsColumnsParma<Coderequest, BaseCodeRequestDtos>(),
-                //    //DapperHelper.QueryAsValuesParma<Coderequest, BaseCodeRequestDtos>(),
-                //    new BaseCodeRequestDtos
-                //    {
-                //        SecurityCode = token,
-                //        ValidTo = validTokenTime,
-                //        Userid = userId
-                //    }, "RETURNING *");
-
-
+                usercode = _idbConnection.Insert<UserSecurityCodeDto>(_idbTransaction, DbTables.tblUserSecurityCode,
+                    DapperHelper.QueryAsColumnsParma<Usersecuritycode, BaseUserSecurityCodeDto>(),
+                    DapperHelper.QueryAsValuesParma<Usersecuritycode, BaseUserSecurityCodeDto>(),
+                    new BaseUserSecurityCodeDto
+                    {
+                        SecurityCode = token,
+                        ValidTo = validTokenTime,   
+                        UserId = long.Parse(userId),
+                        CreatedAt = DateTime.UtcNow
+                    });
             }
             else
             {
-                usercode = _idbConnection.Update<CodeRequestDtos>(_idbTransaction, DbTables.tblCodeRequest,
+                usercode = _idbConnection.Update<UserSecurityCodeDto>(_idbTransaction, DbTables.tblUserSecurityCode,
                     new Dictionary<string, string> {
-                        { nameof(CodeRequestDtos.SecurityCode), token },
-                        { nameof(CodeRequestDtos.ValidTo), validTokenTime.ToString() }
-                    }, $@" ""{nameof(CodeRequestDtos.Userid)}""='{userId}'", "RETURNING *");
+                        { nameof(UserSecurityCodeDto.SecurityCode), token },
+                        { nameof(UserSecurityCodeDto.ValidTo), validTokenTime.ToString("yyyy-MM-dd HH:mm:ss") }
+                    }, $@" {nameof(UserSecurityCodeDto.UserId)} ='{userId}'", "RETURNING *");
 
             }
             return usercode;

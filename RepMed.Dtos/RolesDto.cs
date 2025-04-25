@@ -12,22 +12,23 @@ namespace RepMed.Dtos
 
     public class EntityRoleDto : BasicRoleDto
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
     }
 
     public class EntityUserRoleDto
     {
         public long UserId { get; set; }
-        public int RoleId { get; set; }
+        public long RoleId { get; set; }
 
     }
     public class CreateRoleDto : BasicRoleDto
     {
-        public List<long>? PermissionIds { get; set; }
+        public List<long> PermissionIds { get; set; }
     }
 
-    public class GetRoleDto
+    public class EditRoleDto
     {
+        public List<long> PermissionIds { get; set; }
 
     }
 

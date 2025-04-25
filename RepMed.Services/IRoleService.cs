@@ -13,10 +13,9 @@ using static RepMed.Core.Enums;
 
 namespace RepMed.Services
 {
-    public interface IRoleService : IDisposable
+    public interface IRoleService : IDisposable 
     {
-        Task<APIsResponse<EntityRoleDto>> CreateRole(CreateRoleDto reqDto);
-        Task<APIsResponse<bool>> UpdateRolePermission(CreateRoleDto reqDto, long Id);
+        Task<APIsResponse<EntityRoleDto>> AddEditRole(CreateRoleDto reqDto, long Id);
         Task<APIsResponse<List<EntityPermissionDto>>> GetRole(long roleId);
         Task<APIsResponse<List<EntityPermissionDto>>> GetAllPermissions();
     }
@@ -27,38 +26,64 @@ namespace RepMed.Services
 
         }
 
-        public async Task<APIsResponse<EntityRoleDto>> CreateRole(CreateRoleDto reqDto)
+        public async Task<APIsResponse<EntityRoleDto>> AddEditRole(CreateRoleDto reqDto , long Id)
         {
             try
             {
                 APIsResponse<EntityRoleDto> apiResponse = default(APIsResponse<EntityRoleDto>);
-                #region Check RoleExist
-                if ((await IsRoleExist(reqDto.RoleName)))
+                if (Id == 0)
                 {
-                    return await Task.FromResult(new APIsError<EntityRoleDto>(_validateMessages.AlreadyExist));
-                }
-                #endregion
-                #region Add Role
-                EntityRoleDto response = _idbConnection.Insert<EntityRoleDto>(_idbTransaction,
-                    DbTables.tblRole,
-                    DapperHelper.QueryAsColumnsParma<Role, CreateRoleDto>(),
-                    DapperHelper.QueryAsValuesParma<Role, CreateRoleDto>(),
-                    reqDto);
-                #endregion
-                #region 
-                if (reqDto.PermissionIds != null && reqDto.PermissionIds.Any())
-                {
-                    foreach (var permissionId in reqDto.PermissionIds)
+
+
+                    #region Check RoleExist
+                    if ((await IsRoleExist(reqDto.RoleName)))
                     {
-                        await _idbConnection.ExecuteAsync(
-                            $@"INSERT INTO {DbTables.tblRolePermissions} (RoleId, PermissionId) VALUES (@RoleId, @PermissionId);",
-                            new { RoleId = response.Id, PermissionId = permissionId }, _idbTransaction);
+                        return await Task.FromResult(new APIsError<EntityRoleDto>(_validateMessages.AlreadyExist));
                     }
+                    #endregion
+                    #region Add Role
+                    EntityRoleDto response = _idbConnection.Insert<EntityRoleDto>(_idbTransaction,
+                        DbTables.tblRole,
+                        DapperHelper.QueryAsColumnsParma<Role, CreateRoleDto>(),
+                        DapperHelper.QueryAsValuesParma<Role, CreateRoleDto>(),
+                        reqDto);
+                    #endregion
+                    #region 
+                    if (reqDto.PermissionIds != null && reqDto.PermissionIds.Any())
+                    {
+                        foreach (var permissionId in reqDto.PermissionIds)
+                        {
+                            await _idbConnection.ExecuteAsync(
+                                $@"INSERT INTO {DbTables.tblRolePermissions} (RoleId, PermissionId) VALUES (@RoleId, @PermissionId);",
+                                new { RoleId = response.Id, PermissionId = permissionId }, _idbTransaction);
+                        }
+                    }
+                    else
+                        return new APIsError<EntityRoleDto>("At least one permission required");
+                    #endregion
+                    apiResponse = new APIsSuccsss<EntityRoleDto>("Role Created Successfully", response);
                 }
                 else
-                    return new APIsError<EntityRoleDto>("At least one permission required");
-                #endregion
-                apiResponse = new APIsSuccsss<EntityRoleDto>("Role Created Successfully", response);
+                {
+                    #region Remove All Permission of current role
+                    await _idbConnection.ExecuteAsync($@"DELETE FROM {DbTables.tblRolePermissions} WHERE RoleId = @RoleId", new { RoleId = Id }, _idbTransaction);
+                    #endregion
+
+                    #region Add New Permission
+                    if (reqDto.PermissionIds != null && reqDto.PermissionIds.Any())
+                    {
+                        foreach (var permissionId in reqDto.PermissionIds)
+                        {
+                            await _idbConnection.ExecuteAsync(
+                                $@"INSERT INTO {DbTables.tblRolePermissions} (RoleId, PermissionId) VALUES (@RoleId, @PermissionId);",
+                                new { RoleId = Id, PermissionId = permissionId }, _idbTransaction);
+                        }
+                    }
+                    else
+                        return new APIsError<EntityRoleDto>("At least one permission required");
+                    #endregion
+                    apiResponse = new APIsSuccsss<EntityRoleDto>("Role Updated Successfully");
+                }
                 return await Task.FromResult(apiResponse);
             }
             catch (Exception ex)
@@ -116,33 +141,5 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<List<EntityPermissionDto>>(ex.GetActualError()));
             }
         }
-
-        public async Task<APIsResponse<bool>> UpdateRolePermission(CreateRoleDto reqDto, long Id)
-        {
-            try
-            {
-                APIsResponse<bool> apiResponse = default(APIsResponse<bool>);
-                #region Remove All Permission of current role
-                await _idbConnection.ExecuteAsync($@"DELETE FROM {DbTables.tblRolePermissions} WHERE RoleId = @RoleId",new { RoleId = Id }, _idbTransaction);
-                #endregion
-                #region Add New Permission
-                if (reqDto.PermissionIds != null && reqDto.PermissionIds.Any())
-                {
-                    foreach (var permissionId in reqDto.PermissionIds)
-                    {
-                        await _idbConnection.ExecuteAsync(
-                            $@"INSERT INTO {DbTables.tblRolePermissions} (RoleId, PermissionId) VALUES (@RoleId, @PermissionId);",
-                            new { RoleId = Id, PermissionId = permissionId }, _idbTransaction);
-                    }
-                }
-                #endregion
-                apiResponse = new APIsSuccsss<bool>(_validateMessages.UpdateSuccess);
-                return await Task.FromResult(apiResponse);
-            }
-            catch (Exception ex)
-            {
-                return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
-            }
-        }        
     }
 }

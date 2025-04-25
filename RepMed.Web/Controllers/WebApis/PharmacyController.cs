@@ -126,12 +126,12 @@ namespace RepMed.Web.Controllers.WebApis
                                     tran.Rollback();
                                     return BadRequest(new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = pharmacybank.Message });
                                 }
-                                //var response = await pharmacyService.GenrateEmailToken(reqDto.Pharmacy.UserId, reqDto.Pharmacy.OfficialEmail);
-                                //if(!response.IsSuccess)
-                                //{
-                                //    tran.Rollback();
-                                //    return BadRequest(new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = response.Message });
-                                //}
+                                var response = await pharmacyService.GenrateEmailToken(reqDto.Pharmacy.UserId, reqDto.Pharmacy.OfficialEmail);
+                                if (!response.IsSuccess)
+                                {
+                                    tran.Rollback();
+                                    return BadRequest(new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = response.Message });
+                                }
                             }
                         }
                         tran.Commit();
@@ -198,50 +198,6 @@ namespace RepMed.Web.Controllers.WebApis
                 }
             }
         }
-
-        [Route("editprofile/{Id}")]
-        [HttpPost]
-        public async Task<IActionResult> EditProfile([FromBody] API_EDIT_PH_DTO reqDto, long Id)
-        {
-            using (var db = new MySqlConnection(_appSettings.ConnectionString))
-            {
-                db.Open();
-                using (var tran = db.BeginTransaction())
-                {
-                    using (IPersonService personService = new PersonService(db, tran))
-                    {
-                        var userObj = _mapper.Map<AddPersonDto, API_EDIT_USER>(reqDto.User);
-                        var user = await base.AddEditUser(userObj, Id);
-                        if (!user.IsSuccess)
-                        {
-                            tran.Rollback();
-                            return BadRequest(user);
-                        }
-                        using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
-                        {
-                            reqDto.Pharmacy.UserId = user.Data.Id;
-                            var pharmacy = await pharmacyService.AddUpdatePharmacy(reqDto.Pharmacy, Id);
-                            if (!pharmacy.IsSuccess)
-                            {
-                                tran.Rollback();
-                                return BadRequest(pharmacy);
-                            }
-                            reqDto.PharmacyBankDetails.PharmacyId = pharmacy.Data.Id;
-                            var pharmacybank = await pharmacyService.AddUpdatePharmacyBankDetails(reqDto.PharmacyBankDetails, Id);
-                            if (!pharmacybank.IsSuccess)
-                            {
-                                tran.Rollback();
-                                return BadRequest(pharmacybank);
-                            }
-                        }
-                    }
-                    tran.Commit();
-                    return Ok();
-                }
-
-            }
-        }
-
 
         [Route("getpharmacies")]
         [HttpPost]

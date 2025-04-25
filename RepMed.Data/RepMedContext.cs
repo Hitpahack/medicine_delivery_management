@@ -68,6 +68,8 @@ public partial class RepMedContext : DbContext
 
     public virtual DbSet<Userrole> Userroles { get; set; }
 
+    public virtual DbSet<Usersecuritycode> Usersecuritycodes { get; set; }
+
     public virtual DbSet<Usertoken> Usertokens { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -348,8 +350,6 @@ public partial class RepMedContext : DbContext
             entity.ToTable("persons");
 
             entity.HasIndex(e => e.Email, "Email").IsUnique();
-
-            entity.HasIndex(e => e.Mobile, "Mobile").IsUnique();
 
             entity.Property(e => e.BloodGroup).HasMaxLength(10);
             entity.Property(e => e.CreatedAt)
@@ -796,19 +796,19 @@ public partial class RepMedContext : DbContext
 
             entity.HasIndex(e => e.StateId, "StateId");
 
-            entity.Property(e => e.AddressLine)
-                .IsRequired()
-                .HasColumnType("text");
+            entity.Property(e => e.AddressLine).HasColumnType("text");
             entity.Property(e => e.Latitude).HasPrecision(9, 6);
             entity.Property(e => e.Longitude).HasPrecision(9, 6);
             entity.Property(e => e.Pincode).HasMaxLength(10);
 
             entity.HasOne(d => d.City).WithMany(p => p.Useraddresses)
                 .HasForeignKey(d => d.CityId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("useraddresses_ibfk_2");
 
             entity.HasOne(d => d.Country).WithMany(p => p.Useraddresses)
                 .HasForeignKey(d => d.CountryId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("useraddresses_ibfk_5");
 
             entity.HasOne(d => d.Person).WithMany(p => p.Useraddresses)
@@ -817,6 +817,7 @@ public partial class RepMedContext : DbContext
 
             entity.HasOne(d => d.State).WithMany(p => p.Useraddresses)
                 .HasForeignKey(d => d.StateId)
+                .OnDelete(DeleteBehavior.Cascade)
                 .HasConstraintName("useraddresses_ibfk_4");
         });
 
@@ -864,6 +865,33 @@ public partial class RepMedContext : DbContext
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("userroles_ibfk_1");
+        });
+
+        modelBuilder.Entity<Usersecuritycode>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("usersecuritycodes");
+
+            entity.HasIndex(e => e.UserId, "UserId");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.SecurityCode)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.UpdatedAt)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.ValidTo).HasColumnType("datetime");
+
+            entity.HasOne(d => d.User).WithMany(p => p.Usersecuritycodes)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("usersecuritycodes_ibfk_1");
         });
 
         modelBuilder.Entity<Usertoken>(entity =>

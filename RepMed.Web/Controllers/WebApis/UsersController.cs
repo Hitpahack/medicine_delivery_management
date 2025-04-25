@@ -20,16 +20,6 @@ namespace RepMed.Web.Controllers.WebApis
         {
 
         }
-        //[Route("addedituser/{Id?}")]
-        //[HttpPost]
-        //public async Task<IActionResult> AddEditUser(AddPersonDto reqDto)
-        //{
-        //    var data = await base.AddEditUser(reqDto, reqDto.Id ?? 0);
-        //    if (data.IsSuccess)
-        //        return Ok(data);
-
-        //    return BadRequest(data);
-        //}
         [Route("adduser")]
         [HttpPost]
         public async Task<IActionResult> AddUser(API_ADD_USER reqDto)

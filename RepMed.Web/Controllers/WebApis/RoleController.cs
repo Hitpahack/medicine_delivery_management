@@ -31,7 +31,7 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IRoleService roleService = new RoleService(db, tran))
                     {
-                        var result = await roleService.CreateRole(reqDto);
+                        var result = await roleService.AddEditRole(reqDto,0);
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();
@@ -46,7 +46,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("editrole/{Id}")]
         [HttpPost]
-        public async Task<IActionResult> EditPermissions(CreateRoleDto reqDto, long Id)
+        public async Task<IActionResult> EditRole(CreateRoleDto reqDto, long Id)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -55,7 +55,7 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IRoleService roleService = new RoleService(db, tran))
                     {
-                        var result = await roleService.UpdateRolePermission(reqDto, Id);
+                        var result = await roleService.AddEditRole(reqDto, Id);
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();

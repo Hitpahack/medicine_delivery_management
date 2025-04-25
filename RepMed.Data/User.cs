@@ -44,4 +44,6 @@ public partial class User
     public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
 
     public virtual ICollection<Userjwttokenlog> Userjwttokenlogs { get; set; } = new List<Userjwttokenlog>();
+
+    public virtual ICollection<Usersecuritycode> Usersecuritycodes { get; set; } = new List<Usersecuritycode>();
 }

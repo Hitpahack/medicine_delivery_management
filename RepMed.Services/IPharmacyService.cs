@@ -103,14 +103,13 @@ namespace RepMed.Services
                             }, transaction: _idbTransaction);
                 #endregion
                 #region send email for set password
-                var request = _httpContext.HttpContext.Request;
-                var baseUrl = $"{request.Scheme}://{request.Host.Value}";
+                var baseUrl = _appSettings.MainSiteURL;
                 string url = $"{baseUrl}/set-password?token={token}";
 
-                await SendEmailAsync(userEmail, "Set Your Password", $"Click here to set your password: <a href='{url}'>Set Password</a>");
+                var result = await SendEmailAsync(userEmail, "Set Your Password", $"Click here to set your password: <a href='{url}'>Set Password</a>");
                 #endregion
 
-                return new APIsSuccsss<bool>("Email Sent for genrate password", true);
+                return new APIsSuccsss<bool>("Email Sent for genrate password", result);
 
             }
             catch (Exception ex)
@@ -119,44 +118,7 @@ namespace RepMed.Services
             }
 
         }
-        private async Task<bool> SendEmailAsync(string toEmail, string subject, string htmlBody)
-        {
-            try
-            {
-                var fromEmail = _emailSettings.FromEmail;
-                var fromName = _emailSettings.FromName;
-                var username = _emailSettings.UsernameEmail;
-                var password = _emailSettings.UsernamePassword;
-                var smtpHost = _emailSettings.PrimaryDomain;
-                var smtpPort = _emailSettings.PrimaryPort;
-                var enableSsl = _emailSettings.EnableSSL;
-
-                using (var smtp = new SmtpClient(smtpHost, smtpPort))
-                {
-                    smtp.EnableSsl = enableSsl;
-                    smtp.Credentials = new NetworkCredential(username, password);
-
-                    var mail = new MailMessage
-                    {
-                        From = new MailAddress(fromEmail, fromName),
-                        Subject = subject,
-                        Body = htmlBody,
-                        IsBodyHtml = true
-                    };
-                    mail.To.Add(toEmail);
-
-                    await smtp.SendMailAsync(mail);
-                    return true;
-                }
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
-
-
+        
         public async Task<APIsResponse<AddPharmacyDto>> AddUpdatePharmacy(AddPharmacyDto reqDto, long Id)
         {
             try

@@ -11,7 +11,7 @@ namespace RepMed.Dtos
         public DateTime TokenValidTill { get; set; }
         public DateTime? CreatedDate { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public int? SuperAdminId { get; set; }
+        public long SuperAdminId { get; set; }
     }
 
     public class EntityUserTokenLogDto : UserTokenLogDto

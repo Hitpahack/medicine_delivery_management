@@ -195,22 +195,31 @@ namespace RepMed.Core
 
 
         public static TResult Update<TResult>(this IDbConnection con, IDbTransaction tran,
-          string tableName, Dictionary<string, object> updateData,
-          string wherQuery = "", string returningData = "") where TResult : class
+    string tableName, Dictionary<string, object> updateData,
+    string wherQuery = "", string returningData = "") where TResult : class
         {
-            var updatecolumQury = string.Join(",", updateData.Select(r => string.Concat(@$" ""{r.Key}""='{r.Value}'")));
+            var parameters = new DynamicParameters();
+            var setClauses = new List<string>();
 
-            string sql = $@"UPDATE {tableName} SET {updatecolumQury} ";
+            foreach (var kvp in updateData)
+            {
+                string paramName = $"@{kvp.Key}";
+                setClauses.Add($"{kvp.Key} = {paramName}");
+                parameters.Add(paramName, kvp.Value);
+            }
+
+            string setClause = string.Join(", ", setClauses);
+            string sql = $"UPDATE {tableName} SET {setClause}";
 
             if (!string.IsNullOrEmpty(wherQuery))
-                sql = string.Concat(sql, $" WHERE {wherQuery} ");
+                sql += $" WHERE {wherQuery}";
 
-            sql = sql + $"; SELECT * FROM {tableName} WHERE {wherQuery}";
-            using (var multi = con.QueryMultiple(sql, new { UserId = 1 }))
-            {
-                return multi.ReadFirstOrDefault<TResult>();
-            }
+            sql += $"; SELECT * FROM {tableName} WHERE {wherQuery}";
+
+            using var multi = con.QueryMultiple(sql, parameters, tran);
+            return multi.ReadFirstOrDefault<TResult>();
         }
+
 
         public static TResult Update<TResult>(this IDbConnection con, IDbTransaction tran,
           string tableName, Dictionary<string, string> updateKeyValueColumns, object data,
@@ -350,7 +359,7 @@ namespace RepMed.Core
         public const string tblStates = "`States`";
         public const string tblCity = "`Cities`";
         //public const string tblProviders = "`Providers`";
-        public const string tblCodeRequest = "`CodeRequest`";
+        public const string tblUserSecurityCode = "`UserSecurityCodes`";
         //public const string tblProviderCategory = "`ProviderCategories`";
         //public const string tblAssessments = "`Assessments`";
         //public const string tblCustomFields = "`CustomFields`";
