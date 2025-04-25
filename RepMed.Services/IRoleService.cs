@@ -16,6 +16,7 @@ namespace RepMed.Services
     public interface IRoleService : IDisposable 
     {
         Task<APIsResponse<EntityRoleDto>> AddEditRole(CreateRoleDto reqDto, long Id);
+        Task<APIsResponse<bool>> DeleteRole(long Id);
         Task<APIsResponse<GetRoleDto>> GetRolePermission(long roleId);
         Task<APIsResponse<List<EntityRoleDto>>> GetAllRoles();
         Task<APIsResponse<List<EntityPermissionDto>>> GetAllPermissions();
@@ -99,6 +100,11 @@ namespace RepMed.Services
             {
                 return await Task.FromResult(new APIsError<EntityRoleDto>(ex.GetActualError()));
             }
+        }
+
+        public Task<APIsResponse<bool>> DeleteRole(long Id)
+        {
+            throw new NotImplementedException();
         }
 
         public void Dispose()

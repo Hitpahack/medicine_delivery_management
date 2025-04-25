@@ -68,6 +68,30 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
+        [Route("deleterole/{Id}")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteRole(long Id)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IRoleService roleService = new RoleService(db, tran))
+                    {
+                        var result = await roleService.DeleteRole(Id);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
         [Route("getrole/{Id}")]
         [HttpPost]
         public async Task<IActionResult> GetRolePermission(long Id)
