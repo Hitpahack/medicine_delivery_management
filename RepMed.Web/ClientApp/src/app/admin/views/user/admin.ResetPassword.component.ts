@@ -10,16 +10,15 @@ import { ActivatedRoute } from '@angular/router';
 declare const window: any;
 
 @Component({
-  selector: 'admin-Change-password',
-  templateUrl: './admin.changepassword.component.html',
+  selector: 'admin-Reset-Password',
+  templateUrl: './admin.ResetPassword.component.html',
   standalone: true,
   styleUrls: ['./admin.editprofile.component.css'],
   imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
 })
 
-export class ChangePassword extends AdminBaseComponent implements OnInit {
-  ChangePasswordForm: FormGroup;
-
+export class ResetPassword extends AdminBaseComponent implements OnInit {
+  ResetPasswordForm: FormGroup;
   constructor(public router: Router, public fb: FormBuilder, public validator: CustomValidator, public adminuserservice: AdminUserService, private route: ActivatedRoute) {
     super(router, fb);
   }
@@ -29,20 +28,24 @@ export class ChangePassword extends AdminBaseComponent implements OnInit {
       window.Helpers.initPasswordToggle();
     }
   }
-
+  token: string;
+  email: string;
   ngOnInit(): void {
-    this.ChangePasswordForm = this.initForm();
     this.route.queryParams.subscribe(params => {
-      const token = params['token'];
-      console.log("token", token);
-      if (token) {
-        localStorage.setItem('authToken', token); // Store it if needed
-      }
+      this.token = params['token'];
+      this.email = params['email'];
+      console.log(this.token);
+      console.log(this.email);
     });
+    this.ResetPasswordForm = this.initForm();
   }
-  
+
   initForm(): FormGroup {
+    console.log(this.token);
+    console.log(this.email);
     const form = this.fb.group({
+      token: new FormControl(this.token),
+      email: new FormControl(this.email),
       Password: new FormControl(null, [Validators.required, this.validator.validateStrongPassword]),
       ConfirmPassword: new FormControl(null, [Validators.required]),
     }, {
@@ -60,19 +63,29 @@ export class ChangePassword extends AdminBaseComponent implements OnInit {
     return form;
   }
 
+
   onSubmit() {
-    if (this.ChangePasswordForm.invalid) {
-      this.ChangePasswordForm.markAllAsTouched();
+    this.adminuserservice.resetpassword(this.ResetPasswordForm.value).subscribe({
+      next: (res) => {
+        console.log("API success", res);
+        this.router.navigate(['/admin/login']);
+      },
+      error: (err) => {
+        console.error("API error", err);
+        Helper.ShowError('Something went wrong. Please try again.');
+      }
+    });
+
+
+    if (this.ResetPasswordForm.invalid) {
+      this.ResetPasswordForm.markAllAsTouched();
       return;
     }
-    let isValid = this.validateForm(this.ChangePasswordForm)
+    let isValid = this.validateForm(this.ResetPasswordForm)
     if (isValid) {
-      this.adminuserservice.changepassword(this.ChangePasswordForm.value).subscribe(response => {
-        alert(response)
-      })
+
     }
     else
       Helper.ShowError('Please fill the required fields');
   }
-
 }

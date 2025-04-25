@@ -8,6 +8,7 @@ import { AdminBaseComponent } from "../../admin.base.component";
 import { adminAccountsService } from "../../services/accounts/admin.accountsservice";
 import { AutoValidateDirective } from "src/app/common/form.validator";
 import { AfterViewInit } from '@angular/core';
+import { RouterModule} from '@angular/router';
 declare const window: any;
 
 
@@ -17,7 +18,7 @@ declare const window: any;
     templateUrl: './admin.login.component.html',
     styles: [''],
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective, RouterModule],
 })
 
 export class AdminLoginComponent extends AdminBaseComponent implements OnInit, AfterViewInit {

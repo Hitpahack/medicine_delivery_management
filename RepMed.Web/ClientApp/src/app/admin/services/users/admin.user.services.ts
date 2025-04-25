@@ -46,4 +46,12 @@ export class AdminUserService extends adminBaseService {
   changepassword(formData: any){
     return this.http.post(this.apiConfig.endpoints.user.changepassword, formData, { headers: this.apiConfig.requestSettings.header })
   }
+
+  forgetpassword(formdata: any){
+    return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.accounts.forgetpassword, formdata, {headers: this.apiConfig.requestSettings.header})
+  }
+
+  resetpassword(formdata: any){
+    return this.http.post(this.apiConfig.endpoints.accounts.resetpassword, formdata, {headers: this.apiConfig.requestSettings.header})  
+  }
 }

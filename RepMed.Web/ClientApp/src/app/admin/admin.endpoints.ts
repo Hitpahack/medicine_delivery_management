@@ -29,6 +29,8 @@ export class AdminApiConfigService {
     return {
       accounts: {
         login: `${v1}/accounts/login`,
+        forgetpassword:`${v1}/accounts/forgotpassword`,
+        resetpassword:`${v1}/accounts/resetpassword`
       },
       pharmacy: {
         add: `${v1}/pharmacy/addpharmacy/`,
@@ -45,8 +47,8 @@ export class AdminApiConfigService {
         update: (id: number) => `${v1}/users/edituser/${id}`,
         setpassword: `${v1}/users/change-password`,
         userroles: `${api}/masters/getroles`,
-        changepassword: `${v1}/users/SetPassword`,
-        list: `${v1}/users/getusers`
+        changepassword: `${v1}/users/set-password`,
+        list: `${v1}/users/getusers`,
       },
       product: {
         get: `${v1}/products/getproducts`,

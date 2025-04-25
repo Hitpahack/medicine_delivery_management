@@ -26,7 +26,9 @@ import { NotFoundComponent } from './admin/views/pagenotfound/not-found.componen
 import { AddRoleComponent } from './admin/views/rolemanage/addrole.component';
 import { DoctorComponent } from './admin/views/doctor/doctor.component';
 import { PharmacyUserComponent } from './admin/views/pharmacyuser/pharmacyuser.component';
-
+import { AuthGuard } from "../app/security/authenticate.guard";
+import { ForgotPassword } from "../app/admin/views/user/admin.forgetPassword.component";
+import { ResetPassword } from "../app/admin/views/user/admin.ResetPassword.component";
 
 
 export const routes: Routes = [
@@ -51,21 +53,21 @@ export const routes: Routes = [
       { path: 'pharmacy/add', component: AdminAddPharmacyComponent },
       { path: 'pharmacy', component: AdminPharmacyListsComponent },
       { path: 'pharmacy/view', component: AdminPharmacyDetailsComponent },
-      
+
       { path: 'user/add', component: AddUserComponent },
       { path: 'user/edit/:id', component: AddUserComponent },
       { path: 'editprofile/:id', component: EditProfile },
-      { path: 'changepassword', component:SetPassword},
-      { path: 'setpassword', component:ChangePassword},
-      {path: 'user', component:UserListComponent},
+      { path: 'changepassword', component: SetPassword },
 
-      {path:  'productlist', component:ProductListsComponent},
+      { path: 'user', component: UserListComponent },
 
-      {path: 'role/add', component: AddRoleComponent },
+      { path: 'productlist', component: ProductListsComponent },
 
-      {path: 'doctor', component: DoctorComponent},
+      { path: 'role/add', component: AddRoleComponent },
 
-      {path: 'pharmacy/user', component: PharmacyUserComponent},
+      { path: 'doctor', component: DoctorComponent },
+
+      { path: 'pharmacy/user', component: PharmacyUserComponent },
     ]
   },
   {
@@ -96,8 +98,9 @@ export const routes: Routes = [
       //{ path: 'subadmin', component: Sub_Dr_AdminDashboardComponent }
     ]
   },
-
-  //Web routes goes here
+  { path: 'setpassword', component: ChangePassword },
+  { path: 'reset-password', component: ResetPassword},
+  { path: 'forgotpassword', component: ForgotPassword},
   //{ path: '', component: LoginComponent, pathMatch: 'full'},
   //{ 
   //  path: '', 
@@ -107,7 +110,7 @@ export const routes: Routes = [
   //  ]
   //},
   { path: 'login', component: LoginComponent },
-  
+
   // otherwise redirect to home
   { path: '**', component: NotFoundComponent }
 ];
