@@ -16,7 +16,8 @@ namespace RepMed.Services
     public interface IRoleService : IDisposable 
     {
         Task<APIsResponse<EntityRoleDto>> AddEditRole(CreateRoleDto reqDto, long Id);
-        Task<APIsResponse<List<EntityPermissionDto>>> GetRole(long roleId);
+        Task<APIsResponse<GetRoleDto>> GetRolePermission(long roleId);
+        Task<APIsResponse<List<EntityRoleDto>>> GetAllRoles();
         Task<APIsResponse<List<EntityPermissionDto>>> GetAllPermissions();
     }
     public class RoleService : BaseService, IRoleService
@@ -33,8 +34,6 @@ namespace RepMed.Services
                 APIsResponse<EntityRoleDto> apiResponse = default(APIsResponse<EntityRoleDto>);
                 if (Id == 0)
                 {
-
-
                     #region Check RoleExist
                     if ((await IsRoleExist(reqDto.RoleName)))
                     {
@@ -42,6 +41,8 @@ namespace RepMed.Services
                     }
                     #endregion
                     #region Add Role
+                    reqDto.CreatedAt = DateTime.Now;
+                    reqDto.IsActive = true;
                     EntityRoleDto response = _idbConnection.Insert<EntityRoleDto>(_idbTransaction,
                         DbTables.tblRole,
                         DapperHelper.QueryAsColumnsParma<Role, CreateRoleDto>(),
@@ -65,10 +66,18 @@ namespace RepMed.Services
                 }
                 else
                 {
+                    #region Update Role
+                    EntityRoleDto entityRoleDto = _idbConnection.Update<EntityRoleDto>(_idbTransaction, DbTables.tblRole,
+                    new Dictionary<string, object> {
+                    { nameof(EntityRoleDto.UpdatedAt), DateTime.UtcNow },
+                    { nameof(EntityRoleDto.IsActive), reqDto.IsActive},
+                    { nameof(EntityRoleDto.Description), reqDto.Description},
+                    }, $@" {nameof(EntityRoleDto.Id)}='{Id}' ", "RETURNING *");
+                    #endregion 
+
                     #region Remove All Permission of current role
                     await _idbConnection.ExecuteAsync($@"DELETE FROM {DbTables.tblRolePermissions} WHERE RoleId = @RoleId", new { RoleId = Id }, _idbTransaction);
                     #endregion
-
                     #region Add New Permission
                     if (reqDto.PermissionIds != null && reqDto.PermissionIds.Any())
                     {
@@ -109,36 +118,61 @@ namespace RepMed.Services
             {
                 return await Task.FromResult(new APIsError<List<EntityPermissionDto>> (ex.GetActualError()));
             }
-
-
         }
 
-        public async Task<APIsResponse<List<EntityPermissionDto>>> GetRole(long roleId)
+        public async Task<APIsResponse<List<EntityRoleDto>>> GetAllRoles()
         {
             try
             {
-                var sql = $@" 
-                            SELECT p.Id,p.Name,p.Module,p.Description
+                string query = DbTables.tblRole.SelectAll();
+                var roles = await _idbConnection.QueryAsync<EntityRoleDto>(query, transaction: _idbTransaction);
+                return new APIsSuccsss<List<EntityRoleDto>>(_validateMessages.RetriveSuccess, roles);
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<List<EntityRoleDto>>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<GetRoleDto>> GetRolePermission(long roleId)
+        {
+            try
+            {
+                var sqlroles = $@" SELECT r.Id,r.RoleName,r.Description,r.IsActive
+                               FROM {DbTables.tblRole} r WHERE r.Id =@Id";
+                var role = await _idbConnection.QueryFirstOrDefaultAsync<EntityRoleDto>(
+                               sqlroles,
+                               new { Id = roleId },
+                               transaction: _idbTransaction
+                           );
+
+                var sqlpermissions = $@" 
+                            SELECT p.Id,p.Name,p.Module
                             FROM {DbTables.tblRole} r
-                            INNER JOIN {DbTables.tblRolePermissions} rp ON r.Id = rp.RoleId
-                            INNER JOIN {DbTables.tblPermissions} p ON p.Id = rp.PermissionId
+                            LEFT JOIN {DbTables.tblRolePermissions} rp ON r.Id = rp.RoleId
+                            LEFT JOIN {DbTables.tblPermissions} p ON p.Id = rp.PermissionId
                             WHERE r.Id = @Id;
                         ";
-                var result = await _idbConnection.QueryAsync<EntityPermissionDto>(
-                                sql,
+                var permissions = (await _idbConnection.QueryAsync<EntityPermissionDto>(
+                                sqlpermissions,
                                 new { Id = roleId },
                                 transaction: _idbTransaction
-                            );
+                            )).ToList();
 
-                if (result == null || !result.Any())
-                    return new APIsError<List<EntityPermissionDto>> (_validateMessages.NotExist);
-
-                return new APIsSuccsss<List<EntityPermissionDto>>(_validateMessages.RetriveSuccess, result);
+                GetRoleDto result = new GetRoleDto
+                {
+                    Role = role,
+                    Permissions = permissions
+                };
+                if (result == null)
+                    return new APIsError<GetRoleDto> (_validateMessages.NotExist);
+                else
+                    return new APIsSuccsss<GetRoleDto>(_validateMessages.RetriveSuccess, result);
 
             }
             catch (Exception ex)
             {
-                return await Task.FromResult(new APIsError<List<EntityPermissionDto>>(ex.GetActualError()));
+                return await Task.FromResult(new APIsError<GetRoleDto>(ex.GetActualError()));
             }
         }
     }

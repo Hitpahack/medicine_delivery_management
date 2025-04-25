@@ -8,6 +8,9 @@ namespace RepMed.Dtos
     {
         public string RoleName { get; set; }
         public string Description { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
+        public bool? IsActive { get; set; }
     }
 
     public class EntityRoleDto : BasicRoleDto
@@ -26,11 +29,9 @@ namespace RepMed.Dtos
         public List<long> PermissionIds { get; set; }
     }
 
-    public class EditRoleDto
+    public class GetRoleDto
     {
-        public List<long> PermissionIds { get; set; }
-
+        public EntityRoleDto Role { get; set; }
+        public List<EntityPermissionDto> Permissions { get; set; }
     }
-
-
 }

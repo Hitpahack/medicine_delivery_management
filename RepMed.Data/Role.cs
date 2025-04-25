@@ -11,5 +11,11 @@ public partial class Role
 
     public string Description { get; set; }
 
+    public DateTime? CreatedAt { get; set; }
+
+    public DateTime? UpdatedAt { get; set; }
+
+    public bool? IsActive { get; set; }
+
     public virtual ICollection<Rolepermission> Rolepermissions { get; set; } = new List<Rolepermission>();
 }

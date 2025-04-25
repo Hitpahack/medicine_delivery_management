@@ -669,10 +669,18 @@ public partial class RepMedContext : DbContext
 
             entity.HasIndex(e => e.RoleName, "RoleName").IsUnique();
 
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
             entity.Property(e => e.Description).HasMaxLength(255);
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'");
             entity.Property(e => e.RoleName)
                 .IsRequired()
                 .HasMaxLength(50);
+            entity.Property(e => e.UpdatedAt)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Rolepermission>(entity =>

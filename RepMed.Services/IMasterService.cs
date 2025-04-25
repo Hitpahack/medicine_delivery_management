@@ -116,7 +116,7 @@ namespace RepMed.Services
                 if (filter == null)
                     filter = (d) => true;
 
-                string sql = $@"select {nameof(EntityRoleDto.Id)}, {nameof(EntityRoleDto.RoleName)} from {DbTables.tblRole}";
+                string sql = $@"select {nameof(EntityRoleDto.Id)}, {nameof(EntityRoleDto.RoleName)} from {DbTables.tblRole} where {nameof(EntityRoleDto.IsActive)}=true";
                 var mQuery = _idbConnection.Query<Role>(sql, transaction: _idbTransaction).Where(r =>
                 filter.Invoke(r)).Select(r => new SelectListItem
                 {

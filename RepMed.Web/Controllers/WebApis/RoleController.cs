@@ -68,9 +68,9 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
-        [Route("get/{Id}")]
+        [Route("getrole/{Id}")]
         [HttpPost]
-        public async Task<IActionResult> GET(long Id)
+        public async Task<IActionResult> GetRolePermission(long Id)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -79,7 +79,7 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IRoleService roleService = new RoleService(db, tran))
                     {
-                        var result = await roleService.GetRole(Id);
+                        var result = await roleService.GetRolePermission(Id);
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();
@@ -91,6 +91,31 @@ namespace RepMed.Web.Controllers.WebApis
                 }
             }
         }
+
+        [Route("getroles")]
+        [HttpPost]
+        public async Task<IActionResult> GetAllRole()
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IRoleService roleService = new RoleService(db, tran))
+                    {
+                        var result = await roleService.GetAllRoles();
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
 
         [Route("getpermissions")]
         [HttpPost]
