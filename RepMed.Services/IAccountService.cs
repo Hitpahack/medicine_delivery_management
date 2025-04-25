@@ -263,7 +263,7 @@ namespace RepMed.Services
 
                 var param = new Dictionary<string, string> { { "token", token }, { "email", Email } };
                 var baseUrl = _appSettings.MainSiteURL;
-                var callback = QueryHelpers.AddQueryString($"{baseUrl}/forgot-password", param);
+                var callback = QueryHelpers.AddQueryString($"{baseUrl}/reset-password", param);
                 await SendEmailAsync(Email, "Reset Your Password", $"Click here to set your password: <a href='{callback}'>Set Password</a>");
                 return await Task.FromResult(new APIsSuccsss<string>("Success", callback)); 
             }
