@@ -43,10 +43,22 @@
           </ul>
         </li>
         <li class="menu-item" *ngIf="userRole?.toLowerCase() === 'admin'">
-          <a [routerLink]="['/admin/role/add']" class="menu-link">
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
-            <div data-i18n="Analytics">Create Role</div>
+            <div data-i18n="Authentications">Role Management</div>
           </a>
+          <ul class="menu-sub">
+            <li class="menu-item">
+              <a [routerLink]="['/admin/role/list']" class="menu-link">
+                <div data-i18n="Basic">Role List</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a [routerLink]="['/admin/role/add']" class="menu-link">
+                <div data-i18n="Basic">Add Role</div>
+              </a>
+            </li>
+          </ul>
         </li>
         <li class="menu-item" *ngIf="userRole?.toLowerCase() === 'admin'">
           <a href="javascript:void(0);" class="menu-link menu-toggle">

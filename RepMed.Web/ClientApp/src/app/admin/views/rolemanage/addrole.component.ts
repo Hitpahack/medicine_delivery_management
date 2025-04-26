@@ -34,7 +34,7 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
     ngOnInit(): void {
         this.addroleForm = this.initForm();
 
-        this.RoleService.getcomponent().subscribe((response) => {
+        this.RoleService.getmodule().subscribe((response) => {
             if (response?.isSuccess && response.data) {
                 console.log('data component', response.data)
                 this.componentList = response.data;
@@ -54,11 +54,11 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
 
     onSubmit() {
         this.validator.markInvalidFieldsTouched(this.addroleForm);
-        
+
         if (this.addroleForm.invalid && this.validator.checkboxRequiredValidator) {
-            
+
             const componentIdControl = this.addroleForm.get('PermissionIds');
-            
+
             componentIdControl?.updateValueAndValidity();
 
             if (componentIdControl?.hasError('checkboxRequired')) {
@@ -76,6 +76,7 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
                 if (response.isSuccess) {
                     console.log('successfully add')
                     Helper.ShowSuccess(response.message || 'Role added successfully.');
+                    this.router.navigate(['/admin/role/list']);
                 } else {
                     console.log('not successfully add')
                     console.error('API returned isSuccess: false');

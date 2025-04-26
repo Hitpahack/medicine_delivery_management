@@ -56,7 +56,10 @@ export class AdminApiConfigService {
       }, 
       role: {
         add: `${v1}/roles/addrole`,
-        getcomponent: `${v1}/roles/getpermissions/`,
+        getmodule: `${v1}/roles/getpermissions/`,
+        list: `${v1}/roles/getroles/`,
+        getmodulebyid: (id: number) => `${v1}/roles/getrole/${id}`,
+        editrole: (id: number) => `${v1}/roles/editrole/${id}`,
       }
     };
   }
