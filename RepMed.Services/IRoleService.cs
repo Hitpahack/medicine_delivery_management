@@ -22,6 +22,7 @@ namespace RepMed.Services
         Task<APIsResponse<bool>> DeleteRole(long Id);
         Task<APIsResponse<GetRoleDto>> GetRolePermission(long roleId);
         Task<APIsResponse<Datatable<RolesPagingResponse >>> GetAllRoles(RolesPagingRequest reqDto);
+        Task<APIsResponse<EntityRoleDto>> ChangeRoleStatus(long Id, bool status);
         Task<APIsResponse<List<EntityPermissionDto>>> GetAllPermissions();
     }
     public class RoleService : BaseService, IRoleService
@@ -105,6 +106,25 @@ namespace RepMed.Services
             }
         }
 
+        public async Task<APIsResponse<EntityRoleDto>> ChangeRoleStatus(long Id, bool status)
+        {
+            try
+            {
+                APIsResponse<EntityRoleDto> apiResponse = default(APIsResponse<EntityRoleDto>);
+                EntityRoleDto entityRoleDto = _idbConnection.Update<EntityRoleDto>(_idbTransaction, DbTables.tblRole,
+                   new Dictionary<string, object> {
+                    { nameof(EntityRoleDto.IsActive), status},
+                   }, $@" {nameof(EntityRoleDto.Id)}='{Id}' ", "RETURNING *");
+
+                apiResponse = new APIsSuccsss<EntityRoleDto>("Role Status Updated Successfully", entityRoleDto);
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<EntityRoleDto>(ex.GetActualError()));
+            }
+        }
+
         public Task<APIsResponse<bool>> DeleteRole(long Id)
         {
             throw new NotImplementedException();
@@ -135,10 +155,8 @@ namespace RepMed.Services
             {
                 APIsResponse<Datatable<RolesPagingResponse>> apiResponse = default;
                 string orderBy;
-                if (reqDto.Order[0].Column == 0)
-                    orderBy ="Id|desc";
-                else
-                    orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
+               
+                orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
                 #region Get All Pharmacy 
                 var parameters = new DynamicParameters();
                 parameters.Add("page", reqDto.Page, DbType.Int32);

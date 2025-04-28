@@ -14,7 +14,7 @@ namespace RepMed.Web.Controllers.WebApis
 {
 
     [ApiExplorerSettings(GroupName = "admin")]
-    [Route("api/v1/admin/roles")]   
+    [Route("api/v1/admin/roles")]
     public class RoleController : BaseAccountsController
     {
         public RoleController(IOptions<AppSettings> appSettings) : base(appSettings)
@@ -32,7 +32,7 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IRoleService roleService = new RoleService(db, tran))
                     {
-                        var result = await roleService.AddEditRole(reqDto,0);
+                        var result = await roleService.AddEditRole(reqDto, 0);
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();
@@ -130,12 +130,8 @@ namespace RepMed.Web.Controllers.WebApis
                     {
                         var result = await roleService.GetAllRoles(reqDto);
                         if (!result.IsSuccess)
-                        {
-                            tran.Rollback();
                             return BadRequest(result);
-                        }
-                        tran.Commit();
-                        return Ok(result);
+                        return Ok(result.Data);
                     }
                 }
             }
@@ -143,7 +139,6 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("getpermissions")]
         [HttpPost]
-
         public async Task<IActionResult> GetAllPermissions()
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
@@ -161,6 +156,30 @@ namespace RepMed.Web.Controllers.WebApis
                         }
                         tran.Commit();
                         return Ok(result);
+                    }
+                }
+            }
+        }
+
+        [Route("changestatus/{Id}")]
+        [HttpPost]
+        public async Task<IActionResult> ChangeRoleStatus(long Id, bool status)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IRoleService roleService = new RoleService(db, tran))
+                    {
+                        var result = await roleService.ChangeRoleStatus(Id, status);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result.Data);
                     }
                 }
             }

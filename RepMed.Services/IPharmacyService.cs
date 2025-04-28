@@ -222,7 +222,7 @@ namespace RepMed.Services
                                sql: "GET_PHARMACY_PAGED",
                                param: parameters,
                                commandType: CommandType.StoredProcedure,
-                               transaction: _idbTransaction
+                               transaction: _idbTransaction 
                 )).ToList();
                 #endregion
                 var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
