@@ -130,7 +130,7 @@ export class AutoValidateDirective implements OnInit {
           if (typeof errorValue === 'string') {
             messages.push(errorValue); // Allow custom validator to return string
           } else {
-            messages.push(`${errorKey} validation failed`);
+            //messages.push(`${errorKey} validation failed`);
           }
       }
     }

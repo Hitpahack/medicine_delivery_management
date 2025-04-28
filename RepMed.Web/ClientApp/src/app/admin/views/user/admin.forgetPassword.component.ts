@@ -7,13 +7,14 @@ import { AdminBaseComponent } from "../../admin.base.component";
 import { Helper } from "../../../../app/common/helper.extenstions";
 import { AdminUserService } from "../../services/users/admin.user.services";
 import { ActivatedRoute } from '@angular/router';
+import { AutoValidateDirective } from "src/app/common/form.validator";
 
 @Component({
     selector: 'admin-forget-password',
     templateUrl: './admin.forgetPassword.component.html',
     standalone: true,
     styleUrls: ['./admin.editprofile.component.css'],
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, AutoValidateDirective]
 })
 
 export class ForgotPassword extends AdminBaseComponent implements OnInit {

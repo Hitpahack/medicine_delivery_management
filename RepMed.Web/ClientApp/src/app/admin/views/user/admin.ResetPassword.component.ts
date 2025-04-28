@@ -7,6 +7,7 @@ import { AdminBaseComponent } from "../../admin.base.component";
 import { Helper } from "../../../../app/common/helper.extenstions";
 import { AdminUserService } from "../../services/users/admin.user.services";
 import { ActivatedRoute } from '@angular/router';
+import { AutoValidateDirective } from "src/app/common/form.validator";
 declare const window: any;
 
 @Component({
@@ -14,7 +15,7 @@ declare const window: any;
   templateUrl: './admin.ResetPassword.component.html',
   standalone: true,
   styleUrls: ['./admin.editprofile.component.css'],
-  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule, RouterModule, AutoValidateDirective]
 })
 
 export class ResetPassword extends AdminBaseComponent implements OnInit {
@@ -65,25 +66,22 @@ export class ResetPassword extends AdminBaseComponent implements OnInit {
 
 
   onSubmit() {
-    this.adminuserservice.resetpassword(this.ResetPasswordForm.value).subscribe({
-      next: (res) => {
-        console.log("API success", res);
-        this.router.navigate(['/admin/login']);
-      },
-      error: (err) => {
-        console.error("API error", err);
-        Helper.ShowError('Something went wrong. Please try again.');
-      }
-    });
-
-
     if (this.ResetPasswordForm.invalid) {
-      this.ResetPasswordForm.markAllAsTouched();
+      this.validator.markInvalidFieldsTouched(this.ResetPasswordForm);
       return;
     }
     let isValid = this.validateForm(this.ResetPasswordForm)
     if (isValid) {
-
+      this.adminuserservice.resetpassword(this.ResetPasswordForm.value).subscribe({
+        next: (res) => {
+          console.log("API success", res);
+          this.router.navigate(['/admin/login']);
+        },
+        error: (err) => {
+          console.error("API error", err);
+          Helper.ShowError('Something went wrong. Please try again.');
+        }
+      });  
     }
     else
       Helper.ShowError('Please fill the required fields');
