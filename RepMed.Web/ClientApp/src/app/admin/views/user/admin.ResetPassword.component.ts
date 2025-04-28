@@ -20,6 +20,7 @@ declare const window: any;
 
 export class ResetPassword extends AdminBaseComponent implements OnInit {
   ResetPasswordForm: FormGroup;
+  errorMessage: string = '';
   constructor(public router: Router, public fb: FormBuilder, public validator: CustomValidator, public adminuserservice: AdminUserService, private route: ActivatedRoute) {
     super(router, fb);
   }
@@ -73,14 +74,21 @@ export class ResetPassword extends AdminBaseComponent implements OnInit {
     let isValid = this.validateForm(this.ResetPasswordForm)
     if (isValid) {
       this.adminuserservice.resetpassword(this.ResetPasswordForm.value).subscribe({
-        next: (res) => {
-          console.log("API success", res);
-          this.router.navigate(['/admin/login']);
-        },
-        error: (err) => {
-          console.error("API error", err);
-          Helper.ShowError('Something went wrong. Please try again.');
-        }
+
+        next: (response) => {
+          if (response.isSuccess) {
+              Helper.ShowSuccess(response.message || '');
+              this.router.navigate(['/admin/login']);
+          } else {
+              this.errorMessage = response.message || '';
+              Helper.ShowError(this.errorMessage);
+          }
+      },
+      error: (err) => {
+          console.error('HTTP Error:', err);
+          this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
+          Helper.ShowError(this.errorMessage);  // Optional toast/popup
+      }
       });  
     }
     else

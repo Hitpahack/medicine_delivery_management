@@ -42,18 +42,18 @@ export class ForgotPassword extends AdminBaseComponent implements OnInit {
             return;
         }
         this.adminuserservice.forgetpassword(this.ForgetPassword.value).subscribe({
-            next: (res) => {
-                if (res.isSuccess) {
-                    Helper.ShowSuccess(res.message || '');
+            next: (response) => {
+                if (response.isSuccess) {
+                    Helper.ShowSuccess(response.message || '');
                 } else {
-                    console.error('API returned isSuccess: false');
-                    this.errorMessage = res.message || '';
+                    this.errorMessage = response.message || '';
                     Helper.ShowError(this.errorMessage);
                 }
             },
             error: (err) => {
+                console.error('HTTP Error:', err);
                 this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
-                Helper.ShowError('Something went wrong. Please try again.');
+                Helper.ShowError(this.errorMessage);  // Optional toast/popup
             }
         });
     }
