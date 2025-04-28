@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
 using System.Data.Common;
 using Microsoft.AspNetCore.Http;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace RepMed.Services
 {
@@ -397,7 +398,7 @@ namespace RepMed.Services
                 //resp.Message = "Password has been successfully reseted";
                 //resp.isSuccess = true;
 
-                return await Task.FromResult(new APIsSuccsss<bool>("Success", true));
+                return await Task.FromResult(new APIsSuccsss<bool>("Password Updated Successfully", true));
             }
             catch (Exception ex)
             {
@@ -451,7 +452,7 @@ namespace RepMed.Services
 
                 #endregion
 
-                return new APIsSuccsss<bool>(_validateMessages.UpdateSuccess, true);
+                return new APIsSuccsss<bool>("Password Updated Successfully", true);
             }
             catch (Exception ex)
             {
