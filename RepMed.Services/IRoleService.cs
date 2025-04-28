@@ -12,6 +12,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 using static RepMed.Core.Enums;
 
 namespace RepMed.Services
@@ -125,9 +126,40 @@ namespace RepMed.Services
             }
         }
 
-        public Task<APIsResponse<bool>> DeleteRole(long Id)
+        public async Task<APIsResponse<bool>> DeleteRole(long Id)
         {
-            throw new NotImplementedException();
+            try
+            {
+                APIsResponse<bool> apiResponse = default(APIsResponse<bool>);
+                #region Check if role is assigned to any user
+                string checkQuery = $@"SELECT UserId FROM {DbTables.tblUserRoles} WHERE RoleId = @RoleId;";
+                int assignedUserCount = await _idbConnection.ExecuteScalarAsync<int>(checkQuery, new { RoleId = Id },_idbTransaction);
+
+                if (assignedUserCount > 0)
+                {
+                    return new APIsError<bool>("Cannot delete role. It is assigned to one or more users.");
+                }
+                #endregion
+                #region Delete the role permissions
+                string query = $@"DELETE FROM {DbTables.tblRolePermissions} WHERE RoleId = @RoleId;";
+                int rows = await _idbConnection.ExecuteAsync(query, new { RoleId = Id }, _idbTransaction);
+                #endregion
+
+                #region Delete the role
+                string deleteQuery = $@"DELETE FROM {DbTables.tblRole} WHERE Id = @RoleId;";
+                int rowsAffected = await _idbConnection.ExecuteAsync(deleteQuery, new { RoleId = Id },_idbTransaction);
+                
+                if (rowsAffected > 0)
+                    apiResponse=new APIsSuccsss<bool>("Role deleted successfully.", true);
+                else
+                    apiResponse=  new APIsSuccsss<bool>("Role not found.", true);
+                #endregion
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
+            }
         }
 
         public void Dispose()
