@@ -59,6 +59,8 @@ export class AdminApiConfigService {
         list: `${v1}/roles/getroles/`,
         getmodulebyid: (id: number) => `${v1}/roles/getrole/${id}`,
         editrole: (id: number) => `${v1}/roles/editrole/${id}`,
+        updateStatus: `${v1}/roles/changestatus`,
+        deleterole: (id: number) => `${v1}/roles/deleterole/${id}`,
       }
     };
   }
