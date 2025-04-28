@@ -423,18 +423,24 @@ namespace RepMed.Services
                 Encryption.CreatePasswordHash(reqdto.ConfirmPassword, out var passHash, out var passSalt);
 
                 #region Update users password
-                string updateUserQuery = $@" UPDATE {DbTables.tblUser} 
-                                        SET PasswordHash = @PasswordHash,
-                                        PasswordSalt = @PasswordSalt
-                                        WHERE Id = @Id";
+                string updateUserQuery = $@"
+                                            UPDATE {DbTables.tblUser}
+                                            SET 
+                                                PasswordHash = @PasswordHash,
+                                                PasswordSalt = @PasswordSalt
+                                            WHERE 
+                                                Id = @Id";
+
                 await _idbConnection.ExecuteAsync(
-                            updateUserQuery,
-                            new
-                            {
-                                PasswordHash = passHash,
-                                PasswordSalt = passSalt,
-                                Id = tokenData.UserId
-                            }, transaction: _idbTransaction);
+                    updateUserQuery,
+                    new
+                    {
+                        PasswordHash = passHash,
+                        PasswordSalt = passSalt,
+                        Id = tokenData.UserId
+                    },
+                    transaction: _idbTransaction
+                );
                 #endregion
 
                 #region Mark token as used (password has been set)
