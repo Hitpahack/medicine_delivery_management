@@ -1,21 +1,19 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
+import { Router, RouterModule } from "@angular/router";
 import { FormBuilder } from "@angular/forms";
 import { CustomValidator } from "../../../common/custom.validators";
 import { AdminBaseComponent } from '../../admin.base.component';
 import { DatatableComponent } from '../../shared/datatables/datatable.component';
-import { RouterModule } from '@angular/router';
-
-
+import { CommonModule } from '@angular/common';
+declare var $: any;
 
 @Component({
     selector: 'app-pharmacy-list',
     templateUrl: './list.component.html',
-    imports: [DatatableComponent, RouterModule]
+    imports: [DatatableComponent, RouterModule, CommonModule]
 })
 export class AdminPharmacyListsComponent extends AdminBaseComponent implements OnInit {
-
-    constructor(public validator: CustomValidator) {
+    constructor(public validator: CustomValidator, public router: Router) {
         super();
     }
     
@@ -28,8 +26,10 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
             dataType: "json", // Expect JSON response
             data: function (d) {
                 return JSON.stringify(d);
+            },
+            datasrc:function (json) {
+                return json.data || json;
             }
-            
         },
         order: [[0, 'desc']],
         searching: true,
@@ -41,11 +41,16 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
             { data: 'cityName', title: 'City' },
             { data: 'registeredMobile', title: 'Mobile' },
             { data: 'address1', title:'Address'},
-            { data: 'countryName', title: 'Country' }
+            { data: 'countryName', title: 'Country' },
+            { title: 'Edit', data: null, orderable: false, render: (data: any, type: any, row: any) => { return `<button class="btn btn-primary edit-pharmacy" data-id="${data.id}">Edit</button>`; } },
         ],
     };
 
     ngOnInit(): void {
-       
+        const self = this;
+        $(document).on('click', '.edit-pharmacy', function () {
+            const id = $(this).data('id');  
+            self.router.navigate(['admin/pharmacy/edit/', id]);
+        });       
     }
 }

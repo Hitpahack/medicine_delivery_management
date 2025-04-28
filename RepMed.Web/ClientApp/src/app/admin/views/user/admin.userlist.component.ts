@@ -1,24 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from "@angular/router";
 import { FormBuilder } from "@angular/forms";
 import { CustomValidator } from "../../../../app/common/custom.validators";
 import { AdminBaseComponent } from '../../admin.base.component';
 import { DatatableComponent } from '../../shared/datatables/datatable.component';
-
+import { CommonModule } from '@angular/common';
 declare var $: any;
 
 @Component({
     selector: 'app-User-list',
     templateUrl: 'admin.userlist.component.html',
-    imports: [DatatableComponent, RouterModule]
+    imports: [DatatableComponent, RouterModule, CommonModule]
 })
 
 export class UserListComponent extends AdminBaseComponent implements OnInit {
-    constructor(public validator: CustomValidator) {
+    constructor(public validator: CustomValidator, public router: Router) {
         super();
     }
-
 
     tableOptions = {
         tableId: 'post_pharmacylist_datatable',
@@ -29,8 +27,12 @@ export class UserListComponent extends AdminBaseComponent implements OnInit {
             dataType: "json", // Expect JSON response
             data: function (d) {
                 return JSON.stringify(d);
+            },
+            datasrc:function (json) {
+                debugger;
+                console.log('User list API response:', json); 
+                return json.data || json;
             }
-
         },
         searching: true,
         columns: [
@@ -40,16 +42,16 @@ export class UserListComponent extends AdminBaseComponent implements OnInit {
             { data: 'firstName' },
             { data: 'lastName' },
             { data: 'mobile' },
-
+            { title: 'Edit', data: null, orderable: false, render: (data: any, type: any, row: any) => { return `<button class="btn btn-primary edit-user" data-id="${data.personId}">Edit </button>`; } },
         ],
         //searchInputId: 'post-search-input',
     };
 
-
-
     ngOnInit(): void {
-
-
+        const self = this;
+        $(document).on('click', '.edit-user', function () {
+            const id = $(this).data('id');
+            self.router.navigate(['admin/user/edit/', id]);
+        });
     }
-
 }
