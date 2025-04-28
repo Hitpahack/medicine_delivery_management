@@ -4,6 +4,7 @@ using MySqlConnector;
 using RepMed.Core;
 using RepMed.Dtos;
 using RepMed.Dtos.DataTables;
+using RepMed.Dtos.RolePage;
 using RepMed.Services;
 using RepMed.Web.Controllers.BaseApis;
 using System.Collections.Generic;
@@ -118,7 +119,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("getroles")]
         [HttpPost]
-        public async Task<IActionResult> GetAllRole()
+        public async Task<IActionResult> GetAllRole(RolesPagingRequest reqDto)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -127,7 +128,7 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IRoleService roleService = new RoleService(db, tran))
                     {
-                        var result = await roleService.GetAllRoles();
+                        var result = await roleService.GetAllRoles(reqDto);
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();
@@ -139,7 +140,6 @@ namespace RepMed.Web.Controllers.WebApis
                 }
             }
         }
-
 
         [Route("getpermissions")]
         [HttpPost]

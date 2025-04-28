@@ -227,23 +227,6 @@ namespace RepMed.Services
                 #endregion
                 var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
                 var output = new Datatable<PharmacyPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
-                #region Get All Pharmacy Commented
-
-                //var sql = @"
-                //            SELECT *                             
-                //            FROM pharmacies p
-                //            LEFT JOIN pharmacybankdetails b ON p.Id = b.PharmacyId";
-                //var pharmacyBank = await _idbConnection.QueryAsync<AddPharmacyDto, PharmacyBankDetailsDto, BasePharmacyDto>(
-                //        sql,
-                //        (pharmacy, bankDetails) => new BasePharmacyDto
-                //        {
-                //            Pharmacy = pharmacy,
-                //            PharmacyBankDetails = bankDetails
-                //        },
-                //        transaction: _idbTransaction,
-                //        splitOn: "PharmacyId"
-                //);
-                #endregion
                 if(result.Any())
                     return await Task.FromResult(new APIsSuccsss<Datatable<PharmacyPagingResponse>>(_validateMessages.RetriveSuccess, output));
                 else

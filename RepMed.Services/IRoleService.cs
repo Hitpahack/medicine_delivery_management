@@ -2,6 +2,9 @@
 using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
+using RepMed.Dtos.DataTables;
+using RepMed.Dtos.PharmacyPage;
+using RepMed.Dtos.RolePage;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -18,7 +21,7 @@ namespace RepMed.Services
         Task<APIsResponse<EntityRoleDto>> AddEditRole(CreateRoleDto reqDto, long Id);
         Task<APIsResponse<bool>> DeleteRole(long Id);
         Task<APIsResponse<GetRoleDto>> GetRolePermission(long roleId);
-        Task<APIsResponse<List<EntityRoleDto>>> GetAllRoles();
+        Task<APIsResponse<Datatable<RolesPagingResponse >>> GetAllRoles(RolesPagingRequest reqDto);
         Task<APIsResponse<List<EntityPermissionDto>>> GetAllPermissions();
     }
     public class RoleService : BaseService, IRoleService
@@ -126,17 +129,42 @@ namespace RepMed.Services
             }
         }
 
-        public async Task<APIsResponse<List<EntityRoleDto>>> GetAllRoles()
+        public async Task<APIsResponse<Datatable<RolesPagingResponse>>> GetAllRoles(RolesPagingRequest reqDto)
         {
             try
             {
-                string query = DbTables.tblRole.SelectAll();
-                var roles = await _idbConnection.QueryAsync<EntityRoleDto>(query, transaction: _idbTransaction);
-                return new APIsSuccsss<List<EntityRoleDto>>(_validateMessages.RetriveSuccess, roles);
+                APIsResponse<Datatable<RolesPagingResponse>> apiResponse = default;
+                string orderBy;
+                if (reqDto.Order[0].Column == 0)
+                    orderBy ="Id|desc";
+                else
+                    orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
+                #region Get All Pharmacy 
+                var parameters = new DynamicParameters();
+                parameters.Add("page", reqDto.Page, DbType.Int32);
+                parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
+                parameters.Add("searchText", reqDto.SearchText ?? string.Empty, DbType.String);
+                parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
+                parameters.Add("Order_by", orderBy, DbType.String);
+
+                var result = (await _idbConnection.QueryAsync<RolesPagingResponse>(
+                               sql: "GET_ROLES_PAGED",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                )).ToList();
+                #endregion
+                var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
+                var output = new Datatable<RolesPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
+                if (result.Any())
+                    return await Task.FromResult(new APIsSuccsss<Datatable<RolesPagingResponse>>(_validateMessages.RetriveSuccess, output));
+                else
+                    return await Task.FromResult(new APIsSuccsss<Datatable<RolesPagingResponse>>(_validateMessages.NotExist));
+
             }
             catch (Exception ex)
             {
-                return await Task.FromResult(new APIsError<List<EntityRoleDto>>(ex.GetActualError()));
+                return await Task.FromResult(new APIsError<Datatable<RolesPagingResponse>>(ex.GetActualError()));
             }
         }
 
