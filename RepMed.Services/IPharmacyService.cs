@@ -109,7 +109,7 @@ namespace RepMed.Services
                 var result = await SendEmailAsync(userEmail, "Set Your Password", $"Click here to set your password: <a href='{url}'>Set Password</a>");
                 #endregion
 
-                return new APIsSuccsss<bool>("Email Sent for genrate password", result);
+                return new APIsSuccsss<bool>("Email Sent for genrate password", result.Data);
 
             }
             catch (Exception ex)

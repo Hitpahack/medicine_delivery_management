@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 using MySqlConnector;
 using RepMed.Core;
 using RepMed.Dtos;
@@ -116,6 +117,26 @@ namespace RepMed.Web.Controllers.BaseApis
                             tran.Rollback();
 
                         return isReset;
+                    }
+                }
+            }
+        }
+        protected async Task<APIsResponse<bool>> SetPassword(SetPasswordDto reqdto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IAccountService accountService = new AccountService(db, tran))
+                    {
+                        var result = await accountService.SetPassword(reqdto);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                        }
+                        tran.Commit();
+                        return result;
                     }
                 }
             }

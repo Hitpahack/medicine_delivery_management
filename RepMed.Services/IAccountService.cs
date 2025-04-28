@@ -29,6 +29,8 @@ namespace RepMed.Services
         Task<APIsResponse<bool>> ResetPassword(ResetPasswordDTO model);
         Task<APIsResponse<bool>> ChangePassword(ChangePasswordDto reqDto);
         Task<APIsResponse<string>> LogoutAsync(ClaimsPrincipal user);
+        Task<APIsResponse<bool>> SetPassword(SetPasswordDto dto);
+
     }
 
     public class AccountService : BaseService, IAccountService
@@ -402,7 +404,55 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
             }
         }
+        public async Task<APIsResponse<bool>> SetPassword(SetPasswordDto reqdto)
+        {
+            try
+            {
+                #region Get User Token
+                string query = DbTables.tblUserTokens.SelectAll($@"
+                            `Token` = '{reqdto.Token}'
+                            AND `IsUsed` = FALSE
+                            AND `ExpiresAt` > NOW()");
 
+                var tokenData = await _idbConnection.QueryFirstOrDefaultAsync<UserTokenDto>(query, transaction: _idbTransaction);
+                #endregion
+
+                if (tokenData == null)
+                    return new APIsSuccsss<bool>("No data found", false);
+
+                Encryption.CreatePasswordHash(reqdto.ConfirmPassword, out var passHash, out var passSalt);
+
+                #region Update users password
+                string updateUserQuery = $@" UPDATE {DbTables.tblUser} 
+                                        SET PasswordHash = @PasswordHash,
+                                        PasswordSalt = @PasswordSalt
+                                        WHERE Id = @Id";
+                await _idbConnection.ExecuteAsync(
+                            updateUserQuery,
+                            new
+                            {
+                                PasswordHash = passHash,
+                                PasswordSalt = passSalt,
+                                Id = tokenData.UserId
+                            }, transaction: _idbTransaction);
+                #endregion
+
+                #region Mark token as used (password has been set)
+                string updateTokenQuery = $@" UPDATE {DbTables.tblUserTokens} SET IsUsed = TRUE WHERE Id = @Id";
+                await _idbConnection.ExecuteAsync(
+                    updateTokenQuery,
+                    new { tokenData.Id }, transaction: _idbTransaction);
+
+                #endregion
+
+                return new APIsSuccsss<bool>(_validateMessages.UpdateSuccess, true);
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
+
+            }
+        }
         private BaseUserSecurityCodeDto AddEditResetPassToken(string userId, string token)
         {
 

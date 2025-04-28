@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
+using MySqlConnector;
 using Org.BouncyCastle.Crypto.Generators;
 using RepMed.Core;
 using RepMed.Dtos;
+using RepMed.Services;
 using RepMed.Web.Controllers.BaseApis;
 using System.Collections.Generic;
 using System.Security.Claims;
@@ -67,6 +69,15 @@ namespace RepMed.Web.Controllers.WebApis
 
             return BadRequest(data);
 
+        }
+        [HttpPost("set-password")]
+        public async Task<IActionResult> SetPassword([FromBody] SetPasswordDto reqDto)
+        {
+            var data = await base.SetPassword(reqDto);
+            if (data.IsSuccess)
+                return Ok(data);
+
+            return BadRequest(data);
         }
         private async Task SignInAsync(IEnumerable<Claim> Claims)
         {

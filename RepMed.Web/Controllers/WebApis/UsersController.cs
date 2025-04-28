@@ -88,29 +88,6 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
-        [HttpPost("set-password")]
-        public async Task<IActionResult> SetPassword([FromBody] SetPasswordDto reqdto)
-        {
-            using (var db = new MySqlConnection(_appSettings.ConnectionString))
-            {
-                db.Open();
-                using (var tran = db.BeginTransaction())
-                {
-                    using (IUserServices userService = new UserServices(db, tran))
-                    {
-                        var result = await userService.SetPassword(reqdto);
-                        if (!result.IsSuccess)
-                        {
-                            tran.Rollback();
-                            return BadRequest(result);
-                        }
-                        tran.Commit();
-                        return Ok(result);
-                    }
-                }
-            }
-        }
-
         [Route("change-password")]
         [HttpPost]
         public async Task<IActionResult> ChangePass(ChangePasswordDto reqDto)
@@ -125,3 +102,4 @@ namespace RepMed.Web.Controllers.WebApis
 
     }
 }
+    
