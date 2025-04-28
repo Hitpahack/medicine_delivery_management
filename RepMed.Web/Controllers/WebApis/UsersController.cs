@@ -2,9 +2,7 @@
 using Microsoft.Extensions.Options;
 using MySqlConnector;
 using RepMed.Core;
-using RepMed.Data;
 using RepMed.Dtos;
-using RepMed.Dtos.PharmacyPage;
 using RepMed.Dtos.UsersPage;
 using RepMed.Services;
 using RepMed.Web.Controllers.BaseApis;

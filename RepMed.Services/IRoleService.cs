@@ -3,17 +3,12 @@ using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
 using RepMed.Dtos.DataTables;
-using RepMed.Dtos.PharmacyPage;
 using RepMed.Dtos.RolePage;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Data.Common;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
-using static RepMed.Core.Enums;
 
 namespace RepMed.Services
 {

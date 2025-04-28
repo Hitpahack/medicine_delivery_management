@@ -69,9 +69,13 @@ public partial class Pharmacy
 
     public virtual ICollection<Pharmacypurchase> Pharmacypurchases { get; set; } = new List<Pharmacypurchase>();
 
+    public virtual ICollection<Purchaseorder> Purchaseorders { get; set; } = new List<Purchaseorder>();
+
     public virtual ICollection<Settlement> Settlements { get; set; } = new List<Settlement>();
 
     public virtual State State { get; set; }
+
+    public virtual ICollection<Supplier> Suppliers { get; set; } = new List<Supplier>();
 
     public virtual User User { get; set; }
 }

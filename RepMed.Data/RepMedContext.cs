@@ -50,6 +50,10 @@ public partial class RepMedContext : DbContext
 
     public virtual DbSet<Productcategory> Productcategories { get; set; }
 
+    public virtual DbSet<Purchaseorder> Purchaseorders { get; set; }
+
+    public virtual DbSet<Purchaseorderitem> Purchaseorderitems { get; set; }
+
     public virtual DbSet<Refund> Refunds { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
@@ -59,6 +63,8 @@ public partial class RepMedContext : DbContext
     public virtual DbSet<Settlement> Settlements { get; set; }
 
     public virtual DbSet<State> States { get; set; }
+
+    public virtual DbSet<Supplier> Suppliers { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
@@ -632,6 +638,85 @@ public partial class RepMedContext : DbContext
                 .HasColumnType("datetime");
         });
 
+        modelBuilder.Entity<Purchaseorder>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("purchaseorders");
+
+            entity.HasIndex(e => e.PharmacyId, "PharmacyId");
+
+            entity.HasIndex(e => e.SupplierId, "SupplierId");
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Eddate).HasColumnName("EDDate");
+            entity.Property(e => e.Ponumber)
+                .IsRequired()
+                .HasMaxLength(50)
+                .HasColumnName("PONumber");
+            entity.Property(e => e.Remarks).HasColumnType("text");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'Pending'")
+                .HasColumnType("enum('Pending','Approved','Rejected','Completed')");
+            entity.Property(e => e.TaxAmount)
+                .HasPrecision(10, 2)
+                .HasDefaultValueSql("'0.00'");
+            entity.Property(e => e.TotalAmount)
+                .HasPrecision(10, 2)
+                .HasDefaultValueSql("'0.00'");
+            entity.Property(e => e.UpdatedAt)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Pharmacy).WithMany(p => p.Purchaseorders)
+                .HasForeignKey(d => d.PharmacyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("purchaseorders_ibfk_1");
+
+            entity.HasOne(d => d.Supplier).WithMany(p => p.Purchaseorders)
+                .HasForeignKey(d => d.SupplierId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("purchaseorders_ibfk_2");
+        });
+
+        modelBuilder.Entity<Purchaseorderitem>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("purchaseorderitems");
+
+            entity.HasIndex(e => e.ProductId, "ProductId");
+
+            entity.HasIndex(e => e.PurchaseOrderId, "PurchaseOrderId");
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Quantity).HasPrecision(10, 2);
+            entity.Property(e => e.TotalPrice).HasPrecision(10, 2);
+            entity.Property(e => e.Unit)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.UnitPrice).HasPrecision(10, 2);
+            entity.Property(e => e.UpdatedAt)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Purchaseorderitems)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("purchaseorderitems_ibfk_2");
+
+            entity.HasOne(d => d.PurchaseOrder).WithMany(p => p.Purchaseorderitems)
+                .HasForeignKey(d => d.PurchaseOrderId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("purchaseorderitems_ibfk_1");
+        });
+
         modelBuilder.Entity<Refund>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PRIMARY");
@@ -752,6 +837,40 @@ public partial class RepMedContext : DbContext
             entity.HasOne(d => d.Country).WithMany(p => p.States)
                 .HasForeignKey(d => d.CountryId)
                 .HasConstraintName("states_ibfk_1");
+        });
+
+        modelBuilder.Entity<Supplier>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("suppliers");
+
+            entity.HasIndex(e => e.PharmacyId, "PharmacyId");
+
+            entity.Property(e => e.Address).HasColumnType("text");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Email).HasMaxLength(255);
+            entity.Property(e => e.Gstnumber)
+                .HasMaxLength(50)
+                .HasColumnName("GSTNumber");
+            entity.Property(e => e.Mobile).HasMaxLength(255);
+            entity.Property(e => e.Name)
+                .IsRequired()
+                .HasMaxLength(255);
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'Active'")
+                .HasColumnType("enum('Active','Inactive')");
+            entity.Property(e => e.UpdatedAt)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Pharmacy).WithMany(p => p.Suppliers)
+                .HasForeignKey(d => d.PharmacyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("suppliers_ibfk_1");
         });
 
         modelBuilder.Entity<User>(entity =>
