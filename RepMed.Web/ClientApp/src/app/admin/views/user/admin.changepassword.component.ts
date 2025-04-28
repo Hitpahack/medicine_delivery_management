@@ -67,9 +67,6 @@ export class ChangePassword extends AdminBaseComponent implements OnInit {
     }
     let isValid = this.validateForm(this.ChangePasswordForm)
     if (isValid) {
-      this.adminuserservice.changepassword(this.ChangePasswordForm.value).subscribe(response => {
-        alert(response)
-      })
     }
     else
       Helper.ShowError('Please fill the required fields');

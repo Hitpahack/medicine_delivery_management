@@ -102,7 +102,6 @@ export const routes: Routes = [
       //{ path: 'subadmin', component: Sub_Dr_AdminDashboardComponent }
     ]
   },
-  { path: 'setpassword', component: ChangePassword },
   { path: 'reset-password', component: ResetPassword },
   { path: 'forgotpassword', component: ForgotPassword },
   //{ path: '', component: LoginComponent, pathMatch: 'full'},
@@ -114,7 +113,7 @@ export const routes: Routes = [
   //  ]
   //},
   { path: 'login', component: LoginComponent },
-
+  { path: 'set-password', component: SetPassword },
   // otherwise redirect to home
   { path: '**', component: NotFoundComponent }
 ];

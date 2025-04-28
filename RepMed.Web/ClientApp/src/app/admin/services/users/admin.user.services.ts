@@ -36,7 +36,7 @@ export class AdminUserService extends adminBaseService {
   }
 
   setpassword(formData: any){
-    return this.http.post(this.apiConfig.endpoints.user.setpassword, formData, { headers: this.apiConfig.requestSettings.header })
+    return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.accounts.setpassword, formData, { headers: this.apiConfig.requestSettings.header })
   }
 
   getRoles(){
@@ -44,7 +44,7 @@ export class AdminUserService extends adminBaseService {
   }
 
   changepassword(formData: any){
-    return this.http.post(this.apiConfig.endpoints.user.changepassword, formData, { headers: this.apiConfig.requestSettings.header })
+    //return this.http.post(this.apiConfig.endpoints.user, formData, { headers: this.apiConfig.requestSettings.header })
   }
 
   forgetpassword(formdata: any){

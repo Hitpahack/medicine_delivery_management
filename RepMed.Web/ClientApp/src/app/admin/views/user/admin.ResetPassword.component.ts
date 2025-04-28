@@ -43,8 +43,6 @@ export class ResetPassword extends AdminBaseComponent implements OnInit {
   }
 
   initForm(): FormGroup {
-    console.log(this.token);
-    console.log(this.email);
     const form = this.fb.group({
       token: new FormControl(this.token),
       email: new FormControl(this.email),
