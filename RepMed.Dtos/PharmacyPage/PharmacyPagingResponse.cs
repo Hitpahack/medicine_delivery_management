@@ -15,7 +15,6 @@ namespace RepMed.Dtos.PharmacyPage
         public string OwnerName { get; set; }
         public string Status { get; set; }
         public string Address1 { get; set; }
-
         public string CityName { get; set; }
         public string StateName { get; set; }
         public string CountryName { get; set; }

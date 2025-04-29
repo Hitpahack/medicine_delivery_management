@@ -41,4 +41,8 @@ namespace RepMed.Dtos
         public BasePODto PO { get; set; }
         public List<BasePOItemDto> Items { get; set; }
     }
+    public class NextPoNumberDto
+    {
+        public string NextPONumber { get; set; }
+    }
 }

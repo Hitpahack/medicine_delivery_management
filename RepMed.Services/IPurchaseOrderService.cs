@@ -1,8 +1,13 @@
-﻿using RepMed.Core;
+﻿using Dapper;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
 using RepMed.Dtos.DataTables;
+using RepMed.Dtos.PharmacyPage;
+using RepMed.Dtos.POPage;
 using RepMed.Dtos.ProductPage;
+using RepMed.Dtos.RolePage;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,6 +20,9 @@ namespace RepMed.Services
     {
         Task<APIsResponse<CreatePODto>> CreatePO(CreatePODto reqDto);
         Task<APIsResponse<EntitySupplierDto>> AddSupplier(BaseSupplierDto reqDto);
+        Task<APIsResponse<Datatable<POPagingResponse>>> GetAllPO(POPagingRequest reqDto);
+        Task<APIsResponse<NextPoNumberDto>> GetNextPONumber(long pharmacyId);
+        Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId);
 
     }
     public class PurchaseOrderService : BaseService, IPurchaseOrderService
@@ -113,5 +121,82 @@ namespace RepMed.Services
             GC.SuppressFinalize(this);
         }
 
+        public async Task<APIsResponse<Datatable<POPagingResponse>>> GetAllPO(POPagingRequest reqDto)
+        {
+            try
+            {
+                APIsResponse<Datatable<POPagingResponse>> apiResponse = default;
+                string orderBy;
+                orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
+                #region Get All PO 
+                var parameters = new DynamicParameters();
+                parameters.Add("page", reqDto.Page, DbType.Int32);
+                parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
+                parameters.Add("pharmacyId", reqDto.PharmacyId, DbType.Int32);
+                parameters.Add("searchText", reqDto.SearchText ?? string.Empty, DbType.String);
+                parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
+                parameters.Add("Order_by", orderBy, DbType.String);
+
+                var result = (await _idbConnection.QueryAsync<POPagingResponse>(
+                               sql: "GET_PO_PAGED",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                )).ToList();
+                #endregion
+                var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
+                var output = new Datatable<POPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
+                if (result.Any())
+                    return await Task.FromResult(new APIsSuccsss<Datatable<POPagingResponse>>(_validateMessages.RetriveSuccess, output));
+                else
+                    return await Task.FromResult(new APIsSuccsss<Datatable<POPagingResponse>>(_validateMessages.NotExist));
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<Datatable<POPagingResponse>>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId)
+        {
+            try
+            {
+                string query = DbTables.tblSuppliers.SelectAll($@"`{nameof(Supplier.PharmacyId)}` = {pharmacyId}");
+                var rolepermissions = await _idbConnection.QueryAsync<GetSupppliersDto>(query, transaction: _idbTransaction);
+                return new APIsSuccsss<List<GetSupppliersDto>>(_validateMessages.RetriveSuccess, rolepermissions);
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<List<GetSupppliersDto>>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<NextPoNumberDto>> GetNextPONumber(long pharmacyId)
+        {
+            try
+            {
+                APIsResponse<NextPoNumberDto> apiResponse = default;
+                #region Get All Pharmacy 
+                var parameters = new DynamicParameters();
+                parameters.Add("inPharmacyId", pharmacyId, DbType.Int32);
+                var result = await _idbConnection.QueryFirstOrDefaultAsync<NextPoNumberDto>(
+                               sql: "GET_NEXT_PO_NUMBER",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                );
+                #endregion
+                if (result!=null)
+                    return await Task.FromResult(new APIsSuccsss<NextPoNumberDto>(_validateMessages.RetriveSuccess,result));
+                else
+                    return await Task.FromResult(new APIsSuccsss<NextPoNumberDto>(_validateMessages.InternalError));
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<NextPoNumberDto>(ex.GetActualError()));
+            }
+        }
     }
 }

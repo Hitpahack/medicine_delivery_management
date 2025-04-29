@@ -3,6 +3,7 @@ using Microsoft.Extensions.Options;
 using MySqlConnector;
 using RepMed.Core;
 using RepMed.Dtos;
+using RepMed.Dtos.POPage;
 using RepMed.Services;
 using RepMed.Web.Controllers.BaseApis;
 using System.Threading.Tasks;
@@ -19,7 +20,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         }
 
-        [Route("cretepo")]
+        [Route("createpo")]
         [HttpPost]
         public async Task<IActionResult> CreatePO(CreatePODto reqDto)
         {
@@ -66,6 +67,69 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
+        [Route("getsuppliers/{pharmacyId}")]
+        [HttpPost]
+        public async Task<IActionResult> GetAllSuppliers(long pharmacyId)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.GetAllSuppliers(pharmacyId);
+                        if (!result.IsSuccess)
+                        {
+                            return BadRequest(result);
+                        }
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+        [Route("getpo")]
+        [HttpPost]
+        public async Task<IActionResult> GetAllPO(POPagingRequest reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.GetAllPO(reqDto);
+                        if (!result.IsSuccess)
+                        {
+                            return BadRequest(result);
+                        }
+                        return Ok(result);
+                    }
+                }
+            }
+        }
 
+        [Route("getponumber/{pharmacyId}")]
+        [HttpPost]
+        public async Task<IActionResult> GetNextPONumber(long pharmacyId)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.GetNextPONumber(pharmacyId);
+                        if (!result.IsSuccess)
+                        {
+                            return BadRequest(result);
+                        }
+                        return Ok(result);
+                    }
+                }
+            }
+        }
     }
 }
