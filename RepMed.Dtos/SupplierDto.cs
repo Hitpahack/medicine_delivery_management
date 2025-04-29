@@ -34,4 +34,9 @@ namespace RepMed.Dtos
         public long Id { get; set; }
 
     }
+    public class GetSupppliersDto
+    {
+        public long Id { get; set; }
+        public string Name { get; set; }
+    }
 }

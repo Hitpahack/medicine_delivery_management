@@ -142,7 +142,7 @@ namespace RepMed.Services
                                         isMobileExist ? reqDto.RegisteredMobile :
                                         reqDto.LicenseNumber;
 
-                    string errorMessage = _validateMessages.GetAlreadyExist(errorValue, $"The {errorField} already exists. Please choose another one.");
+                    string errorMessage = _validateMessages.GetAlreadyExist($"The {errorField} already exists. Please choose another one.");
 
                     return new APIsError<AddPharmacyDto>(errorMessage);
                 }
