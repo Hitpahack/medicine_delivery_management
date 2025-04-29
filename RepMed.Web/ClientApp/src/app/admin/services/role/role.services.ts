@@ -28,7 +28,10 @@ export class RoleService extends adminBaseService {
     editrole(formData: any, id: number) {
         console.log("formdata", formData);
         return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.role.editrole(id), formData, { headers: this.apiConfig.requestSettings.header })
-      }
+    }
+    deleteRole(id: number) {
+        return this.http.post<any>(this.apiConfig.endpoints.role.deleterole(id), { headers: this.apiConfig.requestSettings.header });
+    }
 
     //#endregion
 }

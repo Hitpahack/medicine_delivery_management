@@ -53,6 +53,7 @@ export const routes: Routes = [
       { path: 'shifts', component: AdminShiftsComponent },
       { path: 'dashboard', component: AdminDashboardComponent },
       { path: 'pharmacy/add', component: AdminAddPharmacyComponent },
+      { path: 'pharmacy/edit/:id', component: AdminAddPharmacyComponent },
       { path: 'pharmacy', component: AdminPharmacyListsComponent },
       { path: 'pharmacy/view', component: AdminPharmacyDetailsComponent },
 
