@@ -40,7 +40,8 @@ export class AdminApiConfigService {
         get: (id: number) => `${v1}/pharmacy/getpharmacy/${id}`,
         getcountries: `${api}/masters/getcountries/`,
         getstates: (id: number) => `${api}/masters/getstates/${id}`,
-        getcities: (id: number) => `${api}/masters/getcities/${id}`
+        getcities: (id: number) => `${api}/masters/getcities/${id}`,
+        updateStatus: `${v1}/pharmacy/changestatus`,
       },
       user: {
         add: `${v1}/users/adduser/`,

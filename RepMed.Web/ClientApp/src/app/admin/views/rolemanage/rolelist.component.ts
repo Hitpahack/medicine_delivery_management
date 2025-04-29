@@ -22,7 +22,12 @@ export class RoleListComponent extends AdminBaseComponent implements OnInit, Aft
     }
 
     ngAfterViewInit(): void {
-        $(document).on('click', '.edit-btn', (event) => {
+        $(document).off('click', '.edit-role');
+        $(document).off('click', '.toggle-status-btn');
+        $(document).off('click', '.delete-role');
+    
+
+        $(document).on('click', '.edit-role', (event) => {
             const id = $(event.currentTarget).data('id');
             this.router.navigate(['/admin/role/edit', id]);
             // Here you can navigate or open a popup
@@ -41,7 +46,7 @@ export class RoleListComponent extends AdminBaseComponent implements OnInit, Aft
             this.toggleStatus(id, newStatus, button, currentStatus);
         });
 
-        $(document).on('click', '.delete-btn', (event) => {
+        $(document).on('click', '.delete-role', (event) => {
             const id = $(event.currentTarget).data('id');
             this.onDelete(id);
         });
@@ -104,11 +109,11 @@ export class RoleListComponent extends AdminBaseComponent implements OnInit, Aft
                 searchable: false,
                 render: (data, type, row) => {
                     return `
-                        <button class="btn btn-sm btn-primary edit-btn" data-id="${row.id}" title="Edit" style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; border-radius: 12px;">
+                        <button class="btn btn-sm btn-primary edit-role" data-id="${row.id}" title="Edit" style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; border-radius: 12px;">
                             <i class="bi bi-pencil-square" style="font-size: 16px;"></i>
                         </button>
 
-                        <button class="btn btn-sm btn-danger delete-btn" data-id="${row.id}" title="Delete" 
+                        <button class="btn btn-sm btn-danger delete-role" data-id="${row.id}" title="Delete" 
                             style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; border-radius: 12px;">
                             <i class="bi bi-trash" style="font-size: 16px;"></i>
                         </button>
