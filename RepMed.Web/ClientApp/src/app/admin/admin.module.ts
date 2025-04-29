@@ -12,7 +12,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { FormControlErrorsDirective } from "../common/app.directives";
 import { AdminDashboardComponent } from "./views/admindashboard/admin.dashboard.component";
 import { AdminAddPharmacyComponent } from "./views/pharmacy/add.component";
-import { PharmacyDashboardComponent } from "./views/pharmacy/dashboard.component";
 import { PharmacyLayoutComponent } from "../_layouts/admin/pharmacy.layout.component";
 import { AdminPharmacyListsComponent } from "./views/pharmacy/list.component";
 import { BrowserModule } from '@angular/platform-browser';
@@ -42,7 +41,6 @@ import { AddRoleComponent } from "./views/rolemanage/addrole.component";
     FormControlErrorsDirective,
     AdminDashboardComponent,
     AdminAddPharmacyComponent,
-    PharmacyDashboardComponent,
     PharmacyLayoutComponent,
     AdminPharmacyListsComponent,
     BrowserModule,
