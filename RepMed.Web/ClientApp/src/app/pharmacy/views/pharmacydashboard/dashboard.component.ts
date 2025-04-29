@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { FormBuilder, FormsModule, ReactiveFormsModule,} from "@angular/forms";
-import { AdminBaseComponent } from "../../admin.base.component";
+import { AdminBaseComponent } from "../../../../app/admin/admin.base.component";
 import { CommonModule } from "@angular/common";
 
 @Component({
-  selector: 'app-admin-dashboard',
-  templateUrl: './doctor.component.html',
+  selector: 'app-pharmacy-dashboard',
+  templateUrl: './dashboard.component.html',
   imports: [CommonModule,ReactiveFormsModule, FormsModule],
 })
-export class DoctorComponent extends AdminBaseComponent implements OnInit {
+export class PharmacDashboardComponent extends AdminBaseComponent implements OnInit {
     constructor(
         public router: Router, public fb:FormBuilder
         
@@ -21,6 +21,6 @@ export class DoctorComponent extends AdminBaseComponent implements OnInit {
 
   ngOnInit(): void {
     // This runs when the dashboard loads.
-    console.log('Doctor Dashboard loaded!');
+    console.log('Pharmacy Dashboard loaded!');
   }
 }

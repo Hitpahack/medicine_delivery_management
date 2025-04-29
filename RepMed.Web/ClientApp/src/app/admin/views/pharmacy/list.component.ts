@@ -100,9 +100,6 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
                     const isActive = row.status === 'Active';
                     return `
                     <div class="d-flex gap-2 align-items-center">
-                    <button class="btn btn-sm btn-primary edit-pharmacy" data-id="${row.id}" title="Edit" style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; border-radius: 12px;">
-                            <i class="bi bi-pencil-square" style="font-size: 16px;"></i>
-                        </button>
                     <button class="btn btn-sm ${isActive ? 'btn-success' : 'btn-danger'} toggle-status-btn" 
                     data-id="${row.id}" data-status="${isActive}" 
                     title="${isActive ? 'Deactivate' : 'Activate'}" 
@@ -118,10 +115,10 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
     };
 
     ngOnInit(): void {
-        const self = this;
-        $(document).on('click', '.edit-pharmacy', function () {
-            const id = $(this).data('id');
-            self.router.navigate(['admin/pharmacy/edit/', id]);
-        });
+        // const self = this;
+        // $(document).on('click', '.edit-pharmacy', function () {
+        //     const id = $(this).data('id');
+        //     self.router.navigate(['admin/pharmacy/edit/', id]);
+        // });
     }
 }

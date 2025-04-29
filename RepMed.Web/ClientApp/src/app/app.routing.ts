@@ -1,34 +1,35 @@
+// other imports..
 import { Routes, RouterModule } from '@angular/router';
+
+// common imports..
 import { AdminLoginComponent } from './admin/views/accounts/admin.login.component';
 import { AdminShiftsComponent } from './admin/shifts/admin.shifts.component';
-//import { LoginComponent } from './web/accounts/login.component';
-import { FacilitesComponent } from './web/facilites/facilites.component';
 import { AdminEmptyLayoutComponent } from './_layouts/admin/admin.emptylayout.component';
 import { AdminLayoutComponent } from './_layouts/admin/admin.layout.component';
-import { WebLayoutComponent } from './_layouts/web/web.layout.component';
 import { LoginComponent } from './pages/login/login.component';
-import { AdminDashboardComponent } from './admin/views/admindashboard/admin.dashboard.component';
-import { AdminAddPharmacyComponent } from './admin/views/pharmacy/add.component';
-import { PharmacyLayoutComponent } from './_layouts/admin/pharmacy.layout.component';
-import { AdminPharmacyListsComponent } from './admin/views/pharmacy/list.component';
-
-import { AddUserComponent } from '../app/admin/views/user/admin.adduser.component';
 import { EditProfile } from '../app/admin/views/user/admin.editprofile.component';
 import { SetPassword } from './admin/views/user/admin.setpassword.component';
-import { ChangePassword } from './admin/views/user/admin.changepassword.component';
-import { UserListComponent } from './admin/views/user/admin.userlist.component';
-
 import { SubAdminLayoutComponent } from './_layouts/admin/subadmin.layout.component';
-import { ProductListsComponent } from './admin/views/product/list.component';
 import { NotFoundComponent } from './admin/views/pagenotfound/not-found.component';
+import { ForgotPassword } from "../app/admin/views/user/admin.forgetPassword.component";
+import { ResetPassword } from "../app/admin/views/user/admin.ResetPassword.component";
+
+// admin imports..
+import { AdminDashboardComponent } from './admin/views/admindashboard/admin.dashboard.component';
+import { AdminAddPharmacyComponent } from './admin/views/pharmacy/add.component';
+import { AdminPharmacyListsComponent } from './admin/views/pharmacy/list.component';
+import { AddUserComponent } from '../app/admin/views/user/admin.adduser.component';
+import { UserListComponent } from './admin/views/user/admin.userlist.component';
+import { ProductListsComponent } from './admin/views/product/list.component';
 import { AddRoleComponent } from './admin/views/rolemanage/addrole.component';
 import { RoleListComponent } from './admin/views/rolemanage/rolelist.component';
 import { EditRoleComponent } from './admin/views/rolemanage/roleedit.component';
-import { DoctorComponent } from './admin/views/doctor/doctor.component';
-import { PharmacyUserComponent } from './admin/views/pharmacyuser/pharmacyuser.component';
-import { AuthGuard } from "../app/security/authenticate.guard";
-import { ForgotPassword } from "../app/admin/views/user/admin.forgetPassword.component";
-import { ResetPassword } from "../app/admin/views/user/admin.ResetPassword.component";
+
+// pharmacy imports..
+import { PharmacDashboardComponent } from "../app/pharmacy/views/pharmacydashboard/dashboard.component";
+
+// doctor imports..
+import { DoctorDashboardComponent } from "../app/doctor/views/doctordashboard/dashboard.component";
 
 
 export const routes: Routes = [
@@ -67,23 +68,23 @@ export const routes: Routes = [
       { path: 'role/list', component: RoleListComponent },
       { path: 'role/edit/:id', component: EditRoleComponent },
       
-      { path: 'doctor', component: DoctorComponent },
+      { path: 'doctor', component: DoctorDashboardComponent },
 
-      { path: 'pharmacy/user', component: PharmacyUserComponent },
+      { path: 'pharmacy/user', component: PharmacDashboardComponent },
     ]
   },
   {
     path: 'doctor',
     component: AdminLayoutComponent,
     children: [
-      { path: 'dashboard', component: DoctorComponent }
+      { path: 'dashboard', component: DoctorDashboardComponent }
     ]
   },
   {
     path: 'pharmacy',
     component: AdminLayoutComponent,
     children: [
-      { path: 'dashboard', component: PharmacyUserComponent }
+      { path: 'dashboard', component: PharmacDashboardComponent }
     ]
   },
   {
