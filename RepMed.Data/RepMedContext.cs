@@ -347,6 +347,7 @@ public partial class RepMedContext : DbContext
             entity.Property(e => e.Name)
                 .IsRequired()
                 .HasMaxLength(100);
+            entity.Property(e => e.ParentModule).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Person>(entity =>

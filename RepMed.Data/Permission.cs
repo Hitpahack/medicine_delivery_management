@@ -11,6 +11,8 @@ public partial class Permission
 
     public string Module { get; set; }
 
+    public string ParentModule { get; set; }
+
     public string Description { get; set; }
 
     public virtual ICollection<Rolepermission> Rolepermissions { get; set; } = new List<Rolepermission>();
