@@ -10,7 +10,6 @@ import { LoginComponent } from './pages/login/login.component';
 import { AdminDashboardComponent } from './admin/views/admindashboard/admin.dashboard.component';
 import { AdminAddPharmacyComponent } from './admin/views/pharmacy/add.component';
 import { PharmacyLayoutComponent } from './_layouts/admin/pharmacy.layout.component';
-import { PharmacyDashboardComponent } from './admin/views/pharmacy/dashboard.component';
 import { AdminPharmacyListsComponent } from './admin/views/pharmacy/list.component';
 
 import { AddUserComponent } from '../app/admin/views/user/admin.adduser.component';
@@ -20,7 +19,6 @@ import { ChangePassword } from './admin/views/user/admin.changepassword.componen
 import { UserListComponent } from './admin/views/user/admin.userlist.component';
 
 import { SubAdminLayoutComponent } from './_layouts/admin/subadmin.layout.component';
-import { AdminPharmacyDetailsComponent } from './admin/views/pharmacy/details.component';
 import { ProductListsComponent } from './admin/views/product/list.component';
 import { NotFoundComponent } from './admin/views/pagenotfound/not-found.component';
 import { AddRoleComponent } from './admin/views/rolemanage/addrole.component';
@@ -55,7 +53,6 @@ export const routes: Routes = [
       { path: 'pharmacy/add', component: AdminAddPharmacyComponent },
       { path: 'pharmacy/edit/:id', component: AdminAddPharmacyComponent },
       { path: 'pharmacy', component: AdminPharmacyListsComponent },
-      { path: 'pharmacy/view', component: AdminPharmacyDetailsComponent },
 
       { path: 'user/add', component: AddUserComponent },
       { path: 'user/edit/:id', component: AddUserComponent },
@@ -87,13 +84,6 @@ export const routes: Routes = [
     component: AdminLayoutComponent,
     children: [
       { path: 'dashboard', component: PharmacyUserComponent }
-    ]
-  },
-  {
-    path: 'admin',
-    component: PharmacyLayoutComponent,
-    children: [
-      { path: 'pharmacy/dashboard', component: PharmacyDashboardComponent }
     ]
   },
   {
