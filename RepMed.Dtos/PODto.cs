@@ -17,9 +17,11 @@ namespace RepMed.Dtos
         public long SupplierId { get; set; }
         [Required]
         public string Ponumber { get; set; }
+        [JsonIgnore]
         public DateTime OrderDate { get; set; }
 
         public DateTime? Eddate { get; set; }
+        [JsonIgnore]
         public string Status { get; set; }
         public decimal? TotalAmount { get; set; }
         public decimal TaxAmount { get; set; }

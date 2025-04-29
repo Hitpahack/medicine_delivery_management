@@ -26,7 +26,7 @@ namespace RepMed.Dtos
         [JsonIgnore]
         public DateTime? UpdatedAt { get; set; }
     }
-    public class EntityPOItemDto
+    public class EntityPOItemDto: BasePOItemDto
     {
         public long Id { get; set; }        
     }

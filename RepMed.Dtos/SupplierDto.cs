@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace RepMed.Dtos
@@ -21,11 +22,11 @@ namespace RepMed.Dtos
         public string Email { get; set; }
 
         public string Gstnumber { get; set; }
-
+        [JsonIgnore]
         public string Status { get; set; }
-
+        [JsonIgnore]
         public DateTime? CreatedAt { get; set; }
-
+        [JsonIgnore]
         public DateTime? UpdatedAt { get; set; }
     }
     public class EntitySupplierDto : BaseSupplierDto

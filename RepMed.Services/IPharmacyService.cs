@@ -24,6 +24,8 @@ namespace RepMed.Services
         Task<APIsResponse<Datatable<PharmacyPagingResponse>>> GetAllPharmacies(PharmacyPagingRequest reqDto);
         Task<APIsResponse<BasePharmacyDto>> GetPharmacy(long Id);
         Task<APIsResponse<bool>> GenrateEmailToken(long newUserId, string userEmail);
+        Task<APIsResponse<bool>> ChangePharmacyStatus(long Id, string status);
+
     }
 
     public class PharmacyService : BaseService, IPharmacyService
@@ -292,5 +294,23 @@ namespace RepMed.Services
             GC.SuppressFinalize(this);
         }
 
+        public async Task<APIsResponse<bool>> ChangePharmacyStatus(long Id, string status)
+        {
+            try
+            {
+                APIsResponse<bool> apiResponse = default(APIsResponse<bool>);
+                AddPharmacyDto entityRoleDto = _idbConnection.Update<AddPharmacyDto>(_idbTransaction, DbTables.tblPharmacy,
+                   new Dictionary<string, object> {
+                    { nameof(AddPharmacyDto.Status), status},
+                   }, $@" {nameof(AddPharmacyDto.Id)}='{Id}' ", "RETURNING *");
+
+                apiResponse = new APIsSuccsss<bool>("Pharmacy Status Updated Successfully");
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
+            }
+        }
     }
 }

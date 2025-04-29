@@ -266,5 +266,29 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
+        [Route("changestatus/{Id}")]
+        [HttpPost]
+        public async Task<IActionResult> ChangePharmacyStatus(long Id, string status)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
+                    {
+                        var result = await pharmacyService.ChangePharmacyStatus(Id, status);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
     }
 }
