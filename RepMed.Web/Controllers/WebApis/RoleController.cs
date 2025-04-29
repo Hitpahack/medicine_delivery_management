@@ -179,7 +179,7 @@ namespace RepMed.Web.Controllers.WebApis
                             return BadRequest(result);
                         }
                         tran.Commit();
-                        return Ok(result.Data);
+                        return Ok(result);
                     }
                 }
             }
