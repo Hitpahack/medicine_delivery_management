@@ -163,8 +163,8 @@ namespace RepMed.Services
             try
             {
                 string query = DbTables.tblSuppliers.SelectAll($@"`{nameof(Supplier.PharmacyId)}` = {pharmacyId}");
-                var rolepermissions = await _idbConnection.QueryAsync<GetSupppliersDto>(query, transaction: _idbTransaction);
-                return new APIsSuccsss<List<GetSupppliersDto>>(_validateMessages.RetriveSuccess, rolepermissions);
+                var suppliers = await _idbConnection.QueryAsync<GetSupppliersDto>(query, transaction: _idbTransaction);
+                return new APIsSuccsss<List<GetSupppliersDto>>(_validateMessages.RetriveSuccess, suppliers);
             }
             catch (Exception ex)
             {

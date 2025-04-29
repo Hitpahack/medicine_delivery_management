@@ -238,6 +238,8 @@ namespace RepMed.Services
                                 transaction: _idbTransaction
                             )).ToList();
 
+                if (permissions[0].Id == 0)
+                    permissions = null;
                 GetRoleDto result = new GetRoleDto
                 {
                     Role = role,
