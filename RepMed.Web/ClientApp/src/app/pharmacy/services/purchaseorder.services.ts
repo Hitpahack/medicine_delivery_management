@@ -4,6 +4,7 @@ import { ApiResponse } from "../../../app/common/api.response";
 import { adminBaseService } from "../../../app/admin/services/admin.baseservice";
 import { GetSupppliersDto } from "../../viewmodels/purchaseorder/supplier.dto"
 import { SupplierDto } from "../../viewmodels/supplier/supplier.dto";
+import { Product } from "../../viewmodels/purchaseorder/product.dto";
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +34,9 @@ export class PurchaseOrderService extends adminBaseService {
   }
   addSupplier(formData: any) {
     return this.http.post<ApiResponse<SupplierDto>>(this.apiConfig.endpoints.purchaseorder.addSupplier, formData, { headers: this.apiConfig.requestSettings.header })
+  }
+  getproductlist() {
+    return this.http.post<ApiResponse<Product[]>>(this.apiConfig.endpoints.purchaseorder.getproduct,{ headers: this.apiConfig.requestSettings.header })
   }
 
 //   getallusers() {
