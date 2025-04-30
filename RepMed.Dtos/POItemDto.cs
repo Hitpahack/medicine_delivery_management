@@ -30,4 +30,10 @@ namespace RepMed.Dtos
     {
         public long Id { get; set; }        
     }
+
+    public class GetPOItemsDto:BasePOItemDto
+    {
+        public string ProductName { get; set; }
+
+    }
 }

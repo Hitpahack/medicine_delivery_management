@@ -11,6 +11,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Newtonsoft.Json;
+using QuestPDF.Infrastructure;
 using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
@@ -82,8 +83,9 @@ namespace RepMed.Web
             services.AddMvcCore().AddNewtonsoftJson();
             services.AddAuthorization();
             services.Localization(services.AddMvc());
-            services.AddAutoMapper(typeof(Startup)); 
+            services.AddAutoMapper(typeof(Startup));
 
+            QuestPDF.Settings.License = LicenseType.Community;
 
 
 

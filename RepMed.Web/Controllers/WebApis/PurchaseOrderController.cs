@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Options;
 using MySqlConnector;
 using RepMed.Core;
+using RepMed.Data;
 using RepMed.Dtos;
 using RepMed.Dtos.POPage;
 using RepMed.Services;
@@ -131,5 +132,36 @@ namespace RepMed.Web.Controllers.WebApis
                 }
             }
         }
+
+
+        [HttpGet("generate-po-pdf/{poId}")]
+        public async Task<IActionResult> GeneratePoPdf(int poId)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.GetPOPdfDetails(poId);
+                        if (!result.IsSuccess)
+                        {
+                            return BadRequest(result);
+                        }
+                        var items = await purchaseOrderService.GetPOItems(poId);
+                        if(!result.IsSuccess)
+                        {
+                            return BadRequest(items);
+                        }
+                        var pdfBytes = await purchaseOrderService.Generate(result.Data,items.Data);
+
+                        return File(pdfBytes.Data, "application/pdf", $"PurchaseOrder_{result.Data.PONumber}.pdf");
+                    }   
+                }
+            }
+            
+        }
+
     }
 }

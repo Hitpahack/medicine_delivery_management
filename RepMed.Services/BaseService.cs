@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System.Collections.Generic;
 using System.Net.Mail;
 using System.Net;
+using RepMed.Data;
 
 namespace RepMed.Services
 {
@@ -99,6 +100,13 @@ namespace RepMed.Services
 
             return Task.FromResult(result != null);
         }
+        public Task<bool> IsPharmacyExist(long pharmacyId)
+        {
+            string sql = DbTables.tblPharmacy.SelectAll($@"{nameof(Pharmacy.Id)}={pharmacyId}");
+            long result = _idbConnection.QueryFirstOrDefault<long>(sql, transaction: _idbTransaction);
+            return Task.FromResult(result == 0);
+        }
+
         public Task<bool> IsAccountNumberExist(string accountNumber)
         {
             string sql = $@"
