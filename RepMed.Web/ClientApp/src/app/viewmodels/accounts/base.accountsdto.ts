@@ -12,6 +12,7 @@ export class BaseAccountsDto {
     lastLoginDate: Date | null;
     roles:EntityRoleDto[]|null;
     person:BasicPersonsDto|null;
+    pharmacyId: string;
     roleName:string;
     constructor(values: Object = {}) {
         Object.assign(this, values);

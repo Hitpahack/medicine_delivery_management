@@ -14,6 +14,7 @@ export interface BasePerson {
   
   export interface BasicPersonsDto extends BasePersonDto {
     picture?: string;
+    pharmacyId?:number;
   }
   
   export interface EntityPersonsDto extends BasicPersonsDto {
@@ -34,6 +35,7 @@ export interface BasePerson {
     createdAt?: Date;
     updatedAt?: Date;
     persionId?:number;
+    
   }
   
   export interface AddAddressDto {

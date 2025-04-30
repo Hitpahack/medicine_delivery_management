@@ -27,6 +27,7 @@ import { EditRoleComponent } from './admin/views/rolemanage/roleedit.component';
 
 // pharmacy imports..
 import { PharmacDashboardComponent } from "../app/pharmacy/views/pharmacydashboard/dashboard.component";
+import { PurchaseOrderComponent } from "../app/pharmacy/views/purchaseorder/purchaseorder.component";
 
 // doctor imports..
 import { DoctorDashboardComponent } from "../app/doctor/views/doctordashboard/dashboard.component";
@@ -71,6 +72,7 @@ export const routes: Routes = [
       { path: 'doctor', component: DoctorDashboardComponent },
 
       { path: 'pharmacy/user', component: PharmacDashboardComponent },
+      { path: 'purchaseorder', component: PurchaseOrderComponent}
     ]
   },
   {
@@ -84,7 +86,8 @@ export const routes: Routes = [
     path: 'pharmacy',
     component: AdminLayoutComponent,
     children: [
-      { path: 'dashboard', component: PharmacDashboardComponent }
+      { path: 'dashboard', component: PharmacDashboardComponent },
+      { path: 'purchaseorder', component: PurchaseOrderComponent}
     ]
   },
   {

@@ -62,7 +62,13 @@ export class AdminApiConfigService {
         editrole: (id: number) => `${v1}/roles/editrole/${id}`,
         updateStatus: `${v1}/roles/changestatus`,
         deleterole: (id: number) => `${v1}/roles/deleterole/${id}`,
+      },
+      purchaseorder: {
+        getsuppliers: (id: number) => `${v1}/po/getsuppliers/${id}`,
+        getPoNumber: (id: number) => `${v1}/po/getponumber/${id}`,
+        addSupplier: `${v1}/po/addsupplier`,
       }
+      
     };
   }
 }

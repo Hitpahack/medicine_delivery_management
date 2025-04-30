@@ -65,7 +65,10 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
                 if (response.isSuccess) {
                     sessionStorage.setItem('userId', response.data.id.toString());
                     sessionStorage.setItem('personid', response.data.person.id.toString());
-                    //sessionStorage.setItem('rolename'), response.data.roleName;
+                    
+                    // This is pharmacyId..
+                    sessionStorage.setItem('pharmacyId', response.data.pharmacyId.toString());
+
                     console.log('rolename', response.data.roleName);
                     sessionStorage.setItem('rolename', response.data.roleName);
                     //this.rolename =  response.data.roleName;

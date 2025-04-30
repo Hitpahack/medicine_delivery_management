@@ -1,0 +1,112 @@
+<div class="authentication">
+
+    <form class="auth_form form_validation" *ngIf="poForm" appAutoValidate [formGroup]="poForm" (ngSubmit)="onSubmit()">
+
+        <!-- Section 1: Supplier and PO Number -->
+        <fieldset formGroupName="purchaseOrder">
+            <legend>Purchase Order Details</legend>
+            <div class="form-grid">
+                <div class="input-group mb-4 float">
+                    <select formControlName="supplierId" class="form-control custom-select-height" required>
+                        <option value="" disabled selected>Select Supplier</option>
+                        <option *ngFor="let supplier of suppliers" [ngValue]="supplier.id">
+                            {{ supplier.name }}
+                        </option>
+                    </select>
+                    <label class="float-lbl">Supplier *</label>
+                    <button type="button" class="btn btn-sm btn-primary d-flex align-items-center gap-1 ms-2 px-2 py-1"
+                        style="font-size: 0.8rem;" style="height: 41px !important;" title="Add Supplier"
+                        (click)="toggleAddSupplierForm()">
+                        <i class="bi bi-plus-circle" style="font-size: 1.5rem;"></i>
+                    </button>
+                </div>
+
+                <div class="input-group mb-4 float">
+                    <input type="text" formControlName="poNumber" class="form-control" readonly
+                        [value]="poForm.get('purchaseOrder.poNumber')?.value">
+                    <label class="float-lbl">PO Number *</label>
+                </div>
+
+                <div class="input-group mb-4 float">
+                    <input type="date" formControlName="eddate" class="form-control" [min]="minDate" [max]="maxDate"
+                        (keydown)="disableTyping($event)" (paste)="disableTyping($event)">
+                    <label class="float-lbl">Expected Delivery Date</label>
+                </div>
+            </div>
+            <div class="form-grid">
+                <div class="input-group mb-4 float">
+                    <textarea rows="2" formControlName="remarks" class="form-control" maxlength="250"></textarea>
+                    <label class="float-lbl">Remarks</label>
+                </div>
+            </div>
+        </fieldset>
+
+        <!-- Section 2: Product Items -->
+        <fieldset>
+            <legend>Add Products</legend>
+
+
+
+            <!-- Add Product Button -->
+            <div class="text-end">
+                <button type="button" class="btn btn-success">Add Product</button>
+            </div>
+        </fieldset>
+
+        <!-- Submit Button -->
+        <div class="row justify-content-end mt-4">
+            <div class="col-sm-1">
+                <button class="btn custom-btn" type="submit">Submit</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Dynamic Supplier Form -->
+    <!-- Supplier Modal with Blur -->
+    <div *ngIf="showAddSupplierForm" class="supplier-modal-overlay">
+        <div class="supplier-modal-content">
+            <h5 class="mb-3">Add Supplier</h5>
+
+            <form class="auth_form form_validation" [formGroup]="supplierForm" appAutoValidate
+                (ngSubmit)="addSupplier()">
+                <div class="form-grid">
+                    <div class="input-group mb-3 float">
+                        <input formControlName="name" class="form-control" placeholder="Supplier Name" minlength="3"
+                            maxlength="25" required />
+                        <label class="float-lbl">Name *</label>
+                    </div>
+                    <div class="input-group mb-3 float">
+                        <input formControlName="contact" class="form-control" placeholder="1234567890"
+                            (keypress)="allowOnlyNumbers($event)" (paste)="disablePaste($event)" maxlength="10"
+                            required />
+                        <label class="float-lbl">Contact *</label>
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="input-group mb-3 float">
+                        <input formControlName="email" class="form-control" placeholder="example@mail.com"
+                            maxlength="30" required />
+                        <label class="float-lbl">Email *</label>
+                    </div>
+                    <div class="input-group mb-3 float">
+                        <input formControlName="gst" class="form-control" placeholder="09AAACH7409R1ZZ" maxlength="15"
+                            required />
+                        <label class="float-lbl">GST</label>
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="input-group mb-3 float">
+                        <textarea formControlName="address" class="form-control" placeholder=""
+                            maxlength="200"></textarea>
+                        <label class="float-lbl">Address</label>
+                    </div>
+                </div>
+                <div class="text-end mt-2">
+                    <button type="submit" class="btn btn-success me-2">Add</button>
+                    <button type="button" class="btn btn-secondary" (click)="toggleAddSupplierForm()">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>

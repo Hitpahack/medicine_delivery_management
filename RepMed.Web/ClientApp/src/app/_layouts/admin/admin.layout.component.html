@@ -104,10 +104,17 @@
           </a>
         </li>
         <li class="menu-item" *ngIf="userRole?.toLowerCase() === 'pharmacy'">
-          <a class="menu-link">
-            <i class="menu-icon tf-icons bx bx-home-circle"></i>
-            <div data-i18n="Analytics">Pharmacy Management</div>
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-lock-open-alt"></i>
+            <div data-i18n="Authentications">Pharmacy Manage</div>
           </a>
+          <ul class="menu-sub">
+            <li class="menu-item">
+              <a [routerLink]="['/admin/purchaseorder']" class="menu-link">
+                <div data-i18n="Basic">Purchase Order</div>
+              </a>
+            </li>
+          </ul>
         </li>
       </ul>
     </aside>
