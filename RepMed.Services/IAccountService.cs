@@ -77,7 +77,7 @@ namespace RepMed.Services
 
                         }).SingleOrDefault();
 
-                        if (response == null)
+                            if (response == null)
                             return await Task.FromResult(new APIsError<Login_ResDto>(_validateMessages.GetNotExist("User")));
 
                         if (!response.EmailConfirmed ?? false)
@@ -152,7 +152,9 @@ namespace RepMed.Services
                                                 new { RoleId = response.Roles[0].Id }, _idbTransaction)).ToList();
                             loginObj.RoleId = response.Roles[0].Id;
                             loginObj.RoleName = response.Roles[0].RoleName;
-
+                            sql = DbTables.tblPharmacy.SelectAll($@"{nameof(Pharmacy.UserId)}={response.Id}");
+                            loginObj.PharmacyId = await _idbConnection.ExecuteScalarAsync<long>(sql, transaction: _idbTransaction);
+                            
                             return await Task.FromResult(new APIsSuccsss<Login_ResDto>(_validateMessages.Success, loginObj, jwtToken.Claims));
                         }
                     }               
