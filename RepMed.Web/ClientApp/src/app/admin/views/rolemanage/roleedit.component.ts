@@ -17,14 +17,14 @@ import { AutoValidateDirective } from "src/app/common/form.validator";
     standalone: true,
     imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective],
 })
-export class EditRoleComponent  extends AdminBaseComponent implements OnInit {
+export class EditRoleComponent extends AdminBaseComponent implements OnInit {
     editRoleForm: FormGroup;
     roleId: number;
     componentList: ComponentDto[] = [];
     errorMessage: string = '';
 
-    constructor(public validator: CustomValidator, 
-        public roleService: RoleService, 
+    constructor(public validator: CustomValidator,
+        public roleService: RoleService,
         public fb: FormBuilder,
         public route: ActivatedRoute,
         public router: Router,) {
@@ -61,10 +61,10 @@ export class EditRoleComponent  extends AdminBaseComponent implements OnInit {
         this.roleService.getmodulebyroleid(this.roleId).subscribe((response: any) => {
             const roleData = response.data.role;
             const permissionsData = response.data.permissions;
-    
+
             // Map permissions array to array of permission IDs
-            const permissionIds = permissionsData.map((permission: any) => permission.id);
-    
+            const permissionIds = Array.isArray(permissionsData) ? permissionsData.map((permission: any) => permission.id) : [];
+
             // Now patch your form
             this.editRoleForm.patchValue({
                 roleName: roleData.roleName,
@@ -74,7 +74,7 @@ export class EditRoleComponent  extends AdminBaseComponent implements OnInit {
             this.editRoleForm.get('PermissionIds')?.updateValueAndValidity(); // <<< Add after patch
         });
     }
-    
+
     onCancel() {
         this.router.navigate(['/admin/role/list']);
     }
