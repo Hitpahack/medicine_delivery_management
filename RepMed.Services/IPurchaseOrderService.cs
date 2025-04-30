@@ -178,6 +178,11 @@ namespace RepMed.Services
             try
             {
                 APIsResponse<NextPoNumberDto> apiResponse = default;
+                if(await IsPharmacyExist(pharmacyId))
+                {
+                    return new APIsError<NextPoNumberDto>("Pharmact not found");
+                }
+
                 #region Get All Pharmacy 
                 var parameters = new DynamicParameters();
                 parameters.Add("inPharmacyId", pharmacyId, DbType.Int32);
@@ -251,8 +256,6 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<POPdfContentDto>(ex.GetActualError()));
             }
         }
-
-
         public Task<APIsResponse<byte[]>> Generate(POPdfContentDto po, List<GetPOItemsDto> items)
         {
             try
