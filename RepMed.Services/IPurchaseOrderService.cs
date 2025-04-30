@@ -1,17 +1,16 @@
 ﻿using Dapper;
-using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
 using RepMed.Dtos.DataTables;
-using RepMed.Dtos.PharmacyPage;
 using RepMed.Dtos.POPage;
-using RepMed.Dtos.ProductPage;
-using RepMed.Dtos.RolePage;
 using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using QuestPDF.Fluent;
+using QuestPDF.Helpers;
+using QuestPDF.Infrastructure;
 using System.Threading.Tasks;
 
 namespace RepMed.Services
@@ -23,7 +22,9 @@ namespace RepMed.Services
         Task<APIsResponse<Datatable<POPagingResponse>>> GetAllPO(POPagingRequest reqDto);
         Task<APIsResponse<NextPoNumberDto>> GetNextPONumber(long pharmacyId);
         Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId);
-
+        Task<APIsResponse<POPdfContentDto>> GetPOPdfDetails(long poId);
+        Task<APIsResponse<List<GetPOItemsDto>>> GetPOItems(long poId);
+        Task<APIsResponse<byte[]>> Generate(POPdfContentDto po, List<GetPOItemsDto> items);
     }
     public class PurchaseOrderService : BaseService, IPurchaseOrderService
     {
@@ -45,7 +46,7 @@ namespace RepMed.Services
                                    DapperHelper.QueryAsValuesParma<Supplier, BaseSupplierDto>(),
                                    reqDto);
                 #endregion
-                if(supplier !=null)
+                if (supplier != null)
                     return new APIsSuccsss<EntitySupplierDto>("Supplier Added Successfully", supplier);
                 else
                     return new APIsError<EntitySupplierDto>("Error inserting the supplier");
@@ -72,13 +73,13 @@ namespace RepMed.Services
                        TotalPrice = i.Quantity * i.UnitPrice
                    }).ToList();
                 decimal subTotal = items.Sum(x => x.TotalPrice);
-                if(reqDto.PO.TotalAmount == subTotal)
+                if (reqDto.PO.TotalAmount == subTotal)
                     reqDto.PO.TotalAmount = subTotal;
                 else
                     return new APIsError<CreatePODto>("invalid calucalation detected");
                 reqDto.PO.CreatedAt = DateTime.Now;
                 reqDto.PO.OrderDate = DateTime.Now;
-                reqDto.PO.Status ="Pending";
+                reqDto.PO.Status = "Pending";
                 #region Insert Purchase Orders
                 var insertPo = _idbConnection.Insert<EntityPODto>(_idbTransaction,
                                    DbTables.tblPurchaseOrders,
@@ -187,8 +188,8 @@ namespace RepMed.Services
                                transaction: _idbTransaction
                 );
                 #endregion
-                if (result!=null)
-                    return await Task.FromResult(new APIsSuccsss<NextPoNumberDto>(_validateMessages.RetriveSuccess,result));
+                if (result != null)
+                    return await Task.FromResult(new APIsSuccsss<NextPoNumberDto>(_validateMessages.RetriveSuccess, result));
                 else
                     return await Task.FromResult(new APIsSuccsss<NextPoNumberDto>(_validateMessages.InternalError));
 
@@ -198,5 +199,161 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<NextPoNumberDto>(ex.GetActualError()));
             }
         }
+
+        public async Task<APIsResponse<List<GetPOItemsDto>>> GetPOItems(long poId)
+        {
+            try
+            {
+                string query = $@"
+                                SELECT 
+                                    poi.PurchaseOrderId,
+                                    poi.ProductId,
+                                    p.Name AS ProductName,
+                                    poi.Quantity,
+                                    poi.UnitPrice,
+                                    poi.TotalPrice,
+                                    poi.Unit
+                                FROM {DbTables.tblPurchaseOrderItems} poi
+                                LEFT JOIN {DbTables.tblProduct} p ON poi.ProductId = p.Id";
+
+                var poItems = await _idbConnection.QueryAsync<GetPOItemsDto>(query, transaction: _idbTransaction);
+                return new APIsSuccsss<List<GetPOItemsDto>>(_validateMessages.RetriveSuccess, poItems);
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<List<GetPOItemsDto>>(ex.GetActualError()));
+
+            }
+        }
+
+        public async Task<APIsResponse<POPdfContentDto>> GetPOPdfDetails(long poId)
+        {
+            try
+            {
+                APIsResponse<POPdfContentDto> apiResponse = default;
+                #region Get All Pharmacy 
+                var parameters = new DynamicParameters();
+                parameters.Add("poId", poId, DbType.Int32);
+                var result = await _idbConnection.QueryFirstOrDefaultAsync<POPdfContentDto>(
+                               sql: "GET_PO_DETAILS",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                );
+                #endregion
+                if (result != null)
+                    return await Task.FromResult(new APIsSuccsss<POPdfContentDto>(_validateMessages.RetriveSuccess, result));
+                else
+                    return await Task.FromResult(new APIsSuccsss<POPdfContentDto>(_validateMessages.InternalError));
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<POPdfContentDto>(ex.GetActualError()));
+            }
+        }
+
+
+        public Task<APIsResponse<byte[]>> Generate(POPdfContentDto po, List<GetPOItemsDto> items)
+        {
+            try
+            {
+
+                var pdfBytes = Document.Create(container =>
+                {
+                    container.Page(page =>
+                    {
+                        page.Size(PageSizes.A4);
+                        page.Margin(20);
+                        page.DefaultTextStyle(x => x.FontSize(12));
+
+                        page.Header().Text("Purchase Order").FontSize(20).Bold().AlignCenter();
+
+                        page.Content().Column(col =>
+                        {
+                            col.Spacing(10);
+
+                            // Pharmacy and PO Details
+                            col.Item().Row(row =>
+                            {
+                                row.RelativeItem().Column(c =>
+                                {
+                                    c.Item().Text($"Pharmacy: {po.PharmacyName}");
+                                    c.Item().Text($"Address Line 1: {po.PharmacyAddress1}");
+                                    c.Item().Text($"Address Line 2: {po.PharmacyAddress2}");
+                                    c.Item().Text($"Mobile: {po.PharmacyMobile}");
+                                    c.Item().Text($"Email: {po.PharmacyEmail}");
+                                    c.Item().Text($"GST: {po.PharmacyGST}");
+                                    c.Item().Text($"City: {po.PharmacyCity}, State: {po.PharmacyState}");
+                                });
+
+                                row.RelativeItem().Column(c =>
+                                {
+                                    c.Item().Text($"PO Number: {po.PONumber}");
+                                    c.Item().Text($"Order Date: {po.OrderDate:yyyy-MM-dd}");
+                                    c.Item().Text($"Expected Date: {po.EDDate:yyyy-MM-dd}");
+                                    c.Item().Text($"Status: {po.Status}");
+                                    c.Item().Text($"Remarks: {po.Remarks}");
+                                });
+                            });
+
+                            col.Item().LineHorizontal(1);
+
+                            // Supplier Details
+                            col.Item().Text("Supplier Information").FontSize(14).Bold();
+                            col.Item().Text($"Name: {po.SupplierName}");
+                            col.Item().Text($"Address: {po.SupplierAddress}");
+                            col.Item().Text($"Mobile: {po.SupplierMobile}");
+                            col.Item().Text($"Email: {po.SupplierEmail}");
+                            col.Item().Text($"GST: {po.SupplierGST}");
+
+                            col.Item().LineHorizontal(1);
+
+                            // Purchase Items Table
+                            col.Item().Table(table =>
+                            {
+                                table.ColumnsDefinition(columns =>
+                                {
+                                    columns.RelativeColumn(); // Product Name
+                                    columns.ConstantColumn(50); // Quantity
+                                    columns.ConstantColumn(70); // Unit Price
+                                    columns.ConstantColumn(70); // Total Price
+                                });
+
+                                table.Header(header =>
+                                {
+                                    header.Cell().Text("Product Name").Bold();
+                                    header.Cell().Text("Qty").Bold();
+                                    header.Cell().Text("Unit Price").Bold();
+                                    header.Cell().Text("Total").Bold();
+                                });
+
+                                foreach (var item in items)
+                                {
+                                    table.Cell().Text(item.ProductName);
+                                    table.Cell().Text(item.Quantity.ToString());
+                                    table.Cell().Text($"₹{item.UnitPrice:F2}");
+                                    table.Cell().Text($"₹{item.TotalPrice:F2}");
+                                }
+                            });
+
+                            col.Item().AlignRight().Text($"Total: ₹{po.TotalAmount:F2}").FontSize(14).Bold();
+                            col.Item().AlignRight().Text($"Tax: ₹{po.TaxAmount:F2}").FontSize(12);
+                        });
+
+                        page.Footer().AlignCenter().Text("Generated by RepMed System");
+                    });
+                }).GeneratePdf(); // Synchronous method
+
+                return Task.FromResult<APIsResponse<byte[]>>(new APIsSuccsss<byte[]>("PDF generated successfully", pdfBytes));
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult<APIsResponse<byte[]>>(new APIsSuccsss<byte[]>(ex.GetActualError()));
+            }
+        }
+
+
+
+
     }
 }
