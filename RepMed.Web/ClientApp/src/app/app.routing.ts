@@ -31,7 +31,7 @@ import { PurchaseOrderComponent } from "../app/pharmacy/views/purchaseorder/purc
 
 // doctor imports..
 import { DoctorDashboardComponent } from "../app/doctor/views/doctordashboard/dashboard.component";
-import { PurchaseInvoice } from './pharmacy/views/PurchaseInvoice/Invoice.component';
+import { PurchaseInvoice } from '../app/pharmacy/views/PurchaseInvoice/Invoice.component' ;
 
 
 export const routes: Routes = [

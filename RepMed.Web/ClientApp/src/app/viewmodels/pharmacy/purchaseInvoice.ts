@@ -1,4 +1,4 @@
-export interface purchase {
+export interface purchaseInvoice {
     Id: number;
     PharmacyId: number;
     SupplierId: number;
