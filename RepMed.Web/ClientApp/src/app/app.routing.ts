@@ -31,6 +31,7 @@ import { PurchaseOrderComponent } from "../app/pharmacy/views/purchaseorder/purc
 
 // doctor imports..
 import { DoctorDashboardComponent } from "../app/doctor/views/doctordashboard/dashboard.component";
+import { PurchaseInvoice } from './pharmacy/views/PurchaseInvoice/Invoice.component';
 
 
 export const routes: Routes = [
@@ -72,7 +73,9 @@ export const routes: Routes = [
       { path: 'doctor', component: DoctorDashboardComponent },
 
       { path: 'pharmacy/user', component: PharmacDashboardComponent },
-      { path: 'purchaseorder', component: PurchaseOrderComponent}
+      { path: 'purchaseorder', component: PurchaseOrderComponent},
+      {path: 'purchaseinvoice', component: PurchaseInvoice}
+
     ]
   },
   {

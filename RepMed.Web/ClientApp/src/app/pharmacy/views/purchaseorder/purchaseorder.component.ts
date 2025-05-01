@@ -10,11 +10,13 @@ import { Helper } from "../../../common/helper.extenstions";
 import { PurchaseOrderDto } from "../../../viewmodels/purchaseorder/purchaseorder.dto";
 import { AutoValidateDirective } from 'src/app/common/form.validator';
 import { SupplierDto } from "../../../viewmodels/supplier/supplier.dto";
+import { Product } from "../../../viewmodels/purchaseorder/product.dto";
 
 @Component({
     selector: 'app-pharmacy-dashboard',
     templateUrl: './purchaseorder.component.html',
     styleUrl: './purchaseorder.component.css',
+    standalone: true,
     imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective],
 })
 export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit {
@@ -28,101 +30,41 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
         super(router, fb);
     }
     supplierForm!: FormGroup;
-    showAddSupplierForm = false;
+    productForm !: FormGroup;
+    showAddSupplierForm = false; // add supplier
+    showAddProductForm = false; //  Add Product modal
     poForm: FormGroup; // Define poForm here
     minDate: string;
     maxDate: string;
     errorMessage: string = '';
     PurchaseOrderDto: PurchaseOrderDto;
+    productsList: Product[] = [];
 
     suppliers: GetSupppliersDto[] = [];
     pharmacyId: string | null = null;
     poNumber: string | null = null;
 
     ngOnInit(): void {
-        // Initialize the form using the correct method
-        this.poForm = this.initForm();
+        this.setDateLimits();
+        this.poForm = this.initPoForm();
         this.initPoForm();
         this.initSupplierForm();
-        this.setDateLimits();
-
+        this.initAddProductForm();
         this.pharmacyId = sessionStorage.getItem('pharmacyId');
         const id = Number(this.pharmacyId);
-        this.PurchaseOrderService.getsupplier(id).subscribe((response) => {
+        this.getallsupplier(id);
+        this.loadPoNumber(id);
+    }
+
+    //#region get supplier and PONumber
+    getallsupplier(pharmacyId: number) {
+        this.PurchaseOrderService.getsupplier(pharmacyId).subscribe((response) => {
             if (response?.isSuccess && response.data) {
                 this.suppliers = response.data;
             } else {
                 console.error("Failed to load suppliers data", response);
             }
         });
-        this.loadPoNumber(id);
-    }
-    initPoForm() {
-        this.poForm = this.fb.group({
-            purchaseOrder: this.fb.group({
-                supplierId: ['', Validators.required],
-                poNumber: [''],
-                eddate: [''],
-                remarks: ['']
-            })
-        });
-    }
-
-    toggleAddSupplierForm() {
-        this.showAddSupplierForm = !this.showAddSupplierForm;
-        this.supplierForm.reset();
-    }
-
-    addSupplier() {
-        if (this.supplierForm.invalid) {
-            this.validator.markInvalidFieldsTouched(this.supplierForm);
-            return;
-        }
-        //const dto: SupplierDto = this.supplierForm.value;
-        const dto: SupplierDto = {
-            ...this.supplierForm.value,
-            pharmacyId: this.pharmacyId  // Add it manually here
-          };
-        this.PurchaseOrderService.addSupplier(dto).subscribe({
-            next: (response) => {
-                if (response.isSuccess) {
-                    this.showAddSupplierForm = false;
-                    this.supplierForm.reset();
-                    Helper.ShowSuccess(response.message || 'Supplier add successfully.');
-                    this.toggleAddSupplierForm();
-                    this.router.navigate(['']);
-                } else {
-                    console.error('API returned isSuccess: false');
-                    Helper.ShowError(this.errorMessage);  // Optional toast/popup
-                }
-            },
-            error: (err) => {
-                console.error('HTTP Error:', err);
-                Helper.ShowError(this.errorMessage);  // Optional toast/popup
-            }
-        });
-    }
-
-    initSupplierForm() {
-        this.supplierForm = this.fb.group({
-            name: [null, [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
-            contact: [null, [Validators.required, Validators.pattern(/^\d{10}$/)]],
-            address: [''],
-            email: ['', [Validators.required, Validators.email]],
-            gst: [null, [Validators.required, Validators.pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/)]]
-        });
-    }
-
-    setDateLimits(): void {
-        const today = new Date();
-        const maxDate = new Date();
-        maxDate.setMonth(today.getMonth() + 3);
-
-        this.minDate = today.toISOString().split('T')[0];
-        this.maxDate = maxDate.toISOString().split('T')[0];
-    }
-    disableTyping(event: KeyboardEvent | ClipboardEvent): void {
-        event.preventDefault();
     }
 
     loadPoNumber(pharmacyId: number) {
@@ -141,8 +83,8 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             }
         });
     }
-
-    initForm(): FormGroup {
+    //#endregion
+    initPoForm() {
         return this.fb.group({
             purchaseOrder: this.fb.group({
                 pharmacyId: [null],
@@ -154,6 +96,93 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
                 totalAmount: [null, [Validators.required]],
             })
         });
+    }
+
+    initSupplierForm() {
+        this.supplierForm = this.fb.group({
+            Name: [null, [Validators.required, Validators.pattern(/^[A-Za-z\s]+$/)]],
+            Mobile: [null, [Validators.required, Validators.pattern(/^\d{10}$/)]],
+            Address: [''],
+            Email: ['', [Validators.required, Validators.email]],
+            Gstnumber: [null, [Validators.required, Validators.pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/)]]
+        });
+    }
+
+    initAddProductForm() {
+        this.productForm = this.fb.group({
+            productId: ['', Validators.required],
+            quantity: ['', [Validators.required, Validators.min(1)]],
+            unitPrice: ['', [Validators.required, Validators.min(0.01)]],
+            totalPrice: [{ value: '', disabled: true }],
+            unit: ['', Validators.required],
+        });
+    }
+
+    toggleAddSupplierForm() {
+        this.showAddSupplierForm = !this.showAddSupplierForm;
+        this.supplierForm.reset();
+    }
+
+    toggleAddProductForm() {
+        this.showAddProductForm = !this.showAddProductForm;
+        this.supplierForm.reset();
+        this.loadProducts();
+    }
+
+    loadProducts() {
+        this.PurchaseOrderService.getproductlist().subscribe((response) => {
+            if (response?.isSuccess && response.data) {
+                this.productsList = response.data;
+            } else {
+                console.error("Failed to load suppliers data", response);
+            }
+        });
+    }
+
+    addSupplier() {
+        console.log('call add supplier method');
+        if (this.supplierForm.invalid) {
+            this.validator.markInvalidFieldsTouched(this.supplierForm);
+            return;
+        }
+        //const dto: SupplierDto = this.supplierForm.value;
+        const dto: SupplierDto = {
+            ...this.supplierForm.value,
+            PharmacyId: this.pharmacyId  // Add it manually here
+        };
+        console.log('call add supplier method');
+        this.PurchaseOrderService.addSupplier(dto).subscribe({
+            next: (response) => {
+                if (response.isSuccess) {
+                    this.showAddSupplierForm = false;
+                    this.supplierForm.reset();
+                    Helper.ShowSuccess(response.message || 'Supplier add successfully.');
+
+                    const id = Number(this.pharmacyId);
+                    this.getallsupplier(id);
+
+                } else {
+                    console.error('API returned isSuccess: false');
+                    Helper.ShowError(this.errorMessage);  // Optional toast/popup
+                }
+            },
+            error: (err) => {
+                console.error('HTTP Error:', err);
+                Helper.ShowError(this.errorMessage);  // Optional toast/popup
+            }
+        });
+    }
+
+    setDateLimits(): void {
+        const today = new Date();
+        const maxDate = new Date();
+        maxDate.setMonth(today.getMonth() + 3);
+
+        this.minDate = today.toISOString().split('T')[0];
+        this.maxDate = maxDate.toISOString().split('T')[0];
+    }
+    disableTyping(event: KeyboardEvent | ClipboardEvent): void {
+        event.preventDefault();
     }
 
     onSubmit(): void {
@@ -188,5 +217,23 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
 
     disablePaste(event: ClipboardEvent): void {
         event.preventDefault();
+    }
+    preventInvalidKeys(event: KeyboardEvent, controlName: string) {
+        const invalidChars = ['e', 'E', '+', '-'];
+        if (invalidChars.includes(event.key)) {
+            event.preventDefault();
+        }
+
+        // Get control value
+        const control = this.productForm.get(controlName);
+        if (control) {
+            const newValue = control.value?.toString() + event.key;
+            const numberValue = Number(newValue);
+
+            // If the new value will be less than 1, prevent input
+            if (!isNaN(numberValue) && numberValue < 1) {
+                event.preventDefault();
+            }
+        }
     }
 }

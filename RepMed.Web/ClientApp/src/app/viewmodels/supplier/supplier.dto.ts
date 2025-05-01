@@ -1,9 +1,9 @@
 export interface SupplierDto {
-    pharmacyId?: number;
+    PharmacyId?: number;
     id?: number;
-    name: string;
-    contact: string;
-    address?: string;
-    email: string;
-    gst?: string;
+    Name: string;
+    Mobile: string;
+    Address?: string;
+    Email: string;
+    Gstnumber?: string;
   }
