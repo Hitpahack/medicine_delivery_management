@@ -30,7 +30,7 @@ import { PharmacDashboardComponent } from "../app/pharmacy/views/pharmacydashboa
 
 // doctor imports..
 import { DoctorDashboardComponent } from "../app/doctor/views/doctordashboard/dashboard.component";
-
+import { DoctorList } from "../app/admin/views/doctor/list.component";  
 
 export const routes: Routes = [
 
@@ -69,6 +69,7 @@ export const routes: Routes = [
       { path: 'role/edit/:id', component: EditRoleComponent },
       
       { path: 'doctor', component: DoctorDashboardComponent },
+      {path: 'doctor/list', component:DoctorList},
 
       { path: 'pharmacy/user', component: PharmacDashboardComponent },
     ]
