@@ -42,7 +42,7 @@ export class UserListComponent extends AdminBaseComponent implements OnInit {
             { data: 'firstName' },
             { data: 'lastName' },
             { data: 'mobile' },
-            { title: 'Edit', data: null, orderable: false, render: (data: any, type: any, row: any) => { return `<button class="btn btn-primary edit-user" data-id="${data.personId}">Edit </button>`; } },
+            { title: '', data: null, orderable: false, render: (data: any, type: any, row: any) => { return `<span class="edit-user" data-id="${data.personId}"><i class="bi bi-pencil-square cursor-pointer"></i></span>`; } },
         ],
         //searchInputId: 'post-search-input',
     };
