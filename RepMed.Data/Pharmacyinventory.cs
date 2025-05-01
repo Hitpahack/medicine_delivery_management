@@ -11,7 +11,7 @@ public partial class Pharmacyinventory
 
     public long ProductId { get; set; }
 
-    public long? PharmacyPurchaseId { get; set; }
+    public long PurchaseInvoiceId { get; set; }
 
     public DateTime ExpiryDate { get; set; }
 
@@ -31,7 +31,7 @@ public partial class Pharmacyinventory
 
     public virtual Pharmacy Pharmacy { get; set; }
 
-    public virtual Pharmacypurchase PharmacyPurchase { get; set; }
-
     public virtual Product Product { get; set; }
+
+    public virtual Purchaseinvoice PurchaseInvoice { get; set; }
 }
