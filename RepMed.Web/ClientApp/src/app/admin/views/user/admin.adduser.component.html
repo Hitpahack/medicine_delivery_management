@@ -16,19 +16,22 @@
                     <label class="float-lbl">Last Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder=" " formControlName="mobile" maxlength="30"
-                        placeholder="1234567890" maxlength="10" (keypress)="allowOnlyNumbers($event)"
+                    <input type="text" class="form-control" placeholder="" formControlName="mobile"
+                        placeholder="9876543210" minlength="10" maxlength="10" (keypress)="allowOnlyNumbers($event)"
                         (paste)="disablePaste($event)">
                     <label class="float-lbl">mobile *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="50">
+                    <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="50"
+                        name="email_field_fake" autocomplete="off" [attr.autocomplete]="'disabled'"
+                        [attr.id]="'email_' + uniqueId">
                     <label class="float-lbl">Email *</label>
                 </div>
                 <div class="mb-3 form-password-toggle">
                     <div class="input-group input-group-merge">
                         <input type="password" id="Password" class="form-control" style="width: 50% !important;"
-                            name="Password" formControlName="Password" placeholder="" aria-describedby="password" />
+                            name="Password" formControlName="Password" placeholder="" aria-describedby="password"
+                            name="password_field_fake" autocomplete="new-password" [attr.id]="'password_' + uniqueId" />
                         <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                         <label class="float-lbl">Password *</label>
                     </div>
@@ -37,7 +40,7 @@
                     <div class="input-group input-group-merge">
                         <input type="password" id="ConfirmPassword" class="form-control" style="width: 50% !important;"
                             name="ConfirmPassword" formControlName="ConfirmPassword" placeholder=""
-                            aria-describedby="ConfirmPassword" maxlength="16" />
+                            aria-describedby="ConfirmPassword" maxlength="16" name="password_field_fake" autocomplete="new-password" [attr.id]="'password_' + uniqueId" />
                         <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                         <label class="float-lbl">Confirm Password *</label>
                     </div>
@@ -86,7 +89,9 @@
                     <label class="float-lbl">mobile *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="50">
+                    <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="50"
+                    name="email_field_fake" autocomplete="off" [attr.autocomplete]="'disabled'"
+                    [attr.id]="'email_' + uniqueId">
                     <label class="float-lbl">Email *</label>
                 </div>
 

@@ -41,7 +41,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
     countries: CountryDto[] = [];
     states: StateDto[] = [];
     cities: CityDto[] = [];
-
+    uniqueId = '';
     ngAfterViewInit(): void {
         if (window.Helpers && typeof window.Helpers.initPasswordToggle === 'function') {
             window.Helpers.initPasswordToggle();
@@ -50,6 +50,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
 
 
     ngOnInit(): void {
+        this.uniqueId = Math.random().toString(36).substring(2);
         this.phForm = this.initForm();
         const today = new Date();
         const maxDate = new Date();

@@ -32,7 +32,7 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
     ) {
         super(router);
     }
-
+    uniqueId = '';
     ngAfterViewInit(): void {
         if (window.Helpers && typeof window.Helpers.initPasswordToggle === 'function') {
             window.Helpers.initPasswordToggle();
@@ -40,6 +40,7 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
     }
     loginForm: FormGroup;
     ngOnInit(): void {
+        this.uniqueId = Math.random().toString(36).substring(2);
         this.loginForm = this.initForm();
     }
     rolename: string;
