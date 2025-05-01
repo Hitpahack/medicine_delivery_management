@@ -54,14 +54,22 @@ namespace RepMed.Web.Controllers.WebApis
             var data = await base.Cities(stateid);
             if (data.IsSuccess)
                 return Ok(data);
-
             return BadRequest(data);
-
         }
         [HttpGet("getroles")]
         public async Task<IActionResult> GetRoles()
         {
             var data = await base.Roles();
+            if (data.IsSuccess)
+                return Ok(data);
+
+            return BadRequest(data);
+
+        }
+        [HttpGet("getproducts")]
+        public async Task<IActionResult> GetProducts()
+        {
+            var data = await base.Products();
             if (data.IsSuccess)
                 return Ok(data);
 
