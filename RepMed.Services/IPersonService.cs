@@ -70,11 +70,11 @@ namespace RepMed.Services
                                 
                                 #region Update Address
                                 var address = _idbConnection.Update<AddAddressDto>(_idbTransaction,DbTables.tblUserAddress,
-                                new Dictionary<string, string> {
+                                new Dictionary<string, Object> {
                                                     { "AddressLine", reqDto.Address.AddressLine },
-                                                    { "CityId", reqDto.Address.CityId.ToString() },
-                                                    { "StateId", reqDto.Address.StateId.ToString() },
-                                                    { "CountryId", reqDto.Address.CountryId.ToString() },
+                                                    { "CityId", reqDto.Address.CityId },
+                                                    { "StateId", reqDto.Address.StateId },
+                                                    { "CountryId", reqDto.Address.CountryId },
                                                     { "Pincode", reqDto.Address.Pincode },
                                                     { "Latitude", reqDto.Address.Latitude.ToString()},
                                                     { "Longitude", reqDto.Address.Longitude.ToString()},
