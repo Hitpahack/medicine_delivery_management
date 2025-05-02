@@ -73,8 +73,8 @@ export class PurchaseInvoice extends AdminBaseComponent implements OnInit {
             this.validator.markInvalidFieldsTouched(this.PurchaseInvoice);
             return;
         }
-        this.PurchaseOrderService.add(this.PurchaseInvoice.value).subscribe({
+        // this.PurchaseOrderService.add(this.PurchaseInvoice.value).subscribe({
 
-        })
+        // })
     }
 }
