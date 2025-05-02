@@ -184,5 +184,29 @@ namespace RepMed.Web.Controllers.WebApis
                 }
             }
         }
+
+        [Route("addpharmacyrole")]
+        [HttpPost]
+        public async Task<IActionResult> AddPharmacyRole(CreateRoleDto reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IRoleService roleService = new RoleService(db, tran))
+                    {
+                        var result = await roleService.AddEditRole(reqDto, 0);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
     }
 }

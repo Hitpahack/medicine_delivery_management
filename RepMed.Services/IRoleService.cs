@@ -15,6 +15,7 @@ namespace RepMed.Services
     public interface IRoleService : IDisposable 
     {
         Task<APIsResponse<EntityRoleDto>> AddEditRole(CreateRoleDto reqDto, long Id);
+        Task<APIsResponse<EntityRoleDto>> AddEditPharmacyRole(CreateRoleDto reqDto, long Id);
         Task<APIsResponse<bool>> DeleteRole(long Id);
         Task<APIsResponse<GetRoleDto>> GetRolePermission(long roleId);
         Task<APIsResponse<Datatable<RolesPagingResponse >>> GetAllRoles(RolesPagingRequest reqDto);
@@ -28,7 +29,7 @@ namespace RepMed.Services
 
         }
 
-        public async Task<APIsResponse<EntityRoleDto>> AddEditRole(CreateRoleDto reqDto , long Id)
+        public async Task<APIsResponse<EntityRoleDto>> AddEditRole(CreateRoleDto reqDto, long Id)
         {
             try
             {
@@ -43,6 +44,7 @@ namespace RepMed.Services
                     #endregion
                     #region Add Role
                     reqDto.CreatedAt = DateTime.Now;
+                    reqDto.IsAdminRole =true;
                     reqDto.IsActive = true;
                     EntityRoleDto response = _idbConnection.Insert<EntityRoleDto>(_idbTransaction,
                         DbTables.tblRole,
@@ -127,7 +129,7 @@ namespace RepMed.Services
                 APIsResponse<bool> apiResponse = default(APIsResponse<bool>);
                 #region Check if role is assigned to any user
                 string checkQuery = $@"SELECT UserId FROM {DbTables.tblUserRoles} WHERE RoleId = @RoleId;";
-                int assignedUserCount = await _idbConnection.ExecuteScalarAsync<int>(checkQuery, new { RoleId = Id },_idbTransaction);
+                int assignedUserCount = await _idbConnection.ExecuteScalarAsync<int>(checkQuery, new { RoleId = Id }, _idbTransaction);
 
                 if (assignedUserCount > 0)
                 {
@@ -141,12 +143,12 @@ namespace RepMed.Services
 
                 #region Delete the role
                 string deleteQuery = $@"DELETE FROM {DbTables.tblRole} WHERE Id = @RoleId;";
-                int rowsAffected = await _idbConnection.ExecuteAsync(deleteQuery, new { RoleId = Id },_idbTransaction);
-                
+                int rowsAffected = await _idbConnection.ExecuteAsync(deleteQuery, new { RoleId = Id }, _idbTransaction);
+
                 if (rowsAffected > 0)
-                    apiResponse=new APIsSuccsss<bool>("Role deleted successfully.", true);
+                    apiResponse = new APIsSuccsss<bool>("Role deleted successfully.", true);
                 else
-                    apiResponse=  new APIsSuccsss<bool>("Role not found.", true);
+                    apiResponse = new APIsSuccsss<bool>("Role not found.", true);
                 #endregion
                 return apiResponse;
             }
@@ -167,11 +169,11 @@ namespace RepMed.Services
             {
                 string query = DbTables.tblPermissions.SelectAll();
                 var rolepermissions = await _idbConnection.QueryAsync<EntityPermissionDto>(query, transaction: _idbTransaction);
-                return new APIsSuccsss<List<EntityPermissionDto>> (_validateMessages.RetriveSuccess,rolepermissions);
+                return new APIsSuccsss<List<EntityPermissionDto>>(_validateMessages.RetriveSuccess, rolepermissions);
             }
             catch (Exception ex)
             {
-                return await Task.FromResult(new APIsError<List<EntityPermissionDto>> (ex.GetActualError()));
+                return await Task.FromResult(new APIsError<List<EntityPermissionDto>>(ex.GetActualError()));
             }
         }
 
@@ -181,7 +183,7 @@ namespace RepMed.Services
             {
                 APIsResponse<Datatable<RolesPagingResponse>> apiResponse = default;
                 string orderBy;
-               
+
                 orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
                 #region Get All Pharmacy 
                 var parameters = new DynamicParameters();
@@ -245,7 +247,7 @@ namespace RepMed.Services
                     Permissions = permissions
                 };
                 if (result == null)
-                    return new APIsError<GetRoleDto> (_validateMessages.NotExist);
+                    return new APIsError<GetRoleDto>(_validateMessages.NotExist);
                 else
                     return new APIsSuccsss<GetRoleDto>(_validateMessages.RetriveSuccess, result);
 
@@ -253,6 +255,80 @@ namespace RepMed.Services
             catch (Exception ex)
             {
                 return await Task.FromResult(new APIsError<GetRoleDto>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<EntityRoleDto>> AddEditPharmacyRole(CreateRoleDto reqDto, long Id)
+        {
+            try
+            {
+                APIsResponse<EntityRoleDto> apiResponse = default(APIsResponse<EntityRoleDto>);
+                if (Id == 0)
+                {
+                    #region Check RoleExist
+                    if ((await IsRoleExist(reqDto.RoleName)))
+                    {
+                        return await Task.FromResult(new APIsError<EntityRoleDto>(_validateMessages.AlreadyExist));
+                    }
+                    #endregion
+                    #region Add Role
+                    reqDto.CreatedAt = DateTime.Now;
+                    reqDto.IsActive = true;
+                    reqDto.IsAdminRole = false;
+                    EntityRoleDto response = _idbConnection.Insert<EntityRoleDto>(_idbTransaction,
+                        DbTables.tblRole,
+                        DapperHelper.QueryAsColumnsParma<Role, CreateRoleDto>(),
+                        DapperHelper.QueryAsValuesParma<Role, CreateRoleDto>(),
+                        reqDto);
+                    #endregion
+                    #region 
+                    if (reqDto.PermissionIds != null && reqDto.PermissionIds.Any())
+                    {
+                        foreach (var permissionId in reqDto.PermissionIds)
+                        {
+                            await _idbConnection.ExecuteAsync(
+                                $@"INSERT INTO {DbTables.tblRolePermissions} (RoleId, PermissionId) VALUES (@RoleId, @PermissionId);",
+                                new { RoleId = response.Id, PermissionId = permissionId }, _idbTransaction);
+                        }
+                    }
+                    else
+                        return new APIsError<EntityRoleDto>("At least one permission required");
+                    #endregion
+                    apiResponse = new APIsSuccsss<EntityRoleDto>("Role Created Successfully", response);
+                }
+                else
+                {
+                    #region Update Role
+                    EntityRoleDto entityRoleDto = _idbConnection.Update<EntityRoleDto>(_idbTransaction, DbTables.tblRole,
+                    new Dictionary<string, object> {
+                    { nameof(EntityRoleDto.UpdatedAt), DateTime.Now },
+                    { nameof(EntityRoleDto.Description), reqDto.Description},
+                    }, $@" {nameof(EntityRoleDto.Id)}='{Id}' ", "RETURNING *");
+                    #endregion 
+
+                    #region Remove All Permission of current role
+                    await _idbConnection.ExecuteAsync($@"DELETE FROM {DbTables.tblRolePermissions} WHERE RoleId = @RoleId", new { RoleId = Id }, _idbTransaction);
+                    #endregion
+                    #region Add New Permission
+                    if (reqDto.PermissionIds != null && reqDto.PermissionIds.Any())
+                    {
+                        foreach (var permissionId in reqDto.PermissionIds)
+                        {
+                            await _idbConnection.ExecuteAsync(
+                                $@"INSERT INTO {DbTables.tblRolePermissions} (RoleId, PermissionId) VALUES (@RoleId, @PermissionId);",
+                                new { RoleId = Id, PermissionId = permissionId }, _idbTransaction);
+                        }
+                    }
+                    else
+                        return new APIsError<EntityRoleDto>("At least one permission required");
+                    #endregion
+                    apiResponse = new APIsSuccsss<EntityRoleDto>("Role Updated Successfully");
+                }
+                return await Task.FromResult(apiResponse);
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<EntityRoleDto>(ex.GetActualError()));
             }
         }
     }

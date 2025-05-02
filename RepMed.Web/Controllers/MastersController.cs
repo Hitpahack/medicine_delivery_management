@@ -26,7 +26,7 @@ namespace RepMed.Web.Controllers.WebApis
                 return Ok(data);
 
             return BadRequest(data);
-                
+
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace RepMed.Web.Controllers.WebApis
         /// </summary>
         /// <returns>IEnumerable<SelectListItem></returns>
         [HttpGet("getstates/{countryid?}")]
-        public async Task<IActionResult> GetStates(long? countryid =0)
+        public async Task<IActionResult> GetStates(long? countryid = 0)
         {
             var data = await base.States(countryid);
             if (data.IsSuccess)
@@ -49,7 +49,7 @@ namespace RepMed.Web.Controllers.WebApis
         /// </summary>
         /// <returns>IEnumerable<SelectListItem></returns>
         [HttpGet("getcities/{stateid?}")]
-        public async Task<IActionResult> GetCities( long? stateid =0)
+        public async Task<IActionResult> GetCities(long? stateid = 0)
         {
             var data = await base.Cities(stateid);
             if (data.IsSuccess)
@@ -60,6 +60,17 @@ namespace RepMed.Web.Controllers.WebApis
         public async Task<IActionResult> GetRoles()
         {
             var data = await base.Roles();
+            if (data.IsSuccess)
+                return Ok(data);
+
+            return BadRequest(data);
+
+        }
+
+        [HttpGet("getpharmacyroles")]
+        public async Task<IActionResult> GetPharmacyRoles()
+        {
+            var data = await base.PharmacyRoles();
             if (data.IsSuccess)
                 return Ok(data);
 

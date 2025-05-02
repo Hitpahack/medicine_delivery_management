@@ -17,5 +17,7 @@ public partial class Role
 
     public bool? IsActive { get; set; }
 
+    public bool? IsAdminRole { get; set; }
+
     public virtual ICollection<Rolepermission> Rolepermissions { get; set; } = new List<Rolepermission>();
 }
