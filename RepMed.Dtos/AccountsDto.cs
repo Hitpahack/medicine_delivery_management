@@ -35,7 +35,7 @@ namespace RepMed.Dtos
         public JwtTokenDto Token { get; set; }
         public long RoleId { get; set; }
         public string RoleName { get; set; }
-        public IEnumerable<BasePermissionDto> Permissions { get; set; }
+        public Dictionary<string, PermissionParentDto> Permissions { get; set; }
         public long PharmacyId { get; set; }
 
     }
