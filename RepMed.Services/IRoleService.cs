@@ -225,7 +225,7 @@ namespace RepMed.Services
                            );
 
                 var sqlpermissions = $@" 
-                            SELECT p.Id,p.Name,p.Module
+                            SELECT p.Id,p.Route,p.Module
                             FROM {DbTables.tblRole} r
                             LEFT JOIN {DbTables.tblRolePermissions} rp ON r.Id = rp.RoleId
                             LEFT JOIN {DbTables.tblPermissions} p ON p.Id = rp.PermissionId

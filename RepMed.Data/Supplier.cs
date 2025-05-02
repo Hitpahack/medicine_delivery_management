@@ -27,5 +27,7 @@ public partial class Supplier
 
     public virtual Pharmacy Pharmacy { get; set; }
 
+    public virtual ICollection<Purchaseinvoice> Purchaseinvoices { get; set; } = new List<Purchaseinvoice>();
+
     public virtual ICollection<Purchaseorder> Purchaseorders { get; set; } = new List<Purchaseorder>();
 }

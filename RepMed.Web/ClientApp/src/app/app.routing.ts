@@ -31,6 +31,7 @@ import { PurchaseOrderComponent } from "../app/pharmacy/views/purchaseorder/purc
 
 // doctor imports..
 import { DoctorDashboardComponent } from "../app/doctor/views/doctordashboard/dashboard.component";
+import { DoctorList } from "../app/admin/views/doctor/list.component";  
 import { PurchaseInvoice } from '../app/pharmacy/views/PurchaseInvoice/Invoice.component' ;
 
 
@@ -71,6 +72,7 @@ export const routes: Routes = [
       { path: 'role/edit/:id', component: EditRoleComponent },
       
       { path: 'doctor', component: DoctorDashboardComponent },
+      {path: 'doctor/list', component:DoctorList},
 
       { path: 'pharmacy/user', component: PharmacDashboardComponent },
       { path: 'purchaseorder', component: PurchaseOrderComponent},

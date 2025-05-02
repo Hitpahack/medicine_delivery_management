@@ -144,12 +144,15 @@ namespace RepMed.Services
 
                                 loginObj.Token.TokenId = _idbConnection.QuerySingle<int>(tokenSql, transaction: _idbTransaction);
                             }
-                            loginObj.Permissions = (await _idbConnection.QueryAsync<string>(
-                                            $@"SELECT P.{nameof(Permission.Module)}, P.{nameof(Permission.Name)}
+                            loginObj.Permissions = await _idbConnection.QueryAsync<BasePermissionDto>(
+                                            $@"SELECT P.{nameof(Permission.Module)}, P.{nameof(Permission.Route)}
                                                FROM {DbTables.tblPermissions} P
                                                INNER JOIN {DbTables.tblRolePermissions} RP ON RP.{nameof(Rolepermission.PermissionId)} = P.{nameof(Permission.Id)}
                                                WHERE RP.{nameof(Rolepermission.RoleId)} = @RoleId",
-                                                new { RoleId = response.Roles[0].Id }, _idbTransaction)).ToList();
+                                            new { RoleId = response.Roles[0].Id },
+                                            _idbTransaction);
+
+                            
                             loginObj.RoleId = response.Roles[0].Id;
                             loginObj.RoleName = response.Roles[0].RoleName;
                             sql = DbTables.tblPharmacy.SelectAll($@"{nameof(Pharmacy.UserId)}={response.Id}");

@@ -15,7 +15,8 @@
       <div class="mb-3">
         <label for="email" class="form-label">Email or Username</label>
         <input type="text" formControlName="email" maxlength="70" class="form-control" id="email" name="email-username"
-          placeholder="Enter your email or username" autofocus />
+          placeholder="Enter your email or username" autofocus name="email_field_fake" autocomplete="off"
+          [attr.autocomplete]="'disabled'" [attr.id]="'email_' + uniqueId" />
       </div>
       <div class="mb-3 form-password-toggle">
         <div class="d-flex justify-content-between">
@@ -26,12 +27,13 @@
         </div>
         <div class="input-group input-group-merge">
           <input type="password" id="password" class="form-control" name="password" formControlName="password"
-            placeholder="Enter Password" aria-describedby="password" />
+            placeholder="Enter Password" aria-describedby="password"
+            name="password_field_fake" autocomplete="new-password" [attr.id]="'password_' + uniqueId" />
           <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
         </div>
       </div>
-      <div class="mb-3">
-        <a [routerLink]="['/forgotpassword']" class="menu-link content-end">
+      <div class="mb-3 d-flex content-end">
+        <a [routerLink]="['/forgotpassword']" class="menu-link">
           <div data-i18n="Basic">Forgot Password</div>
         </a>
       </div>

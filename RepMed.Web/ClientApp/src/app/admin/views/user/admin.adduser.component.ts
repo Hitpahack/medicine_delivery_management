@@ -40,6 +40,7 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
   today = new Date();
   minDate = new Date(this.today.getFullYear() - 100, this.today.getMonth(), this.today.getDate());
   maxxDate = this.today;
+  uniqueId = '';
 
   constructor(public validator: CustomValidator, public adminuserservice: AdminUserService, private route: ActivatedRoute, public AdminCommonServices: AdminCommonServices) {
     super();
@@ -78,6 +79,7 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
 
   userId: number;
   ngOnInit(): void {
+    this.uniqueId = Math.random().toString(36).substring(2);
     this.userId = this.route.snapshot.params['id'];
     if (this.userId && this.userId !== 0) {
       this.editUserForm = this.initForm();
@@ -216,17 +218,14 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
 
   onSubmit() {
     if (this.userId && this.userId !== 0) {
-      console.log("ineditttttttttuserform");
       this.adminuserservice.edituser(this.editUserForm.value, this.userId).subscribe({
-        
+
       })
       // if (false) {
       //   this.validator.markInvalidFieldsTouched(this.editUserForm);
       //   return;
       // }
     } else {
-      console.log("inadduserform");
-
       if (this.addUserForm.invalid) {
         this.validator.markInvalidFieldsTouched(this.addUserForm);
         return;
@@ -236,7 +235,7 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
         next: (response) => {
           if (response.isSuccess) {
             Helper.ShowSuccess(response.message || 'user added successfully.');
-            this.router.navigate(['/admin/user']);
+            this.router.navigate(['/admin/user/add']);
           } else {
             console.error('API returned isSuccess: false');
             this.errorMessage = response.message || 'Failed to add user.';
