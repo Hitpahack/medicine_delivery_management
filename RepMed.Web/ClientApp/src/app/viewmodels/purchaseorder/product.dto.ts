@@ -1,4 +1,4 @@
 export interface Product {
-    id: number;
-    productName: string;
+    value: number;
+    text: string;
   }

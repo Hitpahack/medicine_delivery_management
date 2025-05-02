@@ -43,27 +43,38 @@
 
         <!-- Section 2: Product Items -->
         <fieldset>
-            <legend>Add Products</legend>
-            <div class="table-responsive mt-3" *ngIf="productsList.length > 0">
+            <legend>Products List</legend>
+            <div *ngIf="addedProducts.length > 0" class="mt-3">
                 <table class="table table-bordered">
                     <thead>
                         <tr>
-                            <th>Product</th>
+                            <th>ProductName</th>
+                            <th>Price</th>
                             <th>Quantity</th>
-                            <th>Unit Price</th>
-                            <th>Total Price</th>
+                            <th>Total</th>
                             <th>Unit</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let p of productsList">
+                        <tr *ngFor="let p of addedProducts; let i = index">
                             <td>{{ p.productName }}</td>
-                            <td>{{ p.quantity }}</td>
                             <td>{{ p.unitPrice }}</td>
+                            <td>{{ p.quantity }}</td>
                             <td>{{ p.totalPrice }}</td>
                             <td>{{ p.unit }}</td>
+                            <td>
+                                <button type="button" class="btn btn-danger btn-sm"
+                                    (click)="removeProduct(i)">-</button>
+                            </td>
                         </tr>
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="3"><strong>Grand Total</strong></td>
+                            <td colspan="3"><strong>{{ totalAmount }}</strong></td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
             <!-- Add Product Button -->
@@ -133,17 +144,14 @@
         <div class="supplier-modal-content">
             <h5 class="mb-3">Add Product</h5>
 
-            <form [formGroup]="productForm" (ngSubmit)="addProduct()">
+            <form [formGroup]="productForm" appAutoValidate (ngSubmit)="addProduct()">
                 <div class="form-grid">
                     <!-- Product Dropdown -->
                     <div class="input-group mb-4 float">
-                        <select formControlName="productId" class="form-control" required>
+                        <select formControlName="productId" class="form-control custom-select-width" required>
                             <option value="" disabled>Select Product</option>
-                            <option value="">Product1</option>
-                            <option value="">Product2</option>
-                            <option value="">Product3</option>
-                            <option *ngFor="let product of products" [ngvalue]="product.id">
-                                {{ product.name }}
+                            <option *ngFor="let product of productsList" [ngValue]="product.value">
+                                {{ product.text }}
                             </option>
                         </select>
                         <label class="float-lbl">Product *</label>
@@ -160,8 +168,8 @@
                     <!-- Quantity -->
                     <div class="input-group mb-4 float">
                         <input type="number" formControlName="quantity" class="form-control" required
-                            (keydown)="preventInvalidKeys($event, 'unitPrice')" min="1"
-                            (paste)="disablePaste($event)" (input)="quantityChange($event)" />
+                            (keydown)="preventInvalidKeys($event, 'unitPrice')" min="1" (paste)="disablePaste($event)"
+                            (input)="quantityChange($event)" />
                         <label class="float-lbl">Quantity *</label>
                     </div>
 

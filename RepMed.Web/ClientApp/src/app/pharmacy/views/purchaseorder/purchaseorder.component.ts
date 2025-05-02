@@ -7,7 +7,7 @@ import { GetSupppliersDto } from "../../../viewmodels/purchaseorder/supplier.dto
 import { PurchaseOrderService } from "../../../pharmacy/services/purchaseorder/purchaseorder.services";
 import { CustomValidator } from "../../../common/custom.validators";
 import { Helper } from "../../../common/helper.extenstions";
-import { PurchaseOrderDto } from "../../../viewmodels/purchaseorder/purchaseorder.dto";
+import { BasePODto } from "../../../viewmodels/purchaseorder/purchaseorder.dto";
 import { AutoValidateDirective } from 'src/app/common/form.validator';
 import { SupplierDto } from "../../../viewmodels/supplier/supplier.dto";
 import { Product } from "../../../viewmodels/purchaseorder/product.dto";
@@ -37,50 +37,46 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
     minDate: string;
     maxDate: string;
     errorMessage: string = '';
-    PurchaseOrderDto: PurchaseOrderDto;
+    PurchaseOrderDto: BasePODto;
     productsList: Product[] = [];
 
     suppliers: GetSupppliersDto[] = [];
     pharmacyId: string | null = null;
     poNumber: string | null = null;
+    addedProducts: any[] = [];
 
     ngOnInit(): void {
         this.setDateLimits();
         this.poForm = this.initPoForm();
-        this.initPoForm();
         this.initSupplierForm();
         this.initAddProductForm();
         this.pharmacyId = sessionStorage.getItem('pharmacyId');
         const id = Number(this.pharmacyId);
         this.getallsupplier(id);
         this.loadPoNumber(id);
+        this.loadProducts();
     }
 
-    TotalAmount: number;
-    PriceValue: number;
-    blankValue = 0;
+    TotalAmount: number = 0;
+    PriceValue: number = 0;
+    QuantityValue: number = 0;
+    blankValue: number = 0;
     priceChange(event: Event) {
         this.PriceValue = Number((event.target as HTMLInputElement).value);
-        if(this.PriceValue != null){
-            this.productForm.patchValue({ totalPrice: this.blankValue });
-            console.log("bb1", this.blankValue);
-        }
+        this.calculateTotal();
     }
 
-    QuantityValue: number;
     quantityChange(event: Event) {
         this.QuantityValue = Number((event.target as HTMLInputElement).value);
-        if (this.PriceValue && this.QuantityValue) {
-            console.log("runifblock!");
+        this.calculateTotal();
+    }
+
+    calculateTotal() {
+        if (this.PriceValue > 0 && this.QuantityValue > 0) {
             this.TotalAmount = this.PriceValue * this.QuantityValue;
-        } else {
-            console.log("run else block!");
-            this.productForm.patchValue({ totalPrice: this.blankValue });
-            console.log("bb", this.blankValue);
-            
-        }
-        if (this.TotalAmount != null) {
             this.productForm.patchValue({ totalPrice: this.TotalAmount });
+        } else {
+            this.productForm.patchValue({ totalPrice: this.blankValue });
         }
     }
 
@@ -121,8 +117,8 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
                 poNumber: [{ value: null, disabled: true }, Validators.required], // read-only
                 eddate: [null, [this.validator.dateWithinRangeValidator(this.minDate, this.maxDate)]],
                 remarks: [''],
-                taxAmount: [null, [Validators.required]],
-                totalAmount: [null, [Validators.required]],
+                //taxAmount: [null, [Validators.required]],
+                totalAmount: [null],
             })
         });
     }
@@ -154,8 +150,10 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
 
     toggleAddProductForm() {
         this.showAddProductForm = !this.showAddProductForm;
-        this.supplierForm.reset();
-        this.loadProducts();
+        this.productForm.reset();
+        this.PriceValue = 0;
+        this.QuantityValue = 0;
+        this.TotalAmount = 0;
     }
 
     loadProducts() {
@@ -163,7 +161,7 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             if (response?.isSuccess && response.data) {
                 this.productsList = response.data;
             } else {
-                console.error("Failed to load suppliers data", response);
+                console.error("Failed to load products data", response);
             }
         });
     }
@@ -202,6 +200,35 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
         });
     }
 
+    addProduct() {
+        if (this.productForm.valid) {
+            const product = this.productsList.find(p => p.value == this.productForm.value.productId);
+            const addedProduct = {
+                productId: this.productForm.value.productId,
+                productName: product?.text,
+                unitPrice: this.productForm.value.unitPrice,
+                quantity: this.productForm.value.quantity,
+                totalPrice: this.productForm.value.unitPrice * this.productForm.value.quantity,
+                unit: this.productForm.value.unit
+            };
+    
+            this.addedProducts.push(addedProduct);
+            this.showAddProductForm = false;
+            this.productForm.reset();
+            this.PriceValue = 0;
+            this.QuantityValue = 0;
+            this.TotalAmount = 0;
+        }
+    }
+
+    removeProduct(index: number) {
+        this.addedProducts.splice(index, 1);
+    }
+
+    get totalAmount(): number {
+        return this.addedProducts.reduce((sum, p) => sum + p.totalPrice, 0);
+    }
+
     setDateLimits(): void {
         const today = new Date();
         const maxDate = new Date();
@@ -215,12 +242,33 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
     }
 
     onSubmit(): void {
+        if (this.addedProducts.length === 0) {
+            Helper.ShowError("Please select(Add) at least one product.");
+            return;
+        }
         if (this.poForm.invalid) {
             this.validator.markInvalidFieldsTouched(this.poForm);
             return;
         }
-        const dto: PurchaseOrderDto = this.poForm.value;
-        this.PurchaseOrderService.add(dto).subscribe({
+        const dto: BasePODto = {
+            CreatePODto: {
+                pharmacyId: Number(this.pharmacyId),
+                supplierId: this.poForm.value.purchaseOrder.supplierId,
+                poNumber: this.poForm.get('purchaseOrder.poNumber')?.value,
+                eddate: this.poForm.value.purchaseOrder.eddate,
+                totalAmount: this.totalAmount,
+                remarks: this.poForm.value.purchaseOrder.remarks
+            },
+            items: this.addedProducts.map(p => ({
+                productId: p.productId,
+                quantity: p.quantity,
+                unitPrice: p.unitPrice,
+                totalPrice: p.totalPrice,
+                unit: p.unit,
+                totalAmount: p.totalPrice  // <-- fix the casing here
+            }))
+        };
+        this.PurchaseOrderService.addpurchaseorder(dto).subscribe({
             next: (response) => {
                 if (response.isSuccess) {
                     Helper.ShowSuccess(response.message || 'Purchase Order Created successfully.');

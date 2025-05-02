@@ -77,7 +77,8 @@ export class AdminApiConfigService {
         getsuppliers: (id: number) => `${v1}/po/getsuppliers/${id}`,
         getPoNumber: (id: number) => `${v1}/po/getponumber/${id}`,
         addSupplier: `${v1}/po/addsupplier`,
-        getproduct: `${v1}/products/getproducts`,
+        getproduct: `${api}/masters/getproducts`,
+        add: `${v1}/po/createpo/`,
       }
       
     };

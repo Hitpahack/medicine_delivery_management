@@ -18,13 +18,13 @@ export class PurchaseOrderService extends adminBaseService {
 
   }
 
-  add(formData: any) {
-    return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.user.add, formData, { headers: this.apiConfig.requestSettings.header })
+  addpurchaseorder(formData: any) {
+    return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.purchaseorder.add, formData, { headers: this.apiConfig.requestSettings.header })
   }
 
-  edituser(formData: any, id: number) {
-    return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.user.update(id), formData, { headers: this.apiConfig.requestSettings.header })
-  }
+  // edituser(formData: any, id: number) {
+  //   return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.user.update(id), formData, { headers: this.apiConfig.requestSettings.header })
+  // }
 
   getsupplier(id: number) {
     return this.http.post<ApiResponse<GetSupppliersDto[]>>(this.apiConfig.endpoints.purchaseorder.getsuppliers(id), { headers: this.apiConfig.requestSettings.header })
@@ -36,7 +36,7 @@ export class PurchaseOrderService extends adminBaseService {
     return this.http.post<ApiResponse<SupplierDto>>(this.apiConfig.endpoints.purchaseorder.addSupplier, formData, { headers: this.apiConfig.requestSettings.header })
   }
   getproductlist() {
-    return this.http.post<ApiResponse<Product[]>>(this.apiConfig.endpoints.purchaseorder.getproduct,{ headers: this.apiConfig.requestSettings.header })
+    return this.http.get<ApiResponse<Product[]>>(this.apiConfig.endpoints.purchaseorder.getproduct,{ headers: this.apiConfig.requestSettings.header })
   }
 
 //   getallusers() {
