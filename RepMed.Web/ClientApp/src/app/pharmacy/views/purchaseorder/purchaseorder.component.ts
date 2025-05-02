@@ -173,6 +173,7 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             return;
         }
         //const dto: SupplierDto = this.supplierForm.value;
+        //
         const dto: SupplierDto = {
             ...this.supplierForm.value,
             PharmacyId: this.pharmacyId  // Add it manually here
