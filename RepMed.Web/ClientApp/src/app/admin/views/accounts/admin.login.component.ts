@@ -89,6 +89,9 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
                         console.log('enter in doctor section',this.rolename);
                        this.router.navigate(['/doctor/dashboard']);
                     }
+                    else{
+                        
+                    }
 
                 }
                 if (!response.isSuccess) {

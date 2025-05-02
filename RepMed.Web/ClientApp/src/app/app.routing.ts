@@ -28,6 +28,7 @@ import { EditRoleComponent } from './admin/views/rolemanage/roleedit.component';
 // pharmacy imports..
 import { PharmacDashboardComponent } from "../app/pharmacy/views/pharmacydashboard/dashboard.component";
 import { PurchaseOrderComponent } from "../app/pharmacy/views/purchaseorder/purchaseorder.component";
+import { AddStaffComponent } from "../app/pharmacy/views/staffmanagement/addstaff.component";
 
 // doctor imports..
 import { DoctorDashboardComponent } from "../app/doctor/views/doctordashboard/dashboard.component";
@@ -37,15 +38,17 @@ export const routes: Routes = [
 
   //Admin routes goes here 
 
-  { path: '', redirectTo: '/admin/login', pathMatch: 'full' },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
   {
-    path: 'admin',
+    path: '',
     component: AdminEmptyLayoutComponent,
     children: [
       { path: '', component: AdminLoginComponent },
       { path: 'login', component: AdminLoginComponent },
     ]
   },
+
+  // This routing for Admin panel...
   {
     path: 'admin',
     component: AdminLayoutComponent,
@@ -69,12 +72,10 @@ export const routes: Routes = [
       { path: 'role/list', component: RoleListComponent },
       { path: 'role/edit/:id', component: EditRoleComponent },
       
-      { path: 'doctor', component: DoctorDashboardComponent },
-
-      { path: 'pharmacy/user', component: PharmacDashboardComponent },
-      { path: 'purchaseorder', component: PurchaseOrderComponent}
     ]
   },
+
+  // This routing for doctor panel...
   {
     path: 'doctor',
     component: AdminLayoutComponent,
@@ -82,12 +83,16 @@ export const routes: Routes = [
       { path: 'dashboard', component: DoctorDashboardComponent }
     ]
   },
+
+  // This routing for Pharmacy panel...
   {
     path: 'pharmacy',
     component: AdminLayoutComponent,
     children: [
       { path: 'dashboard', component: PharmacDashboardComponent },
-      { path: 'purchaseorder', component: PurchaseOrderComponent}
+      { path: 'purchaseorder', component: PurchaseOrderComponent},
+      { path: 'staff/add', component: AddStaffComponent},
+      { path: 'staff/edit/:id', component: AddStaffComponent}
     ]
   },
   {

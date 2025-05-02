@@ -1,10 +1,10 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { ApiResponse } from "../../../app/common/api.response";
-import { adminBaseService } from "../../../app/admin/services/admin.baseservice";
-import { GetSupppliersDto } from "../../viewmodels/purchaseorder/supplier.dto"
-import { SupplierDto } from "../../viewmodels/supplier/supplier.dto";
-import { Product } from "../../viewmodels/purchaseorder/product.dto";
+import { ApiResponse } from "../../../../app/common/api.response";
+import { adminBaseService } from "../../../../app/admin/services/admin.baseservice";
+import { GetSupppliersDto } from "../../../viewmodels/purchaseorder/supplier.dto"
+import { SupplierDto } from "../../../viewmodels/supplier/supplier.dto";
+import { Product } from "../../../viewmodels/purchaseorder/product.dto";
 
 @Injectable({
   providedIn: 'root'

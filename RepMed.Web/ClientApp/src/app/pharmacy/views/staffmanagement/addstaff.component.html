@@ -1,0 +1,159 @@
+<div class="authentication">
+    <form class="auth_form form_validation" *ngIf="addStaffForm" appAutoValidate [formGroup]="addStaffForm"
+        #phForm_html="ngForm" (ngSubmit)="onSubmit()">
+        <!-- Section 1: Pharmacy -->
+        <fieldset>
+            <legend>Add Staff</legend>
+            <div class="form-grid">
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="firstname" maxlength="25"
+                        minlength="3">
+                    <label class="float-lbl">First Name *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="lastname" maxlength="25"
+                        minlength="3">
+                    <label class="float-lbl">Last Name *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="mobile" maxlength="30"
+                        placeholder="1234567890" maxlength="10" (keypress)="allowOnlyNumbers($event)"
+                        (paste)="disablePaste($event)">
+                    <label class="float-lbl">mobile *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="50">
+                    <label class="float-lbl">Email *</label>
+                </div>
+                <div class="mb-3 form-password-toggle">
+                    <div class="input-group input-group-merge">
+                        <input type="password" id="Password" class="form-control" style="width: 50% !important;"
+                            name="Password" formControlName="Password" placeholder="" aria-describedby="password" />
+                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        <label class="float-lbl">Password *</label>
+                    </div>
+                </div>
+                <div class="mb-3 form-password-toggle">
+                    <div class="input-group input-group-merge">
+                        <input type="password" id="ConfirmPassword" class="form-control" style="width: 50% !important;"
+                            name="ConfirmPassword" formControlName="ConfirmPassword" placeholder=""
+                            aria-describedby="ConfirmPassword" maxlength="16" />
+                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                        <label class="float-lbl">Confirm Password *</label>
+                    </div>
+                </div>
+                <div class="input-group mb-4 float">
+                    <select class="form-control" formControlName="Role">
+                        <option value="" disabled selected>Select Role</option>
+                        <option *ngFor="let role of roles" [value]="role.text">
+                            {{ role.text }}
+                        </option>
+                    </select>
+                    <label class="float-lbl">Role *</label>
+                </div>
+            </div>
+        </fieldset>
+        <div class="row justify-content-end">
+            <div class="col-sm-1">
+                <button class="btn custom-btn" type="submit">Save</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+
+<div class="authentication">
+    <form class="auth_form form_validation" *ngIf="editstaffForm" appAutoValidate [formGroup]="editstaffForm"
+        #phForm_html="ngForm" (ngSubmit)="onSubmit()">
+        <!-- Section 1: Pharmacy -->
+        <fieldset>
+            <legend>Edit Staff</legend>
+            <div class="form-grid">
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="firstname" maxlength="25"
+                        minlength="3">
+                    <label class="float-lbl">First Name *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="lastname" maxlength="25"
+                        minlength="3">
+                    <label class="float-lbl">Last Name *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="mobile" maxlength="30"
+                        placeholder="1234567890" maxlength="10" (keypress)="allowOnlyNumbers($event)"
+                        (paste)="disablePaste($event)">
+                    <label class="float-lbl">mobile *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="50">
+                    <label class="float-lbl">Email *</label>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <div class="input-group mb-4 float">
+                <select formControlName="gender" class="form-control">
+                    <option value="" disabled>Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Others">Others</option>
+                </select>
+                <label class="float-lbl">Gender *</label>
+            </div>
+
+            <div class="input-group mb-4 float">
+                <input type="date" formControlName="dateofBirth" class="form-control" [max]="maxDate" />
+                <label class="float-lbl">Date Of Birth *</label>
+            </div>
+        </fieldset>
+
+        <fieldset formGroupName="address">
+            <div class="input-group mb-4 float">
+                <textarea formControlName="addressline" class="form-control"></textarea>
+                <label class="float-lbl">Address *</label>
+            </div>
+
+            <div class="form-grid">
+
+                <div class="input-group mb-4 float">
+                    <select formControlName="countryId" class="form-control" (change)="onCountryDropdownChange($event)"
+                        (ngModelChange)="onValueChanged($event)" required>
+                        <option value="" disabled>Select Country</option>
+                        <option *ngFor="let country of countries" [value]="country.value">{{ country.text }}
+                        </option>
+                    </select>
+                    <label class="float-lbl">Country *</label>
+                </div>
+
+                <div class="input-group mb-4 float">
+                    <select formControlName="stateId" class="form-control" (change)="onCityDropdownChange($event)"
+                        (ngModelChange)="onValueChaanged($event)" required>
+                        <option value="" disabled>Select State</option>
+                        <option *ngFor="let st of states" [value]="st.value">{{ st.text }}</option>
+                    </select>
+                    <label class="float-lbl">State *</label>
+                </div>
+
+                <div class="input-group mb-4 float">
+                    <select formControlName="cityId" class="form-control" required>
+                        <option value="" disabled>Select city</option>
+                        <option *ngFor="let city of cities" [value]="city.value">{{ city.text }}</option>
+                    </select>
+                    <label class="float-lbl">City *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <input type="text" formControlName="pincode" class="form-control"
+                        (keypress)="allowOnlyNumbers($event)" maxlength="6" />
+                    <label class="float-lbl">Pincode *</label>
+                </div>
+            </div>
+        </fieldset>
+        <div class="row justify-content-end">
+            <div class="col-sm-1">
+                <button class="btn custom-btn" type="submit">Save</button>
+            </div>
+        </div>
+    </form>
+</div>

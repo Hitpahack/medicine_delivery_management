@@ -4,7 +4,7 @@ import { FormBuilder, FormControl, FormsModule, FormGroup, ReactiveFormsModule, 
 import { AdminBaseComponent } from "../../../../app/admin/admin.base.component";
 import { CommonModule } from "@angular/common";
 import { GetSupppliersDto } from "../../../viewmodels/purchaseorder/supplier.dto";
-import { PurchaseOrderService } from "../../../pharmacy/services/purchaseorder.services";
+import { PurchaseOrderService } from "../../../pharmacy/services/purchaseorder/purchaseorder.services";
 import { CustomValidator } from "../../../common/custom.validators";
 import { Helper } from "../../../common/helper.extenstions";
 import { PurchaseOrderDto } from "../../../viewmodels/purchaseorder/purchaseorder.dto";

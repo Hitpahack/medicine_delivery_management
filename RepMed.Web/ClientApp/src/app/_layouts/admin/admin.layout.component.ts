@@ -49,13 +49,13 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
     setTitle(':: REPMED :: ');
     loadStylesheets(this.styles);
     loadScripts(this.scripts);
-    if(this.Userid == null)
-    {
-      this.router.navigate(['/admin/login']);
-    }
-    else{
-      this.router.navigate(['/admin/dashboard']);
-    }
+    // if(this.Userid == null)
+    // {
+    //   this.router.navigate(['/admin/login']);
+    // }
+    // else{
+    //   this.router.navigate(['/admin/dashboard']);
+    // }
   }
 
   toggleSubmenu(id: string): void {
@@ -73,7 +73,7 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
     sessionStorage.removeItem('personid');
 
     // Redirect to login page
-    this.router.navigate(['/admin/login']);
+    this.router.navigate(['/login']);
   }
 
   

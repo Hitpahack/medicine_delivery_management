@@ -50,6 +50,13 @@ export class AdminApiConfigService {
         userroles: `${api}/masters/getroles`,
         list: `${v1}/users/getusers`,
       },
+      staff: {
+        add: `${v1}/users/adduser/`,
+        get: (id: number) => `${v1}/users/get/${id}`,
+        update: (id: number) => `${v1}/users/edituser/${id}`,
+        userroles: `${api}/masters/getroles`,
+        list: `${v1}/users/getusers`,
+      },
       product: {
         get: `${v1}/products/getproducts`,
         getcount: `${v1}/products/getcount`,
