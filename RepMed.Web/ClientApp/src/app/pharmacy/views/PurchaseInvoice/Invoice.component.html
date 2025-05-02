@@ -14,6 +14,41 @@
                         minlength="">
                     <label class="float-lbl"> PO Number *</label>
                 </div>
+                <div></div>
+            </div>
+            <div class="form-grid">
+                <div class="input-group mb-4 float">
+                    <select formControlName="PaymentMode" class="form-control">
+                        <option value="" disabled>Select payment mode</option>
+                        <option value="Online">Online</option>
+                    </select>
+                    <label class="float-lbl">Payment Mode *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <select formControlName="PaymentStatus" class="form-control">
+                        <option value="" disabled>Select Payment Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Completed">Completed</option>
+                    </select>
+                    <label class="float-lbl"> Payment Status *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <input type="string" class="form-control" placeholder="%" formControlName="TotalDiscount"
+                        maxlength="3">
+                    <label class="float-lbl"> Total Discount *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder="₹" formControlName="TaxAmount" maxlength=""
+                        minlength="">
+                    <label class="float-lbl"> Tax Amount *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder="₹" formControlName="TotalAmount" maxlength=""
+                        minlength="">
+                    <label class="float-lbl"> Total Amount *</label>
+                </div>
+            </div>
+            <div class="form-grid">
                 <div class="input-group mb-4 float">
                     <input type="date" class="form-control" placeholder="" formControlName="InvoiceDate" maxlength=""
                         minlength="">
@@ -29,112 +64,96 @@
                         minlength="">
                     <label class="float-lbl"> Due Date *</label>
                 </div>
-            </div>
-            <div class="form-grid">
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="PaymentMode" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> Payment Mode *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="PaymentStatus" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> Payment Status *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="TaxAmount" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> Tax Amount *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="TotalDiscount" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> Total Discount *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="TotalAmount" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> Total Amount *</label>
-                </div>
-            </div>
-            <div class="form-grid">
-
+                <div></div>
+                <div></div>
+                <div></div>
             </div>
         </fieldset>
 
         <fieldset>
             <legend></legend>
-            <div class="form-grid">
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="Manufacturer" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> Manufacturer *</label>
+            <div class="d-flex">
+                <div class="col-4">
+                    <div class="input-group mb-4 float">
+                        <input type="text" class="form-control" placeholder="" formControlName="Manufacturer"
+                            maxlength="" minlength="">
+                        <label class="float-lbl"> Manufacturer *</label>
+                    </div>
                 </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="BatchNumber" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> Batch Number *</label>
+                <div class="col-4 ps-3">
+                    <div class="input-group mb-4 float">
+                        <input type="text" class="form-control" placeholder="" formControlName="BatchNumber"
+                            maxlength="" minlength="">
+                        <label class="float-lbl"> Batch Number *</label>
+                    </div>
                 </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="QuantityPurchased"
-                        maxlength="" minlength="">
-                    <label class="float-lbl"> Quantity Purchased *</label>
+                <div class="col-2 ps-3">
+                    <div class="input-group mb-4 float">
+                        <input type="number" class="form-control" placeholder="" formControlName="QuantityPurchased"
+                            maxlength="" minlength="">
+                        <label class="float-lbl"> Quantity Purchased *</label>
+                    </div>
                 </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="Unit" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> Unit *</label>
+            </div>
+            <div class="d-flex">
+                <div class="col-2">
+                    <div class="input-group mb-4 float">
+                        <input type="number" class="form-control" placeholder="" formControlName="Unit" maxlength=""
+                            minlength="">
+                        <label class="float-lbl"> Unit *</label>
+                    </div>
                 </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="ProductPrice" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> Product Price *</label>
+                <div class="ps-3 col-4">
+                    <div class="input-group mb-4 float">
+                        <input type="text" class="form-control" placeholder="" formControlName="ProductPrice"
+                            maxlength="" minlength="">
+                        <label class="float-lbl"> Product Price *</label>
+                    </div>
                 </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="PaymentStatus" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> Payment Status *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="MRP" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> MRP *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="SellingPrice" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> SellingPrice *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="GSTIncluded" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> GST Included *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="GSTPercentage" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> GST Percentage *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="GSTAmount" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> GST Amount *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="TotalAmount" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> Total Amount *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="Discount" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> Discount *</label>
-                </div>
-                <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder="" formControlName="ExpiryDate" maxlength=""
-                        minlength="">
-                    <label class="float-lbl"> Expiry Date *</label>
-                </div>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="text" class="form-control" placeholder="" formControlName="PaymentStatus" maxlength=""
+                    minlength="">
+                <label class="float-lbl"> Payment Status *</label>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="text" class="form-control" placeholder="" formControlName="MRP" maxlength="" minlength="">
+                <label class="float-lbl"> MRP *</label>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="text" class="form-control" placeholder="" formControlName="SellingPrice" maxlength=""
+                    minlength="">
+                <label class="float-lbl"> SellingPrice *</label>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="text" class="form-control" placeholder="" formControlName="GSTIncluded" maxlength=""
+                    minlength="">
+                <label class="float-lbl"> GST Included *</label>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="text" class="form-control" placeholder="" formControlName="GSTPercentage" maxlength=""
+                    minlength="">
+                <label class="float-lbl"> GST Percentage *</label>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="text" class="form-control" placeholder="" formControlName="GSTAmount" maxlength=""
+                    minlength="">
+                <label class="float-lbl"> GST Amount *</label>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="text" class="form-control" placeholder="" formControlName="TotalAmount" maxlength=""
+                    minlength="">
+                <label class="float-lbl"> Total Amount *</label>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="text" class="form-control" placeholder="" formControlName="Discount" maxlength=""
+                    minlength="">
+                <label class="float-lbl"> Discount *</label>
+            </div>
+            <div class="input-group mb-4 float">
+                <input type="text" class="form-control" placeholder="" formControlName="ExpiryDate" maxlength=""
+                    minlength="">
+                <label class="float-lbl"> Expiry Date *</label>
             </div>
         </fieldset>
         <div class="row justify-content-end">
