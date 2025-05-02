@@ -18,6 +18,8 @@ public partial class RepMedContext : DbContext
 
     public virtual DbSet<Category> Categories { get; set; }
 
+    public virtual DbSet<Childpermission> Childpermissions { get; set; }
+
     public virtual DbSet<City> Cities { get; set; }
 
     public virtual DbSet<Country> Countries { get; set; }
@@ -109,6 +111,26 @@ public partial class RepMedContext : DbContext
             entity.Property(e => e.Url)
                 .HasMaxLength(1000)
                 .HasColumnName("url");
+        });
+
+        modelBuilder.Entity<Childpermission>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("childpermissions");
+
+            entity.HasIndex(e => e.PermissionId, "PermissionId");
+
+            entity.Property(e => e.Label)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.Route)
+                .IsRequired()
+                .HasMaxLength(255);
+
+            entity.HasOne(d => d.Permission).WithMany(p => p.Childpermissions)
+                .HasForeignKey(d => d.PermissionId)
+                .HasConstraintName("childpermissions_ibfk_1");
         });
 
         modelBuilder.Entity<City>(entity =>
@@ -348,12 +370,13 @@ public partial class RepMedContext : DbContext
 
             entity.HasIndex(e => e.Route, "Route_UNIQUE").IsUnique();
 
+            entity.Property(e => e.Label)
+                .IsRequired()
+                .HasMaxLength(100);
             entity.Property(e => e.Module)
                 .IsRequired()
                 .HasMaxLength(100);
-            entity.Property(e => e.Route)
-                .IsRequired()
-                .HasMaxLength(100);
+            entity.Property(e => e.Route).HasMaxLength(100);
         });
 
         modelBuilder.Entity<Person>(entity =>

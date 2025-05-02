@@ -374,6 +374,7 @@ namespace RepMed.Core
         public const string tblPurchaseOrders = "`PurchaseOrders`";
         public const string tblPurchaseOrderItems = "`PurchaseOrderItems`";
         public const string tblSuppliers = "`Suppliers`";
+        public const string tblChildPermissions = "`ChildPermissions`";
         public const string tblProduct = "`Product`";
     }
 

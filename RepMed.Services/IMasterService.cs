@@ -20,6 +20,8 @@ namespace RepMed.Services
         Task<APIsResponse<IEnumerable<SelectListItem>>> GetCities(Func<City, bool> filter = null);
         Task<APIsResponse<IEnumerable<SelectListItem>>> GetRoles(Func<Role, bool> filter = null);
         Task<APIsResponse<IEnumerable<SelectListItem>>> GetProducts(Func<Product, bool> filter = null);
+        Task<APIsResponse<IEnumerable<SelectListItem>>> GetPharmacyRoles(Func<Role, bool> filter = null);
+
     }
 
     public class MasterService : BaseService, IMasterService
@@ -116,7 +118,31 @@ namespace RepMed.Services
                 if (filter == null)
                     filter = (d) => true;
 
-                string sql = $@"select {nameof(EntityRoleDto.Id)}, {nameof(EntityRoleDto.RoleName)} from {DbTables.tblRole} where {nameof(EntityRoleDto.IsActive)}=true and { nameof(EntityRoleDto.RoleName)} !='admin' ";
+                string sql = $@"select {nameof(EntityRoleDto.Id)}, {nameof(EntityRoleDto.RoleName)} from {DbTables.tblRole} where {nameof(EntityRoleDto.IsActive)}=true and { nameof(EntityRoleDto.RoleName)} !='admin' and {nameof(EntityRoleDto.IsAdminRole)} !=false";
+                var mQuery = _idbConnection.Query<Role>(sql, transaction: _idbTransaction).Where(r =>
+                filter.Invoke(r)).Select(r => new SelectListItem
+                {
+                    Text = r.RoleName,
+                    Value = r.Id.ToString()
+                });
+
+                response = new APIsSuccsss<IEnumerable<SelectListItem>>("Success", mQuery);
+                return Task.FromResult(response);
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(new APIsError<IEnumerable<SelectListItem>>(ex.GetActualError()) as APIsResponse<IEnumerable<SelectListItem>>);
+            }
+        }
+        public Task<APIsResponse<IEnumerable<SelectListItem>>> GetPharmacyRoles(Func<Role, bool> filter = null)
+        {
+            APIsResponse<IEnumerable<SelectListItem>> response;
+            try
+            {
+                if (filter == null)
+                    filter = (d) => true;
+
+                string sql = $@"select {nameof(EntityRoleDto.Id)}, {nameof(EntityRoleDto.RoleName)} from {DbTables.tblRole} where {nameof(EntityRoleDto.IsActive)}=true and {nameof(EntityRoleDto.RoleName)} !='admin' and {nameof(EntityRoleDto.IsAdminRole)} =false";
                 var mQuery = _idbConnection.Query<Role>(sql, transaction: _idbTransaction).Where(r =>
                 filter.Invoke(r)).Select(r => new SelectListItem
                 {

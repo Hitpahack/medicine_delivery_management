@@ -144,15 +144,52 @@ namespace RepMed.Services
 
                                 loginObj.Token.TokenId = _idbConnection.QuerySingle<int>(tokenSql, transaction: _idbTransaction);
                             }
-                            loginObj.Permissions = await _idbConnection.QueryAsync<BasePermissionDto>(
-                                            $@"SELECT P.{nameof(Permission.Module)}, P.{nameof(Permission.Route)}
-                                               FROM {DbTables.tblPermissions} P
-                                               INNER JOIN {DbTables.tblRolePermissions} RP ON RP.{nameof(Rolepermission.PermissionId)} = P.{nameof(Permission.Id)}
-                                               WHERE RP.{nameof(Rolepermission.RoleId)} = @RoleId",
+                            #region Get Role Module Access permission
+                            var permissions = await _idbConnection.QueryAsync<PermissionJoinDto>(
+                                            $@"SELECT 
+                                                P.{nameof(Permission.Id)} AS ParentId,
+                                                P.{nameof(Permission.Module)} AS ParentModule,
+                                                P.{nameof(Permission.Route)} AS ParentRoute,
+                                                P.{nameof(Permission.Label)} AS ParentLabel,
+                                                CP.{nameof(Childpermission.Route)} AS ChildRoute,
+                                                CP.{nameof(Childpermission.Label)} AS ChildLabel
+                                              FROM {DbTables.tblPermissions} P
+                                              INNER JOIN {DbTables.tblRolePermissions} RP 
+                                                ON RP.{nameof(Rolepermission.PermissionId)} = P.{nameof(Permission.Id)}
+                                              LEFT JOIN {DbTables.tblChildPermissions} CP 
+                                                ON CP.{nameof(Childpermission.PermissionId)} = P.{nameof(Permission.Id)}
+                                              WHERE RP.{nameof(Rolepermission.RoleId)} = @RoleId",
                                             new { RoleId = response.Roles[0].Id },
-                                            _idbTransaction);
+                                            _idbTransaction
+                                        );
+                            var permissionsDict = new Dictionary<string, PermissionParentDto>();
 
-                            
+                            foreach (var item in permissions)
+                            {
+                                var key = item.ParentModule;
+
+                                if (!permissionsDict.ContainsKey(key))
+                                {
+                                    permissionsDict[key] = new PermissionParentDto
+                                    {
+                                        Label = item.ParentLabel,
+                                        Route = item.ParentRoute,
+                                        Children = new List<PermissionChildDto>()
+                                    };
+                                }
+
+                                if (!string.IsNullOrEmpty(item.ChildRoute))
+                                {
+                                    permissionsDict[key].Children.Add(new PermissionChildDto
+                                    {
+                                        Label = item.ChildLabel,
+                                        Route = item.ChildRoute
+                                    });
+                                }
+                            }
+                            #endregion
+                            loginObj.Permissions = permissionsDict;
+
                             loginObj.RoleId = response.Roles[0].Id;
                             loginObj.RoleName = response.Roles[0].RoleName;
                             sql = DbTables.tblPharmacy.SelectAll($@"{nameof(Pharmacy.UserId)}={response.Id}");
@@ -165,7 +202,6 @@ namespace RepMed.Services
             }
             catch (Exception ex)
             {
-
                 return await Task.FromResult(new APIsError<Login_ResDto>(ex.GetActualError()));
             }
         }

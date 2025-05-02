@@ -29,11 +29,12 @@ import { EditRoleComponent } from './admin/views/rolemanage/roleedit.component';
 import { PharmacDashboardComponent } from "../app/pharmacy/views/pharmacydashboard/dashboard.component";
 import { PurchaseOrderComponent } from "../app/pharmacy/views/purchaseorder/purchaseorder.component";
 import { AddStaffComponent } from "../app/pharmacy/views/staffmanagement/addstaff.component";
+import { PurchaseInvoice } from '../app/pharmacy/views/PurchaseInvoice/Invoice.component' ;
 
 // doctor imports..
 import { DoctorDashboardComponent } from "../app/doctor/views/doctordashboard/dashboard.component";
 import { DoctorList } from "../app/admin/views/doctor/list.component";  
-import { PurchaseInvoice } from '../app/pharmacy/views/PurchaseInvoice/Invoice.component' ;
+
 
 
 export const routes: Routes = [
@@ -81,7 +82,8 @@ export const routes: Routes = [
     path: 'doctor',
     component: AdminLayoutComponent,
     children: [
-      { path: 'dashboard', component: DoctorDashboardComponent }
+      { path: 'dashboard', component: DoctorDashboardComponent },
+      { path: 'list', component: DoctorList },
     ]
   },
 
@@ -92,6 +94,7 @@ export const routes: Routes = [
     children: [
       { path: 'dashboard', component: PharmacDashboardComponent },
       { path: 'purchaseorder', component: PurchaseOrderComponent},
+      { path: 'purchaseinvoice', component: PurchaseInvoice},
       { path: 'staff/add', component: AddStaffComponent},
       { path: 'staff/edit/:id', component: AddStaffComponent}
     ]
