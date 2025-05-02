@@ -91,11 +91,18 @@
             <div data-i18n="Analytics">Dashboard</div>
           </a>
         </li>
-        <li class="menu-item" *ngIf="userRole?.toLowerCase() === 'doctor'">
-          <a class="menu-link">
+        <li class="menu-item" *ngIf="userRole?.toLowerCase() === 'admin'">
+          <a href="javascript:void(0);" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-home-circle"></i>
             <div data-i18n="Analytics">Doctor Management</div>
           </a>
+          <ul class="menu-sub">
+            <li class="menu-item">
+              <a [routerLink]="['/admin/doctor/list']" class="menu-link">
+                <div data-i18n="Basic">Doctor List</div>
+              </a>
+            </li>
+          </ul>
         </li>
 
         <!-- Doctor List Section Dashboard -->
@@ -116,6 +123,11 @@
             <li class="menu-item">
               <a [routerLink]="['/pharmacy/purchaseorder']" class="menu-link">
                 <div data-i18n="Basic">Purchase Order</div>
+              </a>
+            </li>
+            <li class="menu-item">
+              <a [routerLink]="['/admin/purchaseinvoice']" class="menu-link">
+                <div data-i18n="Basic">Purchase Invoice</div>
               </a>
             </li>
           </ul>

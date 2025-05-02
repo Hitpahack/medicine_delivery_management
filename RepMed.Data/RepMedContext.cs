@@ -42,13 +42,15 @@ public partial class RepMedContext : DbContext
 
     public virtual DbSet<Pharmacyinventory> Pharmacyinventories { get; set; }
 
-    public virtual DbSet<Pharmacypurchase> Pharmacypurchases { get; set; }
-
     public virtual DbSet<Prescription> Prescriptions { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
 
     public virtual DbSet<Productcategory> Productcategories { get; set; }
+
+    public virtual DbSet<Purchaseinvoice> Purchaseinvoices { get; set; }
+
+    public virtual DbSet<Purchaseinvoiceitem> Purchaseinvoiceitems { get; set; }
 
     public virtual DbSet<Purchaseorder> Purchaseorders { get; set; }
 
@@ -342,12 +344,16 @@ public partial class RepMedContext : DbContext
 
             entity.ToTable("permissions");
 
-            entity.Property(e => e.Description).HasColumnType("text");
-            entity.Property(e => e.Module).HasMaxLength(100);
-            entity.Property(e => e.Name)
+            entity.HasIndex(e => e.Module, "Module_UNIQUE").IsUnique();
+
+            entity.HasIndex(e => e.Route, "Route_UNIQUE").IsUnique();
+
+            entity.Property(e => e.Module)
                 .IsRequired()
                 .HasMaxLength(100);
-            entity.Property(e => e.ParentModule).HasMaxLength(100);
+            entity.Property(e => e.Route)
+                .IsRequired()
+                .HasMaxLength(100);
         });
 
         modelBuilder.Entity<Person>(entity =>
@@ -495,7 +501,7 @@ public partial class RepMedContext : DbContext
 
             entity.HasIndex(e => e.PharmacyId, "PharmacyId");
 
-            entity.HasIndex(e => e.PharmacyPurchaseId, "PharmacyPurchaseId");
+            entity.HasIndex(e => e.PurchaseInvoiceId, "PharmacyPurchaseId");
 
             entity.HasIndex(e => e.ProductId, "ProductId");
 
@@ -515,72 +521,14 @@ public partial class RepMedContext : DbContext
                 .HasForeignKey(d => d.PharmacyId)
                 .HasConstraintName("pharmacyinventory_ibfk_1");
 
-            entity.HasOne(d => d.PharmacyPurchase).WithMany(p => p.Pharmacyinventories)
-                .HasForeignKey(d => d.PharmacyPurchaseId)
-                .OnDelete(DeleteBehavior.SetNull)
-                .HasConstraintName("pharmacyinventory_ibfk_3");
-
             entity.HasOne(d => d.Product).WithMany(p => p.Pharmacyinventories)
                 .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("pharmacyinventory_ibfk_2");
-        });
 
-        modelBuilder.Entity<Pharmacypurchase>(entity =>
-        {
-            entity.HasKey(e => e.Id).HasName("PRIMARY");
-
-            entity.ToTable("pharmacypurchases");
-
-            entity.HasIndex(e => e.InvoiceNumber, "InvoiceNumber").IsUnique();
-
-            entity.HasIndex(e => e.PharmacyId, "PharmacyId");
-
-            entity.HasIndex(e => e.ProductId, "ProductId");
-
-            entity.Property(e => e.CreatedAt)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
-            entity.Property(e => e.ExpiryDate).HasColumnType("datetime");
-            entity.Property(e => e.Gstamount)
-                .HasPrecision(10, 2)
-                .HasComputedColumnSql("case when (`GSTIncluded` = true) then 0 else ((`ProductPrice` * `GSTPercentage`) / 100) end", true)
-                .HasColumnName("GSTAmount");
-            entity.Property(e => e.Gstincluded)
-                .HasDefaultValueSql("'0'")
-                .HasColumnName("GSTIncluded");
-            entity.Property(e => e.Gstpercentage)
-                .HasPrecision(5, 2)
-                .HasDefaultValueSql("'0.00'")
-                .HasColumnName("GSTPercentage");
-            entity.Property(e => e.InvoiceNumber)
-                .IsRequired()
-                .HasMaxLength(50);
-            entity.Property(e => e.Manufacturer).HasMaxLength(255);
-            entity.Property(e => e.ProductPrice).HasPrecision(10, 2);
-            entity.Property(e => e.PurchaseDate)
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
-            entity.Property(e => e.Status)
-                .HasDefaultValueSql("'Pending'")
-                .HasColumnType("enum('Pending','Completed','Cancelled')");
-            entity.Property(e => e.SupplierName)
-                .IsRequired()
-                .HasMaxLength(255);
-            entity.Property(e => e.TotalCost)
-                .HasPrecision(10, 2)
-                .HasComputedColumnSql("`QuantityPurchased` * (`ProductPrice` + `GSTAmount`)", true);
-            entity.Property(e => e.UpdatedAt)
-                .ValueGeneratedOnAddOrUpdate()
-                .HasDefaultValueSql("CURRENT_TIMESTAMP")
-                .HasColumnType("datetime");
-
-            entity.HasOne(d => d.Pharmacy).WithMany(p => p.Pharmacypurchases)
-                .HasForeignKey(d => d.PharmacyId)
-                .HasConstraintName("pharmacypurchases_ibfk_1");
-
-            entity.HasOne(d => d.Product).WithMany(p => p.Pharmacypurchases)
-                .HasForeignKey(d => d.ProductId)
-                .HasConstraintName("pharmacypurchases_ibfk_2");
+            entity.HasOne(d => d.PurchaseInvoice).WithMany(p => p.Pharmacyinventories)
+                .HasForeignKey(d => d.PurchaseInvoiceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pharmacyinventory_ibfk_3");
         });
 
         modelBuilder.Entity<Prescription>(entity =>
@@ -637,6 +585,111 @@ public partial class RepMedContext : DbContext
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
+        });
+
+        modelBuilder.Entity<Purchaseinvoice>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("purchaseinvoice");
+
+            entity.HasIndex(e => e.InvoiceNumber, "InvoiceNumber").IsUnique();
+
+            entity.HasIndex(e => e.PharmacyId, "PharmacyId");
+
+            entity.HasIndex(e => e.SupplierId, "pharmacypurchases_ibfk_2_idx");
+
+            entity.HasIndex(e => e.CreatedBy, "pharmacypurchases_ibfk_4_idx");
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.DueDate).HasColumnType("datetime");
+            entity.Property(e => e.InvoiceDate).HasColumnType("datetime");
+            entity.Property(e => e.InvoiceNumber)
+                .IsRequired()
+                .HasMaxLength(50);
+            entity.Property(e => e.PaymentMode)
+                .IsRequired()
+                .HasMaxLength(45);
+            entity.Property(e => e.PaymentStatus)
+                .IsRequired()
+                .HasMaxLength(45);
+            entity.Property(e => e.Ponumber)
+                .IsRequired()
+                .HasMaxLength(45)
+                .HasColumnName("PONumber");
+            entity.Property(e => e.ReceivedDate).HasColumnType("datetime");
+            entity.Property(e => e.Remarks).HasColumnType("text");
+            entity.Property(e => e.TaxAmount).HasPrecision(10);
+            entity.Property(e => e.TotalAmount).HasPrecision(10);
+            entity.Property(e => e.TotalDiscount).HasPrecision(10);
+            entity.Property(e => e.UpdatedAt)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.CreatedByNavigation).WithMany(p => p.Purchaseinvoices)
+                .HasForeignKey(d => d.CreatedBy)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("purchaseinvoice_ibfk_4");
+
+            entity.HasOne(d => d.Pharmacy).WithMany(p => p.Purchaseinvoices)
+                .HasForeignKey(d => d.PharmacyId)
+                .HasConstraintName("purchaseinvoice_ibfk_1");
+
+            entity.HasOne(d => d.Supplier).WithMany(p => p.Purchaseinvoices)
+                .HasForeignKey(d => d.SupplierId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("purchaseinvoice_ibfk_3");
+        });
+
+        modelBuilder.Entity<Purchaseinvoiceitem>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("purchaseinvoiceitems");
+
+            entity.HasIndex(e => e.ProductId, "ProductId");
+
+            entity.HasIndex(e => e.PurchaseInvoiceId, "PurchaseInvoiceId");
+
+            entity.Property(e => e.BatchNumber).HasMaxLength(100);
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Discount).HasPrecision(10, 2);
+            entity.Property(e => e.Gstamount)
+                .HasPrecision(10, 2)
+                .HasColumnName("GSTAmount");
+            entity.Property(e => e.Gstincluded)
+                .HasDefaultValueSql("'1'")
+                .HasColumnName("GSTIncluded");
+            entity.Property(e => e.Gstpercentage)
+                .HasPrecision(5, 2)
+                .HasColumnName("GSTPercentage");
+            entity.Property(e => e.Manufacturer).HasMaxLength(255);
+            entity.Property(e => e.Mrp)
+                .HasPrecision(10, 2)
+                .HasColumnName("MRP");
+            entity.Property(e => e.ProductPrice).HasPrecision(10, 2);
+            entity.Property(e => e.SellingPrice).HasPrecision(10, 2);
+            entity.Property(e => e.TotalAmount).HasPrecision(10, 2);
+            entity.Property(e => e.Unit).HasMaxLength(50);
+            entity.Property(e => e.UpdatedAt)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Purchaseinvoiceitems)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("purchaseinvoiceitems_ibfk_2");
+
+            entity.HasOne(d => d.PurchaseInvoice).WithMany(p => p.Purchaseinvoiceitems)
+                .HasForeignKey(d => d.PurchaseInvoiceId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("purchaseinvoiceitems_ibfk_1");
         });
 
         modelBuilder.Entity<Purchaseorder>(entity =>

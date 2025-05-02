@@ -8,11 +8,11 @@ namespace RepMed.Dtos
     {
         public string AddressLine { get; set; }
             
-        public int CityId { get; set; }
+        public long? CityId { get; set; }
 
-        public int StateId { get; set; }
+        public long? StateId { get; set; }
 
-        public int CountryId { get; set; }
+        public long? CountryId { get; set; }
 
         public string Pincode { get; set; }
 

@@ -1,4 +1,4 @@
-﻿import { Component, OnInit, NgZone  } from "@angular/core";
+﻿import { Component, OnInit, NgZone } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
@@ -8,7 +8,7 @@ import { AdminBaseComponent } from "../../admin.base.component";
 import { adminAccountsService } from "../../services/accounts/admin.accountsservice";
 import { AutoValidateDirective } from "src/app/common/form.validator";
 import { AfterViewInit } from '@angular/core';
-import { RouterModule} from '@angular/router';
+import { RouterModule } from '@angular/router';
 declare const window: any;
 
 
@@ -26,13 +26,13 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
     constructor(
         public validator: CustomValidator,
         public accountservice: adminAccountsService,
-        public  router: Router,
+        public router: Router,
         private zone: NgZone
 
     ) {
         super(router);
     }
-
+    uniqueId = '';
     ngAfterViewInit(): void {
         if (window.Helpers && typeof window.Helpers.initPasswordToggle === 'function') {
             window.Helpers.initPasswordToggle();
@@ -40,6 +40,7 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
     }
     loginForm: FormGroup;
     ngOnInit(): void {
+        this.uniqueId = Math.random().toString(36).substring(2);
         this.loginForm = this.initForm();
     }
     rolename: string;
@@ -65,7 +66,7 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
                 if (response.isSuccess) {
                     sessionStorage.setItem('userId', response.data.id.toString());
                     sessionStorage.setItem('personid', response.data.person.id.toString());
-                    
+
                     // This is pharmacyId..
                     sessionStorage.setItem('pharmacyId', response.data.pharmacyId.toString());
 
@@ -77,17 +78,17 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
                     console.log('ROlE:', this.rolename);
                     if (this.rolename === 'admin') {
                         //this.router.navigate(['/admin/dashboard']);
-                        console.log('enter in admin section',this.rolename);
+                        console.log('enter in admin section', this.rolename);
                         this.router.navigate(['/admin/dashboard']);
                     }
                     else if (this.rolename === 'pharmacy') {
-                        console.log('enter in pharmacy section',this.rolename);
+                        console.log('enter in pharmacy section', this.rolename);
                         //this.router.navigate(['/admin/pharmacy/user']);
                         this.router.navigate(['/pharmacy/dashboard']);
                     }
                     else if (this.rolename === 'doctor') {
-                        console.log('enter in doctor section',this.rolename);
-                       this.router.navigate(['/doctor/dashboard']);
+                        console.log('enter in doctor section', this.rolename);
+                        this.router.navigate(['/doctor/dashboard']);
                     }
                     else{
                         

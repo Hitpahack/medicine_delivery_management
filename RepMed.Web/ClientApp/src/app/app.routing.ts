@@ -32,6 +32,8 @@ import { AddStaffComponent } from "../app/pharmacy/views/staffmanagement/addstaf
 
 // doctor imports..
 import { DoctorDashboardComponent } from "../app/doctor/views/doctordashboard/dashboard.component";
+import { DoctorList } from "../app/admin/views/doctor/list.component";  
+import { PurchaseInvoice } from '../app/pharmacy/views/PurchaseInvoice/Invoice.component' ;
 
 
 export const routes: Routes = [
@@ -70,8 +72,7 @@ export const routes: Routes = [
 
       { path: 'role/add', component: AddRoleComponent },
       { path: 'role/list', component: RoleListComponent },
-      { path: 'role/edit/:id', component: EditRoleComponent },
-      
+      { path: 'role/edit/:id', component: EditRoleComponent }
     ]
   },
 

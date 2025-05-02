@@ -1,30 +1,29 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterModule, Router } from "@angular/router";
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { Router, RouterModule } from "@angular/router";
 import { FormBuilder } from "@angular/forms";
-import { CustomValidator } from "../../../../app/common/custom.validators";
+import { CustomValidator } from "../../../common/custom.validators";
 import { AdminBaseComponent } from '../../admin.base.component';
 import { DatatableComponent } from '../../shared/datatables/datatable.component';
 import { CommonModule } from '@angular/common';
 declare var $: any;
 
 @Component({
-    selector: 'app-User-list',
-    templateUrl: 'admin.userlist.component.html',
+    selector: 'app-doctor-list',
+    templateUrl: './list.component.html',
     imports: [DatatableComponent, RouterModule, CommonModule]
 })
-
-export class UserListComponent extends AdminBaseComponent implements OnInit {
+export class DoctorList extends AdminBaseComponent implements OnInit {
     constructor(public validator: CustomValidator, public router: Router) {
         super();
     }
 
     tableOptions = {
-        tableId: 'post_pharmacylist_datatable',
+        tableId: 'post_doctorlist_datatable',
         ajax: {
-            url: this.admin_apiconfig.endpoints.user.list,
+            url: this.admin_apiconfig.endpoints.doctor.list,
             type: "POST",
             contentType: "application/json; charset=utf-8",
-            dataType: "json", // Expect JSON response
+            dataType: "json",
             data: function (d) {
                 return JSON.stringify(d);
             },

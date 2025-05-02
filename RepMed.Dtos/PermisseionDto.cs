@@ -6,14 +6,15 @@ using System.Threading.Tasks;
 
 namespace RepMed.Dtos
 {
-    public class EntityPermissionDto
+    public class BasePermissionDto
+    {
+        public string Module { get; set; }
+        public string Route { get; set; }
+    }
+    public class EntityPermissionDto: BasePermissionDto
     {
         public long Id { get; set; }
-
-        public string Name { get; set; }
-
-        public string Module { get; set; }
-
-        public string Description { get; set; }
+       
     }
+
 }

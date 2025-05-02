@@ -108,8 +108,24 @@ namespace RepMed.Web.Controllers.BaseApis
             }
 
         }
+        protected async Task<APIsResponse<IEnumerable<SelectListItem>>> Products()
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
 
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IMasterService masterService = new MasterService(db, tran))
+                    {
+                        var countries = await masterService.GetProducts();
+                        tran.Commit();
+                        return countries;
 
+                    }
+                }
+            }
 
+        }
     }
 }
