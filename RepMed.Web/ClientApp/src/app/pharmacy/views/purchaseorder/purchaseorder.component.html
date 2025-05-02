@@ -46,26 +46,26 @@
             <legend>Add Products</legend>
             <div class="table-responsive mt-3" *ngIf="productsList.length > 0">
                 <table class="table table-bordered">
-                  <thead>
-                    <tr>
-                      <th>Product</th>
-                      <th>Quantity</th>
-                      <th>Unit Price</th>
-                      <th>Total Price</th>
-                      <th>Unit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr *ngFor="let p of productsList">
-                      <td>{{ p.productName }}</td>
-                      <td>{{ p.quantity }}</td>
-                      <td>{{ p.unitPrice }}</td>
-                      <td>{{ p.totalPrice }}</td>
-                      <td>{{ p.unit }}</td>
-                    </tr>
-                  </tbody>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Quantity</th>
+                            <th>Unit Price</th>
+                            <th>Total Price</th>
+                            <th>Unit</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let p of productsList">
+                            <td>{{ p.productName }}</td>
+                            <td>{{ p.quantity }}</td>
+                            <td>{{ p.unitPrice }}</td>
+                            <td>{{ p.totalPrice }}</td>
+                            <td>{{ p.unit }}</td>
+                        </tr>
+                    </tbody>
                 </table>
-              </div>
+            </div>
             <!-- Add Product Button -->
             <div class="text-end">
                 <button type="button" class="btn btn-success" (click)="toggleAddProductForm()">Add Product</button>
@@ -139,6 +139,9 @@
                     <div class="input-group mb-4 float">
                         <select formControlName="productId" class="form-control" required>
                             <option value="" disabled>Select Product</option>
+                            <option value="">Product1</option>
+                            <option value="">Product2</option>
+                            <option value="">Product3</option>
                             <option *ngFor="let product of products" [ngvalue]="product.id">
                                 {{ product.name }}
                             </option>
@@ -146,20 +149,20 @@
                         <label class="float-lbl">Product *</label>
                     </div>
 
-                    <!-- Quantity -->
-                    <div class="input-group mb-4 float">
-                        <input type="number" formControlName="quantity" class="form-control" 
-                        required (keydown)="preventInvalidKeys($event, 'unitPrice')"  
-                        min="1" (paste)="disablePaste($event)" />
-                        <label class="float-lbl">Quantity *</label>
-                    </div>
-
                     <!-- Price -->
                     <div class="input-group mb-4 float">
-                        <input type="number" formControlName="unitPrice" class="form-control" 
-                        required (keydown)="preventInvalidKeys($event, 'unitPrice')"  
-                        min="1" (paste)="disablePaste($event)" />
+                        <input type="number" formControlName="unitPrice" class="form-control" required
+                            (keydown)="preventInvalidKeys($event, 'unitPrice')" min="1" (paste)="disablePaste($event)"
+                            (input)="priceChange($event)" />
                         <label class="float-lbl">Price *</label>
+                    </div>
+
+                    <!-- Quantity -->
+                    <div class="input-group mb-4 float">
+                        <input type="number" formControlName="quantity" class="form-control" required
+                            (keydown)="preventInvalidKeys($event, 'unitPrice')" min="1"
+                            (paste)="disablePaste($event)" (input)="quantityChange($event)" />
+                        <label class="float-lbl">Quantity *</label>
                     </div>
 
                     <!-- Total -->

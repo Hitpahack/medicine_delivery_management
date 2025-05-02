@@ -56,6 +56,35 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
         this.loadPoNumber(id);
     }
 
+    TotalAmount: number;
+    PriceValue: number;
+    blankValue = 0;
+    priceChange(event: Event) {
+        this.PriceValue = Number((event.target as HTMLInputElement).value);
+        if(this.PriceValue != null){
+            this.productForm.patchValue({ totalPrice: this.blankValue });
+            console.log("bb1", this.blankValue);
+        }
+    }
+
+    QuantityValue: number;
+    quantityChange(event: Event) {
+        this.QuantityValue = Number((event.target as HTMLInputElement).value);
+        if (this.PriceValue && this.QuantityValue) {
+            console.log("runifblock!");
+            this.TotalAmount = this.PriceValue * this.QuantityValue;
+        } else {
+            console.log("run else block!");
+            this.productForm.patchValue({ totalPrice: this.blankValue });
+            console.log("bb", this.blankValue);
+            
+        }
+        if (this.TotalAmount != null) {
+            this.productForm.patchValue({ totalPrice: this.TotalAmount });
+        }
+    }
+
+
     //#region get supplier and PONumber
     getallsupplier(pharmacyId: number) {
         this.PurchaseOrderService.getsupplier(pharmacyId).subscribe((response) => {
