@@ -545,9 +545,8 @@ namespace RepMed.Services
         {
             try
             {
-                var userId = user.FindFirst("UserId")?.Value;
-                var token = user.FindFirst("Token")?.Value;
-                if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(token))
+                var userId = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userId))
                     return new APIsError<string>("Invalid token or user");
 
 
@@ -555,10 +554,10 @@ namespace RepMed.Services
                 var sql = $@"
                             UPDATE {DbTables.tblUserJWTTokenLog}
                             SET IsActive = 0, RevokedOn = '{DateTime.UtcNow:yyyy-MM-dd HH:mm:ss}'
-                            WHERE UserId = @UserId AND Token = @Token AND IsActive = 1;
+                            WHERE UserId = @UserId AND IsActive = 1;
                         ";
 
-                await _idbConnection.ExecuteAsync(sql, new { UserId = userId, Token = token }, transaction: _idbTransaction);
+                await _idbConnection.ExecuteAsync(sql, new { UserId = userId }, transaction: _idbTransaction);
 
                 return new APIsSuccsss<string>("Logout successful");
             }

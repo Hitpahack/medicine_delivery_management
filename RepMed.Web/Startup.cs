@@ -174,9 +174,7 @@ namespace RepMed.Web
                 {
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey,
-                    Scheme = JwtBearerDefaults.AuthenticationScheme,
-                    //Type = SecuritySchemeType.ApiKey,
-                    //Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,                    
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
                     Description = "JWT Authorization header using the Bearer",
