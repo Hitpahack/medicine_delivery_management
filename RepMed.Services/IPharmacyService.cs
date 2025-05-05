@@ -127,27 +127,28 @@ namespace RepMed.Services
             {
                 APIsResponse<AddPharmacyDto> apiResponse = default;
                 
-                bool isGstExist = await IsPharmacyFieldExist("GSTNumber", reqDto.Gstnumber);
-                bool isMobileExist = await IsPharmacyFieldExist("RegisteredMobile", reqDto.RegisteredMobile);
-                bool isLicenseExist = await IsPharmacyFieldExist("LicenseNumber", reqDto.LicenseNumber);
-               //if (isEmailExist || isGstExist || isMobileExist || isLicenseExist)
-                {
-                    //string errorField = isEmailExist ? "Email" :
-                    //                    isGstExist ? "GST Number" :
-                    //                    isMobileExist ? "Mobile Number" :
-                    //                    "License Number";
-
-                    //string errorValue = isEmailExist ? reqDto.OfficialEmail :
-                                        //isGstExist ? reqDto.Gstnumber :
-                                        //isMobileExist ? reqDto.RegisteredMobile :
-                                        //reqDto.LicenseNumber;
-
-                   // string errorMessage = _validateMessages.GetAlreadyExist($"The {errorField} already exists. Please choose another one.");
-
-                   // return new APIsError<AddPharmacyDto>(errorMessage);
-                }
                 if (Id == 0)
                 {
+                    bool isGstExist = await IsPharmacyFieldExist("OfficialEmail", reqDto.OfficialEmail);
+                    bool isEmailExist = await IsPharmacyFieldExist("GSTNumber", reqDto.Gstnumber);
+                    bool isMobileExist = await IsPharmacyFieldExist("RegisteredMobile", reqDto.RegisteredMobile);
+                    bool isLicenseExist = await IsPharmacyFieldExist("LicenseNumber", reqDto.LicenseNumber);
+                    if (isEmailExist || isGstExist || isMobileExist || isLicenseExist)
+                    {
+                        string errorField = isEmailExist ? "Email" :
+                                            isGstExist ? "GST Number" :
+                                            isMobileExist ? "Mobile Number" :
+                                            "License Number";
+
+                        string errorValue = isEmailExist ? reqDto.OfficialEmail :
+                                            isGstExist ? reqDto.Gstnumber :
+                                            isMobileExist ? reqDto.RegisteredMobile :
+                                            reqDto.LicenseNumber;
+
+                        string errorMessage = _validateMessages.GetAlreadyExist($"The {errorField} already exists. Please choose another one.");
+
+                        return new APIsError<AddPharmacyDto>(errorMessage);
+                    }
                     reqDto.Status = "Active";
                     reqDto.CreatedAt = DateTime.Now;
                     #region Add Pharmacy
@@ -163,19 +164,19 @@ namespace RepMed.Services
                 {
                     #region Check Pharmacy Exist
                     string sql = $@"SELECT a.Id FROM {DbTables.tblPharmacy} a 
-                                 JOIN {DbTables.tblUser} u on u.{nameof(User.Id)} = a.{nameof(Pharmacy.UserId)}
-                                 JOIN {DbTables.tblPersons} p on p.{nameof(Person.Id)}=u.{nameof(User.PersonId)}
-                                 WHERE p.{nameof(Pharmacy.Id)} = {Id}";
+                                 LEFT JOIN {DbTables.tblUser} u on u.{nameof(User.Id)} = a.{nameof(Pharmacy.UserId)}
+                                 LEFT JOIN {DbTables.tblPersons} p on p.{nameof(Person.Id)}=u.{nameof(User.PersonId)}
+                                 WHERE a.{nameof(Pharmacy.Id)} = {Id}";
 
                     var pharmacyData = await _idbConnection.QueryFirstOrDefaultAsync<AddPharmacyDto>(sql, transaction: _idbTransaction);
                     if (pharmacyData == null)
                     {
-                        apiResponse = new APIsSuccsss<AddPharmacyDto>(_validateMessages.NotExist);
+                        return new APIsError<AddPharmacyDto>(_validateMessages.NotExist);
                     }
                     #endregion
                     #region Update Pharmacy
                     var pharmacy = _idbConnection.Update<AddPharmacyDto>(_idbTransaction,DbTables.tblPharmacy,
-                                    new Dictionary<string, string> {
+                                    new Dictionary<string, object> {
                                           { "OfficialEmail", reqDto.OfficialEmail },
                                           { "RegisteredMobile", reqDto.RegisteredMobile},
                                           { "StoreMobile1", reqDto.StoreMobile1 },
@@ -183,11 +184,11 @@ namespace RepMed.Services
                                           { "StoreEmail2", reqDto.StoreEmail2 },
                                           { "Address1", reqDto.Address1 },
                                           { "Address2", reqDto.Address2 },
-                                          { "Latitude", reqDto.Latitude.ToString() },
-                                          { "Longitude", reqDto.Longitude.ToString() },
-                                          { "CityId", reqDto.CityId.ToString() },
-                                          { "StateId", reqDto.StateId.ToString() },
-                                          { "CountryId", reqDto.CountryId.ToString() },
+                                          { "Latitude", reqDto.Latitude },
+                                          { "Longitude", reqDto.Longitude},
+                                          { "CityId", reqDto.CityId },
+                                          { "StateId", reqDto.StateId },
+                                          { "CountryId", reqDto.CountryId},
                                     }, $@"Id='{pharmacyData.Id}'"
                                     );
                     #endregion
