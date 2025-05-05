@@ -43,7 +43,7 @@ public partial class Purchaseinvoice
 
     public virtual Pharmacy Pharmacy { get; set; }
 
-    public virtual ICollection<Pharmacyinventory> Pharmacyinventories { get; set; } = new List<Pharmacyinventory>();
+    public virtual ICollection<Pharmacystockledger> Pharmacystockledgers { get; set; } = new List<Pharmacystockledger>();
 
     public virtual ICollection<Purchaseinvoiceitem> Purchaseinvoiceitems { get; set; } = new List<Purchaseinvoiceitem>();
 

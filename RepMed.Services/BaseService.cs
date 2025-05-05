@@ -106,6 +106,12 @@ namespace RepMed.Services
             long result = _idbConnection.QueryFirstOrDefault<long>(sql, transaction: _idbTransaction);
             return Task.FromResult(result == 0);
         }
+        public Task<bool> IsSupplierExist(long supplierId)
+        {
+            string sql = DbTables.tblSuppliers.SelectAll($@"{nameof(Supplier.Id)}={supplierId}");
+            long result = _idbConnection.QueryFirstOrDefault<long>(sql, transaction: _idbTransaction);
+            return Task.FromResult(result == 0);
+        }
 
         public Task<bool> IsAccountNumberExist(string accountNumber)
         {

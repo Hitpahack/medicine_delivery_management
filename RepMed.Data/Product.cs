@@ -19,6 +19,8 @@ public partial class Product
 
     public virtual ICollection<Pharmacyinventory> Pharmacyinventories { get; set; } = new List<Pharmacyinventory>();
 
+    public virtual ICollection<Pharmacystockledger> Pharmacystockledgers { get; set; } = new List<Pharmacystockledger>();
+
     public virtual ICollection<Purchaseinvoiceitem> Purchaseinvoiceitems { get; set; } = new List<Purchaseinvoiceitem>();
 
     public virtual ICollection<Purchaseorderitem> Purchaseorderitems { get; set; } = new List<Purchaseorderitem>();
