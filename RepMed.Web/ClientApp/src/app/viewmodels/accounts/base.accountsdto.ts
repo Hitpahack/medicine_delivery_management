@@ -11,9 +11,10 @@ export class BaseAccountsDto {
     isDeleted: boolean;
     lastLoginDate: Date | null;
     roles:EntityRoleDto[]|null;
-    person:BasicPersonsDto|null;
+    person?:BasicPersonsDto|null;
     pharmacyId: string;
     roleName:string;
+	permissions: [] | null;
     constructor(values: Object = {}) {
         Object.assign(this, values);
       }

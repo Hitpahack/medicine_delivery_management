@@ -6,7 +6,7 @@ import { CustomValidator } from "../../../../app/common/custom.validators";
 import { Helper } from "../../../../app/common/helper.extenstions";
 import { AdminBaseComponent } from "../../admin.base.component";
 import { adminAccountsService } from "../../services/accounts/admin.accountsservice";
-import { AutoValidateDirective } from "src/app/common/form.validator";
+import { AutoValidateDirective } from "../../../../app/common/form.validator";
 import { AfterViewInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 declare const window: any;
@@ -64,30 +64,32 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
         this.accountservice.login(this.loginForm.value).subscribe(
             (response) => {
                 if (response.isSuccess) {
+                    // This is userId..
                     sessionStorage.setItem('userId', response.data.id.toString());
+
+                    // This is personid..
                     sessionStorage.setItem('personid', response.data.person.id.toString());
 
                     // This is pharmacyId..
                     sessionStorage.setItem('pharmacyId', response.data.pharmacyId.toString());
 
-                    console.log('rolename', response.data.roleName);
+                    // This is permissions..
+                    sessionStorage.setItem('accessData', JSON.stringify(response.data.permissions));
+
+                    // This is roleName..
                     sessionStorage.setItem('rolename', response.data.roleName);
-                    //this.rolename =  response.data.roleName;
-                    //this.rolename = (sessionStorage.getItem('rolename') || '').toLowerCase();
                     this.rolename = (sessionStorage.getItem('rolename') || '').toLowerCase().trim();
-                    console.log('ROlE:', this.rolename);
+
+                    // This is token..
+                    localStorage.setItem('token', response.data.token.token);
+                    
                     if (this.rolename === 'admin') {
-                        //this.router.navigate(['/admin/dashboard']);
-                        console.log('enter in admin section', this.rolename);
                         this.router.navigate(['/admin/dashboard']);
                     }
                     else if (this.rolename === 'pharmacy') {
-                        console.log('enter in pharmacy section', this.rolename);
-                        //this.router.navigate(['/admin/pharmacy/user']);
                         this.router.navigate(['/pharmacy/dashboard']);
                     }
                     else if (this.rolename === 'doctor') {
-                        console.log('enter in doctor section', this.rolename);
                         this.router.navigate(['/doctor/dashboard']);
                     }
                     else{

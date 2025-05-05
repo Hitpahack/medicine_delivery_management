@@ -3,6 +3,9 @@ import { RouterModule, Router } from '@angular/router';
 import { getBaseUrl, loadScript, loadScripts, loadStylesheets, setTitle } from '../../../main';
 import { AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SideNav } from '../../../app/security/sideNav';
+import { AuthService } from '../../../app/security/auth.service';
+
 declare const window: any;
 @Component({
   selector: 'app-admin-layout',
@@ -18,7 +21,7 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
   Userid: string | null = null;
   roleaccess: string | null = null;
 
-  constructor(private renderer: Renderer2, private router: Router) { }
+  constructor(private renderer: Renderer2, private router: Router, private authService: AuthService) { }
   scripts: Array<string> = [
 
   ];
@@ -35,29 +38,40 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
   }
 
   userRole: string = '';
+  filteredLinks: SideNav[] = [];
   ngOnInit() {
-    // const script = this.renderer.createElement('script');
-    //script.src = `https://cdnjs.cloudflare.com/ajax/libs/le_js/0.0.3/le.min.js`;
-    //this.renderer.appendChild(document.head, script);
     this.id = sessionStorage.getItem('personid');
     this.Userid = sessionStorage.getItem('userId');
-    //this.roleaccess = sessionStorage.getItem('rolename');
-   // this.userRole = sessionStorage.getItem('rolename');
-    
+    const allowedModules = this.authService.getUserModules();
+    this.filteredLinks = this.filterLinksByAccess(this.authService.getSideBarLinks(), allowedModules);
     this.userRole = (sessionStorage.getItem('rolename') || '').toLowerCase();
     console.log('userRole', this.userRole);
     setTitle(':: REPMED :: ');
     loadStylesheets(this.styles);
     loadScripts(this.scripts);
-    // if(this.Userid == null)
-    // {
-    //   this.router.navigate(['/admin/login']);
-    // }
-    // else{
-    //   this.router.navigate(['/admin/dashboard']);
-    // }
-  }
 
+    if (this.authService.isLoggedIn()) {
+      console.log('User is logged in');
+    } else {
+      console.log('User is NOT logged in');
+    }
+  }
+  private filterLinksByAccess(links: SideNav[], allowedModules: string[]): SideNav[] {
+    return links
+      .map(link => {
+        if (link.children) {
+          const filteredChildren = link.children.filter(child => allowedModules.includes(child.module!));
+          if (filteredChildren.length > 0 && allowedModules.includes(link.module || '')) {
+            return { ...link, children: filteredChildren };
+          }
+          return null;
+        } else {
+          return allowedModules.includes(link.module!) ? link : null;
+        }
+      })
+      .filter((link): link is SideNav => link !== null);
+  }
+  
   toggleSubmenu(id: string): void {
     const submenu = document.getElementById(id);
     if (submenu) {
@@ -67,15 +81,17 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
 
   logout() {
     // Token/session/local storage clear
-    localStorage.removeItem('authToken'); // ya jo bhi token ka naam ho
-    sessionStorage.clear(); // optional
+    localStorage.removeItem('token');
+    localStorage.clear();  // optional
     sessionStorage.removeItem('userId');
     sessionStorage.removeItem('personid');
+    sessionStorage.clear(); // optional
+    
 
     // Redirect to login page
     this.router.navigate(['/login']);
   }
 
-  
+
 
 }
