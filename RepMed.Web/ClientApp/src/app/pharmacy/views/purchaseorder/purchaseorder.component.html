@@ -160,7 +160,7 @@
                     <!-- Price -->
                     <div class="input-group mb-4 float">
                         <input type="number" formControlName="unitPrice" class="form-control" required
-                            (keydown)="preventInvalidKeys($event, 'unitPrice')" min="1" (paste)="disablePaste($event)"
+                            (keydown)="preventInvalidKeys($event, 'unitPrice')" (paste)="disablePaste($event)"
                             (input)="priceChange($event)" />
                         <label class="float-lbl">Price *</label>
                     </div>
@@ -168,7 +168,7 @@
                     <!-- Quantity -->
                     <div class="input-group mb-4 float">
                         <input type="number" formControlName="quantity" class="form-control" required
-                            (keydown)="preventInvalidKeys($event, 'unitPrice')" min="1" (paste)="disablePaste($event)"
+                            (keydown)="preventInvalidKeys($event, 'unitPrice')" (paste)="disablePaste($event)"
                             (input)="quantityChange($event)" />
                         <label class="float-lbl">Quantity *</label>
                     </div>
@@ -181,7 +181,7 @@
 
                     <!-- Unit -->
                     <div class="input-group mb-4 float">
-                        <input type="text" formControlName="unit" class="form-control" maxlength="25" />
+                        <input type="text" formControlName="unit" class="form-control" maxlength="25" (paste)="disablePaste($event)"  (keypress)="allowOnlyAlphabets($event)"/>
                         <label class="float-lbl">Unit (Box/Bottle/Ltr)</label>
                     </div>
                 </div>

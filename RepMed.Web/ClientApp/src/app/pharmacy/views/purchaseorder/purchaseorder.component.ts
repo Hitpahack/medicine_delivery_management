@@ -7,7 +7,7 @@ import { GetSupppliersDto } from "../../../viewmodels/purchaseorder/supplier.dto
 import { PurchaseOrderService } from "../../../pharmacy/services/purchaseorder/purchaseorder.services";
 import { CustomValidator } from "../../../common/custom.validators";
 import { Helper } from "../../../common/helper.extenstions";
-import { BasePODto } from "../../../viewmodels/purchaseorder/purchaseorder.dto";
+import { CreatePODto } from "../../../viewmodels/purchaseorder/purchaseorder.dto";
 import { AutoValidateDirective } from 'src/app/common/form.validator';
 import { SupplierDto } from "../../../viewmodels/supplier/supplier.dto";
 import { Product } from "../../../viewmodels/purchaseorder/product.dto";
@@ -37,7 +37,7 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
     minDate: string;
     maxDate: string;
     errorMessage: string = '';
-    PurchaseOrderDto: BasePODto;
+    PurchaseOrderDto: CreatePODto;
     productsList: Product[] = [];
 
     suppliers: GetSupppliersDto[] = [];
@@ -136,8 +136,8 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
     initAddProductForm() {
         this.productForm = this.fb.group({
             productId: ['', Validators.required],
-            quantity: ['', [Validators.required, Validators.min(1)]],
-            unitPrice: ['', [Validators.required, Validators.min(0.01)]],
+            quantity: ['', [Validators.required, Validators.min(1), Validators.max(9999999999)]],
+            unitPrice: ['', [Validators.required, Validators.min(1), Validators.max(9999999999)]],
             totalPrice: [{ value: '', disabled: true }],
             unit: ['', Validators.required],
         });
@@ -212,7 +212,7 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
                 totalPrice: this.productForm.value.unitPrice * this.productForm.value.quantity,
                 unit: this.productForm.value.unit
             };
-    
+
             this.addedProducts.push(addedProduct);
             this.showAddProductForm = false;
             this.productForm.reset();
@@ -251,8 +251,8 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             this.validator.markInvalidFieldsTouched(this.poForm);
             return;
         }
-        const dto: BasePODto = {
-            CreatePODto: {
+        const dto: CreatePODto = {
+            po: {
                 pharmacyId: Number(this.pharmacyId),
                 supplierId: this.poForm.value.purchaseOrder.supplierId,
                 poNumber: this.poForm.get('purchaseOrder.poNumber')?.value,
@@ -312,6 +312,13 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             if (!isNaN(numberValue) && numberValue < 1) {
                 event.preventDefault();
             }
+        }
+    }
+    allowOnlyAlphabets(event: KeyboardEvent) {
+        const char = event.key;
+        const regex = /^[A-Za-z ]$/;
+        if (!regex.test(char)) {
+            event.preventDefault();
         }
     }
 }

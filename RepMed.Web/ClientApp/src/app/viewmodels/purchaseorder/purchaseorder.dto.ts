@@ -1,15 +1,16 @@
-export interface BasePODto {
+export interface CreatePODto  {
 
-    CreatePODto:{
-        pharmacyId: number;
-        supplierId: number;
-        poNumber: string;
-        eddate?: Date;
-        totalAmount?: number;
-        remarks?: string;
-        
-    };
+    po: BasePODto;
     items: BasePOItemDto[];
+}
+
+export interface BasePODto {
+    pharmacyId: number;
+    supplierId: number;
+    poNumber: string;
+    eddate?: Date;
+    totalAmount?: number;
+    remarks?: string;
 }
 export interface BasePOItemDto {
     //purchaseOrderId?: number;
