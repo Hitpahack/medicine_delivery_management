@@ -126,25 +126,25 @@ namespace RepMed.Services
             try
             {
                 APIsResponse<AddPharmacyDto> apiResponse = default;
-                bool isEmailExist = await IsPharmacyFieldExist("OfficialEmail", reqDto.OfficialEmail);
+                
                 bool isGstExist = await IsPharmacyFieldExist("GSTNumber", reqDto.Gstnumber);
                 bool isMobileExist = await IsPharmacyFieldExist("RegisteredMobile", reqDto.RegisteredMobile);
                 bool isLicenseExist = await IsPharmacyFieldExist("LicenseNumber", reqDto.LicenseNumber);
-                if (isEmailExist || isGstExist || isMobileExist || isLicenseExist)
+               //if (isEmailExist || isGstExist || isMobileExist || isLicenseExist)
                 {
-                    string errorField = isEmailExist ? "Email" :
-                                        isGstExist ? "GST Number" :
-                                        isMobileExist ? "Mobile Number" :
-                                        "License Number";
+                    //string errorField = isEmailExist ? "Email" :
+                    //                    isGstExist ? "GST Number" :
+                    //                    isMobileExist ? "Mobile Number" :
+                    //                    "License Number";
 
-                    string errorValue = isEmailExist ? reqDto.OfficialEmail :
-                                        isGstExist ? reqDto.Gstnumber :
-                                        isMobileExist ? reqDto.RegisteredMobile :
-                                        reqDto.LicenseNumber;
+                    //string errorValue = isEmailExist ? reqDto.OfficialEmail :
+                                        //isGstExist ? reqDto.Gstnumber :
+                                        //isMobileExist ? reqDto.RegisteredMobile :
+                                        //reqDto.LicenseNumber;
 
-                    string errorMessage = _validateMessages.GetAlreadyExist($"The {errorField} already exists. Please choose another one.");
+                   // string errorMessage = _validateMessages.GetAlreadyExist($"The {errorField} already exists. Please choose another one.");
 
-                    return new APIsError<AddPharmacyDto>(errorMessage);
+                   // return new APIsError<AddPharmacyDto>(errorMessage);
                 }
                 if (Id == 0)
                 {

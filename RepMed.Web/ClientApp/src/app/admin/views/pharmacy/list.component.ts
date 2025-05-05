@@ -23,7 +23,7 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
         $(document).on('click', '.toggle-status-btn', (event) => {
             const button = $(event.currentTarget);
             const id = $(event.currentTarget).data('id');
-           // const currentStatus = button.data('status');
+            // const currentStatus = button.data('status');
             const currentStatus = button.attr('data-status') === 'true';
             const newStatus = !currentStatus;
 
@@ -37,7 +37,7 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
         button.attr('data-status', newStatus);
         const statusText = newStatus ? 'Active' : 'Inactive'; // 🔥 string based status
         const apiUrl = `${this.admin_apiconfig.endpoints.pharmacy.updateStatus}/${id}?status=${statusText}`;
-    
+
         $.ajax({
             url: apiUrl,
             type: "POST",
@@ -53,7 +53,7 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
                             ${newStatus ? 'Active' : 'Inactive'}
                         `);
                     button.data('status', newStatus);
-    
+
                     setTimeout(() => {
                         $('#post_pharmacylist_datatable').DataTable().ajax.reload();
                     }, 500); // 0.5 second delay
@@ -66,7 +66,7 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
             }
         });
     }
-    
+
 
     tableOptions = {
         tableId: 'post_pharmacylist_datatable',
@@ -100,6 +100,7 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
                     const isActive = row.status === 'Active';
                     return `
                     <div class="d-flex gap-2 align-items-center">
+                    <span class="edit-pharmacy cursor-pointer me-3" data-id="${row.id}"><i class="bi bi-pencil-square"></i></span>
                     <button class="btn btn-sm ${isActive ? 'btn-success' : 'btn-danger'} toggle-status-btn" 
                     data-id="${row.id}" data-status="${isActive}" 
                     title="${isActive ? 'Deactivate' : 'Activate'}" 
@@ -115,10 +116,10 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
     };
 
     ngOnInit(): void {
-        // const self = this;
-        // $(document).on('click', '.edit-pharmacy', function () {
-        //     const id = $(this).data('id');
-        //     self.router.navigate(['admin/pharmacy/edit/', id]);
-        // });
+        const self = this;
+        $(document).on('click', '.edit-pharmacy', function () {
+            const id = $(this).data('id');
+            self.router.navigate(['admin/pharmacy/edit/', id]);
+        });
     }
 }

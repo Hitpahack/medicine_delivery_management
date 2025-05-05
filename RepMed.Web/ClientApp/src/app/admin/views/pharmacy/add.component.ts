@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 import { FormBuilder, FormsModule, ReactiveFormsModule, FormControl, FormGroup, Validators, AbstractControl } from "@angular/forms";
 import { AdminBaseComponent } from "../../admin.base.component";
 import { CommonModule } from "@angular/common";
@@ -28,13 +28,19 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
         public validator: CustomValidator,
         public accountservice: adminAccountsService,
         public PharmacyService: AdminPharmacyService,
-        public AdminCommonServices: AdminCommonServices
+        public AdminCommonServices: AdminCommonServices,
+        private route: ActivatedRoute
     ) {
         super();
     }
+    isReadonly: boolean;
+
     minExpiryDate!: string;
     maxExpiryDate!: string;
+
     phForm: FormGroup;
+    AddEditPhForm: FormGroup;
+
     PharmacyDto: PharmacyDto;
     maxDate = new Date().toISOString().split('T')[0];
     errorMessage: string = '';
@@ -48,21 +54,97 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
         }
     }
 
+    dateMethod(dateString: Date): string {
+        const date = new Date(dateString);
+        const year = date.getFullYear();
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    }
 
+    pharmacyId: number;
     ngOnInit(): void {
+        this.pharmacyId = this.route.snapshot.params['id'];
+        this.AddEditPhForm = this.initForm();
+
         this.uniqueId = Math.random().toString(36).substring(2);
-        this.phForm = this.initForm();
-        const today = new Date();
-        const maxDate = new Date();
-        this.minExpiryDate = today.toISOString().split('T')[0];
-        maxDate.setFullYear(today.getFullYear() + 100);
-        this.minExpiryDate = today.toISOString().split('T')[0];
-        this.maxExpiryDate = maxDate.toISOString().split('T')[0];
 
         this.AdminCommonServices.getcountry().subscribe((response) => {
-            console.log('hello', response);
             if (response?.isSuccess && response.data) {
                 this.countries = response.data;
+            } else {
+                console.error("Failed to load country data", response);
+            }
+        })
+
+        if (this.pharmacyId && this.pharmacyId !== 0) {
+            this.isReadonly = true;
+            this.phForm = this.initForm();
+
+            this.PharmacyService.getpharmacybyId(this.pharmacyId).subscribe((response: PharmacyDto) => {
+                const userData = response.user;
+                const pharmacyData = response.pharmacy;
+                console.log("pharmacyData", pharmacyData);
+
+                const pharmacyBankDetailsData = response.pharmacyBankDetails;
+                this.AddEditPhForm.get('pharmacy').patchValue({
+                    ownerName: pharmacyData.ownerName,
+                    storeName: pharmacyData.storeName,
+                    businessName: pharmacyData.businessName,
+                    licenseNumber: pharmacyData.licenseNumber,
+                    licenseExpiry: this.dateMethod(pharmacyData.licenseExpiry),
+                    gstNumber: pharmacyData.gstnumber,
+                    registeredMobile: pharmacyData.registeredMobile,
+                    officialEmail: pharmacyData.officialEmail,
+                    address1: pharmacyData.address1,
+                    address2: pharmacyData.address2,
+                    countryId: pharmacyData.countryId,
+                    stateId: pharmacyData.stateId,
+                    cityId: pharmacyData.cityId,
+
+                })
+                this.AddEditPhForm.get('user').patchValue({
+                    email: userData.email,
+                    gender: userData.gender,
+                    picture: userData.picture,
+                    mobile: userData.mobile,
+                    firstName: userData.firstName,
+                    lastName: userData.lastName
+                })
+                this.AddEditPhForm.get('pharmacyBankDetails').patchValue({
+                    bankName: pharmacyBankDetailsData.bankName,
+                    accountholderName: pharmacyBankDetailsData.accountHolderName,
+                    accountNumber: pharmacyBankDetailsData.accountHolderName,
+                    ifscCode: pharmacyBankDetailsData.ifsccode,
+                    branchName: pharmacyBankDetailsData.branchName,
+                    upiId: pharmacyBankDetailsData.upiId,
+                })
+            });
+        } else {
+            console.log("pharmacyId else section", this.pharmacyId);
+            const today = new Date();
+            const maxDate = new Date();
+            this.minExpiryDate = today.toISOString().split('T')[0];
+            maxDate.setFullYear(today.getFullYear() + 100);
+            this.minExpiryDate = today.toISOString().split('T')[0];
+            this.maxExpiryDate = maxDate.toISOString().split('T')[0];
+        }
+    }
+
+    onValueChanged(value: any) {
+        this.AdminCommonServices.getstatebyId(value).subscribe((response) => {
+            if (response?.isSuccess && response.data) {
+                this.states = response.data;
+            } else {
+                console.error("Failed to load country data", response);
+            }
+        })
+    }
+
+    onValueChaanged(value: any) {
+        this.AdminCommonServices.getcitiesbyId(value).subscribe((response) => {
+            if (response?.isSuccess && response.data) {
+                this.cities = response.data;
             } else {
                 console.error("Failed to load country data", response);
             }
@@ -106,9 +188,12 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                 officialEmail: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
                 address1: new FormControl(null),
                 address2: new FormControl(null),
-                countryId: new FormControl(null),
-                stateId: new FormControl(null),
-                cityId: new FormControl(null),
+                countryId: new FormControl(0),
+                stateId: new FormControl(0),
+                cityId: new FormControl(0),
+                storeEmail2: new FormControl(null),
+                storeEmail1: new FormControl(null),
+                storeMobile1: new FormControl(null),
             }),
             user: this.fb.group({
                 //firstName: new FormControl(null, [Validators.required]),
@@ -153,27 +238,56 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
     }
 
     onSubmit() {
-        if (this.phForm.invalid) {
-            this.validator.markInvalidFieldsTouched(this.phForm);
-            return;
-        }
-        const dto: PharmacyDto = this.phForm.value;
-        this.PharmacyService.add(dto).subscribe({
-            next: (response) => {
-                if (response.isSuccess) {
-                    Helper.ShowSuccess(response.message || 'Pharmacy added successfully.');
-                    this.router.navigate(['/admin/pharmacy']);
-                } else {
-                    console.error('API returned isSuccess: false');
-                    this.errorMessage = response.message || 'Failed to add user.';
+        console.log("callonsubmit.");
+        
+        if (this.pharmacyId && this.pharmacyId !== 0) {
+            console.log("inside log submit.");
+            
+            if (this.phForm.invalid) {
+                this.validator.markInvalidFieldsTouched(this.phForm);
+                //return;
+            }
+
+            this.PharmacyService.editpharmacy(this.AddEditPhForm.value, this.pharmacyId).subscribe({
+                next: (response) => {
+                    if (response.isSuccess) {
+                        Helper.ShowSuccess(response.message);
+                        this.router.navigate(['/admin/pharmacy']);
+                    } else {
+                        this.errorMessage = response.message;
+                        Helper.ShowError(this.errorMessage);
+                    }
+                },
+                error: (err) => {
+                    this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
                     Helper.ShowError(this.errorMessage);  // Optional toast/popup
                 }
-            },
-            error: (err) => {
-                console.error('HTTP Error:', err);
-                this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
-                Helper.ShowError(this.errorMessage);  // Optional toast/popup
+            })
+        } else {
+            if (this.AddEditPhForm.invalid) {
+                this.validator.markInvalidFieldsTouched(this.AddEditPhForm);
+                return;
             }
-        });
+            console.log("pharmacyadd me.");
+
+            const dto: PharmacyDto = this.AddEditPhForm.value;
+            this.PharmacyService.add(dto).subscribe({
+                next: (response) => {
+                    if (response.isSuccess) {
+                        Helper.ShowSuccess(response.message || 'Pharmacy added successfully.');
+                        this.router.navigate(['/admin/pharmacy']);
+                    } else {
+                        console.error('API returned isSuccess: false');
+                        this.errorMessage = response.message || 'Failed to add user.';
+                        Helper.ShowError(this.errorMessage);  // Optional toast/popup
+                    }
+                },
+                error: (err) => {
+                    console.error('HTTP Error:', err);
+                    this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
+                    Helper.ShowError(this.errorMessage);  // Optional toast/popup
+                }
+            });
+        }
     }
 }

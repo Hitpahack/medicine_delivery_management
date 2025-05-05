@@ -1,55 +1,50 @@
-<!-- <div *ngIf="errorMessage" class="alert alert-danger">
-    {{ errorMessage }}
-</div> -->
 <div class="authentication">
-
-    <form class="auth_form form_validation" *ngIf="phForm" appAutoValidate [formGroup]="phForm" #phForm_html="ngForm"
-        (ngSubmit)="onSubmit()">
+    <form *ngIf="AddEditPhForm" [formGroup]="AddEditPhForm" class="auth_form form_validation" (ngSubmit)="onSubmit()">
         <!-- Section 1: Pharmacy -->
         <input type="text" style="position: absolute; top: -9999px;" autocomplete="username">
         <input type="password" style="position: absolute; top: -9999px;" autocomplete="current-password">
-        <fieldset formGroupName="pharmacy">
+        <fieldset formGroupName="pharmacy" appAutoValidate>
             <legend>Pharmacy Details</legend>
             <div class="form-grid">
                 <div class="input-group mb-4 float">
                     <input type="text" placeholder="" formControlName="ownerName" class="form-control" minlength="3"
-                        maxlength="25">
+                        maxlength="25" [readonly]="isReadonly">
                     <label class="float-lbl">Owner Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="text" placeholder="" formControlName="storeName" class="form-control" minlength="2"
-                        maxlength="30">
+                        maxlength="30" [readonly]="isReadonly">
                     <label class="float-lbl">Store Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="text" placeholder=" " formControlName="businessName" class="form-control" minlength="2"
-                        maxlength="25">
+                        maxlength="25" [readonly]="isReadonly">
                     <label class="float-lbl">Business Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="text" placeholder="ABCdef123" formControlName="licenseNumber" class="form-control"
-                        maxlength="16">
+                        maxlength="16" [readonly]="isReadonly">
                     <label class="float-lbl">License Number *</label>
                 </div>
 
                 <div class="input-group mb-4 float">
                     <input type="date" placeholder="MH-21B-67890" formControlName="licenseExpiry" class="form-control"
                         [min]="minExpiryDate" [max]="maxExpiryDate" (keydown)="disableKeyInput($event)"
-                        (paste)="disablePaste($event)">
+                        (paste)="disablePaste($event)" [readonly]="isReadonly">
                     <label class="float-lbl">License Expiry *</label>
                 </div>
 
                 <div class="input-group mb-4 float">
                     <input type="text" placeholder="09AAACH7409R1ZZ" formControlName="gstNumber" class="form-control"
-                        maxlength="15">
+                        maxlength="15" [readonly]="isReadonly">
                     <label class="float-lbl">GST Number *</label>
                 </div>
-                <div class="input-group mb-4 float" [formGroup]="phForm.get('pharmacy')">
+                <div class="input-group mb-4 float">
                     <input type="text" formControlName="registeredMobile" class="form-control" placeholder="1234567890"
                         maxlength="10" (keypress)="allowOnlyNumbers($event)" (paste)="disablePaste($event)">
                     <label class="float-lbl">Registered Mobile *</label>
                 </div>
-                <div class="input-group mb-4 float" [formGroup]="phForm.get('pharmacy')">
+                <div class="input-group mb-4 float">
                     <input type="email" formControlName="officialEmail" class="form-control"
                         placeholder="example@mail.com" maxlength="30">
                     <label class="float-lbl">Official Email *</label>
@@ -58,7 +53,7 @@
         </fieldset>
 
         <!-- Section 2: Pharmacy Address -->
-        <fieldset formGroupName="pharmacy">
+        <fieldset formGroupName="pharmacy" appAutoValidate>
             <legend>Pharmacy Address</legend>
             <div class="form-grid">
                 <div class="input-group mb-4 float">
@@ -74,7 +69,8 @@
             </div>
             <div class="form-grid">
                 <div class="input-group mb-4 float">
-                    <select formControlName="countryId" class="form-control" (change)="onCountryDropdownChange($event)">
+                    <select formControlName="countryId" class="form-control" (change)="($event)"
+                        (ngModelChange)="onValueChanged($event)">
                         <option value="" disabled selected>Select country</option>
                         <option *ngFor="let country of countries" [value]="country.value">{{ country.text }}
                         </option>
@@ -82,7 +78,8 @@
                     <label class="float-lbl">Country *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <select formControlName="stateId" class="form-control" (change)="onCityDropdownChange($event)">
+                    <select formControlName="stateId" class="form-control" (change)="onCityDropdownChange($event)"
+                        (ngModelChange)="onValueChaanged($event)">
                         <option value="" disabled selected>Select state</option>
                         <option *ngFor="let state of states" [value]="state.value">{{ state.text }}</option>
                     </select>
@@ -99,77 +96,120 @@
         </fieldset>
 
         <!-- Section 2: Pharmacy Person -->
-        <fieldset formGroupName="user">
+        <fieldset formGroupName="user" appAutoValidate>
             <legend>Pharmacy Person</legend>
             <div class="form-grid">
-                <div class="input-group mb-4 float" [formGroup]="phForm.get('user')">
-                    <input type="email" formControlName="email" class="form-control" placeholder="" maxlength="30"
-                        name="email_field_fake" autocomplete="off" [attr.autocomplete]="'disabled'"
-                        [attr.id]="'email_' + uniqueId">
-                    <label class="float-lbl">Email *</label>
+                <div class="d-flex">
+                    <div class="col-6 pe-4">
+                        <div class="input-group mb-4 float">
+                            <input type="email" formControlName="email" class="form-control" placeholder=""
+                                maxlength="30" [readonly]="isReadonly">
+                            <label class="float-lbl">Email *</label>
+                        </div>
+                    </div>
+
+                    <fieldset *ngIf="!phForm" class="col-6" appAutoValidate>
+                        <div class="mb-3 form-password-toggle">
+                            <div class="input-group input-group-merge">
+                                <input type="password" id="Password" class="form-control" style="width: 50% !important;"
+                                    name="Password" formControlName="Password" placeholder=""
+                                    aria-describedby="password" maxlength="16" />
+                                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                                <label class="float-lbl">Password *</label>
+                            </div>
+                        </div>
+                        <div class="mb-3 form-password-toggle">
+                            <div class="input-group input-group-merge">
+                                <input type="password" id="ConfirmPassword" class="form-control"
+                                    style="width: 50% !important;" name="ConfirmPassword"
+                                    formControlName="ConfirmPassword" placeholder="" aria-describedby="ConfirmPassword"
+                                    maxlength="16" />
+                                <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
+                                <label class="float-lbl">Confirm Password *</label>
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
-                <div class="mb-3 form-password-toggle">
-                    <div class="input-group input-group-merge">
-                        <input type="password" id="Password" class="form-control" style="width: 50% !important;"
-                            name="Password" formControlName="Password" placeholder="" aria-describedby="password"
-                            maxlength="16" name="password_field_fake" autocomplete="new-password" [attr.id]="'password_' + uniqueId" />
-                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                        <label class="float-lbl">Password *</label>
+            </div>
+        </fieldset>
+
+        <!-- <fieldset formGroupName="user" *ngIf="phForm" [formGroup]="phForm">
+            <div class="input-group mb-4 float">
+                <select formControlName="gender" class="form-control">
+                    <option value="" disabled>Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Others">Others</option>
+                </select>
+                <label class="float-lbl">Gender *</label>
+            </div>
+        </fieldset> -->
+
+        <fieldset formGroupName="pharmacy" *ngIf="phForm" [formGroup]="phForm">
+            <div class="d-flex">
+                <div class="col-2 pe-4">
+                    <div class="input-group mb-4 float">
+                        <input type="text" formControlName="storeMobile1" class="form-control" placeholder="9874563210"
+                            maxlength="10" (keypress)="allowOnlyNumbers($event)" (paste)="disablePaste($event)">
+                        <label class="float-lbl">StoreMobile1 *</label>
                     </div>
                 </div>
-                <div class="mb-3 form-password-toggle">
-                    <div class="input-group input-group-merge">
-                        <input type="password" id="ConfirmPassword" class="form-control" style="width: 50% !important;"
-                            name="ConfirmPassword" formControlName="ConfirmPassword" placeholder=""
-                            aria-describedby="ConfirmPassword" maxlength="16"
-                            name="password_field_fake" autocomplete="new-password" [attr.id]="'password_' + uniqueId"  />
-                        <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
-                        <label class="float-lbl">Confirm Password *</label>
+                <div class="col-3 pe-4">
+                    <div class="input-group mb-4 float">
+                        <input type="email" formControlName="storeEmail1" class="form-control" placeholder=""
+                            maxlength="60">
+                        <label class="float-lbl">StoreEmail1 *</label>
+                    </div>
+                </div>
+                <div class="col-3">
+                    <div class="input-group mb-4 float">
+                        <input type="email" formControlName="storeEmail2" class="form-control" placeholder=""
+                            maxlength="60">
+                        <label class="float-lbl">StoreEmail2 *</label>
                     </div>
                 </div>
             </div>
         </fieldset>
 
         <!-- Section 4: Bank Details -->
-        <fieldset formGroupName="pharmacyBankDetails">
+        <fieldset formGroupName="pharmacyBankDetails" appAutoValidate>
             <legend>Bank Details</legend>
             <div class="form-grid">
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="bankName" class="form-control" minlength="3"
+                    <input type="text" placeholder="" formControlName="bankName" class="form-control" minlength="3"
                         maxlength="25" required>
                     <label class="float-lbl">Bank Name *</label>
                 </div>
-
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="accountholderName" class="form-control"
+                    <input type="text" placeholder="" formControlName="accountholderName" class="form-control"
                         minlength="3" maxlength="25" required>
                     <label class="float-lbl">Account Holder Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="accountNumber" class="form-control"
+                    <input type="text" placeholder="" formControlName="accountNumber" class="form-control"
                         minlength="10" maxlength="16" (keypress)="allowOnlyNumbers($event)"
                         (paste)="disablePaste($event)" required>
                     <label class="float-lbl">Account Number *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="ifscCode" class="form-control" maxlength="16"
+                    <input type="text" placeholder="" formControlName="ifscCode" class="form-control" maxlength="16"
                         required>
                     <label class="float-lbl">IFSC Code *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="branchName" class="form-control" minlength="3"
+                    <input type="text" placeholder="" formControlName="branchName" class="form-control" minlength="3"
                         maxlength="25">
                     <label class="float-lbl">Branch Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" placeholder=" " formControlName="upiId" class="form-control" maxlength="20">
+                    <input type="text" placeholder="" formControlName="upiId" class="form-control" maxlength="20">
                     <label class="float-lbl">UPI ID </label>
                 </div>
             </div>
         </fieldset>
         <div class="row justify-content-end">
             <div class="col-sm-1">
-                <button class="btn custom-btn" type="submit">Save</button>
+                <button class="btn custom-btn" type="submit">save</button>
             </div>
         </div>
     </form>
