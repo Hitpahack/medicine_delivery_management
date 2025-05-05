@@ -66,7 +66,7 @@ namespace RepMed.Services
                 var items = reqDto.Items
                    .Select(i => new
                    {
-                       i.ProductId,
+                       i.ProductId, 
                        i.Quantity,
                        i.UnitPrice,
                        i.Unit,
@@ -180,7 +180,7 @@ namespace RepMed.Services
                 APIsResponse<NextPoNumberDto> apiResponse = default;
                 if(await IsPharmacyExist(pharmacyId))
                 {
-                    return new APIsError<NextPoNumberDto>("Pharmact not found");
+                    return new APIsError<NextPoNumberDto>("Pharmacy not found");
                 }
 
                 #region Get All Pharmacy 

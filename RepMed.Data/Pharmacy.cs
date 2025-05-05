@@ -67,6 +67,8 @@ public partial class Pharmacy
 
     public virtual ICollection<Pharmacyinventory> Pharmacyinventories { get; set; } = new List<Pharmacyinventory>();
 
+    public virtual ICollection<Pharmacystockledger> Pharmacystockledgers { get; set; } = new List<Pharmacystockledger>();
+
     public virtual ICollection<Purchaseinvoice> Purchaseinvoices { get; set; } = new List<Purchaseinvoice>();
 
     public virtual ICollection<Purchaseorder> Purchaseorders { get; set; } = new List<Purchaseorder>();

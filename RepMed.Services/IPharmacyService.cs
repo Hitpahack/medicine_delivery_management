@@ -176,8 +176,8 @@ namespace RepMed.Services
                     #region Update Pharmacy
                     var pharmacy = _idbConnection.Update<AddPharmacyDto>(_idbTransaction,DbTables.tblPharmacy,
                                     new Dictionary<string, string> {
-                                          { "LicenseNumber", reqDto.LicenseNumber },
-                                          { "LicenseExpiry", reqDto.LicenseExpiry?.ToString("yyyy-MM-dd HH:MM:ss") },
+                                          { "OfficialEmail", reqDto.OfficialEmail },
+                                          { "RegisteredMobile", reqDto.RegisteredMobile},
                                           { "StoreMobile1", reqDto.StoreMobile1 },
                                           { "StoreEmail1", reqDto.StoreEmail1 },
                                           { "StoreEmail2", reqDto.StoreEmail2 },

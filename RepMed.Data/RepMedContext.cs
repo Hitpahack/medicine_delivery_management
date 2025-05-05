@@ -44,6 +44,8 @@ public partial class RepMedContext : DbContext
 
     public virtual DbSet<Pharmacyinventory> Pharmacyinventories { get; set; }
 
+    public virtual DbSet<Pharmacystockledger> Pharmacystockledgers { get; set; }
+
     public virtual DbSet<Prescription> Prescriptions { get; set; }
 
     public virtual DbSet<Product> Products { get; set; }
@@ -524,8 +526,6 @@ public partial class RepMedContext : DbContext
 
             entity.HasIndex(e => e.PharmacyId, "PharmacyId");
 
-            entity.HasIndex(e => e.PurchaseInvoiceId, "PharmacyPurchaseId");
-
             entity.HasIndex(e => e.ProductId, "ProductId");
 
             entity.Property(e => e.Description).HasColumnType("text");
@@ -547,11 +547,39 @@ public partial class RepMedContext : DbContext
             entity.HasOne(d => d.Product).WithMany(p => p.Pharmacyinventories)
                 .HasForeignKey(d => d.ProductId)
                 .HasConstraintName("pharmacyinventory_ibfk_2");
+        });
 
-            entity.HasOne(d => d.PurchaseInvoice).WithMany(p => p.Pharmacyinventories)
+        modelBuilder.Entity<Pharmacystockledger>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("pharmacystockledger");
+
+            entity.HasIndex(e => e.PharmacyId, "PharmacyId");
+
+            entity.HasIndex(e => e.ProductId, "ProductId");
+
+            entity.HasIndex(e => e.PurchaseInvoiceId, "PurchaseInvoiceId");
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.SellingPriceAtTime).HasPrecision(10, 2);
+
+            entity.HasOne(d => d.Pharmacy).WithMany(p => p.Pharmacystockledgers)
+                .HasForeignKey(d => d.PharmacyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pharmacystockledger_ibfk_1");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Pharmacystockledgers)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("pharmacystockledger_ibfk_2");
+
+            entity.HasOne(d => d.PurchaseInvoice).WithMany(p => p.Pharmacystockledgers)
                 .HasForeignKey(d => d.PurchaseInvoiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("pharmacyinventory_ibfk_3");
+                .HasConstraintName("pharmacystockledger_ibfk_3");
         });
 
         modelBuilder.Entity<Prescription>(entity =>
@@ -682,6 +710,7 @@ public partial class RepMedContext : DbContext
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
             entity.Property(e => e.Discount).HasPrecision(10, 2);
+            entity.Property(e => e.ExpiryDate).HasColumnType("datetime");
             entity.Property(e => e.Gstamount)
                 .HasPrecision(10, 2)
                 .HasColumnName("GSTAmount");

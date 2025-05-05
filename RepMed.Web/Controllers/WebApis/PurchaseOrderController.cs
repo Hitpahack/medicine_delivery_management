@@ -44,6 +44,7 @@ namespace RepMed.Web.Controllers.WebApis
                 }
             }
         }
+
         [Route("addsupplier")]
         [HttpPost]
         public async Task<IActionResult> AddSupplier(BaseSupplierDto reqDto)
@@ -89,6 +90,7 @@ namespace RepMed.Web.Controllers.WebApis
                 }
             }
         }
+
         [Route("getpo")]
         [HttpPost]
         public async Task<IActionResult> GetAllPO(POPagingRequest reqDto)
@@ -132,7 +134,6 @@ namespace RepMed.Web.Controllers.WebApis
                 }
             }
         }
-
 
         [HttpGet("generate-po-pdf/{poId}")]
         public async Task<IActionResult> GeneratePoPdf(int poId)

@@ -46,6 +46,7 @@ namespace RepMed.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpContextAccessor();
             services.AddControllersWithViews();
             // Named Policy
             services.AddCors(options =>
@@ -68,7 +69,6 @@ namespace RepMed.Web
 
             services.AddDbContext<RepMedContext>(options => options.UseMySql(sqlConnectionString, ServerVersion.AutoDetect(sqlConnectionString)));
 
-            services.AddHttpContextAccessor();
             services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.Configure<AdminSettings>(Configuration.GetSection("AdminSettings"));
             services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
@@ -174,9 +174,7 @@ namespace RepMed.Web
                 {
                     Name = "Authorization",
                     Type = SecuritySchemeType.ApiKey,
-                    Scheme = JwtBearerDefaults.AuthenticationScheme,
-                    //Type = SecuritySchemeType.ApiKey,
-                    //Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,                    
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
                     Description = "JWT Authorization header using the Bearer",

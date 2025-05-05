@@ -204,6 +204,15 @@ namespace RepMed.Web.Controllers.BaseApis
                                             return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = role.Message };
                                         }
                                     }
+                                    using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
+                                    {
+                                        var email = await pharmacyService.GenrateEmailToken(user.Data.Id, reqDto.Email);
+                                        if (!email.IsSuccess)
+                                        {
+                                            tran.Rollback();
+                                            return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = email.Message };
+                                        }
+                                    }
                                 }
                             }
                             tran.Commit();

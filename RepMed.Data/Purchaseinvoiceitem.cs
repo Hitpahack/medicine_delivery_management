@@ -35,7 +35,7 @@ public partial class Purchaseinvoiceitem
 
     public decimal? Discount { get; set; }
 
-    public DateOnly? ExpiryDate { get; set; }
+    public DateTime ExpiryDate { get; set; }
 
     public DateTime? CreatedAt { get; set; }
 
