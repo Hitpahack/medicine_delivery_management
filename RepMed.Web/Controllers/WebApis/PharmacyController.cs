@@ -126,7 +126,7 @@ namespace RepMed.Web.Controllers.WebApis
                                     tran.Rollback();
                                     return BadRequest(new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = pharmacybank.Message });
                                 }
-                                var response = await pharmacyService.GenrateEmailToken(reqDto.Pharmacy.UserId, reqDto.Pharmacy.OfficialEmail);
+                                var response = await pharmacyService.GenrateEmailToken(reqDto.Pharmacy.UserId, reqDto.User.Email);
                                 if (!response.IsSuccess)
                                 {
                                     tran.Rollback();
@@ -151,50 +151,23 @@ namespace RepMed.Web.Controllers.WebApis
                 using (var tran = db.BeginTransaction())
                 {
                     var userObj = _mapper.Map<AddPersonDto, API_EDIT_USER>(reqDto.User);
-                    using (IPersonService personService = new PersonService(db, tran))
+                    using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
                     {
-                        var person = await personService.AddEditPerson(userObj, Id);
-                        if (!person.IsSuccess)
+                        var pharmacy = await pharmacyService.AddUpdatePharmacy(reqDto.Pharmacy, Id);
+                        if (!pharmacy.IsSuccess)
                         {
                             tran.Rollback();
-                            return BadRequest(person.Message);
+                            return BadRequest(pharmacy);
                         }
-                        using (IUserServices userService = new UserServices(db, tran))
+                        var pharmacybank = await pharmacyService.AddUpdatePharmacyBankDetails(reqDto.PharmacyBankDetails, Id);
+                        if (!pharmacybank.IsSuccess)
                         {
-                            var userData = _mapper.Map<AddUsersDto, EntityPersonsDto>(person.Data, (d) =>
-                            {
-                                d.PersonId = person.Data.Id;
-                                d.Email = reqDto.User.Email;
-                            });
-                            var user = await userService.AddEditUser(userData, Id);
-                            if (!user.IsSuccess)
-                            {
-                                tran.Rollback();
-                                return BadRequest(user.Message);
-                            }
-
-                            using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
-                            {
-                                reqDto.Pharmacy.UserId = user.Data.Id;
-                                var pharmacy = await pharmacyService.AddUpdatePharmacy(reqDto.Pharmacy, Id);
-                                if (!pharmacy.IsSuccess)
-                                {
-                                    tran.Rollback();
-                                    return BadRequest(pharmacy);
-                                }
-                                reqDto.PharmacyBankDetails.PharmacyId = pharmacy.Data.Id;
-                                var pharmacybank = await pharmacyService.AddUpdatePharmacyBankDetails(reqDto.PharmacyBankDetails, Id);
-                                if (!pharmacybank.IsSuccess)
-                                {
-                                    tran.Rollback();
-                                    return BadRequest(pharmacybank);
-                                }
-                            }
+                            tran.Rollback();
+                            return BadRequest(pharmacybank);
                         }
-                        tran.Commit();
-                        return Ok("Pharmacy Updated Successfully");
                     }
-
+                    tran.Commit();
+                    return Ok("Pharmacy Updated Successfully");
                 }
             }
         }
