@@ -193,4 +193,18 @@ export class CustomValidator {
       return null;
     };
   }
+
+  public stringValidator(control: AbstractControl) {
+    if (!control.value || control.value.length === 0) {
+      return null;
+    }
+  
+    const regularExp = /^[A-Za-z]+$/;
+    if (!regularExp.test(control.value.trim())) {
+      return { stringOnly: true, error: "Only alphabetic characters (A-Z, a-z) are allowed." };
+    }
+  
+    return null;
+  }
+  
 }
