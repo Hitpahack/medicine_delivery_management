@@ -40,6 +40,10 @@ import { DoctorList } from "../app/admin/views/doctor/list.component";
 
 // Other imports...
 import { DashboardComponent } from "../app/othermodule/dashboard/dashboard.component";
+import { PharmacyAddRoleComponent } from './pharmacy/views/rolemanage/addrole.component';
+import { PharmacyEditRoleComponent } from './pharmacy/views/rolemanage/roleedit.component';
+import { PharmacyRoleListComponent } from './pharmacy/views/rolemanage/rolelist.component';
+import { StaffListComponent } from './pharmacy/views/staffmanagement/admin.userlist.component';
 
 
 
@@ -106,10 +110,17 @@ export const routes: Routes = [
       { path: 'pharmacydashboard', component: PharmacDashboardComponent, canActivate: [AuthGuardService], data: { module: 'pharmacydashboard' } },
       { path: 'purchaseorder', component: PurchaseOrderComponent, canActivate: [AuthGuardService], data: { module: 'purchase' }},
       { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService], data: { module: 'purchase' }},
+
       { path: 'staff/add', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' }},
       { path: 'staff/edit/:id', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' }},
+      { path: 'staff/list', component: StaffListComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' } },
+
       { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService],  data: { module: 'pharmacydashboard' } },
       { path: 'productlist', component: ProductListsComponent, canActivate: [AuthGuardService], data: {module: 'productlist'} },
+
+      { path: 'role/add', component: PharmacyAddRoleComponent, canActivate: [AuthGuardService], data: {module: 'pharmacyrole'} },
+      { path: 'role/list', component: PharmacyRoleListComponent, canActivate: [AuthGuardService], data: {module: 'pharmacyrole'} },
+      { path: 'role/edit/:id', component: PharmacyEditRoleComponent, canActivate: [AuthGuardService], data: {module: 'pharmacyrole'} },
     ]
   },
   {

@@ -58,7 +58,7 @@ export class AdminApiConfigService {
         add: `${v1}/users/adduser/`,
         get: (id: number) => `${v1}/users/get/${id}`,
         update: (id: number) => `${v1}/users/edituser/${id}`,
-        userroles: `${api}/masters/getroles`,
+        userroles: `${api}/masters/getpharmacyroles`,
         list: `${v1}/users/getusers`,
       },
       product: {
@@ -71,6 +71,16 @@ export class AdminApiConfigService {
         list: `${v1}/roles/getroles/`,
         getmodulebyid: (id: number) => `${v1}/roles/getrole/${id}`,
         editrole: (id: number) => `${v1}/roles/editrole/${id}`,
+        updateStatus: `${v1}/roles/changestatus`,
+        deleterole: (id: number) => `${v1}/roles/deleterole/${id}`,
+      },
+      pharmacyrole: {
+        add: `${v1}/roles/addpharmacyrole`,
+        getmodule: `${v1}/roles/getpharmactpermissions/`,
+        list: `${v1}/roles/getpharmacyroles/`,
+        editrole: (id: number) => `${v1}/roles/editpharmacyrole/${id}`,
+
+        getmodulebyid: (id: number) => `${v1}/roles/getrole/${id}`,
         updateStatus: `${v1}/roles/changestatus`,
         deleterole: (id: number) => `${v1}/roles/deleterole/${id}`,
       },

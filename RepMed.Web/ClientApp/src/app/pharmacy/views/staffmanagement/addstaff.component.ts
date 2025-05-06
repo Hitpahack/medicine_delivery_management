@@ -8,13 +8,13 @@ import { Helper } from "../../../../app/common/helper.extenstions";
 import { StaffService } from "../../../pharmacy/services/staffmanagement/staff.services";
 import { AddPersonDto } from "../../../viewmodels/User/Person.add.dto";
 import { Role } from "../../../viewmodels/User/role.model";
-import { AutoValidateDirective } from "src/app/common/form.validator";
 import { AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { AdminCommonServices } from "src/app/admin/services/Common/admin.commonservices";
+import { AdminCommonServices } from "../../../../app/admin/services/Common/admin.commonservices";
 import { CountryDto } from "../../../viewmodels/address/country.dto";
 import { StateDto } from "../../../viewmodels/address/state.dto";
 import { CityDto } from "../../../viewmodels/address/city.dto";
+import { AutoValidateDirective } from "../../../common/form.validator";
 declare const window: any;
 
 @Component({
