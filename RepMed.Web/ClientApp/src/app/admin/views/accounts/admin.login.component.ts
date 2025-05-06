@@ -84,13 +84,13 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
                     localStorage.setItem('token', response.data.token.token);
                     
                     if (this.rolename === 'admin') {
-                        this.router.navigate(['/admin/dashboard']);
+                        this.router.navigate(['/admin/admindashboard']);
                     }
                     else if (this.rolename === 'pharmacy') {
-                        this.router.navigate(['/pharmacy/dashboard']);
+                        this.router.navigate(['/pharmacy/pharmacydashboard']);
                     }
                     else if (this.rolename === 'doctor') {
-                        this.router.navigate(['/doctor/dashboard']);
+                        this.router.navigate(['/doctor/doctordashboard']);
                     }
                     else{
                         

@@ -51,7 +51,8 @@ export const routes: Routes = [
     children: [
       { path: '', component: AdminLoginComponent },
       { path: 'login', component: AdminLoginComponent },
-      { path: 'not-authorized', component: NotAuthorizedComponent}
+      { path: 'not-authorized', component: NotAuthorizedComponent},
+      { path: 'changepassword', component: SetPassword, canActivate: [AuthGuardService] },
     ]
   },
 
@@ -61,23 +62,24 @@ export const routes: Routes = [
     component: AdminLayoutComponent,
     children: [
       { path: 'shifts', component: AdminShiftsComponent },
-      { path: 'dashboard', component: AdminDashboardComponent, canActivate: [AuthGuardService], data: { module: 'dashboard' } },
+      { path: 'admindashboard', component: AdminDashboardComponent, canActivate: [AuthGuardService], data: { module: 'admindashboard' } },
       { path: 'pharmacy/add', component: AdminAddPharmacyComponent, canActivate: [AuthGuardService], data: { module: 'pharmacy' } },
       { path: 'pharmacy/edit/:id', component: AdminAddPharmacyComponent, canActivate: [AuthGuardService], data: { module: 'pharmacy' } },
       { path: 'pharmacy', component: AdminPharmacyListsComponent, canActivate: [AuthGuardService], data: { module: 'pharmacy' } },
 
-      { path: 'user/add', component: AddUserComponent, canActivate: [AuthGuardService] },
-      { path: 'user/edit/:id', component: AddUserComponent, canActivate: [AuthGuardService] },
-      { path: 'user', component: UserListComponent, canActivate: [AuthGuardService] },
+      { path: 'user/add', component: AddUserComponent, canActivate: [AuthGuardService], data: {module: 'user'} },
+      { path: 'user/edit/:id', component: AddUserComponent, canActivate: [AuthGuardService], data: {module: 'user'} },
+      { path: 'user', component: UserListComponent, canActivate: [AuthGuardService], data: {module: 'user'} },
 
-      { path: 'role/add', component: AddRoleComponent, canActivate: [AuthGuardService] },
-      { path: 'role/list', component: RoleListComponent, canActivate: [AuthGuardService] },
-      { path: 'role/edit/:id', component: EditRoleComponent, canActivate: [AuthGuardService] },
+      { path: 'role/add', component: AddRoleComponent, canActivate: [AuthGuardService], data: {module: 'role'} },
+      { path: 'role/list', component: RoleListComponent, canActivate: [AuthGuardService], data: {module: 'role'} },
+      { path: 'role/edit/:id', component: EditRoleComponent, canActivate: [AuthGuardService], data: {module: 'role'} },
 
-      { path: 'productlist', component: ProductListsComponent, canActivate: [AuthGuardService] },
+      { path: 'productlist', component: ProductListsComponent, canActivate: [AuthGuardService], data: {module: 'productlist'} },
 
       { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService] },
-      { path: 'changepassword', component: SetPassword, canActivate: [AuthGuardService] },
+      
+      { path: 'doctor/list', component: DoctorList, canActivate: [AuthGuardService], data: { module: 'doctor' } },
     ]
   },
 
@@ -86,8 +88,8 @@ export const routes: Routes = [
     path: 'doctor',
     component: AdminLayoutComponent,
     children: [
-      { path: 'dashboard', component: DoctorDashboardComponent, canActivate: [AuthGuardService] },
-      { path: 'list', component: DoctorList, canActivate: [AuthGuardService] },
+      { path: 'doctordashboard', component: DoctorDashboardComponent, canActivate: [AuthGuardService], data: { module: 'doctordashboard' } },
+      { path: 'list', component: DoctorList, canActivate: [AuthGuardService], data: { module: 'doctor' } },
     ]
   },
 
@@ -96,11 +98,11 @@ export const routes: Routes = [
     path: 'pharmacy',
     component: AdminLayoutComponent,
     children: [
-      { path: 'dashboard', component: PharmacDashboardComponent, canActivate: [AuthGuardService] },
-      { path: 'purchaseorder', component: PurchaseOrderComponent, canActivate: [AuthGuardService]},
-      { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService]},
-      { path: 'staff/add', component: AddStaffComponent, canActivate: [AuthGuardService]},
-      { path: 'staff/edit/:id', component: AddStaffComponent, canActivate: [AuthGuardService]}
+      { path: 'pharmacydashboard', component: PharmacDashboardComponent, canActivate: [AuthGuardService], data: { module: 'pharmacydashboard' } },
+      { path: 'purchaseorder', component: PurchaseOrderComponent, canActivate: [AuthGuardService], data: { module: 'purchase' }},
+      { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService], data: { module: 'purchase' }},
+      { path: 'staff/add', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' }},
+      { path: 'staff/edit/:id', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' }}
     ]
   },
   {
