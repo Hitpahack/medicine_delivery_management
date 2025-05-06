@@ -70,7 +70,7 @@ namespace RepMed.Services
                                               { "Ifsccode", reqDto.Ifsccode },
                                               { "BranchName", reqDto.BranchName },
                                               { "UpiId", reqDto.UpiId },
-                                       }, $@"Id='{reqDto.Id}'"
+                                       }, $@"PharmacyId='{Id}'"
                                     );
                     #endregion
                     apiResponse = new APIsSuccsss<PharmacyBankDetailsDto>("Pharmacy bank details Updated successfully", pharmacyBank);
