@@ -121,9 +121,10 @@ namespace RepMed.Web.Controllers.WebApis
                             tran.Rollback();
                             return BadRequest(pharmacybank);
                         }
-                    }
-                    tran.Commit();
-                    return Ok("Pharmacy Updated Successfully");
+						tran.Commit();
+						return Ok(new APIsResponse<EntityUsersDto> { IsSuccess = true, Message = "Pharmacy Updated Sucessfully" });
+					}
+                    
                 }
             }
         }
