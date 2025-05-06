@@ -372,6 +372,9 @@ public partial class RepMedContext : DbContext
 
             entity.HasIndex(e => e.Route, "Route_UNIQUE").IsUnique();
 
+            entity.Property(e => e.IsAdmin)
+                .IsRequired()
+                .HasDefaultValueSql("'1'");
             entity.Property(e => e.Label)
                 .IsRequired()
                 .HasMaxLength(100);

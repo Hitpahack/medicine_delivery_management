@@ -139,7 +139,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("getpermissions")]
         [HttpPost]
-        public async Task<IActionResult> GetAllPermissions()
+        public async Task<IActionResult> GetAllAdminPermissions()
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -204,6 +204,74 @@ namespace RepMed.Web.Controllers.WebApis
                         }
                         tran.Commit();
                         return Ok(result);
+                    }
+                }
+            }
+        }
+
+        [Route("editpharmacyrole/{Id}")]
+        [HttpPost]
+        public async Task<IActionResult> EditPharmacyRole(CreateRoleDto reqDto, long Id)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IRoleService roleService = new RoleService(db, tran))
+                    {
+                        var result = await roleService.AddEditRole(reqDto, Id);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
+        [Route("getpharmactpermissions")]
+        [HttpPost]
+        public async Task<IActionResult> GetAllPharmacyPermissions()
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IRoleService roleService = new RoleService(db, tran))
+                    {
+                        var result = await roleService.GetAllPharmacyPermissions();
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
+        [Route("getpharmacyroles")]
+        [HttpPost]
+        public async Task<IActionResult> GetAllPharmacyRole(RolesPagingRequest reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IRoleService roleService = new RoleService(db, tran))
+                    {
+                        var result = await roleService.GetAllPharmacyRoles(reqDto);
+                        if (!result.IsSuccess)
+                            return BadRequest(result);
+                        return Ok(result.Data);
                     }
                 }
             }

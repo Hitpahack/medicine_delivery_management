@@ -20,50 +20,6 @@ namespace RepMed.Web.Controllers.WebApis
 
         }
 
-        [Route("addeditpharmacy/{Id?}")]
-        [HttpPost]
-        public async Task<IActionResult> AddEdit([FromBody] PharmacyDto reqDto, long Id = 0)
-        {
-            using (var db = new MySqlConnection(_appSettings.ConnectionString))
-            {
-                db.Open();
-                using (var tran = db.BeginTransaction())
-                {
-                    using (IPersonService personService = new PersonService(db, tran))
-                    {
-                        reqDto.User.Role = "pharmacy";
-                        var user = await base.AddEditUser(reqDto.User, Id);
-                        if (!user.IsSuccess)
-                        {
-                            tran.Rollback();
-                            return BadRequest(user);
-                        }
-                        using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
-                        {
-                            reqDto.Pharmacy.UserId = user.Data.Id;
-                            var pharmacy = await pharmacyService.AddUpdatePharmacy(reqDto.Pharmacy, Id);
-                            if (!pharmacy.IsSuccess)
-                            {
-                                tran.Rollback();
-                                return BadRequest(pharmacy);
-                            }
-                            reqDto.PharmacyBankDetails.PharmacyId = pharmacy.Data.Id;
-                            var pharmacybank = await pharmacyService.AddUpdatePharmacyBankDetails(reqDto.PharmacyBankDetails, Id);
-                            if (!pharmacybank.IsSuccess)
-                            {
-                                tran.Rollback();
-                                return BadRequest(pharmacybank);
-                            }
-                            var response = await pharmacyService.GenrateEmailToken(reqDto.Pharmacy.UserId, reqDto.Pharmacy.OfficialEmail);
-                        }
-                    }
-                    tran.Commit();
-                    return Ok();
-                }
-
-            }
-        }
-
         [Route("addpharmacy")]
         [HttpPost]
         public async Task<IActionResult> Addpharmacy([FromBody] API_ADD_PH_DTO reqDto)

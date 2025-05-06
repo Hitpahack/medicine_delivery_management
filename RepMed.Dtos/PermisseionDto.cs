@@ -11,6 +11,8 @@ namespace RepMed.Dtos
         public string Module { get; set; }
         public string Route { get; set; }
         public string Label { get; set; }
+        public bool? IsAdmin { get; set; }
+
     }
     public class EntityPermissionDto : BasePermissionDto
     {

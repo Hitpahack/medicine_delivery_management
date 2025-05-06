@@ -19,8 +19,10 @@ namespace RepMed.Services
         Task<APIsResponse<bool>> DeleteRole(long Id);
         Task<APIsResponse<GetRoleDto>> GetRolePermission(long roleId);
         Task<APIsResponse<Datatable<RolesPagingResponse >>> GetAllRoles(RolesPagingRequest reqDto);
+        Task<APIsResponse<Datatable<RolesPagingResponse >>> GetAllPharmacyRoles(RolesPagingRequest reqDto);
         Task<APIsResponse<EntityRoleDto>> ChangeRoleStatus(long Id, bool status);
         Task<APIsResponse<List<EntityPermissionDto>>> GetAllPermissions();
+        Task<APIsResponse<List<EntityPermissionDto>>> GetAllPharmacyPermissions();
     }
     public class RoleService : BaseService, IRoleService
     {
@@ -167,7 +169,7 @@ namespace RepMed.Services
         {
             try
             {
-                string query = DbTables.tblPermissions.SelectAll();
+                string query = DbTables.tblPermissions.SelectAll($@"{nameof(Permission.IsAdmin)} = true");
                 var rolepermissions = await _idbConnection.QueryAsync<EntityPermissionDto>(query, transaction: _idbTransaction);
                 return new APIsSuccsss<List<EntityPermissionDto>>(_validateMessages.RetriveSuccess, rolepermissions);
             }
@@ -176,7 +178,19 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<List<EntityPermissionDto>>(ex.GetActualError()));
             }
         }
-
+        public async Task<APIsResponse<List<EntityPermissionDto>>> GetAllPharmacyPermissions()
+        {
+            try
+            {
+                string query = DbTables.tblPermissions.SelectAll($@"{nameof(Permission.IsAdmin)} = false");
+                var rolepermissions = await _idbConnection.QueryAsync<EntityPermissionDto>(query, transaction: _idbTransaction);
+                return new APIsSuccsss<List<EntityPermissionDto>>(_validateMessages.RetriveSuccess, rolepermissions);
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<List<EntityPermissionDto>>(ex.GetActualError()));
+            }
+        }
         public async Task<APIsResponse<Datatable<RolesPagingResponse>>> GetAllRoles(RolesPagingRequest reqDto)
         {
             try
@@ -331,5 +345,44 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<EntityRoleDto>(ex.GetActualError()));
             }
         }
+
+        public async Task<APIsResponse<Datatable<RolesPagingResponse>>> GetAllPharmacyRoles(RolesPagingRequest reqDto)
+        {
+            try
+            {
+                APIsResponse<Datatable<RolesPagingResponse>> apiResponse = default;
+                string orderBy;
+
+                orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
+                #region Get All Pharmacy 
+                var parameters = new DynamicParameters();
+                parameters.Add("page", reqDto.Page, DbType.Int32);
+                parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
+                parameters.Add("searchText", reqDto.SearchText ?? string.Empty, DbType.String);
+                parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
+                parameters.Add("Order_by", orderBy, DbType.String);
+
+                var result = (await _idbConnection.QueryAsync<RolesPagingResponse>(
+                               sql: "GET_PHARMACY_ROLES_PAGED",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                )).ToList();
+                #endregion
+                var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
+                var output = new Datatable<RolesPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
+                if (result.Any())
+                    return await Task.FromResult(new APIsSuccsss<Datatable<RolesPagingResponse>>(_validateMessages.RetriveSuccess, output));
+                else
+                    return await Task.FromResult(new APIsSuccsss<Datatable<RolesPagingResponse>>(_validateMessages.NotExist));
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<Datatable<RolesPagingResponse>>(ex.GetActualError()));
+            }
+        }
+
+
     }
 }
