@@ -7,7 +7,6 @@ export class AuthGuardService implements CanActivate {
     constructor(private authService: AuthService, private router: Router) { }
 
     canActivate(route: ActivatedRouteSnapshot): boolean {
-        debugger;
         //  Step 1: Check if user is logged in (token exists)
         if (!this.authService.isLoggedIn()) {
             this.router.navigate(['/login']);

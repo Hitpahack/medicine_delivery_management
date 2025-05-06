@@ -1,5 +1,6 @@
 <div class="authentication">
-    <form *ngIf="AddEditPhForm" [formGroup]="AddEditPhForm" class="auth_form form_validation" (ngSubmit)="onSubmit()">
+    <form *ngIf="EditPharmacyProfileForm" [formGroup]="EditPharmacyProfileForm" class="auth_form form_validation"
+        (ngSubmit)="onSubmit()">
         <!-- Section 1: Pharmacy -->
         <input type="text" style="position: absolute; top: -9999px;" autocomplete="username">
         <input type="password" style="position: absolute; top: -9999px;" autocomplete="current-password">
@@ -108,7 +109,7 @@
                         </div>
                     </div>
 
-                    <fieldset *ngIf="!phForm" class="col-6" appAutoValidate>
+                    <!-- <fieldset class="col-6">
                         <div class="mb-3 form-password-toggle">
                             <div class="input-group input-group-merge">
                                 <input type="password" id="Password" class="form-control" style="width: 50% !important;"
@@ -128,7 +129,7 @@
                                 <label class="float-lbl">Confirm Password *</label>
                             </div>
                         </div>
-                    </fieldset>
+                    </fieldset> -->
                 </div>
             </div>
         </fieldset>
@@ -152,7 +153,7 @@
             </google-map>
         </fieldset> -->
 
-        <fieldset formGroupName="pharmacy" *ngIf="phForm" [formGroup]="phForm">
+        <fieldset formGroupName="pharmacy">
             <div class="d-flex">
                 <div class="col-2 pe-4">
                     <div class="input-group mb-4 float">
@@ -216,7 +217,7 @@
         </fieldset>
         <div class="row justify-content-end">
             <div class="col-sm-1">
-                <button class="btn custom-btn" type="submit">save</button>
+                <button class="btn custom-btn" type="submit">Update</button>
             </div>
         </div>
     </form>

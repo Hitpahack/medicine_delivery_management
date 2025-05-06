@@ -1,18 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormBuilder, FormsModule, ReactiveFormsModule, FormControl, FormGroup, Validators, AbstractControl } from "@angular/forms";
-import { AdminBaseComponent } from "../../admin.base.component";
+import { AdminBaseComponent } from "../../../admin/admin.base.component";
 import { CommonModule } from "@angular/common";
 import { CustomValidator } from "../../../common/custom.validators";
 import { Helper } from "../../../common/helper.extenstions";
-import { adminAccountsService } from "../../services/accounts/admin.accountsservice";
-import { AdminPharmacyService } from "../../services/pharmacy/admin.pharmacy.services";
+import { adminAccountsService } from "../../../admin/services/accounts/admin.accountsservice";
+import { AdminPharmacyService } from "../../../admin/services/pharmacy/admin.pharmacy.services";
 import { PharmacyDto } from '../../../viewmodels/pharmacy/Pharmacy.add.dto';
 import { AutoValidateDirective } from 'src/app/common/form.validator';
 import { CountryDto } from "../../../viewmodels/address/country.dto";
 import { StateDto } from "../../../viewmodels/address/state.dto";
 import { CityDto } from "../../../viewmodels/address/city.dto";
-import { AdminCommonServices } from '../../services/Common/admin.commonservices';
+import { AdminCommonServices } from '../../../admin/services/Common/admin.commonservices';
 import { AfterViewInit } from '@angular/core';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { GoogleMapsService } from '../../../google-maps.services';
@@ -20,12 +20,13 @@ declare const window: any;
 
 @Component({
     selector: 'app-admin-addpharmacy',
-    templateUrl: './add.component.html',
-    styleUrls: ['./add.component.css'],
+    templateUrl: './editpharmacydetails.html',
+    styleUrls: ['./editpharmacydetails.css'],
     standalone: true,
     imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective, GoogleMapsModule],
 })
-export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnInit, AfterViewInit {
+
+export class EditPharmacyComponent extends AdminBaseComponent implements OnInit {
     lat: number = 26.7301;
     lng: number = 75.7867;
     zoom: number = 12;
@@ -36,33 +37,23 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
         public PharmacyService: AdminPharmacyService,
         public AdminCommonServices: AdminCommonServices,
         private route: ActivatedRoute,
+        private googleMapsService: GoogleMapsService
     ) {
         super();
     }
     isReadonly: boolean;
+    EditPharmacyProfileForm: FormGroup;
 
-
-    center: google.maps.LatLngLiteral = { lat: 26.7301, lng: 75.7867 };
-
-    minExpiryDate!: string;
-    maxExpiryDate!: string;
-
-    phForm: FormGroup;
-    AddEditPhForm: FormGroup;
-
-    PharmacyDto: PharmacyDto;
-    maxDate = new Date().toISOString().split('T')[0];
-    errorMessage: string = '';
     countries: CountryDto[] = [];
     states: StateDto[] = [];
     cities: CityDto[] = [];
-    uniqueId = '';
+    PharmacyDto: PharmacyDto;
 
-    ngAfterViewInit(): void {
-        if (window.Helpers && typeof window.Helpers.initPasswordToggle === 'function') {
-            window.Helpers.initPasswordToggle();
-        }
-    }
+    minExpiryDate!: string;
+    maxExpiryDate!: string;
+    maxDate = new Date().toISOString().split('T')[0];
+    errorMessage: string = '';
+    uniqueId = '';
 
     dateMethod(dateString: Date): string {
         const date = new Date(dateString);
@@ -74,15 +65,16 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
 
     pharmacyId: number;
     ngOnInit(): void {
+        this.isReadonly = true;
+        this.EditPharmacyProfileForm = this.initForm();
 
-        // this.googleMapsService.loadGoogleMapsScript().then(() => {
-        //     this.mapLoaded = true;
-        //   }).catch((error) => {
-        //     console.error('Google Maps script loading failed', error);
-        //   });
+        this.googleMapsService.loadGoogleMapsScript().then(() => {
+            this.mapLoaded = true;
+        }).catch((error) => {
+            console.error('Google Maps script loading failed', error);
+        });
 
         this.pharmacyId = this.route.snapshot.params['id'];
-        this.AddEditPhForm = this.initForm();
 
         this.uniqueId = Math.random().toString(36).substring(2);
 
@@ -94,17 +86,23 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
             }
         })
 
-        if (this.pharmacyId && this.pharmacyId !== 0) {
-            this.isReadonly = true;
-            this.phForm = this.initForm();
+        const today = new Date();
+        const maxDate = new Date();
+        this.minExpiryDate = today.toISOString().split('T')[0];
+        maxDate.setFullYear(today.getFullYear() + 100);
+        this.minExpiryDate = today.toISOString().split('T')[0];
+        this.maxExpiryDate = maxDate.toISOString().split('T')[0];
 
+        if (this.pharmacyId && this.pharmacyId !== 0) {
             this.PharmacyService.getpharmacybyId(this.pharmacyId).subscribe((response: PharmacyDto) => {
                 const userData = response.user;
                 const pharmacyData = response.pharmacy;
-                console.log("pharmacyData", pharmacyData);
-
                 const pharmacyBankDetailsData = response.pharmacyBankDetails;
-                this.AddEditPhForm.get('pharmacy').patchValue({
+                console.log("userData", userData);
+                console.log("pharmacyData", pharmacyData);
+                console.log("pharmacyBankDetailsData", pharmacyBankDetailsData);
+                
+                this.EditPharmacyProfileForm.get('pharmacy').patchValue({
                     ownerName: pharmacyData.ownerName,
                     storeName: pharmacyData.storeName,
                     businessName: pharmacyData.businessName,
@@ -122,7 +120,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                     storeEmail2:pharmacyData.storeEmail2,
                     storeMobile1:pharmacyData.storeMobile1
                 })
-                this.AddEditPhForm.get('user').patchValue({
+                this.EditPharmacyProfileForm.get('user').patchValue({
                     email: userData.email,
                     gender: userData.gender,
                     picture: userData.picture,
@@ -130,7 +128,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                     firstName: userData.firstName,
                     lastName: userData.lastName
                 })
-                this.AddEditPhForm.get('pharmacyBankDetails').patchValue({
+                this.EditPharmacyProfileForm.get('pharmacyBankDetails').patchValue({
                     bankName: pharmacyBankDetailsData.bankName,
                     accountholderName: pharmacyBankDetailsData.accountHolderName,
                     accountNumber: pharmacyBankDetailsData.accountNumber,
@@ -139,33 +137,24 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                     upiId: pharmacyBankDetailsData.upiId,
                 })
             });
-        } else {
-            console.log("pharmacyId else section", this.pharmacyId);
-            const today = new Date();
-            const maxDate = new Date();
-            this.minExpiryDate = today.toISOString().split('T')[0];
-            maxDate.setFullYear(today.getFullYear() + 100);
-            this.minExpiryDate = today.toISOString().split('T')[0];
-            this.maxExpiryDate = maxDate.toISOString().split('T')[0];
         }
     }
 
-
     onMapClick(event: google.maps.MapMouseEvent) {
         if (event.latLng) {
-          const clickedLat = event.latLng.lat();
-          const clickedLng = event.latLng.lng();
-    
-          // Ensure the values are numbers
-          if (!isNaN(clickedLat) && !isNaN(clickedLng)) {
-            this.lat = clickedLat;
-            this.lng = clickedLng;
-            console.log('Clicked Latitude:', this.lat, 'Longitude:', this.lng);
-          } else {
-            console.error('Invalid coordinates clicked:', clickedLat, clickedLng);
-          }
+            const clickedLat = event.latLng.lat();
+            const clickedLng = event.latLng.lng();
+
+            // Ensure the values are numbers
+            if (!isNaN(clickedLat) && !isNaN(clickedLng)) {
+                this.lat = clickedLat;
+                this.lng = clickedLng;
+                console.log('Clicked Latitude:', this.lat, 'Longitude:', this.lng);
+            } else {
+                console.error('Invalid coordinates clicked:', clickedLat, clickedLng);
+            }
         }
-      }
+    }
 
     onValueChanged(value: any) {
         this.AdminCommonServices.getstatebyId(value).subscribe((response) => {
@@ -211,6 +200,7 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
         })
     }
 
+
     initForm(): FormGroup {
         return this.fb.group({
             pharmacy: this.fb.group({
@@ -230,8 +220,8 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                 storeEmail2: new FormControl(null),
                 storeEmail1: new FormControl(null),
                 storeMobile1: new FormControl(null),
-                latitude:new FormControl(null),
-                longitude:new FormControl(null)
+                latitude: new FormControl(null),
+                longitude: new FormControl(null)
             }),
             user: this.fb.group({
                 //firstName: new FormControl(null, [Validators.required]),
@@ -276,21 +266,16 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
     }
 
     onSubmit() {
-        console.log("callonsubmit.");
-
         if (this.pharmacyId && this.pharmacyId !== 0) {
-            console.log("inside log submit.");
-
-            if (this.phForm.invalid) {
-                this.validator.markInvalidFieldsTouched(this.phForm);
+            if (this.EditPharmacyProfileForm.invalid) {
+                this.validator.markInvalidFieldsTouched(this.EditPharmacyProfileForm);
                 //return;
             }
 
-            this.PharmacyService.editpharmacy(this.AddEditPhForm.value, this.pharmacyId).subscribe({
+            this.PharmacyService.editpharmacy(this.EditPharmacyProfileForm.value, this.pharmacyId).subscribe({
                 next: (response) => {
-                    if (response.isSuccess) {
+                    if (response) {
                         Helper.ShowSuccess(response.message);
-                        this.router.navigate(['/admin/pharmacy']);
                     } else {
                         this.errorMessage = response.message;
                         Helper.ShowError(this.errorMessage);
@@ -301,31 +286,6 @@ export class AdminAddPharmacyComponent extends AdminBaseComponent implements OnI
                     Helper.ShowError(this.errorMessage);  // Optional toast/popup
                 }
             })
-        } else {
-            if (this.AddEditPhForm.invalid) {
-                this.validator.markInvalidFieldsTouched(this.AddEditPhForm);
-                return;
-            }
-            console.log("pharmacyadd me.");
-
-            const dto: PharmacyDto = this.AddEditPhForm.value;
-            this.PharmacyService.add(dto).subscribe({
-                next: (response) => {
-                    if (response.isSuccess) {
-                        Helper.ShowSuccess(response.message || 'Pharmacy added successfully.');
-                        this.router.navigate(['/admin/pharmacy']);
-                    } else {
-                        console.error('API returned isSuccess: false');
-                        this.errorMessage = response.message || 'Failed to add user.';
-                        Helper.ShowError(this.errorMessage);  // Optional toast/popup
-                    }
-                },
-                error: (err) => {
-                    console.error('HTTP Error:', err);
-                    this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
-                    Helper.ShowError(this.errorMessage);  // Optional toast/popup
-                }
-            });
         }
     }
 }
