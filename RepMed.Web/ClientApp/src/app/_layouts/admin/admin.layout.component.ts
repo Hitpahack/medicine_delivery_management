@@ -54,12 +54,25 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
     loadStylesheets(this.styles);
     loadScripts(this.scripts);
 
+    const roleFromStorage = (sessionStorage.getItem('rolename') || '').toLowerCase();
+    this.userRole = this.getUserRole(roleFromStorage);
+    
     if (this.authService.isLoggedIn()) {
       console.log('User is logged in');
     } else {
       console.log('User is NOT logged in');
     }
   }
+
+  getUserRole(role: string): string {
+    const validRoles = ['admin', 'doctor', 'pharmacy'];
+    if (validRoles.includes(role)) {
+      return role;
+    } else {
+      return 'common';
+    }
+  }
+
   private filterLinksByAccess(links: SideNav[], allowedModules: string[]): SideNav[] {
     return links
       .map(link => {

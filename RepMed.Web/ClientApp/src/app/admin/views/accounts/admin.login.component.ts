@@ -93,7 +93,7 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
                         this.router.navigate(['/doctor/doctordashboard']);
                     }
                     else{
-                        
+                        this.router.navigate(['/common/dashboard']);
                     }
 
                 }

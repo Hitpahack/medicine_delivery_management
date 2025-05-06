@@ -1,0 +1,26 @@
+<div class="container my-4">
+    <h2>Simple Dashboard</h2>
+  
+    <!-- Summary Cards -->
+    <div class="row my-3">
+      <div class="col-md-3" *ngFor="let card of summaryCards">
+        <div class="card text-center mb-3">
+          <div class="card-body">
+            <h5 class="card-title">{{card.title}}</h5>
+            <p class="card-text display-6">{{card.value}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <!-- Recent Activity -->
+    <div class="my-4">
+      <h4>Recent Activity</h4>
+      <ul class="list-group">
+        <li class="list-group-item" *ngFor="let item of recentActivities">
+          {{item}}
+        </li>
+      </ul>
+    </div>
+  </div>
+  
