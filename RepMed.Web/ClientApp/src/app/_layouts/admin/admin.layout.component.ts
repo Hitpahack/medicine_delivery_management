@@ -5,6 +5,7 @@ import { AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SideNav } from '../../../app/security/sideNav';
 import { AuthService } from '../../../app/security/auth.service';
+import { adminAccountsService } from '../../admin/services/accounts/admin.accountsservice';
 
 declare const window: any;
 @Component({
@@ -21,7 +22,10 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
   Userid: string | null = null;
   roleaccess: string | null = null;
 
-  constructor(private renderer: Renderer2, private router: Router, private authService: AuthService) { }
+  constructor(private renderer: Renderer2,
+    private router: Router,
+    private authService: AuthService,
+    public accountservice: adminAccountsService,) { }
   scripts: Array<string> = [
 
   ];
@@ -71,7 +75,7 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
       })
       .filter((link): link is SideNav => link !== null);
   }
-  
+
   toggleSubmenu(id: string): void {
     const submenu = document.getElementById(id);
     if (submenu) {
@@ -79,17 +83,26 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
     }
   }
 
-  logout() {
-    // Token/session/local storage clear
-    localStorage.removeItem('token');
-    localStorage.clear();  // optional
-    sessionStorage.removeItem('userId');
-    sessionStorage.removeItem('personid');
-    sessionStorage.clear(); // optional
-    
-
-    // Redirect to login page
-    this.router.navigate(['/login']);
+  logout(): void {
+    this.accountservice.logout().subscribe(
+      (response) => {
+        if (response.isSuccess) {
+          // Token/session/local storage clear
+          localStorage.removeItem('token');
+          localStorage.clear();  // optional
+          sessionStorage.removeItem('userId');
+          sessionStorage.removeItem('personid');
+          sessionStorage.clear(); // optional
+          this.router.navigate(['/login']); // navigate to login page
+        } else {
+          console.error('Logout failed:', response.message);
+        }
+      },
+      (err) => {
+        console.error('Logout error:', err);
+        this.router.navigate(['/login']);
+      }
+    );
   }
 
 

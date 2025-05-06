@@ -12,12 +12,16 @@ import { Observable } from "rxjs";
 
 export class adminAccountsService extends adminBaseService {
 
-    constructor() {
-        super();
-    }
+  constructor() {
+    super();
+  }
 
-    login(formData: any):Observable<ApiResponse<LoginResponse>> {
-        return this.http.post<ApiResponse<LoginResponse>>(this.apiConfig.endpoints.accounts.login,formData,{ headers: this.apiConfig.requestSettings.header }
-        );
-      }
+  login(formData: any): Observable<ApiResponse<LoginResponse>> {
+    return this.http.post<ApiResponse<LoginResponse>>(this.apiConfig.endpoints.accounts.login, formData, { headers: this.apiConfig.requestSettings.header }
+    );
+  }
+  logout(): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(this.apiConfig.endpoints.accounts.logout,{},{ headers: this.apiConfig.requestSettings.header });
+  }
+
 }

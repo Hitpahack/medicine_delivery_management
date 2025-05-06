@@ -32,6 +32,7 @@ export class AdminApiConfigService {
         forgetpassword:`${v1}/accounts/forgotpassword`,
         resetpassword:`${v1}/accounts/resetpassword`,
         setpassword: `${v1}/accounts/set-password`,
+        logout: `${v1}/accounts/logout`,
       },
       pharmacy: {
         add: `${v1}/pharmacy/addpharmacy/`,
