@@ -107,6 +107,13 @@ export const routes: Routes = [
       { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService],  data: { module: 'pharmacydashboard' } },
     ]
   },
+  {
+    path: '',
+    component: AdminLayoutComponent,
+    children: [
+      { path: '', component: PharmacDashboardComponent},
+    ]
+  },
   // {
   //   path: 'admin',
   //   component: SubAdminLayoutComponent,
