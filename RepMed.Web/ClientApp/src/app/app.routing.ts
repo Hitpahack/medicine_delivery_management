@@ -77,7 +77,7 @@ export const routes: Routes = [
 
       { path: 'productlist', component: ProductListsComponent, canActivate: [AuthGuardService], data: {module: 'productlist'} },
 
-      { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService] },
+      { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService],  data: { module: 'admindashboard' }},
       
       { path: 'doctor/list', component: DoctorList, canActivate: [AuthGuardService], data: { module: 'doctor' } },
     ]
@@ -90,6 +90,7 @@ export const routes: Routes = [
     children: [
       { path: 'doctordashboard', component: DoctorDashboardComponent, canActivate: [AuthGuardService], data: { module: 'doctordashboard' } },
       { path: 'list', component: DoctorList, canActivate: [AuthGuardService], data: { module: 'doctor' } },
+      { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService],  data: { module: 'doctordashboard' } },
     ]
   },
 
@@ -102,16 +103,17 @@ export const routes: Routes = [
       { path: 'purchaseorder', component: PurchaseOrderComponent, canActivate: [AuthGuardService], data: { module: 'purchase' }},
       { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService], data: { module: 'purchase' }},
       { path: 'staff/add', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' }},
-      { path: 'staff/edit/:id', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' }}
+      { path: 'staff/edit/:id', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' }},
+      { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService],  data: { module: 'pharmacydashboard' } },
     ]
   },
-  {
-    path: 'admin',
-    component: SubAdminLayoutComponent,
-    children: [
-      //{ path: 'subadmin', component: Sub_Dr_AdminDashboardComponent }
-    ]
-  },
+  // {
+  //   path: 'admin',
+  //   component: SubAdminLayoutComponent,
+  //   children: [
+  //     //{ path: 'subadmin', component: Sub_Dr_AdminDashboardComponent }
+  //   ]
+  // },
   { path: 'reset-password', component: ResetPassword },
   { path: 'forgotpassword', component: ForgotPassword },
   //{ path: '', component: LoginComponent, pathMatch: 'full'},

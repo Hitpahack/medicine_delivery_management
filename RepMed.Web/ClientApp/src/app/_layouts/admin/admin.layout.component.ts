@@ -100,7 +100,7 @@ export class AdminLayoutComponent implements OnInit, AfterViewInit {
       },
       (err) => {
         console.error('Logout error:', err);
-        this.router.navigate(['/login']);
+        this.router.navigate(['/login']); 
       }
     );
   }
