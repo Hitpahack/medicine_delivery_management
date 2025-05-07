@@ -93,6 +93,14 @@ namespace RepMed.Services
                         response.Roles = mQuery.Read<EntityRoleDto>().ToList();
                         if (!response.Roles[0].IsActive)
                             return await Task.FromResult(new APIsError<Login_ResDto>(_validateMessages.RoleNotActive));
+                        if(response.Roles[0].RoleName == "pharmacy")
+                        {
+                            var pharmacyQuery = DbTables.tblPharmacy.SelectAll($@"{nameof(AddPharmacyDto.UserId)} = {response.Id}");
+                            var pharmacy = await _idbConnection.QueryFirstOrDefaultAsync<AddPharmacyDto>(pharmacyQuery,transaction: _idbTransaction);
+                            if (pharmacy.Status != "Active")
+                                return await Task.FromResult(new APIsError<Login_ResDto>(_validateMessages.PhNotActive));
+
+                        }
                         using (var service = ServiceActivator.GetScope())
                         {
                             var userObj = _mapper.Map<EntityUsersDto, EntityUsersPassDto>(response);
