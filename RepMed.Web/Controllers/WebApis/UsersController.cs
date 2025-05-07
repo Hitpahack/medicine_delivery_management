@@ -97,6 +97,25 @@ namespace RepMed.Web.Controllers.WebApis
 
         }
 
+        [Route("getpharmacystaff")]
+        [HttpPost]
+        public async Task<IActionResult> GetPharmacyUsers([FromBody] UsersPagingRequest search)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IUserServices userService = new UserServices(db, tran))
+                    {
+                        var result = await userService.GetPharmacyUsers(search);
+                        if (!result.IsSuccess)
+                            return BadRequest();
+                        return Ok(result.Data);
+                    }
+                }
+            }
+        }
 
     }
 }

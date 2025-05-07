@@ -196,7 +196,7 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IRoleService roleService = new RoleService(db, tran))
                     {
-                        var result = await roleService.AddEditRole(reqDto, 0);
+                        var result = await roleService.AddEditPharmacyRole(reqDto, 0);
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();

@@ -76,3 +76,4 @@
 /RepMed.Data/obj/Release/net8.0/ref/RepMed.Data.dll
 /RepMed.Data/obj/Release/net8.0/refint/RepMed.Data.dll
 /RepMed.Data/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+/RepMed.Data/obj/RepMed.Data.csproj.nuget.g.targets
