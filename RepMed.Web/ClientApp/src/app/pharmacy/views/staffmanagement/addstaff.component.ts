@@ -217,7 +217,21 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
     onSubmit() {
         if (this.userId && this.userId !== 0) {
             this.StaffService.edituser(this.editstaffForm.value, this.userId).subscribe({
-
+                next: (response) => {
+                    if (response.isSuccess) {
+                        Helper.ShowSuccess(response.message || 'Staff Updated successfully.');
+                        this.router.navigate(['/pharmacy/staff/list']);
+                    } else {
+                        console.error('API returned isSuccess: false');
+                        this.errorMessage = response.message || 'Failed to add user.';
+                        Helper.ShowError(this.errorMessage);  // Optional toast/popup
+                    }
+                },
+                error: (err) => {
+                    console.error('HTTP Error:', err);
+                    this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
+                    Helper.ShowError(this.errorMessage);  // Optional toast/popup
+                }
             })
             // if (false) {
             //   this.validator.markInvalidFieldsTouched(this.editUserForm);
@@ -234,8 +248,8 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
             this.StaffService.add(dto).subscribe({
                 next: (response) => {
                     if (response.isSuccess) {
-                        Helper.ShowSuccess(response.message || 'user added successfully.');
-                        this.router.navigate(['/admin/user']);
+                        Helper.ShowSuccess(response.message || 'Staff added successfully.');
+                        this.router.navigate(['/pharmacy/staff/list']);
                     } else {
                         console.error('API returned isSuccess: false');
                         this.errorMessage = response.message || 'Failed to add user.';

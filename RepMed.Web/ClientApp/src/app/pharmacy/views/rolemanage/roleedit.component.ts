@@ -76,7 +76,7 @@ export class PharmacyEditRoleComponent extends AdminBaseComponent implements OnI
     }
 
     onCancel() {
-        this.router.navigate(['/admin/role/list']);
+        this.router.navigate(['/pharmacy/role/list']);
     }
 
     onCheckboxChange(event: any) {
@@ -115,7 +115,7 @@ export class PharmacyEditRoleComponent extends AdminBaseComponent implements OnI
                 if (response.isSuccess) {
                     console.log('Successfully updated');
                     Helper.ShowSuccess(response.message || 'Role updated successfully.');
-                    this.router.navigate(['/admin/role/list']);
+                    this.router.navigate(['/pharmacy/role/list']);
                 } else {
                     console.log('Update not successful');
                     console.error('API returned isSuccess: false');

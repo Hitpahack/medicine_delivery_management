@@ -59,7 +59,7 @@ export class AdminApiConfigService {
         get: (id: number) => `${v1}/users/get/${id}`,
         update: (id: number) => `${v1}/users/edituser/${id}`,
         userroles: `${api}/masters/getpharmacyroles`,
-        list: `${v1}/users/getusers`,
+        list: `${v1}/users/getpharmacystaff`,
       },
       product: {
         get: `${v1}/products/getproducts`,

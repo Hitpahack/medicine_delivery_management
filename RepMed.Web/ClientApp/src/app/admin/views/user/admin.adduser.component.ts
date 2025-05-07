@@ -219,7 +219,21 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
   onSubmit() {
     if (this.userId && this.userId !== 0) {
       this.adminuserservice.edituser(this.editUserForm.value, this.userId).subscribe({
-
+        next: (response) => {
+          if (response.isSuccess) {
+              Helper.ShowSuccess(response.message || 'User Updated successfully.');
+              this.router.navigate(['/admin/user']);
+          } else {
+              console.error('API returned isSuccess: false');
+              this.errorMessage = response.message || 'Failed to add user.';
+              Helper.ShowError(this.errorMessage);  // Optional toast/popup
+          }
+      },
+      error: (err) => {
+          console.error('HTTP Error:', err);
+          this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
+          Helper.ShowError(this.errorMessage);  // Optional toast/popup
+      }
       })
       // if (false) {
       //   this.validator.markInvalidFieldsTouched(this.editUserForm);

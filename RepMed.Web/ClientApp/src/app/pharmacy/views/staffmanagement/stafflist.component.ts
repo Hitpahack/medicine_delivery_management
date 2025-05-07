@@ -51,7 +51,7 @@ export class StaffListComponent extends AdminBaseComponent implements OnInit {
         const self = this;
         $(document).on('click', '.edit-user', function () {
             const id = $(this).data('id');
-            self.router.navigate(['pharmacy/user/edit/', id]);
+            self.router.navigate(['pharmacy/staff/edit/', id]);
         });
     }
 }
