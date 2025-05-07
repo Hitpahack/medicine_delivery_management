@@ -92,7 +92,7 @@ namespace RepMed.Services
                        
                         response.Roles = mQuery.Read<EntityRoleDto>().ToList();
                         if (!response.Roles[0].IsActive)
-                            return await Task.FromResult(new APIsError<Login_ResDto>(_validateMessages.AcNotActive));
+                            return await Task.FromResult(new APIsError<Login_ResDto>(_validateMessages.RoleNotActive));
                         using (var service = ServiceActivator.GetScope())
                         {
                             var userObj = _mapper.Map<EntityUsersDto, EntityUsersPassDto>(response);

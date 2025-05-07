@@ -16,6 +16,7 @@ namespace RepMed.Localize
         public string NotExist { get; }
         public string EmailNotConfirm { get; }
         public string AcNotActive { get; }
+        public string RoleNotActive { get; }
         public string InvalidPassword { get; }
         public string InvalidToken { get; }
         public string TokenExpired { get; }
@@ -47,6 +48,7 @@ namespace RepMed.Localize
         string IValidationMessagesServices.NotExist => _localizer["value doesn't exist."];
         string IValidationMessagesServices.EmailNotConfirm => _localizer["Email not confirm, please confirm email address."];
         string IValidationMessagesServices.AcNotActive => _localizer["Account not activated."];
+        string IValidationMessagesServices.RoleNotActive => _localizer["Role not activated."];
         string IValidationMessagesServices.InvalidPassword => _localizer["You have entered invalid password."];
         string IValidationMessagesServices.InvalidToken => _localizer["You have entered invalid token."];
 
