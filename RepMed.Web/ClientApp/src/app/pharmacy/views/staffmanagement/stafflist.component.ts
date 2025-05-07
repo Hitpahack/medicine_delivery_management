@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterModule, Router } from "@angular/router";
 import { FormBuilder } from "@angular/forms";
-import { CustomValidator } from "../../../../app/common/custom.validators";
+import { CustomValidator } from "../../../common/custom.validators";
 import { CommonModule } from '@angular/common';
 import { AdminBaseComponent } from '../../../admin/admin.base.component';
 import { DatatableComponent } from '../../../admin/shared/datatables/datatable.component';
@@ -9,7 +9,7 @@ declare var $: any;
 
 @Component({
     selector: 'app-User-list',
-    templateUrl: 'admin.userlist.component.html',
+    templateUrl: 'stafflist.component.html',
     imports: [DatatableComponent, RouterModule, CommonModule]
 })
 

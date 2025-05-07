@@ -33,6 +33,10 @@ import { PurchaseOrderComponent } from "../app/pharmacy/views/purchaseorder/purc
 import { AddStaffComponent } from "../app/pharmacy/views/staffmanagement/addstaff.component";
 import { PurchaseInvoice } from '../app/pharmacy/views/PurchaseInvoice/Invoice.component';
 import { EditPharmacyComponent } from "../app/pharmacy/views/Details/editpharmacydetails";
+import { PharmacyAddRoleComponent } from './pharmacy/views/rolemanage/addrole.component';
+import { PharmacyEditRoleComponent } from './pharmacy/views/rolemanage/roleedit.component';
+import { PharmacyRoleListComponent } from './pharmacy/views/rolemanage/rolelist.component';
+import { StaffListComponent } from './pharmacy/views/staffmanagement/stafflist.component';
 
 // doctor imports..
 import { DoctorDashboardComponent } from "../app/doctor/views/doctordashboard/dashboard.component";
@@ -42,10 +46,7 @@ import { PharmacyLayoutComponent } from './_layouts/admin/pharmacy.layout.compon
 
 // Other imports...
 import { DashboardComponent } from "../app/othermodule/dashboard/dashboard.component";
-import { PharmacyAddRoleComponent } from './pharmacy/views/rolemanage/addrole.component';
-import { PharmacyEditRoleComponent } from './pharmacy/views/rolemanage/roleedit.component';
-import { PharmacyRoleListComponent } from './pharmacy/views/rolemanage/rolelist.component';
-import { StaffListComponent } from './pharmacy/views/staffmanagement/admin.userlist.component';
+
 
 
 
@@ -123,6 +124,7 @@ export const routes: Routes = [
       { path: 'role/add', component: PharmacyAddRoleComponent, canActivate: [AuthGuardService], data: {module: 'pharmacyrole'} },
       { path: 'role/list', component: PharmacyRoleListComponent, canActivate: [AuthGuardService], data: {module: 'pharmacyrole'} },
       { path: 'role/edit/:id', component: PharmacyEditRoleComponent, canActivate: [AuthGuardService], data: {module: 'pharmacyrole'} },
+      { path: 'editpharmacy/:id', component: EditPharmacyComponent, canActivate: [AuthGuardService], data: { module: 'pharmacydashboard' } },
     ]
   },
   {
@@ -156,7 +158,6 @@ export const routes: Routes = [
       { path: 'staff/add', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' } },
       { path: 'staff/edit/:id', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' } },
       { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService], data: { module: 'pharmacydashboard' } },
-      { path: 'editpharmacy/:id', component: EditPharmacyComponent, canActivate: [AuthGuardService], data: { module: 'pharmacydashboard' } },
 
     ]
   },
