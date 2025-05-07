@@ -8,7 +8,7 @@ import { Helper } from "../../../common/helper.extenstions";
 import { adminAccountsService } from "../../../admin/services/accounts/admin.accountsservice";
 import { AdminPharmacyService } from "../../../admin/services/pharmacy/admin.pharmacy.services";
 import { PharmacyDto } from '../../../viewmodels/pharmacy/Pharmacy.add.dto';
-import { AutoValidateDirective } from 'src/app/common/form.validator';
+import { AutoValidateDirective } from '../../../common/form.validator';
 import { CountryDto } from "../../../viewmodels/address/country.dto";
 import { StateDto } from "../../../viewmodels/address/state.dto";
 import { CityDto } from "../../../viewmodels/address/city.dto";
@@ -102,7 +102,7 @@ export class EditPharmacyComponent extends AdminBaseComponent implements OnInit 
                 console.log("pharmacyData", pharmacyData);
                 console.log("pharmacyBankDetailsData", pharmacyBankDetailsData);
                 
-                this.EditPharmacyProfileForm.get('pharmacy').patchValue({
+                this.EditPharmacyProfileForm.get('pharmacy')?.patchValue({
                     ownerName: pharmacyData.ownerName,
                     storeName: pharmacyData.storeName,
                     businessName: pharmacyData.businessName,
@@ -120,7 +120,7 @@ export class EditPharmacyComponent extends AdminBaseComponent implements OnInit 
                     storeEmail2:pharmacyData.storeEmail2,
                     storeMobile1:pharmacyData.storeMobile1
                 })
-                this.EditPharmacyProfileForm.get('user').patchValue({
+                this.EditPharmacyProfileForm.get('user')?.patchValue({
                     email: userData.email,
                     gender: userData.gender,
                     picture: userData.picture,
@@ -128,7 +128,7 @@ export class EditPharmacyComponent extends AdminBaseComponent implements OnInit 
                     firstName: userData.firstName,
                     lastName: userData.lastName
                 })
-                this.EditPharmacyProfileForm.get('pharmacyBankDetails').patchValue({
+                this.EditPharmacyProfileForm.get('pharmacyBankDetails')?.patchValue({
                     bankName: pharmacyBankDetailsData.bankName,
                     accountholderName: pharmacyBankDetailsData.accountHolderName,
                     accountNumber: pharmacyBankDetailsData.accountNumber,
@@ -277,7 +277,6 @@ export class EditPharmacyComponent extends AdminBaseComponent implements OnInit 
                     if (response) {
                         Helper.ShowSuccess(response.message);
                     } else {
-                        this.errorMessage = response.message;
                         Helper.ShowError(this.errorMessage);
                     }
                 },

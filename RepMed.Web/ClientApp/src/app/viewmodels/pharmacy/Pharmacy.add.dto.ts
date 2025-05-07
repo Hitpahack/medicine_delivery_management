@@ -6,7 +6,7 @@ export interface PharmacyDto {
       storeName?: string;
       businessName?: string;
       licenseNumber?: string;
-      licenseExpiry?: Date;
+      licenseExpiry: Date;
       gstnumber?: string;
       ownerName?: string;
       registeredMobile?: string;
