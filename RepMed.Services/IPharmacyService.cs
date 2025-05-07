@@ -305,7 +305,7 @@ namespace RepMed.Services
                     { nameof(AddPharmacyDto.Status), status},
                    }, $@" {nameof(AddPharmacyDto.Id)}='{Id}' ", "RETURNING *");
 
-                apiResponse = new APIsSuccsss<bool>("Pharmacy Status Updated Successfully");
+                apiResponse = new APIsSuccsss<bool>("Pharmacy status updated successfully ");
                 return apiResponse;
             }
             catch (Exception ex)

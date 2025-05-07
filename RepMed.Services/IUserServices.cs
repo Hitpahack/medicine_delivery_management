@@ -23,6 +23,7 @@ namespace RepMed.Services
         Task<APIsResponse<GetUserDto>> GetUser(long Id);
         Task<APIsResponse<Datatable<UsersPagingResponse>>> GetUsers(UsersPagingRequest reqDto);
         Task<APIsResponse<Datatable<UsersPagingResponse>>> GetPharmacyUsers(UsersPagingRequest reqDto);
+        Task<APIsResponse<bool>> ChangeUserStatus(long Id, bool status);
     }
 
     public class UserServices : BaseService, IUserServices
@@ -202,6 +203,25 @@ namespace RepMed.Services
             catch (Exception ex)
             {
                 return await Task.FromResult(new APIsError<Datatable<UsersPagingResponse>>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<bool>> ChangeUserStatus(long Id, bool status)
+        {
+            try
+            {
+                APIsResponse<bool> apiResponse = default(APIsResponse<bool>);
+                EntityUsersDto entityRoleDto = _idbConnection.Update<EntityUsersDto>(_idbTransaction, DbTables.tblUser,
+                   new Dictionary<string, object> {
+                    { nameof(EntityUsersDto.IsLocked), status},
+                   }, $@" {nameof(EntityUsersDto.Id)}='{Id}' ", "RETURNING *");
+
+                apiResponse = new APIsSuccsss<bool>("User prfile has been locked");
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
             }
         }
 

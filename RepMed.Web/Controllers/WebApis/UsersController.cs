@@ -117,6 +117,29 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
+        [Route("lockstatus/{Id}")]
+        [HttpPost]
+        public async Task<IActionResult> ChangeUserStatus(long Id, bool status)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IUserServices usersService = new UserServices(db, tran))
+                    {
+                        var result = await usersService.ChangeUserStatus(Id, status);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
     }
 }
     
