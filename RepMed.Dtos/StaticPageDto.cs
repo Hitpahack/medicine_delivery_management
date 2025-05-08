@@ -14,6 +14,12 @@ namespace RepMed.Dtos
 
         public string Content { get; set; }
 
+        public string MetaTitle { get; set; }
+
+        public string MetaContext { get; set; }
+
+        public bool? IsActive { get; set; }
+
         public DateTime? CreatedDate { get; set; }
 
         public DateTime? UpdatedDate { get; set; }

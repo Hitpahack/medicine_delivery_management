@@ -380,6 +380,7 @@ namespace RepMed.Core
         public const string tblPurchaseInvoiceItems = "`PurchaseInvoiceItems`";
         public const string tblPharmacyInventory = "`PharmacyInventory`";
         public const string tblPharmacyStockLedger = "`PharmacyStockLedger`";
+        public const string tblStaticPages = "`StaticPages`";
     }
 
 
