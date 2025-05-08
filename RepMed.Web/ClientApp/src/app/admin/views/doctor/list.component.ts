@@ -98,7 +98,10 @@ export class DoctorList extends AdminBaseComponent implements OnInit, AfterViewI
                 orderable: false,
                 render: (data: any, type: any, row: any) => {
                     return `
-                             <span class="edit-user" data-id="${data.personId}"><i class="bi bi-pencil-square cursor-pointer"></i></span>
+                             <button class="btn btn-sm btn-primary edit-user" data-id="${data.personId}" title="Edit" style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; border-radius: 12px;">
+                             <i class="bi bi-pencil-square" style="font-size: 16px;"></i>
+                             </button>
+
                              <button class="btn btn-sm ${!row.isLocked ? 'btn-success' : 'btn-danger'} toggle-status-btn" 
                               data-id="${row.userId}" data-status="${row.isLocked}" 
                               title="${row.isLocked ? 'Deactivate' : 'Activate'}" 
