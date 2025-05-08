@@ -73,7 +73,7 @@ export class RoleListComponent extends AdminBaseComponent implements OnInit, Aft
                           `);
                     button.data('status', newStatus);
 
-                    $('#post_pharmacylist_datatable').DataTable().ajax.reload();
+                    $('#post_rolelist_datatable').DataTable().ajax.reload();
 
                 } else {
                     alert('Failed to update the status. Please try again.');
@@ -88,7 +88,7 @@ export class RoleListComponent extends AdminBaseComponent implements OnInit, Aft
 
 
     tableOptions = {
-        tableId: 'post_pharmacylist_datatable',
+        tableId: 'post_rolelist_datatable',
         ajax: {
             url: this.admin_apiconfig.endpoints.role.list,
             type: "POST",
@@ -142,7 +142,7 @@ export class RoleListComponent extends AdminBaseComponent implements OnInit, Aft
                         // Show success message
                         Helper.ShowSuccess(response.message || 'Item deleted successfully');
                         // Optionally reload the DataTable
-                        $('#post_pharmacylist_datatable').DataTable().ajax.reload();
+                        $('#post_rolelist_datatable').DataTable().ajax.reload();
                     } else {
                         // Show error message if deletion failed
                         Helper.ShowError(response.message || 'Failed to delete the item');

@@ -57,7 +57,7 @@ export class UserListComponent extends AdminBaseComponent implements OnInit, Aft
                           `);
                     button.data('status', newStatus);
 
-                    $('#post_pharmacylist_datatable').DataTable().ajax.reload();
+                    $('#post_stafflist_datatable').DataTable().ajax.reload();
 
                 } else {
                     alert('Failed to update the status. Please try again.');
@@ -70,7 +70,7 @@ export class UserListComponent extends AdminBaseComponent implements OnInit, Aft
     }
 
     tableOptions = {
-        tableId: 'post_pharmacylist_datatable',
+        tableId: 'post_stafflist_datatable',
         ajax: {
             url: this.admin_apiconfig.endpoints.user.list,
             type: "POST",

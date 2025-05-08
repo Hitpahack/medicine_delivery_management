@@ -26,8 +26,8 @@ export class DoctorList extends AdminBaseComponent implements OnInit, AfterViewI
             const id = $(event.currentTarget).data('id');
             //const id = button.data('id');
             console.log('this is active id', id);
-            const currentStatus = button.data('status'); // Current active/inactive status
-            const newStatus = !currentStatus; // Toggle status
+            const currentStatus = JSON.parse(button.data('status'));  // ✅ converts "true"/"false" to boolean
+            const newStatus = !currentStatus;
 
             // Call your API to update the status
             this.toggleStatus(id, newStatus, button, currentStatus);
@@ -53,9 +53,10 @@ export class DoctorList extends AdminBaseComponent implements OnInit, AfterViewI
                               ${newStatus ? '<i class="bi bi-check-circle" style="font-size: 16px;"></i>' : '<i class="bi bi-x-circle" style="font-size: 16px;"></i>'}
                               ${newStatus ? 'Active' : 'Inactive'}
                           `);
-                    button.data('status', newStatus);
+                    //button.data('status', newStatus);
+                    button.attr('data-status', newStatus);
 
-                    $('#post_pharmacylist_datatable').DataTable().ajax.reload();
+                    $('#post_doctorlist_datatable').DataTable().ajax.reload();
 
                 } else {
                     alert('Failed to update the status. Please try again.');
@@ -77,7 +78,7 @@ export class DoctorList extends AdminBaseComponent implements OnInit, AfterViewI
             data: function (d) {
                 return JSON.stringify(d);
             },
-            datasrc: function (json) {
+            dataSrc: function (json) {
                 debugger;
                 console.log('User list API response:', json);
                 return json.data || json;
@@ -91,21 +92,24 @@ export class DoctorList extends AdminBaseComponent implements OnInit, AfterViewI
             { data: 'firstName' },
             { data: 'lastName' },
             { data: 'mobile' },
-            { title: '', 
-                data: null, 
-                orderable: false, 
-                render: (data: any, type: any, row: any) => { 
+            {
+                title: '',
+                data: null,
+                orderable: false,
+                render: (data: any, type: any, row: any) => {
                     return `
                              <span class="edit-user" data-id="${data.personId}"><i class="bi bi-pencil-square cursor-pointer"></i></span>
-                             <button class="btn btn-sm ${row.isLocked ? 'btn-success' : 'btn-danger'} toggle-status-btn" 
+                             <button class="btn btn-sm ${!row.isLocked ? 'btn-success' : 'btn-danger'} toggle-status-btn" 
                               data-id="${row.userId}" data-status="${row.isLocked}" 
-                              title="${!row.isLocked ? 'Deactivate' : 'Activate'}" 
+                              title="${row.isLocked ? 'Deactivate' : 'Activate'}" 
                               style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; 
                               padding: 5px 10px; border-radius: 12px; min-width: 120px;">
-                              ${row.isLocked ? '<i class="bi bi-check-circle" style="font-size: 16px;"></i>' : '<i class="bi bi-x-circle" style="font-size: 16px;"></i>'}
-                              ${row.isLocked ? 'Active' : 'Inactive'}
+                              ${!row.isLocked ? '<i class="bi bi-check-circle" style="font-size: 16px;"></i>' : '<i class="bi bi-x-circle" style="font-size: 16px;"></i>'}
+                              ${!row.isLocked ? 'Active' : 'Inactive'}
                             </button>
-                             `; } },
+                             `;
+                }
+            },
         ],
         //searchInputId: 'post-search-input',
     };
