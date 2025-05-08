@@ -4,6 +4,8 @@ using Microsoft.Extensions.Options;
 using MySqlConnector;
 using RepMed.Core;
 using RepMed.Dtos;
+using RepMed.Dtos.CMSPage;
+using RepMed.Dtos.RolePage;
 using RepMed.Services;
 using RepMed.Web.Controllers.BaseApis;
 using System.Threading.Tasks;
@@ -107,6 +109,26 @@ namespace RepMed.Web.Controllers.WebApis
                         }
                         tran.Commit();
                         return Ok(result);
+                    }
+                }
+            }
+        }
+
+        [Route("getstaticpages")]
+        [HttpPost]
+        public async Task<IActionResult> GetAllStaticPage(CMSPagingRequest reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (ICMSServies cmsService = new CMSServies(db, tran))
+                    {
+                        var result = await cmsService.GetAllStaticPage(reqDto);
+                        if (!result.IsSuccess)
+                            return BadRequest(result);
+                        return Ok(result.Data);
                     }
                 }
             }

@@ -2,6 +2,9 @@
 using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
+using RepMed.Dtos.CMSPage;
+using RepMed.Dtos.DataTables;
+using RepMed.Dtos.RolePage;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,6 +19,7 @@ namespace RepMed.Services
         Task<APIsResponse<EntityStaticPageDto>> AddEditStaticPage(BaseStaticPageDto reqDto, long Id);
         Task<APIsResponse<EntityStaticPageDto>> ChangePageStatus(long Id, bool status);
         Task<APIsResponse<bool>> DeleteStaticPage(long Id);
+        Task<APIsResponse<Datatable<CMSPagingResponse>>> GetAllStaticPage(CMSPagingRequest reqDto);
     }
     public class CMSServies:BaseService, ICMSServies
     {
@@ -110,5 +114,41 @@ namespace RepMed.Services
             }
         }
 
+        public async Task<APIsResponse<Datatable<CMSPagingResponse>>> GetAllStaticPage(CMSPagingRequest reqDto)
+        {
+            try
+            {
+                APIsResponse<Datatable<CMSPagingResponse>> apiResponse = default;
+                string orderBy;
+
+                orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
+                #region Get All Pharmacy 
+                var parameters = new DynamicParameters();
+                parameters.Add("page", reqDto.Page, DbType.Int32);
+                parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
+                parameters.Add("searchText", reqDto.SearchText ?? string.Empty, DbType.String);
+                parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
+                parameters.Add("Order_by", orderBy, DbType.String);
+
+                var result = (await _idbConnection.QueryAsync<CMSPagingResponse>(
+                               sql: "GET_STATIC_PAGES_PAGED",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                )).ToList();
+                #endregion
+                var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
+                var output = new Datatable<CMSPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
+                if (result.Any())
+                    return await Task.FromResult(new APIsSuccsss<Datatable<CMSPagingResponse>>(_validateMessages.RetriveSuccess, output));
+                else
+                    return await Task.FromResult(new APIsSuccsss<Datatable<CMSPagingResponse>>(_validateMessages.NotExist));
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<Datatable<CMSPagingResponse>>(ex.GetActualError()));
+            }
+        }
     }
 }
