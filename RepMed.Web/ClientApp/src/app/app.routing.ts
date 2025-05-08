@@ -26,6 +26,7 @@ import { ProductListsComponent } from './admin/views/product/list.component';
 import { AddRoleComponent } from './admin/views/rolemanage/addrole.component';
 import { RoleListComponent } from './admin/views/rolemanage/rolelist.component';
 import { EditRoleComponent } from './admin/views/rolemanage/roleedit.component';
+import { AboutUSCmsComponent } from './admin/views/CMSmanagement/aboutUs.component';
 
 // pharmacy imports..
 import { PharmacDashboardComponent } from "../app/pharmacy/views/pharmacydashboard/dashboard.component";
@@ -46,6 +47,7 @@ import { PharmacyLayoutComponent } from './_layouts/admin/pharmacy.layout.compon
 
 // Other imports...
 import { DashboardComponent } from "../app/othermodule/dashboard/dashboard.component";
+import { AddDoctorComponent } from './admin/views/doctor/adddoctor.component';
 
 
 
@@ -90,7 +92,11 @@ export const routes: Routes = [
 
       { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService], data: { module: 'admindashboard' } },
 
+      { path: 'doctor/add', component: AddDoctorComponent, canActivate: [AuthGuardService], data: { module: 'doctor' } },
       { path: 'doctor/list', component: DoctorList, canActivate: [AuthGuardService], data: { module: 'doctor' } },
+      { path: 'doctor/edit/:id', component: AddDoctorComponent, canActivate: [AuthGuardService], data: { module: 'doctor' } },
+
+      { path: 'aboutus/add', component: AboutUSCmsComponent, canActivate: [AuthGuardService], data: { module: 'cmsManagement' } }
     ]
   },
 
@@ -111,19 +117,19 @@ export const routes: Routes = [
     component: PharmacyLayoutComponent,
     children: [
       { path: 'pharmacydashboard', component: PharmacDashboardComponent, canActivate: [AuthGuardService], data: { module: 'pharmacydashboard' } },
-      { path: 'purchaseorder', component: PurchaseOrderComponent, canActivate: [AuthGuardService], data: { module: 'purchase' }},
-      { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService], data: { module: 'purchase' }},
+      { path: 'purchaseorder', component: PurchaseOrderComponent, canActivate: [AuthGuardService], data: { module: 'purchase' } },
+      { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService], data: { module: 'purchase' } },
 
-      { path: 'staff/add', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' }},
-      { path: 'staff/edit/:id', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' }},
+      { path: 'staff/add', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' } },
+      { path: 'staff/edit/:id', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' } },
       { path: 'staff/list', component: StaffListComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' } },
 
-      { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService],  data: { module: 'pharmacydashboard' } },
-      { path: 'productlist', component: ProductListsComponent, canActivate: [AuthGuardService], data: {module: 'productlist'} },
+      { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService], data: { module: 'pharmacydashboard' } },
+      { path: 'productlist', component: ProductListsComponent, canActivate: [AuthGuardService], data: { module: 'productlist' } },
 
-      { path: 'role/add', component: PharmacyAddRoleComponent, canActivate: [AuthGuardService], data: {module: 'pharmacyrole'} },
-      { path: 'role/list', component: PharmacyRoleListComponent, canActivate: [AuthGuardService], data: {module: 'pharmacyrole'} },
-      { path: 'role/edit/:id', component: PharmacyEditRoleComponent, canActivate: [AuthGuardService], data: {module: 'pharmacyrole'} },
+      { path: 'role/add', component: PharmacyAddRoleComponent, canActivate: [AuthGuardService], data: { module: 'pharmacyrole' } },
+      { path: 'role/list', component: PharmacyRoleListComponent, canActivate: [AuthGuardService], data: { module: 'pharmacyrole' } },
+      { path: 'role/edit/:id', component: PharmacyEditRoleComponent, canActivate: [AuthGuardService], data: { module: 'pharmacyrole' } },
       { path: 'editpharmacy/:id', component: EditPharmacyComponent, canActivate: [AuthGuardService], data: { module: 'pharmacydashboard' } },
     ]
   },
@@ -131,28 +137,28 @@ export const routes: Routes = [
     path: 'common',
     component: AdminLayoutComponent,
     children: [
-      { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuardService],  data: { module: 'dashboard' }},
+      { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuardService], data: { module: 'dashboard' } },
       { path: 'pharmacy/add', component: AdminAddPharmacyComponent, canActivate: [AuthGuardService], data: { module: 'pharmacy' } },
       { path: 'pharmacy/edit/:id', component: AdminAddPharmacyComponent, canActivate: [AuthGuardService], data: { module: 'pharmacy' } },
       { path: 'pharmacy', component: AdminPharmacyListsComponent, canActivate: [AuthGuardService], data: { module: 'pharmacy' } },
 
-      { path: 'user/add', component: AddUserComponent, canActivate: [AuthGuardService], data: {module: 'user'} },
-      { path: 'user/edit/:id', component: AddUserComponent, canActivate: [AuthGuardService], data: {module: 'dashboard'} },
-      { path: 'user', component: UserListComponent, canActivate: [AuthGuardService], data: {module: 'user'} },
+      { path: 'user/add', component: AddUserComponent, canActivate: [AuthGuardService], data: { module: 'user' } },
+      { path: 'user/edit/:id', component: AddUserComponent, canActivate: [AuthGuardService], data: { module: 'dashboard' } },
+      { path: 'user', component: UserListComponent, canActivate: [AuthGuardService], data: { module: 'user' } },
 
-      { path: 'role/add', component: AddRoleComponent, canActivate: [AuthGuardService], data: {module: 'role'} },
-      { path: 'role/list', component: RoleListComponent, canActivate: [AuthGuardService], data: {module: 'role'} },
-      { path: 'role/edit/:id', component: EditRoleComponent, canActivate: [AuthGuardService], data: {module: 'role'} },
+      { path: 'role/add', component: AddRoleComponent, canActivate: [AuthGuardService], data: { module: 'role' } },
+      { path: 'role/list', component: RoleListComponent, canActivate: [AuthGuardService], data: { module: 'role' } },
+      { path: 'role/edit/:id', component: EditRoleComponent, canActivate: [AuthGuardService], data: { module: 'role' } },
 
-      { path: 'productlist', component: ProductListsComponent, canActivate: [AuthGuardService], data: {module: 'productlist'} },
+      { path: 'productlist', component: ProductListsComponent, canActivate: [AuthGuardService], data: { module: 'productlist' } },
 
-      { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService],  data: { module: 'dashboard' }},
-      
+      { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService], data: { module: 'dashboard' } },
+
       { path: 'doctor/list', component: DoctorList, canActivate: [AuthGuardService], data: { module: 'doctor' } },
 
-      { path: 'purchaseorder', component: PurchaseOrderComponent, canActivate: [AuthGuardService], data: { module: 'purchase' }},
-      { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService], data: { module: 'purchase' }},
-      
+      { path: 'purchaseorder', component: PurchaseOrderComponent, canActivate: [AuthGuardService], data: { module: 'purchase' } },
+      { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService], data: { module: 'purchase' } },
+
       { path: 'purchaseorder', component: PurchaseOrderComponent, canActivate: [AuthGuardService], data: { module: 'purchase' } },
       { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService], data: { module: 'purchase' } },
       { path: 'staff/add', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' } },

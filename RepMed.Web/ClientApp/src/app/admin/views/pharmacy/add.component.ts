@@ -8,7 +8,6 @@ import { Helper } from "../../../common/helper.extenstions";
 import { adminAccountsService } from "../../services/accounts/admin.accountsservice";
 import { AdminPharmacyService } from "../../services/pharmacy/admin.pharmacy.services";
 import { PharmacyDto } from '../../../viewmodels/pharmacy/Pharmacy.add.dto';
-import { AutoValidateDirective } from 'src/app/common/form.validator';
 import { CountryDto } from "../../../viewmodels/address/country.dto";
 import { StateDto } from "../../../viewmodels/address/state.dto";
 import { CityDto } from "../../../viewmodels/address/city.dto";
@@ -16,6 +15,7 @@ import { AdminCommonServices } from '../../services/Common/admin.commonservices'
 import { AfterViewInit } from '@angular/core';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { GoogleMapsService } from '../../../google-maps.services';
+import { AutoValidateDirective } from '../../../common/form.validator';
 declare const window: any;
 
 @Component({

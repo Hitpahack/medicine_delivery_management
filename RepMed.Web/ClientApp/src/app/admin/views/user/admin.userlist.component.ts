@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { RouterModule, Router } from "@angular/router";
 import { FormBuilder } from "@angular/forms";
 import { CustomValidator } from "../../../../app/common/custom.validators";
@@ -13,9 +13,60 @@ declare var $: any;
     imports: [DatatableComponent, RouterModule, CommonModule]
 })
 
-export class UserListComponent extends AdminBaseComponent implements OnInit {
+export class UserListComponent extends AdminBaseComponent implements OnInit, AfterViewInit {
     constructor(public validator: CustomValidator, public router: Router) {
         super();
+    }
+
+    ngAfterViewInit(): void {
+        $(document).off('click', '.toggle-status-btn');
+
+        // Active/Inactive toggle button click handler
+        $(document).on('click', '.toggle-status-btn', (event) => {
+            const button = $(event.currentTarget);
+            const id = $(event.currentTarget).data('id');
+            //const id = button.data('id');
+            console.log('this is active id', id);
+            const currentStatus = button.data('status'); // Current active/inactive status
+            const newStatus = !currentStatus; // Toggle status
+
+            // Call your API to update the status
+            this.toggleStatus(id, newStatus, button, currentStatus);
+        });
+
+    }
+
+    // Method to update the status (Active/Inactive)
+    toggleStatus(id: number, newStatus: boolean, button: any, currentStatus: boolean): void {
+        const apiUrl = `${this.admin_apiconfig.endpoints.user.updateStatus}/${id}?status=${newStatus}`;
+
+        $.ajax({
+            url: apiUrl,
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: (response) => {
+                if (response.isSuccess) {
+                    // Update button UI
+                    button.removeClass(currentStatus ? 'btn-success' : 'btn-danger')
+                        .addClass(newStatus ? 'btn-success' : 'btn-danger')
+                        .attr('title', newStatus ? 'Deactivate' : 'Activate')
+                        .html(`
+                              ${newStatus ? '<i class="bi bi-check-circle" style="font-size: 16px;"></i>' : '<i class="bi bi-x-circle" style="font-size: 16px;"></i>'}
+                              ${newStatus ? 'Active' : 'Inactive'}
+                          `);
+                    button.data('status', newStatus);
+
+                    $('#post_pharmacylist_datatable').DataTable().ajax.reload();
+
+                } else {
+                    alert('Failed to update the status. Please try again.');
+                }
+            },
+            error: () => {
+                alert('Error while updating the status. Please try again.');
+            }
+        });
     }
 
     tableOptions = {
@@ -28,9 +79,9 @@ export class UserListComponent extends AdminBaseComponent implements OnInit {
             data: function (d) {
                 return JSON.stringify(d);
             },
-            datasrc:function (json) {
+            datasrc: function (json) {
                 debugger;
-                console.log('User list API response:', json); 
+                console.log('list API response:', json);
                 return json.data || json;
             }
         },
@@ -42,7 +93,26 @@ export class UserListComponent extends AdminBaseComponent implements OnInit {
             { data: 'firstName' },
             { data: 'lastName' },
             { data: 'mobile' },
-            { title: '', data: null, orderable: false, render: (data: any, type: any, row: any) => { return `<span class="edit-user" data-id="${data.personId}"><i class="bi bi-pencil-square cursor-pointer"></i></span>`; } },
+            {
+                title: '',
+                data: null,
+                orderable: false,
+                render: (data: any, type: any, row: any) => {
+                    return `
+                            <span class="edit-user" data-id="${data.personId}"><i class="bi bi-pencil-square cursor-pointer"></i></span>
+
+                            <button class="btn btn-sm ${row.isLocked ? 'btn-success' : 'btn-danger'} toggle-status-btn" 
+                              data-id="${row.userId}" data-status="${row.isLocked}" 
+                              title="${row.isLocked ? 'Deactivate' : 'Activate'}" 
+                              style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; 
+                              padding: 5px 10px; border-radius: 12px; min-width: 120px;">
+                              ${row.isLocked ? '<i class="bi bi-check-circle" style="font-size: 16px;"></i>' : '<i class="bi bi-x-circle" style="font-size: 16px;"></i>'}
+                              ${row.isLocked ? 'Active' : 'Inactive'}
+                            </button>
+                            
+                            `;
+                }
+            },
         ],
         //searchInputId: 'post-search-input',
     };

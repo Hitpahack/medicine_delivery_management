@@ -53,6 +53,7 @@ export class AdminApiConfigService {
         update: (id: number) => `${v1}/users/edituser/${id}`,
         userroles: `${api}/masters/getroles`,
         list: `${v1}/users/getusers`,
+        updateStatus: `${v1}/users/lockstatus`,
       },
       staff: {
         add: `${v1}/users/adduser/`,
