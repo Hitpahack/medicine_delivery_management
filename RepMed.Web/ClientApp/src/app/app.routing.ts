@@ -26,7 +26,8 @@ import { ProductListsComponent } from './admin/views/product/list.component';
 import { AddRoleComponent } from './admin/views/rolemanage/addrole.component';
 import { RoleListComponent } from './admin/views/rolemanage/rolelist.component';
 import { EditRoleComponent } from './admin/views/rolemanage/roleedit.component';
-import { AboutUSCmsComponent } from './admin/views/CMSmanagement/aboutUs.component';
+import { CmsComponent } from './admin/views/CMSmanagement/cms.component';
+import { PageListComponent } from './admin/views/CMSmanagement/cmslist.component';
 
 // pharmacy imports..
 import { PharmacDashboardComponent } from "../app/pharmacy/views/pharmacydashboard/dashboard.component";
@@ -96,7 +97,9 @@ export const routes: Routes = [
       { path: 'doctor/list', component: DoctorList, canActivate: [AuthGuardService], data: { module: 'doctor' } },
       { path: 'doctor/edit/:id', component: AddDoctorComponent, canActivate: [AuthGuardService], data: { module: 'doctor' } },
 
-      { path: 'aboutus/add', component: AboutUSCmsComponent, canActivate: [AuthGuardService], data: { module: 'cmsManagement' } }
+      { path: 'cms/add', component: CmsComponent, canActivate: [AuthGuardService], data: { module: 'cmsManagement' } },
+      { path: 'cms/edit/:id', component: CmsComponent, canActivate: [AuthGuardService], data: { module: 'cmsManagement' } },
+      { path: 'cms/list', component: PageListComponent, canActivate: [AuthGuardService], data: { module: 'cmsManagement' } },
     ]
   },
 

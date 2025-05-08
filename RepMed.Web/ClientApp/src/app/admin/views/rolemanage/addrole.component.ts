@@ -8,7 +8,7 @@ import { Helper } from "../../../../app/common/helper.extenstions";
 import { RoleService } from "../../services/role/role.services";
 import { ComponentDto } from "../../../viewmodels/role/Component.dto";
 import { AddRoleDto } from "../../../viewmodels/role/role.dto";
-import { AutoValidateDirective } from "src/app/common/form.validator";
+import { AutoValidateDirective } from "../../../common/form.validator";
 declare const window: any;
 
 @Component({

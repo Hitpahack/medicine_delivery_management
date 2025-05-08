@@ -2,8 +2,8 @@ import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { ApiResponse } from "../../../../app/common/api.response";
 import { adminBaseService } from "../admin.baseservice";
-import { AddRoleDto } from "src/app/viewmodels/role/role.dto";
-import { ComponentDto } from "src/app/viewmodels/role/Component.dto";
+import { AddRoleDto } from "../../../viewmodels/role/role.dto";
+import { ComponentDto } from "../../../viewmodels/role/Component.dto";
 
 
 @Injectable({

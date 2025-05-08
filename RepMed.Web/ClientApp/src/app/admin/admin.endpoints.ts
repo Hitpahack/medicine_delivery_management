@@ -91,7 +91,15 @@ export class AdminApiConfigService {
         addSupplier: `${v1}/po/addsupplier`,
         getproduct: `${api}/masters/getproducts`,
         add: `${v1}/po/createpo/`,
-      }
+      },
+      CMS: {
+        add: `${v1}/cms/addstaticpage`,
+        getbyid: (id: number) => `${v1}/cms/getrole/${id}`,
+        edit: (id: number) => `${v1}/cms/editstaticpage/${id}`,
+        list: `${v1}/cms/getstaticpages/`,
+        updateStatus: `${v1}/cms/changestatus`,
+        delete: (id: number) => `${v1}/cms/deletestaticpage/${id}`,
+      },
       
     };
   }
