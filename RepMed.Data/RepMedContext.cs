@@ -70,6 +70,8 @@ public partial class RepMedContext : DbContext
 
     public virtual DbSet<State> States { get; set; }
 
+    public virtual DbSet<Staticpage> Staticpages { get; set; }
+
     public virtual DbSet<Supplier> Suppliers { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
@@ -946,6 +948,32 @@ public partial class RepMedContext : DbContext
             entity.HasOne(d => d.Country).WithMany(p => p.States)
                 .HasForeignKey(d => d.CountryId)
                 .HasConstraintName("states_ibfk_1");
+        });
+
+        modelBuilder.Entity<Staticpage>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("staticpages");
+
+            entity.HasIndex(e => e.Slug, "Slug").IsUnique();
+
+            entity.Property(e => e.Content)
+                .IsRequired()
+                .HasColumnType("text");
+            entity.Property(e => e.CreatedDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Slug)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.Title)
+                .IsRequired()
+                .HasMaxLength(100);
+            entity.Property(e => e.UpdatedDate)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Supplier>(entity =>

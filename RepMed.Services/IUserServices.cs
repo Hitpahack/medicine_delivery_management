@@ -69,6 +69,7 @@ namespace RepMed.Services
                     reqDto.PasswordHash = passHas;
                     reqDto.PasswordSalt = passSalt;
                     reqDto.Status = "Active";
+                    reqDto.IsLocked = false;
                     reqDto.CreatedAt = DateTime.Now;
                     reqDto.UpdatedAt = DateTime.Now;
                     EntityUsersDto response = _idbConnection.Insert<EntityUsersDto>(_idbTransaction,

@@ -78,3 +78,5 @@
 /RepMed.Data/obj/Release/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
 /RepMed.Data/obj/RepMed.Data.csproj.nuget.g.targets
 /RepMed.Data/obj/Debug/net8.0/.NETCoreApp,Version=v8.0.AssemblyAttributes.cs
+/RepMed.Data/obj/RepMed.Data.csproj.EntityFrameworkCore.targets
+/RepMed.Data/obj/Debug/net8.0/RepMed.Data.csproj.BuildWithSkipAnalyzers

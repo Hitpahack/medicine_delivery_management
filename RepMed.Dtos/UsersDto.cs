@@ -12,12 +12,13 @@ namespace RepMed.Dtos
         public long PersonId { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
+        public bool IsLocked { get; set; }
+
     }
 
     public class EntityUsersDto : BasicUsersDto
     {
         public long Id { get; set; }
-        public bool IsLocked { get; set; }
         public bool IsDeleted { get; set; }
         public BasicPersonsDto Person { get; set; }
         public IEnumerable<EntityRoleDto> Roles { get; set; }
