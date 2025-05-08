@@ -19,7 +19,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         }
                 
-        [HttpPost("static/contact")]
+        [HttpPost("addstaticpage")]
         public async Task<IActionResult> CreateContactStaticPage(BaseStaticPageDto dto)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
@@ -29,7 +29,77 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (ICMSServies cmsService = new CMSServies(db, tran))
                     {
-                        var result = await cmsService.CreateStaticPage(dto);
+                        var result = await cmsService.AddEditStaticPage(dto,0);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+        [HttpPost("editstaticpage/{Id}")]
+        public async Task<IActionResult> EditContactStaticPage(BaseStaticPageDto dto,long Id)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (ICMSServies cmsService = new CMSServies(db, tran))
+                    {
+                        var result = await cmsService.AddEditStaticPage(dto, Id);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
+        [Route("changestatus/{Id}")]
+        [HttpPost]
+        public async Task<IActionResult> ChangeStatus(long Id, bool status)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (ICMSServies cmsService = new CMSServies(db, tran))
+                    {
+                        var result = await cmsService.ChangePageStatus(Id, status);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
+        [Route("deletestaticpage/{Id}")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteStaticPage(long Id)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (ICMSServies cmsService = new CMSServies(db, tran))
+                    {
+                        var result = await cmsService.DeleteStaticPage(Id);
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();

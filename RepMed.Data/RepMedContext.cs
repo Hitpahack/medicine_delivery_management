@@ -964,6 +964,9 @@ public partial class RepMedContext : DbContext
             entity.Property(e => e.CreatedDate)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'");
+            entity.Property(e => e.MetaContext).HasColumnType("text");
+            entity.Property(e => e.MetaTitle).HasMaxLength(255);
             entity.Property(e => e.Slug)
                 .IsRequired()
                 .HasMaxLength(100);
