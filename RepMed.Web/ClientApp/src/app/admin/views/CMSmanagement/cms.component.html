@@ -5,18 +5,18 @@
             <div class="form-grid">
                 <!-- Title -->
                 <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder=" " formControlName="title" maxlength="100">
+                    <input type="text" class="form-control" placeholder=" " formControlName="title" maxlength="100" required>
                     <label class="float-lbl">Title *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder=" " formControlName="slug" maxlength="100">
+                    <input type="text" class="form-control" placeholder=" " formControlName="slug" maxlength="100" required>
                     <label class="float-lbl">Slug *</label>
                 </div>
             </div>
             <div class="form-grid">
                 <!-- Description with CKEditor -->
                 <div class="input-group mb-4 float w-100">
-                    <ckeditor [editor]="Editor" formControlName="content" style="width: 100%;"></ckeditor>
+                    <ckeditor [editor]="Editor" formControlName="content" style="width: 100%;" ></ckeditor>
                     <label class="float-lbl">Description *</label>
                 </div>
             </div>

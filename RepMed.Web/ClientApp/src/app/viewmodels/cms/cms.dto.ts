@@ -1,4 +1,4 @@
-export interface CMSSDto {
+export interface CMSDto {
     title: string;
     slug: string;
     content: string;

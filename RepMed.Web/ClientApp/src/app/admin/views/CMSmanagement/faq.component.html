@@ -1,0 +1,27 @@
+<div class="authentication">
+    <form class="auth_form form_validation" appAutoValidate [formGroup]="FAQForm" (ngSubmit)="onSubmit()">
+        <fieldset>
+            <legend>{{ pageTitle }}</legend>
+            <div class="form-grid">
+                <!-- Title -->
+                <div class="input-group mb-4 float">
+                    <input type="text" class="form-control" placeholder=" " formControlName="Question" maxlength="200" required>
+                    <label class="float-lbl">Question *</label>
+                </div>
+            </div>
+            <div class="form-grid">
+                <!-- Description with CKEditor -->
+                <div class="input-group mb-4 float w-100">
+                    <ckeditor [editor]="Editor" formControlName="Answer" style="width: 100%;"></ckeditor>
+                    <label class="float-lbl">Answer *</label>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="row justify-content-end">
+            <div class="col-sm-1">
+                <button class="btn custom-btn" type="submit">Save</button>
+            </div>
+        </div>
+    </form>
+</div>

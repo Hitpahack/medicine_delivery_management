@@ -94,11 +94,19 @@ export class AdminApiConfigService {
       },
       CMS: {
         add: `${v1}/cms/addstaticpage`,
-        getbyid: (id: number) => `${v1}/cms/getrole/${id}`,
+        getbyid: (id: number) => `${v1}/cms/getstaticpage/${id}`,
         edit: (id: number) => `${v1}/cms/editstaticpage/${id}`,
         list: `${v1}/cms/getstaticpages/`,
         updateStatus: `${v1}/cms/changestatus`,
         delete: (id: number) => `${v1}/cms/deletestaticpage/${id}`,
+      },
+      FAQ: {
+        add: `${v1}/faq/addfaq`,
+        getbyid: (id: number) => `${v1}/faq/getfaq/${id}`,
+        edit: (id: number) => `${v1}/faq/editfaq/${id}`,
+        list: `${v1}/faq/getfaqs/`,
+        updateStatus: `${v1}/faq/changestatus`,
+        delete: (id: number) => `${v1}/faq/deletefaq/${id}`,
       },
       
     };

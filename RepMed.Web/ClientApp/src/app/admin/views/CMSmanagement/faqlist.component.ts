@@ -6,19 +6,19 @@ import { CustomValidator } from "../../../../app/common/custom.validators";
 import { AdminBaseComponent } from '../../admin.base.component';
 import { DatatableComponent } from '../../shared/datatables/datatable.component';
 import { Helper } from "../../../../app/common/helper.extenstions";
-import { CMSService } from '../../services/cms/cms.services';
+import { FAQService } from '../../services/cms/faq.services';
 import { Title } from '@angular/platform-browser';
 
 declare var $: any;
 
 @Component({
-    selector: 'app-Role-list',
-    templateUrl: './cmslist.component.html',
+    selector: 'app-FAQ-list',
+    templateUrl: './faqlist.component.html',
     imports: [DatatableComponent, RouterModule]
 })
 
-export class PageListComponent extends AdminBaseComponent implements OnInit, AfterViewInit {
-    constructor(public validator: CustomValidator, public CMSService: CMSService) {
+export class FAQListComponent extends AdminBaseComponent implements OnInit, AfterViewInit {
+    constructor(public validator: CustomValidator, public FAQService: FAQService) {
         super();
     }
 
@@ -26,11 +26,11 @@ export class PageListComponent extends AdminBaseComponent implements OnInit, Aft
         $(document).off('click', '.edit-page');
         $(document).off('click', '.toggle-status-btn');
         $(document).off('click', '.delete-page');
-    
+
 
         $(document).on('click', '.edit-page', (event) => {
             const id = $(event.currentTarget).data('id');
-            this.router.navigate(['/admin/cms/edit', id]);
+            this.router.navigate(['/admin/faq/edit', id]);
             // Here you can navigate or open a popup
         });
 
@@ -55,7 +55,7 @@ export class PageListComponent extends AdminBaseComponent implements OnInit, Aft
 
     // Method to update the status (Active/Inactive)
     toggleStatus(id: number, newStatus: boolean, button: any, currentStatus: boolean): void {
-        const apiUrl = `${this.admin_apiconfig.endpoints.CMS.updateStatus}/${id}?status=${newStatus}`;
+        const apiUrl = `${this.admin_apiconfig.endpoints.FAQ.updateStatus}/${id}?status=${newStatus}`;
 
         $.ajax({
             url: apiUrl,
@@ -74,7 +74,7 @@ export class PageListComponent extends AdminBaseComponent implements OnInit, Aft
                           `);
                     button.data('status', newStatus);
 
-                    $('#post_pagelist_datatable').DataTable().ajax.reload();
+                    $('#post_faqlist_datatable').DataTable().ajax.reload();
 
                 } else {
                     alert('Failed to update the status. Please try again.');
@@ -89,9 +89,9 @@ export class PageListComponent extends AdminBaseComponent implements OnInit, Aft
 
 
     tableOptions = {
-        tableId: 'post_pagelist_datatable',
+        tableId: 'post_faqlist_datatable',
         ajax: {
-            url: this.admin_apiconfig.endpoints.CMS.list,
+            url: this.admin_apiconfig.endpoints.FAQ.list,
             type: "POST",
             contentType: "application/json; charset=utf-8",
             dataType: "json", // Expect JSON response
@@ -111,13 +111,16 @@ export class PageListComponent extends AdminBaseComponent implements OnInit, Aft
                 orderable: false,
                 searchable: false
             },
-            { data: 'title' },
-            { data: 'content' },
+            { data: 'question' },
+            { data: 'answer' },
             {
                 data: null,
                 Title: 'Action',
                 orderable: false,
                 searchable: false,
+                responsive: true, // add this
+                scrollX: false,   // force horizontal scroll ko disable karo
+                autoWidth: false, // prevent auto width
                 render: (data, type, row) => {
                     return `
                         <button class="btn btn-sm btn-primary edit-page" data-id="${row.id}" title="Edit" style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; border-radius: 12px;">
@@ -145,15 +148,15 @@ export class PageListComponent extends AdminBaseComponent implements OnInit, Aft
     };
 
     onDelete(id: number): void {
-        if (confirm('Are you sure you want to delete this Page?')) {
+        if (confirm('Are you sure you want to delete this FAQ?')) {
             // Call the deleteRole method from the service
-            this.CMSService.delete(id).subscribe({
+            this.FAQService.delete(id).subscribe({
                 next: (response) => {
                     if (response?.isSuccess) {
                         // Show success message
-                        Helper.ShowSuccess(response.message || 'Page deleted successfully');
+                        Helper.ShowSuccess(response.message || 'FAQ deleted successfully');
                         // Optionally reload the DataTable
-                        $('#post_pagelist_datatable').DataTable().ajax.reload();
+                        $('#post_faqlist_datatable').DataTable().ajax.reload();
                     } else {
                         // Show error message if deletion failed
                         Helper.ShowError(response.message || 'Failed to delete the item');
@@ -168,7 +171,7 @@ export class PageListComponent extends AdminBaseComponent implements OnInit, Aft
             });
         }
     }
-    
+
     ngOnInit(): void {
 
 

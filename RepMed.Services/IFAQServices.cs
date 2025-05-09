@@ -131,7 +131,7 @@ namespace RepMed.Services
                 parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
                 parameters.Add("Order_by", orderBy, DbType.String);
 
-                var result = (await _idbConnection.QueryAsync<CMSPagingResponse>(
+                var result = (await _idbConnection.QueryAsync<FAQPagingResponse>(
                                sql: "GET_FAQ_PAGED",
                                param: parameters,
                                commandType: CommandType.StoredProcedure,
@@ -139,7 +139,7 @@ namespace RepMed.Services
                 )).ToList();
                 #endregion
                 var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
-                var output = new Datatable<CMSPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
+                var output = new Datatable<FAQPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
                 if (result.Any())
                     return await Task.FromResult(new APIsSuccsss<Datatable<FAQPagingResponse>>(_validateMessages.RetriveSuccess, output));
                 else

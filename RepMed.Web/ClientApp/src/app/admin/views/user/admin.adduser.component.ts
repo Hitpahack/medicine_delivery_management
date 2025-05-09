@@ -217,6 +217,10 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
   }
 
   onSubmit() {
+    if (this.addUserForm.invalid) {
+      this.validator.markInvalidFieldsTouched(this.addUserForm);
+      return;
+    }
     if (this.userId && this.userId !== 0) {
       this.adminuserservice.edituser(this.editUserForm.value, this.userId).subscribe({
         next: (response) => {
