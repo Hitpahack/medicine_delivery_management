@@ -28,6 +28,8 @@ public partial class RepMedContext : DbContext
 
     public virtual DbSet<Deliveryperson> Deliverypersons { get; set; }
 
+    public virtual DbSet<Faq> Faqs { get; set; }
+
     public virtual DbSet<Order> Orders { get; set; }
 
     public virtual DbSet<Orderdetail> Orderdetails { get; set; }
@@ -244,6 +246,26 @@ public partial class RepMedContext : DbContext
             entity.HasOne(d => d.User).WithMany(p => p.Deliverypeople)
                 .HasForeignKey(d => d.UserId)
                 .HasConstraintName("deliverypersons_ibfk_1");
+        });
+
+        modelBuilder.Entity<Faq>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("faqs");
+
+            entity.Property(e => e.Answer).IsRequired();
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.IsActive).HasDefaultValueSql("'1'");
+            entity.Property(e => e.Question)
+                .IsRequired()
+                .HasColumnType("text");
+            entity.Property(e => e.UpdatedAt)
+                .ValueGeneratedOnAddOrUpdate()
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
         });
 
         modelBuilder.Entity<Order>(entity =>
