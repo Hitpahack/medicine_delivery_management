@@ -132,7 +132,7 @@ namespace RepMed.Services
                 parameters.Add("Order_by", orderBy, DbType.String);
 
                 var result = (await _idbConnection.QueryAsync<CMSPagingResponse>(
-                               sql: "GET_STATIC_PAGES_PAGED",
+                               sql: "GET_FAQ_PAGED",
                                param: parameters,
                                commandType: CommandType.StoredProcedure,
                                transaction: _idbTransaction
