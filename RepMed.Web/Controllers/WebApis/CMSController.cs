@@ -134,5 +134,29 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
+        [Route("getstaticpage/{Id}")]
+        [HttpPost]
+        public async Task<IActionResult> GetStaticPage(long Id)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (ICMSServies cmsService = new CMSServies(db, tran))
+                    {
+                        var result = await cmsService.GetStaticPage(Id);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
     }
 }

@@ -20,6 +20,7 @@ namespace RepMed.Services
         Task<APIsResponse<EntityStaticPageDto>> ChangePageStatus(long Id, bool status);
         Task<APIsResponse<bool>> DeleteStaticPage(long Id);
         Task<APIsResponse<Datatable<CMSPagingResponse>>> GetAllStaticPage(CMSPagingRequest reqDto);
+        Task<APIsResponse<EntityStaticPageDto>> GetStaticPage(long Id);
     }
     public class CMSServies:BaseService, ICMSServies
     {
@@ -148,6 +149,29 @@ namespace RepMed.Services
             catch (Exception ex)
             {
                 return await Task.FromResult(new APIsError<Datatable<CMSPagingResponse>>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<EntityStaticPageDto>> GetStaticPage(long Id)
+        {
+            try
+            {
+                var sql = DbTables.tblStaticPages.SelectAll($@"{nameof(EntityStaticPageDto.Id)}= {Id}");
+                var result = await _idbConnection.QueryFirstOrDefaultAsync<EntityStaticPageDto>(
+                               sql,
+                               transaction: _idbTransaction
+                           );
+
+               
+                if (result == null)
+                    return new APIsError<EntityStaticPageDto>(_validateMessages.NotExist);
+                else
+                    return new APIsSuccsss<EntityStaticPageDto>(_validateMessages.RetriveSuccess, result);
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<EntityStaticPageDto>(ex.GetActualError()));
             }
         }
     }
