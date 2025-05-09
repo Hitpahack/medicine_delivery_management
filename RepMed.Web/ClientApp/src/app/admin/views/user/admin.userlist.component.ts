@@ -99,18 +99,19 @@ export class UserListComponent extends AdminBaseComponent implements OnInit, Aft
                 orderable: false,
                 render: (data: any, type: any, row: any) => {
                     return `
-                            <button class="btn btn-sm btn-primary edit-user" data-id="${data.personId}" title="Edit" style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; border-radius: 12px;">
-                            <i class="bi bi-pencil-square" style="font-size: 16px;"></i>
-                            </button>
+                             <button class="btn btn-sm btn-primary edit-user" data-id="${data.personId}" title="Edit" style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; border-radius: 12px;">
+                             <i class="bi bi-pencil-square" style="font-size: 16px;"></i>
+                             </button>
 
-                            <button class="btn btn-sm ${row.isLocked ? 'btn-success' : 'btn-danger'} toggle-status-btn" 
+                             <button class="btn btn-sm ${!row.isLocked ? 'btn-success' : 'btn-danger'} toggle-status-btn" 
                               data-id="${row.userId}" data-status="${row.isLocked}" 
                               title="${row.isLocked ? 'Deactivate' : 'Activate'}" 
                               style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; 
                               padding: 5px 10px; border-radius: 12px; min-width: 120px;">
-                              ${row.isLocked ? '<i class="bi bi-check-circle" style="font-size: 16px;"></i>' : '<i class="bi bi-x-circle" style="font-size: 16px;"></i>'}
-                              ${row.isLocked ? 'Active' : 'Inactive'}
+                              ${!row.isLocked ? '<i class="bi bi-check-circle" style="font-size: 16px;"></i>' : '<i class="bi bi-x-circle" style="font-size: 16px;"></i>'}
+                              ${!row.isLocked ? 'Active' : 'Inactive'}
                             </button>
+
                             
                             `;
                 }
