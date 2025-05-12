@@ -253,7 +253,7 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
         next: (response) => {
           if (response.isSuccess) {
             Helper.ShowSuccess(response.message || 'user added successfully.');
-            this.router.navigate(['/admin/user/add']);
+            this.router.navigate(['/admin/user']);
           } else {
             console.error('API returned isSuccess: false');
             this.errorMessage = response.message || 'Failed to add user.';
