@@ -5,6 +5,7 @@ using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
 using RepMed.Dtos.POPage;
+using RepMed.Dtos.ShortBookPage;
 using RepMed.Services;
 using RepMed.Web.Controllers.BaseApis;
 using System.Threading.Tasks;
@@ -208,6 +209,27 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
+        [Route("get_items")]
+        [HttpPost]
+        public async Task<IActionResult> GetShortBookItems(ShortbookPagingRequest reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.GetShortBookItems(reqDto);
+                        if (!result.IsSuccess)
+                        {
+                            return BadRequest(result);
+                        }
+                        return Ok(result);
+                    }
+                }
+            }
+        }
 
     }
 }

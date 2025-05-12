@@ -13,6 +13,7 @@ using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using System.Threading.Tasks;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
+using RepMed.Dtos.ShortBookPage;
 
 namespace RepMed.Services
 {
@@ -22,6 +23,7 @@ namespace RepMed.Services
         Task<APIsResponse<EntityShortbookDto>> AddEditItem(BaseShortbookDto reqDto, long Id);
         Task<APIsResponse<EntitySupplierDto>> AddSupplier(BaseSupplierDto reqDto);
         Task<APIsResponse<Datatable<POPagingResponse>>> GetAllPO(POPagingRequest reqDto);
+        Task<APIsResponse<Datatable<ShortbookPagingResponse>>> GetShortBookItems(ShortbookPagingRequest reqDto);
         Task<APIsResponse<NextPoNumberDto>> GetNextPONumber(long pharmacyId);
         Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId);
         Task<APIsResponse<POPdfContentDto>> GetPOPdfDetails(long poId);
@@ -407,6 +409,46 @@ namespace RepMed.Services
             catch (Exception ex)
             {
                 return await Task.FromResult(new APIsError<IEnumerable<EntityProductDto>>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<Datatable<ShortbookPagingResponse>>> GetShortBookItems(ShortbookPagingRequest reqDto)
+        {
+            try
+            {
+                APIsResponse<Datatable<ShortbookPagingResponse>> apiResponse = default;
+                string orderBy;
+                if (reqDto.Order[0].Column == 0)
+                    orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|desc";
+                else
+                    orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
+                #region Get All PO 
+                var parameters = new DynamicParameters();
+                parameters.Add("page", reqDto.Page, DbType.Int32);
+                parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
+                parameters.Add("pharmacyId", reqDto.PharmacyId, DbType.Int32);
+                parameters.Add("searchText", reqDto.SearchText ?? string.Empty, DbType.String);
+                parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
+                parameters.Add("Order_by", orderBy, DbType.String);
+
+                var result = (await _idbConnection.QueryAsync<ShortbookPagingResponse>(
+                               sql: "GET_SHORTBOOK_PAGED",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                )).ToList();
+                #endregion
+                var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
+                var output = new Datatable<ShortbookPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
+                if (result.Any())
+                    return await Task.FromResult(new APIsSuccsss<Datatable<ShortbookPagingResponse>>(_validateMessages.RetriveSuccess, output));
+                else
+                    return await Task.FromResult(new APIsSuccsss<Datatable<ShortbookPagingResponse>>(_validateMessages.NotExist));
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<Datatable<ShortbookPagingResponse>>(ex.GetActualError()));
             }
         }
     }
