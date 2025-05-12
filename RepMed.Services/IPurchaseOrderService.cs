@@ -12,18 +12,21 @@ using QuestPDF.Fluent;
 using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using System.Threading.Tasks;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace RepMed.Services
 {
     public interface IPurchaseOrderService : IDisposable
     {
         Task<APIsResponse<CreatePODto>> CreatePO(CreatePODto reqDto);
+        Task<APIsResponse<EntityShortbookDto>> AddEditItem(BaseShortbookDto reqDto, long Id);
         Task<APIsResponse<EntitySupplierDto>> AddSupplier(BaseSupplierDto reqDto);
         Task<APIsResponse<Datatable<POPagingResponse>>> GetAllPO(POPagingRequest reqDto);
         Task<APIsResponse<NextPoNumberDto>> GetNextPONumber(long pharmacyId);
         Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId);
         Task<APIsResponse<POPdfContentDto>> GetPOPdfDetails(long poId);
         Task<APIsResponse<List<GetPOItemsDto>>> GetPOItems(long poId);
+        Task<APIsResponse<IEnumerable<EntityProductDto>>> SearchProducts(string search);
         Task<APIsResponse<byte[]>> Generate(POPdfContentDto po, List<GetPOItemsDto> items);
     }
     public class PurchaseOrderService : BaseService, IPurchaseOrderService
@@ -58,64 +61,6 @@ namespace RepMed.Services
             }
         }
 
-        public async Task<APIsResponse<CreatePODto>> CreatePO(CreatePODto reqDto)
-        {
-            try
-            {
-                APIsResponse<Datatable<CreatePODto>> apiResponse = default;
-                var items = reqDto.Items
-                   .Select(i => new
-                   {
-                       i.ProductId, 
-                       i.Quantity,
-                       i.UnitPrice,
-                       i.Unit,
-                       TotalPrice = i.Quantity * i.UnitPrice
-                   }).ToList();
-                decimal subTotal = items.Sum(x => x.TotalPrice);
-                if (reqDto.PO.TotalAmount == subTotal)
-                    reqDto.PO.TotalAmount = subTotal;
-                else
-                    return new APIsError<CreatePODto>("invalid calucalation detected");
-                reqDto.PO.CreatedAt = DateTime.Now;
-                reqDto.PO.OrderDate = DateTime.Now;
-                reqDto.PO.Status = "Pending";
-                #region Insert Purchase Orders
-                var insertPo = _idbConnection.Insert<EntityPODto>(_idbTransaction,
-                                   DbTables.tblPurchaseOrders,
-                                   DapperHelper.QueryAsColumnsParma<Purchaseorder, BasePODto>(),
-                                   DapperHelper.QueryAsValuesParma<Purchaseorder, BasePODto>(),
-                                   reqDto.PO);
-                #endregion
-
-                if (insertPo != null)
-                {
-                    List<EntityPOItemDto> list = new List<EntityPOItemDto>(); ;
-                    foreach (var item in reqDto.Items)
-                    {
-                        item.PurchaseOrderId = insertPo.Id;
-                        item.TotalPrice = item.Quantity * item.UnitPrice;
-                        item.CreatedAt = DateTime.Now;
-                        var insertItem = _idbConnection.Insert<EntityPOItemDto>(_idbTransaction,
-                                  DbTables.tblPurchaseOrderItems,
-                                  DapperHelper.QueryAsColumnsParma<Purchaseorderitem, BasePOItemDto>(),
-                                  DapperHelper.QueryAsValuesParma<Purchaseorderitem, BasePOItemDto>(),
-                                  item);
-                        list.Add(insertItem);
-                    }
-                    return new APIsSuccsss<CreatePODto>(_validateMessages.AddSuccess, reqDto);
-                }
-                else
-                {
-                    return new APIsError<CreatePODto>("Error inserting the purchase order");
-                }
-
-            }
-            catch (Exception ex)
-            {
-                return await Task.FromResult(new APIsError<CreatePODto>(ex.GetActualError()));
-            }
-        }
 
         public void Dispose()
         {
@@ -178,7 +123,7 @@ namespace RepMed.Services
             try
             {
                 APIsResponse<NextPoNumberDto> apiResponse = default;
-                if(await IsPharmacyExist(pharmacyId))
+                if (await IsPharmacyExist(pharmacyId))
                 {
                     return new APIsError<NextPoNumberDto>("Pharmacy not found");
                 }
@@ -354,9 +299,115 @@ namespace RepMed.Services
                 return Task.FromResult<APIsResponse<byte[]>>(new APIsSuccsss<byte[]>(ex.GetActualError()));
             }
         }
+        public async Task<APIsResponse<CreatePODto>> CreatePO(CreatePODto reqDto)
+        {
+            try
+            {
+                APIsResponse<CreatePODto> apiResponse = default;
+                var items = reqDto.Items
+                   .Select(i => new
+                   {
+                       i.ProductId,
+                       i.Quantity,
+                       i.UnitPrice,
+                       i.Unit,
+                       TotalPrice = i.Quantity * i.UnitPrice
+                   }).ToList();
+                decimal subTotal = items.Sum(x => x.TotalPrice);
+                if (reqDto.PO.TotalAmount == subTotal)
+                    reqDto.PO.TotalAmount = subTotal;
+                else
+                    return new APIsError<CreatePODto>("invalid calucalation detected");
+                reqDto.PO.CreatedAt = DateTime.Now;
+                reqDto.PO.OrderDate = DateTime.Now;
+                reqDto.PO.Status = "Pending";
+                #region Insert Purchase Orders
+                var insertPo = _idbConnection.Insert<EntityPODto>(_idbTransaction,
+                                   DbTables.tblPurchaseOrders,
+                                   DapperHelper.QueryAsColumnsParma<Purchaseorder, BasePODto>(),
+                                   DapperHelper.QueryAsValuesParma<Purchaseorder, BasePODto>(),
+                                   reqDto.PO);
+                #endregion
 
+                if (insertPo != null)
+                {
+                    List<EntityPOItemDto> list = new List<EntityPOItemDto>(); ;
+                    foreach (var item in reqDto.Items)
+                    {
+                        item.PurchaseOrderId = insertPo.Id;
+                        item.TotalPrice = item.Quantity * item.UnitPrice;
+                        item.CreatedAt = DateTime.Now;
+                        var insertItem = _idbConnection.Insert<EntityPOItemDto>(_idbTransaction,
+                                  DbTables.tblPurchaseOrderItems,
+                                  DapperHelper.QueryAsColumnsParma<Purchaseorderitem, BasePOItemDto>(),
+                                  DapperHelper.QueryAsValuesParma<Purchaseorderitem, BasePOItemDto>(),
+                                  item);
+                        list.Add(insertItem);
+                    }
+                    return new APIsSuccsss<CreatePODto>(_validateMessages.AddSuccess, reqDto);
+                }
+                else
+                {
+                    return new APIsError<CreatePODto>("Error inserting the purchase order");
+                }
 
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<CreatePODto>(ex.GetActualError()));
+            }
+        }
 
+        public async Task<APIsResponse<EntityShortbookDto>> AddEditItem(BaseShortbookDto reqDto, long Id)
+        {
+            try
+            {
+                APIsResponse<EntityShortbookDto> apiResponse = default;
+                if (Id == 0)
+                {
+                    #region Insert ShortBook Item
+                    var insertShortbook = _idbConnection.Insert<EntityShortbookDto>(_idbTransaction,
+                                       DbTables.tblShortBook,
+                                       DapperHelper.QueryAsColumnsParma<Shortbook, BaseShortbookDto>(),
+                                       DapperHelper.QueryAsValuesParma<Shortbook, BaseShortbookDto>(),
+                                       reqDto);
+                    #endregion
+                    apiResponse = new APIsSuccsss<EntityShortbookDto>("Item added to shortbook", insertShortbook);
+                }
+                else
+                {
+                    #region Update ShortBook Item
+                    EntityShortbookDto entityRoleDto = _idbConnection.Update<EntityShortbookDto>(_idbTransaction, DbTables.tblShortBook,
+                    new Dictionary<string, object> {
+                    { nameof(EntityShortbookDto.SupplierId), reqDto.SupplierId},
+                    { nameof(EntityShortbookDto.Priority), reqDto.Priority},
+                    { nameof(EntityShortbookDto.Quantity), reqDto.Quantity},
+                    { nameof(EntityShortbookDto.Status), reqDto.Status}
+                    }, $@" {nameof(EntityShortbookDto.Id)}='{Id}' ", "RETURNING *");
+                    #endregion 
 
+                    apiResponse = new APIsSuccsss<EntityShortbookDto>("Shortbook item Updated Successfully");
+                }
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<EntityShortbookDto>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<IEnumerable<EntityProductDto>>> SearchProducts(string search)
+        {
+            try
+            {
+                var query = DbTables.tblProduct.SelectAll("Name LIKE @SearchTerm ORDER BY Name ASC LIMIT 20;");
+                var result = await _idbConnection.QueryAsync<EntityProductDto>(query, new { SearchTerm = $"%{search}%" },_idbTransaction);
+                return new APIsSuccsss<IEnumerable<EntityProductDto>>("Item added to shortbook", result);
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<IEnumerable<EntityProductDto>>(ex.GetActualError()));
+            }
+        }
     }
 }

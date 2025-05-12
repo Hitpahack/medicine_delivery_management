@@ -30,4 +30,6 @@ public partial class Supplier
     public virtual ICollection<Purchaseinvoice> Purchaseinvoices { get; set; } = new List<Purchaseinvoice>();
 
     public virtual ICollection<Purchaseorder> Purchaseorders { get; set; } = new List<Purchaseorder>();
+
+    public virtual ICollection<Shortbook> Shortbooks { get; set; } = new List<Shortbook>();
 }

@@ -75,6 +75,8 @@ public partial class Pharmacy
 
     public virtual ICollection<Settlement> Settlements { get; set; } = new List<Settlement>();
 
+    public virtual ICollection<Shortbook> Shortbooks { get; set; } = new List<Shortbook>();
+
     public virtual State State { get; set; }
 
     public virtual ICollection<Supplier> Suppliers { get; set; } = new List<Supplier>();

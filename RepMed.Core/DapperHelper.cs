@@ -382,6 +382,7 @@ namespace RepMed.Core
         public const string tblPharmacyStockLedger = "`PharmacyStockLedger`";
         public const string tblStaticPages = "`StaticPages`";
         public const string tblFAQ = "`Faqs`";
+        public const string tblShortBook = "`ShortBook`";
     }
 
 

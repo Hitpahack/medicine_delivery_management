@@ -20,6 +20,29 @@ namespace RepMed.Web.Controllers.WebApis
         {
 
         }
+        [Route("add_item")]
+        [HttpPost]
+        public async Task<IActionResult> AddItem(BaseShortbookDto reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.AddEditItem(reqDto,0);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
 
         [Route("createpo")]
         [HttpPost]
@@ -163,6 +186,28 @@ namespace RepMed.Web.Controllers.WebApis
             }
             
         }
+
+        [HttpGet("search_products")]
+        public async Task<IActionResult> SearchProducts(string search)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.SearchProducts(search);
+                        if (!result.IsSuccess)
+                        {
+                            return BadRequest(result);
+                        }
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
 
     }
 }

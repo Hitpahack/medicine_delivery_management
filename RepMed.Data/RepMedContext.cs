@@ -70,6 +70,8 @@ public partial class RepMedContext : DbContext
 
     public virtual DbSet<Settlement> Settlements { get; set; }
 
+    public virtual DbSet<Shortbook> Shortbooks { get; set; }
+
     public virtual DbSet<State> States { get; set; }
 
     public virtual DbSet<Staticpage> Staticpages { get; set; }
@@ -953,6 +955,43 @@ public partial class RepMedContext : DbContext
             entity.HasOne(d => d.Pharmacy).WithMany(p => p.Settlements)
                 .HasForeignKey(d => d.PharmacyId)
                 .HasConstraintName("admintopharmacysettlements_ibfk_1");
+        });
+
+        modelBuilder.Entity<Shortbook>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PRIMARY");
+
+            entity.ToTable("shortbook");
+
+            entity.HasIndex(e => e.PharmacyId, "PharmacyId");
+
+            entity.HasIndex(e => e.ProductId, "ProductId");
+
+            entity.HasIndex(e => e.SupplierId, "shortbook_ibfk_3");
+
+            entity.Property(e => e.AddedDate)
+                .HasDefaultValueSql("CURRENT_TIMESTAMP")
+                .HasColumnType("datetime");
+            entity.Property(e => e.Priority)
+                .HasDefaultValueSql("'Low'")
+                .HasColumnType("enum('Low','High')");
+            entity.Property(e => e.Status)
+                .HasDefaultValueSql("'Pending'")
+                .HasColumnType("enum('Pending','Ordered','Delivered')");
+
+            entity.HasOne(d => d.Pharmacy).WithMany(p => p.Shortbooks)
+                .HasForeignKey(d => d.PharmacyId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("shortbook_ibfk_2");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.Shortbooks)
+                .HasForeignKey(d => d.ProductId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("shortbook_ibfk_1");
+
+            entity.HasOne(d => d.Supplier).WithMany(p => p.Shortbooks)
+                .HasForeignKey(d => d.SupplierId)
+                .HasConstraintName("shortbook_ibfk_3");
         });
 
         modelBuilder.Entity<State>(entity =>

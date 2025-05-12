@@ -24,4 +24,6 @@ public partial class Product
     public virtual ICollection<Purchaseinvoiceitem> Purchaseinvoiceitems { get; set; } = new List<Purchaseinvoiceitem>();
 
     public virtual ICollection<Purchaseorderitem> Purchaseorderitems { get; set; } = new List<Purchaseorderitem>();
+
+    public virtual ICollection<Shortbook> Shortbooks { get; set; } = new List<Shortbook>();
 }
