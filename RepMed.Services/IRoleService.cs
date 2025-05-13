@@ -75,6 +75,7 @@ namespace RepMed.Services
                     EntityRoleDto entityRoleDto = _idbConnection.Update<EntityRoleDto>(_idbTransaction, DbTables.tblRole,
                     new Dictionary<string, object> {
                     { nameof(EntityRoleDto.UpdatedAt), DateTime.Now },
+                    { nameof(EntityRoleDto.RoleName), reqDto.RoleName},
                     { nameof(EntityRoleDto.Description), reqDto.Description},
                     }, $@" {nameof(EntityRoleDto.Id)}='{Id}' ", "RETURNING *");
                     #endregion 
