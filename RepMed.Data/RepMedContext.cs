@@ -1082,6 +1082,8 @@ public partial class RepMedContext : DbContext
 
             entity.HasIndex(e => e.PersonId, "PersonId");
 
+            entity.HasIndex(e => e.PharmacyId, "users_ifbk_2_idx");
+
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
@@ -1108,6 +1110,10 @@ public partial class RepMedContext : DbContext
             entity.HasOne(d => d.Person).WithMany(p => p.Users)
                 .HasForeignKey(d => d.PersonId)
                 .HasConstraintName("users_ibfk_1");
+
+            entity.HasOne(d => d.Pharmacy).WithMany(p => p.Users)
+                .HasForeignKey(d => d.PharmacyId)
+                .HasConstraintName("users_ifbk_2");
         });
 
         modelBuilder.Entity<Useraddress>(entity =>

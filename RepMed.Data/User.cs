@@ -9,6 +9,8 @@ public partial class User
 
     public long PersonId { get; set; }
 
+    public long? PharmacyId { get; set; }
+
     public byte[] PasswordHash { get; set; }
 
     public string Status { get; set; }
@@ -40,6 +42,8 @@ public partial class User
     public virtual Person Person { get; set; }
 
     public virtual ICollection<Pharmacy> Pharmacies { get; set; } = new List<Pharmacy>();
+
+    public virtual Pharmacy Pharmacy { get; set; }
 
     public virtual ICollection<Prescription> Prescriptions { get; set; } = new List<Prescription>();
 

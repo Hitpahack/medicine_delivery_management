@@ -15,11 +15,9 @@ namespace RepMed.Dtos
         public long PharmacyId { get; set; }
         [Required]
         public long SupplierId { get; set; }
-        [Required]
         public string Ponumber { get; set; }
         [JsonIgnore]
         public DateTime OrderDate { get; set; }
-
         public DateTime? Eddate { get; set; }
         [JsonIgnore]
         public string Status { get; set; }
@@ -36,10 +34,9 @@ namespace RepMed.Dtos
         public long Id { get; set; }
     }
 
-    public class CreatePODto
+    public class CreatePODto : BasePODto
     {
-        public BasePODto PO { get; set; }
-        public List<BasePOItemDto> Items { get; set; }
+        public List<long> ShortbookId { get; set; }
     }
     public class NextPoNumberDto
     {

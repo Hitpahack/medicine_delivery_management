@@ -13,6 +13,7 @@ namespace RepMed.Dtos
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public bool IsLocked { get; set; }
+        public long? PharmacyId { get; set; }
 
     }
 

@@ -183,6 +183,7 @@ namespace RepMed.Services
                 parameters.Add("page", reqDto.Page, DbType.Int32);
                 parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
                 parameters.Add("searchText", reqDto.SearchText ?? string.Empty, DbType.String);
+                parameters.Add("pharmacyId", reqDto.PharmacyId, DbType.Int32);
                 parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
                 parameters.Add("Order_by", orderBy, DbType.String);
 

@@ -15,6 +15,7 @@ namespace RepMed.Dtos.UsersPage
         public string? Status { get; set; }
         [JsonProperty("statusFilter")]
         public string? StatusFilter { get; set; }
+        public long PharmacyId { get; set; }
         public int? Page => (start / length) + 1;
         public int? PageSize => length;
         private string? date;
