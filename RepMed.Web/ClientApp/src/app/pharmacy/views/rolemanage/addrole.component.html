@@ -27,7 +27,7 @@
                                         (change)="onCheckboxChange($event)" id="comp-{{ comp.id }}"
                                         [checked]="addroleForm.get('PermissionIds').value.includes(comp.id)">
                                     <label class="form-check-label mb-0" for="comp-{{ comp.id }}">
-                                        {{ comp.module | titlecase  }}
+                                        {{ comp.label | titlecase  }}
                                     </label>
                                 </div>
                             </div>
