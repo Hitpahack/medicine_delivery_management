@@ -91,7 +91,6 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
             { data: 'officialEmail', title: 'Email' },
             { data: 'cityName', title: 'City' },
             { data: 'registeredMobile', title: 'Mobile' },
-            { data: 'address1', title: 'Address' },
             { data: 'countryName', title: 'Country' },
             {
                 data: null,
@@ -99,8 +98,10 @@ export class AdminPharmacyListsComponent extends AdminBaseComponent implements O
                 render: (data: any, type: any, row: any) => {
                     const isActive = row.status === 'Active';
                     return `
-                    <div class="d-flex gap-2 align-items-center">
-                    <span class="edit-pharmacy cursor-pointer me-3" data-id="${row.id}"><i class="bi bi-pencil-square"></i></span>
+                    <button class="btn btn-sm btn-primary edit-pharmacy" data-id="${row.id}" title="Edit" style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; border-radius: 12px;">
+                    <i class="bi bi-pencil-square" style="font-size: 16px;"></i>
+                    </button>
+
                     <button class="btn btn-sm ${isActive ? 'btn-success' : 'btn-danger'} toggle-status-btn" 
                     data-id="${row.id}" data-status="${isActive}" 
                     title="${isActive ? 'Deactivate' : 'Activate'}" 

@@ -42,7 +42,14 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
   maxxDate = this.today;
   uniqueId = '';
 
-  constructor(public validator: CustomValidator, public adminuserservice: AdminUserService, private route: ActivatedRoute, public AdminCommonServices: AdminCommonServices) {
+  constructor(
+    public validator: CustomValidator,
+    public adminuserservice: AdminUserService,
+    private route: ActivatedRoute,
+    public AdminCommonServices: AdminCommonServices,
+    public fb: FormBuilder,
+    public router: Router
+  ) {
     super();
   }
   ngAfterViewInit(): void {
@@ -82,53 +89,122 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
     this.uniqueId = Math.random().toString(36).substring(2);
     this.userId = this.route.snapshot.params['id'];
     if (this.userId && this.userId !== 0) {
-      this.editUserForm = this.initForm();
-      this.adminuserservice.getUserbyId(this.userId).subscribe((response) => {
-        if (response?.isSuccess && response.data) {
-          const user = response.data;
-          const address = response.data.address;
-          this.editUserForm.patchValue({
-            firstname: user.firstName,
-            lastname: user.lastName,
-            email: user.email,
-            mobile: user.mobile,
-            id: user.id,
-            personId: user.personId,
-            gender: user.gender,
-            dateofBirth: this.dateMethod(user.dateOfBirth),
-            pharmacyId: null
-          });
-          if (user.address) {
-            this.editUserForm.get('address').patchValue({
-              addressline: response.data.address.addressLine,
-              countryId: response.data.address.countryId,
-              stateId: response.data.address.stateId,
-              cityId: response.data.address.cityId,
-              pincode: response.data.address.pincode
-            });
-
-          }
-        } else {
-          console.error("Failed to load user data", response);
-        }
-      });
-
-      this.AdminCommonServices.getcountry().subscribe((response) => {
-        if (response?.isSuccess && response.data) {
-          this.countries = response.data;
-        } else {
-          console.error("Failed to load country data", response);
-        }
-      })
-
+      // For Edit
+      this.editUserForm = this.initEditForm();
+      this.initEditForm();
+      this.loadUserData(this.userId);
     } else {
-      this.addUserForm = this.initForm();
-      this.adminuserservice.getRoles().subscribe((res) => {
-        if (res?.isSuccess) {
-          this.roles = res.data;
-        }
-      });
+      // For Add
+      this.addUserForm = this.initAddForm();
+      this.initAddForm();
+      this.loadRoles();
     }
+  }
+
+  // load roles
+  loadRoles() {
+    this.adminuserservice.getRoles().subscribe((res) => {
+      if (res?.isSuccess) {
+        this.roles = res.data;
+      }
+    });
+  }
+
+  // load user data for update
+  loadUserData(id: number) {
+    this.adminuserservice.getUserbyId(id).subscribe((response) => {
+      if (response?.isSuccess && response.data) {
+        const user = response.data;
+        const address = response.data.address;
+        this.editUserForm.patchValue({
+          firstname: user.firstName,
+          lastname: user.lastName,
+          email: user.email,
+          mobile: user.mobile,
+          id: user.id,
+          personId: user.personId,
+          gender: user.gender,
+          dateofBirth: this.dateMethod(user.dateOfBirth),
+          pharmacyId: null
+        });
+        if (user.address) {
+          this.editUserForm.get('address').patchValue({
+            addressline: response.data.address.addressLine,
+            countryId: response.data.address.countryId,
+            stateId: response.data.address.stateId,
+            cityId: response.data.address.cityId,
+            pincode: response.data.address.pincode
+          });
+        }
+      }
+      else {
+        console.error("Failed to load user data", response);
+      }
+    });
+    this.AdminCommonServices.getcountry().subscribe((response) => {
+      if (response?.isSuccess && response.data) {
+        this.countries = response.data;
+      } else {
+        console.error("Failed to load country data", response);
+      }
+    })
+  }
+
+  // Add User Form
+  initAddForm(): FormGroup {
+    const form = this.fb.group({
+      firstname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+      lastname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+      mobile: new FormControl(null, [Validators.required]),
+      Role: new FormControl(null, [Validators.required]),
+      email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
+      Password: new FormControl(null, [Validators.required, this.validator.validateStrongPassword]),
+      ConfirmPassword: new FormControl(null, [Validators.required]),
+      gender: new FormControl(null),
+      dateofBirth: new FormControl(null, this.dateRangeValidator.bind(this)),
+      address: this.fb.group({
+        addressline: new FormControl(null),
+        countryId: new FormControl(),
+        stateId: new FormControl(),
+        cityId: new FormControl(),
+        pincode: new FormControl(null),
+        latitude: new FormControl(0),
+        longitude: new FormControl(0),
+      }),
+    }, {
+      validators: this.validator.passwordMatchValidator
+    });
+
+    form.get('Password')?.valueChanges.subscribe(() => {
+      form.updateValueAndValidity({ onlySelf: false });
+    });
+
+    form.get('ConfirmPassword')?.valueChanges.subscribe(() => {
+      form.updateValueAndValidity({ onlySelf: false });
+    });
+
+    return form;
+  }
+
+  // Edit User Form
+  initEditForm(): FormGroup {
+    return this.fb.group({
+      firstname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+      lastname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+      mobile: new FormControl(null, [Validators.required]),
+      email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
+      gender: new FormControl(null),
+      dateofBirth: new FormControl(null, this.dateRangeValidator.bind(this)),
+      address: this.fb.group({
+        addressline: new FormControl(null),
+        countryId: new FormControl(),
+        stateId: new FormControl(),
+        cityId: new FormControl(),
+        pincode: new FormControl(null),
+        latitude: new FormControl(0),
+        longitude: new FormControl(0),
+      })
+    });
   }
 
 
@@ -151,7 +227,6 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
       }
     })
   }
-
 
   selectedCountry: number = 0;
   onCountryDropdownChange(event: any) {
@@ -180,49 +255,12 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
   }
 
 
-
-  initForm(): FormGroup {
-    const form = this.fb.group({
-      firstname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
-      lastname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
-      mobile: new FormControl(null, [Validators.required]),
-      Role: new FormControl(null, [Validators.required]),
-      email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
-      Password: new FormControl(null, [Validators.required, this.validator.validateStrongPassword]),
-      ConfirmPassword: new FormControl(null, [Validators.required]),
-      gender: new FormControl(null),
-      dateofBirth: new FormControl(null, this.dateRangeValidator.bind(this)),
-      address: this.fb.group({
-        addressline: new FormControl(null),
-        countryId: new FormControl(),
-        stateId: new FormControl(),
-        cityId: new FormControl(),
-        pincode: new FormControl(null),
-        latitude: new FormControl(0),
-        longitude: new FormControl(0),
-      }),
-    }, {
-      validators: this.validator.passwordMatchValidator
-    });
-
-    // 👇 Re-evaluate the form group validator when password or confirm password changes
-    form.get('Password')?.valueChanges.subscribe(() => {
-      form.updateValueAndValidity({ onlySelf: false });
-    });
-
-    form.get('ConfirmPassword')?.valueChanges.subscribe(() => {
-      form.updateValueAndValidity({ onlySelf: false });
-    });
-
-    return form;
-  }
-
   onSubmit() {
-    if (this.addUserForm.invalid) {
-      this.validator.markInvalidFieldsTouched(this.addUserForm);
-      return;
-    }
     if (this.userId && this.userId !== 0) {
+      if (this.editUserForm.invalid) {
+        this.validator.markInvalidFieldsTouched(this.editUserForm);
+        return;
+      }
       this.adminuserservice.edituser(this.editUserForm.value, this.userId).subscribe({
         next: (response) => {
           if (response.isSuccess) {
