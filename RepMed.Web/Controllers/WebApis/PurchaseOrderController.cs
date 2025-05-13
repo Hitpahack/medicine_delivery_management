@@ -21,9 +21,10 @@ namespace RepMed.Web.Controllers.WebApis
         {
 
         }
-        [Route("add_item")]
+
+        [Route("edit_item")]
         [HttpPost]
-        public async Task<IActionResult> AddItem(BaseShortbookDto reqDto)
+        public async Task<IActionResult> EditItem(BaseShortbookDto reqDto,long Id)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -32,7 +33,7 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
                     {
-                        var result = await purchaseOrderService.AddEditItem(reqDto,0);
+                        var result = await purchaseOrderService.AddEditItem(reqDto,Id);
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();
@@ -45,6 +46,29 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
+        [Route("add_item")]
+        [HttpPost]
+        public async Task<IActionResult> AddItem(BaseShortbookDto reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.AddEditItem(reqDto, 0);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
         [Route("createpo")]
         [HttpPost]
         public async Task<IActionResult> CreatePO(CreatePODto reqDto)
