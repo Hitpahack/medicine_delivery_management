@@ -180,7 +180,7 @@ namespace RepMed.Services
         {
             try
             {
-                string query = DbTables.tblPermissions.SelectAll($@"{nameof(Permission.IsAdmin)} = true and{nameof(Permission.Id)} not in 6,7,8,9");
+                string query = DbTables.tblPermissions.SelectAll($@"{nameof(Permission.IsAdmin)} = true and {nameof(Permission.Id)} not in (6,7,8,9)");
                 var rolepermissions = await _idbConnection.QueryAsync<EntityPermissionDto>(query, transaction: _idbTransaction);
                 return new APIsSuccsss<List<EntityPermissionDto>>(_validateMessages.RetriveSuccess, rolepermissions);
             }
