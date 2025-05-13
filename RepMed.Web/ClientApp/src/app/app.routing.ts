@@ -159,7 +159,7 @@ export const routes: Routes = [
       { path: 'role/list', component: RoleListComponent, canActivate: [AuthGuardService], data: { module: 'rolemanagement' } },
       { path: 'role/edit/:id', component: EditRoleComponent, canActivate: [AuthGuardService], data: { module: 'rolemanagement' } },
 
-      { path: 'productlist', component: ProductListsComponent, canActivate: [AuthGuardService], data: { module: 'productlist' } },
+      { path: 'productlists', component: ProductListsComponent, canActivate: [AuthGuardService], data: { module: 'productlists' } },
 
       { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService], data: { module: 'dashboard' } },
 
