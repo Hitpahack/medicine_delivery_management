@@ -93,19 +93,21 @@
         </fieldset>
 
         <fieldset>
-            <div class="input-group mb-4 float">
-                <select formControlName="gender" class="form-control">
-                    <option value="" disabled>Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Others">Others</option>
-                </select>
-                <label class="float-lbl">Gender *</label>
-            </div>
+            <div class="form-grid">
+                <div class="input-group mb-4 float">
+                    <select formControlName="gender" class="form-control">
+                        <option value="" disabled>Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Others">Others</option>
+                    </select>
+                    <label class="float-lbl">Gender *</label>
+                </div>
 
-            <div class="input-group mb-4 float">
-                <input type="date" formControlName="dateofBirth" class="form-control" [max]="maxDate" />
-                <label class="float-lbl">Date Of Birth *</label>
+                <div class="input-group mb-4 float">
+                    <input type="date" formControlName="dateofBirth" class="form-control" [max]="maxDate" />
+                    <label class="float-lbl">Date Of Birth *</label>
+                </div>
             </div>
         </fieldset>
 

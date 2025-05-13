@@ -30,19 +30,23 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
     editstaffForm: FormGroup;
     addUserData: AddPersonDto;
     pharmacyId: string | null = null;
-
     countries: CountryDto[] = [];
     states: StateDto[] = [];
     cities: CityDto[] = [];
-
     roles: Role[] = [];
     errorMessage: string = '';
-
     today = new Date();
     minDate = new Date(this.today.getFullYear() - 100, this.today.getMonth(), this.today.getDate());
     maxxDate = this.today;
 
-    constructor(public validator: CustomValidator, public StaffService: StaffService, private route: ActivatedRoute, public AdminCommonServices: AdminCommonServices) {
+    constructor(
+        public validator: CustomValidator,
+        public StaffService: StaffService,
+        private route: ActivatedRoute,
+        public AdminCommonServices: AdminCommonServices,
+        public fb: FormBuilder,
+        public router: Router
+    ) {
         super();
     }
     ngAfterViewInit(): void {
@@ -82,53 +86,123 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
         this.pharmacyId = sessionStorage.getItem('pharmacyId');
         this.userId = this.route.snapshot.params['id'];
         if (this.userId && this.userId !== 0) {
-            this.editstaffForm = this.initForm();
-            this.StaffService.getUserbyId(this.userId).subscribe((response) => {
-                if (response?.isSuccess && response.data) {
-                    const user = response.data;
-                    const address = response.data.address;
-                    this.editstaffForm.patchValue({
-                        firstname: user.firstName,
-                        lastname: user.lastName,
-                        email: user.email,
-                        mobile: user.mobile,
-                        id: user.id,
-                        personId: user.personId,
-                        gender: user.gender,
-                        dateofBirth: this.dateMethod(user.dateOfBirth),
-                        pharmacyId: this.pharmacyId
-                    });
-                    if (user.address) {
-                        this.editstaffForm.get('address').patchValue({
-                            addressline: response.data.address.addressLine,
-                            countryId: response.data.address.countryId,
-                            stateId: response.data.address.stateId,
-                            cityId: response.data.address.cityId,
-                            pincode: response.data.address.pincode
-                        });
-
-                    }
-                } else {
-                    console.error("Failed to load user data", response);
-                }
-            });
-
-            this.AdminCommonServices.getcountry().subscribe((response) => {
-                if (response?.isSuccess && response.data) {
-                    this.countries = response.data;
-                } else {
-                    console.error("Failed to load country data", response);
-                }
-            })
-
+            // For Edit
+            this.editstaffForm = this.initEditForm();
+            this.initEditForm();
+            this.loadUserData(this.userId);
         } else {
-            this.addStaffForm = this.initForm();
-            this.StaffService.getRoles().subscribe((res) => {
-                if (res?.isSuccess) {
-                    this.roles = res.data;
-                }
-            });
+            // For Add
+            this.addStaffForm = this.initAddForm();
+            this.initAddForm();
+            this.loadRoles();
         }
+    }
+
+    //load roles 
+    loadRoles() {
+        this.StaffService.getRoles().subscribe((res) => {
+            if (res?.isSuccess) {
+                this.roles = res.data;
+            }
+        });
+    }
+
+    // load user data for update
+    loadUserData(id: number) {
+        this.StaffService.getUserbyId(this.userId).subscribe((response) => {
+            if (response?.isSuccess && response.data) {
+                const user = response.data;
+                const address = response.data.address;
+                this.editstaffForm.patchValue({
+                    firstname: user.firstName,
+                    lastname: user.lastName,
+                    email: user.email,
+                    mobile: user.mobile,
+                    id: user.id,
+                    personId: user.personId,
+                    gender: user.gender,
+                    dateofBirth: this.dateMethod(user.dateOfBirth),
+                    pharmacyId: this.pharmacyId
+                });
+                if (user.address) {
+                    this.editstaffForm.get('address').patchValue({
+                        addressline: response.data.address.addressLine,
+                        countryId: response.data.address.countryId,
+                        stateId: response.data.address.stateId,
+                        cityId: response.data.address.cityId,
+                        pincode: response.data.address.pincode
+                    });
+
+                }
+            } else {
+                console.error("Failed to load user data", response);
+            }
+        });
+
+        this.AdminCommonServices.getcountry().subscribe((response) => {
+            if (response?.isSuccess && response.data) {
+                this.countries = response.data;
+            } else {
+                console.error("Failed to load country data", response);
+            }
+        })
+    }
+
+    // Add User Form
+    initAddForm(): FormGroup {
+        const form = this.fb.group({
+            firstname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+            lastname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+            mobile: new FormControl(null, [Validators.required]),
+            Role: new FormControl(null, [Validators.required]),
+            email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
+            Password: new FormControl(null, [Validators.required, this.validator.validateStrongPassword]),
+            ConfirmPassword: new FormControl(null, [Validators.required]),
+            gender: new FormControl(null),
+            dateofBirth: new FormControl(null, this.dateRangeValidator.bind(this)),
+            address: this.fb.group({
+                addressline: new FormControl(null),
+                countryId: new FormControl(),
+                stateId: new FormControl(),
+                cityId: new FormControl(),
+                pincode: new FormControl(null),
+                latitude: new FormControl(0),
+                longitude: new FormControl(0),
+            }),
+        }, {
+            validators: this.validator.passwordMatchValidator
+        });
+
+        form.get('Password')?.valueChanges.subscribe(() => {
+            form.updateValueAndValidity({ onlySelf: false });
+        });
+
+        form.get('ConfirmPassword')?.valueChanges.subscribe(() => {
+            form.updateValueAndValidity({ onlySelf: false });
+        });
+
+        return form;
+    }
+
+    // Edit User Form
+    initEditForm(): FormGroup {
+        return this.fb.group({
+            firstname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+            lastname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
+            mobile: new FormControl(null, [Validators.required]),
+            email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
+            gender: new FormControl(null),
+            dateofBirth: new FormControl(null, this.dateRangeValidator.bind(this)),
+            address: this.fb.group({
+                addressline: new FormControl(null),
+                countryId: new FormControl(),
+                stateId: new FormControl(),
+                cityId: new FormControl(),
+                pincode: new FormControl(null),
+                latitude: new FormControl(0),
+                longitude: new FormControl(0),
+            })
+        });
     }
 
 
@@ -179,46 +253,12 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
         })
     }
 
-
-
-    initForm(): FormGroup {
-        const form = this.fb.group({
-            firstname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
-            lastname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
-            mobile: new FormControl(null, [Validators.required]),
-            Role: new FormControl(null, [Validators.required]),
-            email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
-            Password: new FormControl(null, [Validators.required, this.validator.validateStrongPassword]),
-            ConfirmPassword: new FormControl(null, [Validators.required]),
-            gender: new FormControl(null),
-            dateofBirth: new FormControl(null, this.dateRangeValidator.bind(this)),
-            address: this.fb.group({
-                addressline: new FormControl(null),
-                countryId: new FormControl(),
-                stateId: new FormControl(),
-                cityId: new FormControl(),
-                pincode: new FormControl(null),
-                latitude: new FormControl(0),
-                longitude: new FormControl(0),
-            }),
-        }, {
-            validators: this.validator.passwordMatchValidator
-        });
-
-        // 👇 Re-evaluate the form group validator when password or confirm password changes
-        form.get('Password')?.valueChanges.subscribe(() => {
-            form.updateValueAndValidity({ onlySelf: false });
-        });
-
-        form.get('ConfirmPassword')?.valueChanges.subscribe(() => {
-            form.updateValueAndValidity({ onlySelf: false });
-        });
-
-        return form;
-    }
-
     onSubmit() {
         if (this.userId && this.userId !== 0) {
+            if (this.editstaffForm.invalid) {
+                this.validator.markInvalidFieldsTouched(this.editstaffForm);
+                return;
+            }
             this.StaffService.edituser(this.editstaffForm.value, this.userId).subscribe({
                 next: (response) => {
                     if (response.isSuccess) {
@@ -241,8 +281,6 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
             //   return;
             // }
         } else {
-            console.log("inadduserform");
-
             if (this.addStaffForm.invalid) {
                 this.validator.markInvalidFieldsTouched(this.addStaffForm);
                 return;
