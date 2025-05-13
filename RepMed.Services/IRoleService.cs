@@ -71,6 +71,16 @@ namespace RepMed.Services
                 }
                 else
                 {
+                    #region Assign Dashboards to Role
+                    if (reqDto.RoleName == "admin")
+                        reqDto.PermissionIds.Add(6);
+                    else if (reqDto.RoleName =="doctor")
+                        reqDto.PermissionIds.Add(7);
+                    else if(reqDto.RoleName == "pharmacy")
+                        reqDto.PermissionIds.Add(8);
+                    else
+                        reqDto.PermissionIds.Add(9);
+                    #endregion
                     #region Update Role
                     EntityRoleDto entityRoleDto = _idbConnection.Update<EntityRoleDto>(_idbTransaction, DbTables.tblRole,
                     new Dictionary<string, object> {
@@ -170,7 +180,7 @@ namespace RepMed.Services
         {
             try
             {
-                string query = DbTables.tblPermissions.SelectAll($@"{nameof(Permission.IsAdmin)} = true");
+                string query = DbTables.tblPermissions.SelectAll($@"{nameof(Permission.IsAdmin)} = true and{nameof(Permission.Id)} not in 6,7,8,9");
                 var rolepermissions = await _idbConnection.QueryAsync<EntityPermissionDto>(query, transaction: _idbTransaction);
                 return new APIsSuccsss<List<EntityPermissionDto>>(_validateMessages.RetriveSuccess, rolepermissions);
             }
