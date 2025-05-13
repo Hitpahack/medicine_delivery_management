@@ -29,6 +29,7 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
     addStaffForm: FormGroup;
     editstaffForm: FormGroup;
     addUserData: AddPersonDto;
+    pharmacyId: string | null = null;
 
     countries: CountryDto[] = [];
     states: StateDto[] = [];
@@ -78,6 +79,7 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
 
     userId: number;
     ngOnInit(): void {
+        this.pharmacyId = sessionStorage.getItem('pharmacyId');
         this.userId = this.route.snapshot.params['id'];
         if (this.userId && this.userId !== 0) {
             this.editstaffForm = this.initForm();
@@ -93,7 +95,8 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
                         id: user.id,
                         personId: user.personId,
                         gender: user.gender,
-                        dateofBirth: this.dateMethod(user.dateOfBirth)
+                        dateofBirth: this.dateMethod(user.dateOfBirth),
+                        pharmacyId: this.pharmacyId
                     });
                     if (user.address) {
                         this.editstaffForm.get('address').patchValue({
@@ -244,7 +247,10 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
                 this.validator.markInvalidFieldsTouched(this.addStaffForm);
                 return;
             }
-            const dto: AddPersonDto = this.addStaffForm.value;
+            const dto: AddPersonDto = {
+                ...this.addStaffForm.value,  // Preserve the other values
+                pharmacyId: this.pharmacyId   // Add the pharmacyId
+            };
             this.StaffService.add(dto).subscribe({
                 next: (response) => {
                     if (response.isSuccess) {
