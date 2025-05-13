@@ -429,7 +429,7 @@ namespace RepMed.Services
                 parameters.Add("pharmacyId", reqDto.PharmacyId, DbType.Int32);
                 parameters.Add("searchText", reqDto.SearchText ?? string.Empty, DbType.String);
                 parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
-                parameters.Add("Order_by", orderBy, DbType.String);
+                parameters.Add("orderBy", orderBy, DbType.String);
 
                 var result = (await _idbConnection.QueryAsync<ShortbookPagingResponse>(
                                sql: "GET_SHORTBOOK_PAGED",
