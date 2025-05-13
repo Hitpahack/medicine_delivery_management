@@ -60,4 +60,11 @@ export class Helper {
         this.ShowError(errorMessage);
 
     }
+    public static encodeHtml(str: string): string {
+        return str.replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#039;');
+    }
 }

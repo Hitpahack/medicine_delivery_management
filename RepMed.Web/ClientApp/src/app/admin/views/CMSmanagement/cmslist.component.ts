@@ -112,7 +112,14 @@ export class PageListComponent extends AdminBaseComponent implements OnInit, Aft
                 searchable: false
             },
             { data: 'title' },
-            { data: 'content' },
+            {
+                data: 'content',
+                title: 'content',
+                render: (data, type, row) => {
+                    const truncated = data && data.length > 50 ? data.substring(0, 50) + '...' : data;
+                    return `<span title="${Helper.encodeHtml(data)}">${Helper.encodeHtml(truncated)}</span>`;
+                }
+            },
             {
                 data: null,
                 Title: 'Action',

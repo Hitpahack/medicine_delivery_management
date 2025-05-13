@@ -365,6 +365,7 @@ namespace RepMed.Services
             try
             {
                 APIsResponse<EntityShortbookDto> apiResponse = default;
+                reqDto.AddedDate = DateTime.Now;
                 if (Id == 0)
                 {
                     #region Insert ShortBook Item
@@ -382,6 +383,7 @@ namespace RepMed.Services
                     EntityShortbookDto entityRoleDto = _idbConnection.Update<EntityShortbookDto>(_idbTransaction, DbTables.tblShortBook,
                     new Dictionary<string, object> {
                     { nameof(EntityShortbookDto.SupplierId), reqDto.SupplierId},
+                    { nameof(EntityShortbookDto.AddedDate), reqDto.AddedDate},
                     { nameof(EntityShortbookDto.Priority), reqDto.Priority},
                     { nameof(EntityShortbookDto.Quantity), reqDto.Quantity},
                     { nameof(EntityShortbookDto.Status), reqDto.Status}

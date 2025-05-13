@@ -91,6 +91,10 @@ export class AdminApiConfigService {
         addSupplier: `${v1}/po/addsupplier`,
         getproduct: `${api}/masters/getproducts`,
         add: `${v1}/po/createpo/`,
+        searchProducts: `${v1}/po/search_products`,
+        addProduct: `${v1}/po/add_item/`,
+        orderProductslist: `${v1}/po/get_items`,
+        updateProduct: `${v1}/po/update_item/`,
       },
       CMS: {
         add: `${v1}/cms/addstaticpage`,

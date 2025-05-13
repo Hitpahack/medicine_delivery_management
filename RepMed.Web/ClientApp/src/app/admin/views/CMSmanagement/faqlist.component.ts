@@ -111,8 +111,22 @@ export class FAQListComponent extends AdminBaseComponent implements OnInit, Afte
                 orderable: false,
                 searchable: false
             },
-            { data: 'question' },
-            { data: 'answer' },
+            {
+                data: 'question',
+                title: 'Question',
+                render: (data, type, row) => {
+                    const truncated = data && data.length > 50 ? data.substring(0, 40) + '...' : data;
+                    return `<span title="${Helper.encodeHtml(data)}">${Helper.encodeHtml(truncated)}</span>`;
+                }
+            },
+            {
+                data: 'answer',
+                title: 'Answer',
+                render: (data, type, row) => {
+                    const truncated = data && data.length > 50 ? data.substring(0, 50) + '...' : data;
+                    return `<span title="${Helper.encodeHtml(data)}">${Helper.encodeHtml(truncated)}</span>`;
+                }
+            },
             {
                 data: null,
                 Title: 'Action',

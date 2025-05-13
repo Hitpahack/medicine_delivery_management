@@ -1,198 +1,111 @@
 <div class="authentication">
+    <!-- Editable Row Form -->
+    <div *ngIf="selectedProduct" class="edit-form mb-3 p-2 border rounded" style="background-color: #f9f9f9;">
+        <div class="row align-items-end">
+            <div class="col-md-2">
+                <label>Date</label>
+                <input type="text" class="form-control" [value]="selectedProduct.addedDate | date:'shortDate'"
+                    disabled />
+            </div>
+            <div class="col-md-2">
+                <label>Item</label>
+                <input type="text" class="form-control" [value]="selectedProduct.name" disabled />
+            </div>
+            <div class="col-md-2">
+                <label>Supplier</label>
+                <select class="form-control" [(ngModel)]="selectedProductEdit.supplierId">
+                    <option *ngFor="let supplier of suppliers" [value]="supplier.id">{{ supplier.name }}</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label>Priority</label>
+                <select class="form-control" [(ngModel)]="selectedProductEdit.priority">
+                    <option value="Low">Low</option>
+                    <option value="Normal">Normal</option>
+                    <option value="High">High</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <label>Qty</label>
+                <input type="number" class="form-control" [(ngModel)]="selectedProductEdit.quantity" />
+            </div>
+            <div class="col-md-2">
+                <label>Status</label>
+                <select class="form-control" [(ngModel)]="selectedProductEdit.status">
+                    <option value="Pending">Pending</option>
+                    <option value="Confirmed">Confirmed</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label>Shortbook</label>
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-success w-100" (click)="updateProduct()">Update</button>
+            </div>
+        </div>
+    </div>
+
 
     <form class="auth_form form_validation" *ngIf="poForm" appAutoValidate [formGroup]="poForm" (ngSubmit)="onSubmit()">
-
-        <!-- Section 1: Supplier and PO Number -->
         <fieldset formGroupName="purchaseOrder">
-            <legend>Purchase Order Details</legend>
+            <legend>Purchase Order </legend>
             <div class="form-grid">
-                <div class="input-group mb-4 float">
-                    <select formControlName="supplierId" class="form-control custom-select-height" required>
-                        <option value="" disabled selected>Select Supplier</option>
-                        <option *ngFor="let supplier of suppliers" [ngValue]="supplier.id">
-                            {{ supplier.name }}
-                        </option>
-                    </select>
-                    <label class="float-lbl">Supplier *</label>
-                    <button type="button" class="btn btn-sm btn-primary d-flex align-items-center gap-1 ms-2 px-2 py-1"
-                        style="font-size: 0.8rem;" style="height: 41px !important;" title="Add Supplier"
-                        (click)="toggleAddSupplierForm()">
-                        <i class="bi bi-plus-circle" style="font-size: 1.5rem;"></i>
-                    </button>
-                </div>
+                <!-- Search Input -->
+                <div class="position-relative">
+                    <input type="text" class="form-control" placeholder="Search product" [(ngModel)]="productSearch"
+                        (input)="onSearchChange($event.target.value)" />
 
-                <div class="input-group mb-4 float">
-                    <input type="text" formControlName="poNumber" class="form-control" readonly
-                        [value]="poForm.get('purchaseOrder.poNumber')?.value">
-                    <label class="float-lbl">PO Number *</label>
-                </div>
+                    <!-- Dropdown with filtered products -->
+                    <ul *ngIf="filteredProducts.length" class="dropdown-menu show" [ngClass]="{'show': showDropdown}">
+                        <li class="dropdown-item header-row"
+                            style="font-weight: bold; background-color: #f8f9fa; cursor: default;">
+                            <span class="product-name">Item Name</span>
+                            <span class="product-price">Price</span>
+                        </li>
+                        <li *ngFor="let product of filteredProducts" class="dropdown-item"
+                            (click)="selectProduct(product)">
 
-                <div class="input-group mb-4 float">
-                    <input type="date" formControlName="eddate" class="form-control" [min]="minDate" [max]="maxDate"
-                        (keydown)="disableTyping($event)" (paste)="disableTyping($event)">
-                    <label class="float-lbl">Expected Delivery Date</label>
+                            <span class="product-name">{{ product.name }}</span>
+                            <span class="product-price">₹{{ product.price }}</span>
+
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <div class="form-grid">
-                <div class="input-group mb-4 float">
-                    <textarea rows="2" formControlName="remarks" class="form-control" maxlength="250"></textarea>
-                    <label class="float-lbl">Remarks</label>
-                </div>
-            </div>
-        </fieldset>
-
-        <!-- Section 2: Product Items -->
-        <fieldset>
-            <legend>Products List</legend>
-            <div *ngIf="addedProducts.length > 0" class="mt-3">
-                <table class="table table-bordered">
+            <div>
+                <table class="table table-bordered table-striped" *ngIf="productsList.length">
                     <thead>
                         <tr>
-                            <th>ProductName</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th>Unit</th>
-                            <th>Action</th>
+                            <th>Date</th>
+                            <th>Item Name</th>
+                            <th>Supplier</th>
+                            <th>Priority</th>
+                            <th>Qty</th>
+                            <th>Status</th>
+                            <th>Source</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr *ngFor="let p of addedProducts; let i = index">
-                            <td>{{ p.productName }}</td>
-                            <td>{{ p.unitPrice }}</td>
-                            <td>{{ p.quantity }}</td>
-                            <td>{{ p.totalPrice }}</td>
-                            <td>{{ p.unit }}</td>
-                            <td>
-                                <button type="button" class="btn btn-danger btn-sm"
-                                    (click)="removeProduct(i)">-</button>
-                            </td>
+                        <tr *ngFor="let item of productsList" (click)="editProduct(item)" style="cursor: pointer;">
+                            <td>{{item.addedDate}}</td>
+                            <td>{{ item.name }}</td>
+                            <td>{{ item.Supplier }}</td>
+                            <td>{{ item.Priority }}</td>
+                            <td>{{ item.quantity}}</td>
+                            <td>{{ item.status }}</td>
+                            <td>Shortbook</td>
                         </tr>
                     </tbody>
-                    <tfoot>
-                        <tr>
-                            <td colspan="3"><strong>Grand Total</strong></td>
-                            <td colspan="3"><strong>{{ totalAmount }}</strong></td>
-                        </tr>
-                    </tfoot>
                 </table>
-            </div>
-            <!-- Add Product Button -->
-            <div class="text-end">
-                <button type="button" class="btn btn-success" (click)="toggleAddProductForm()">Add Product</button>
+
+                <p *ngIf="!productsList.length">No products added yet.</p>
             </div>
         </fieldset>
-
         <!-- Submit Button -->
         <div class="row justify-content-end mt-4">
-            <div class="col-sm-1">
-                <button class="btn custom-btn" type="submit">Submit</button>
+            <div class="col-sm-2">
+                <button class="btn custom-btn" style="width: 130px;" type="submit">Po Generate</button>
             </div>
         </div>
     </form>
-
-    <!-- Dynamic Supplier Form -->
-    <!-- Supplier Modal with Blur -->
-    <div *ngIf="showAddSupplierForm" class="supplier-modal-overlay">
-        <div class="supplier-modal-content">
-            <h5 class="mb-3">Add Supplier</h5>
-
-            <form class="auth_form form_validation" [formGroup]="supplierForm" appAutoValidate
-                (ngSubmit)="addSupplier()">
-                <div class="form-grid">
-                    <div class="input-group mb-3 float">
-                        <input formControlName="Name" class="form-control" placeholder="Supplier Name" minlength="3"
-                            maxlength="25" required />
-                        <label class="float-lbl">Name *</label>
-                    </div>
-                    <div class="input-group mb-3 float">
-                        <input formControlName="Mobile" class="form-control" placeholder="1234567890"
-                            (keypress)="allowOnlyNumbers($event)" (paste)="disablePaste($event)" maxlength="10"
-                            required />
-                        <label class="float-lbl">Contact *</label>
-                    </div>
-                </div>
-                <div class="form-grid">
-                    <div class="input-group mb-3 float">
-                        <input formControlName="Email" class="form-control" placeholder="example@mail.com"
-                            maxlength="30" required />
-                        <label class="float-lbl">Email *</label>
-                    </div>
-                    <div class="input-group mb-3 float">
-                        <input formControlName="Gstnumber" class="form-control" placeholder="09AAACH7409R1ZZ"
-                            maxlength="15" required />
-                        <label class="float-lbl">GST</label>
-                    </div>
-                </div>
-                <div class="form-grid">
-                    <div class="input-group mb-3 float">
-                        <textarea formControlName="Address" class="form-control" placeholder=""
-                            maxlength="200"></textarea>
-                        <label class="float-lbl">Address</label>
-                    </div>
-                </div>
-                <div class="text-end mt-2">
-                    <button type="submit" class="btn btn-success me-2">Add</button>
-                    <button type="button" class="btn btn-secondary" (click)="toggleAddSupplierForm()">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Product Modal -->
-    <div *ngIf="showAddProductForm" class="supplier-modal-overlay">
-        <div class="supplier-modal-content">
-            <h5 class="mb-3">Add Product</h5>
-
-            <form [formGroup]="productForm" appAutoValidate (ngSubmit)="addProduct()">
-                <div class="form-grid">
-                    <!-- Product Dropdown -->
-                    <div class="input-group mb-4 float">
-                        <select formControlName="productId" class="form-control custom-select-width" required>
-                            <option value="" disabled>Select Product</option>
-                            <option *ngFor="let product of productsList" [ngValue]="product.value">
-                                {{ product.text }}
-                            </option>
-                        </select>
-                        <label class="float-lbl">Product *</label>
-                    </div>
-
-                    <!-- Price -->
-                    <div class="input-group mb-4 float">
-                        <input type="number" formControlName="unitPrice" class="form-control" required
-                            (keydown)="preventInvalidKeys($event, 'unitPrice')" (paste)="disablePaste($event)"
-                            (input)="priceChange($event)" />
-                        <label class="float-lbl">Price *</label>
-                    </div>
-
-                    <!-- Quantity -->
-                    <div class="input-group mb-4 float">
-                        <input type="number" formControlName="quantity" class="form-control" required
-                            (keydown)="preventInvalidKeys($event, 'unitPrice')" (paste)="disablePaste($event)"
-                            (input)="quantityChange($event)" />
-                        <label class="float-lbl">Quantity *</label>
-                    </div>
-
-                    <!-- Total -->
-                    <div class="input-group mb-4 float">
-                        <input type="number" formControlName="totalPrice" class="form-control" readonly />
-                        <label class="float-lbl">Total</label>
-                    </div>
-
-                    <!-- Unit -->
-                    <div class="input-group mb-4 float">
-                        <input type="text" formControlName="unit" class="form-control" maxlength="25" (paste)="disablePaste($event)"  (keypress)="allowOnlyAlphabets($event)"/>
-                        <label class="float-lbl">Unit (Box/Bottle/Ltr)</label>
-                    </div>
-                </div>
-
-                <div class="text-end mt-2">
-                    <button type="submit" class="btn btn-success me-2">Add</button>
-                    <button type="button" class="btn btn-secondary" (click)="toggleAddProductForm()">Cancel</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-
 </div>
