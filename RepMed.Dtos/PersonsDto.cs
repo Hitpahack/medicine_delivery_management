@@ -82,6 +82,8 @@ namespace RepMed.Dtos
         public string Role { get; set; }
         [JsonIgnore]
         public DateTime? UpdatedAt { get; set; }
+        public long? PharmacyId { get; set; }
+
 
     }
 

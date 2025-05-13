@@ -107,6 +107,8 @@ namespace RepMed.Dtos
         public string ConfirmPassword { get; set; }
         [Required]
         public string Role { get; set; }
+        public long? PharmacyId { get; set; }
+
     }
     public class API_EDIT_USER : BasicPersonsDto
     {

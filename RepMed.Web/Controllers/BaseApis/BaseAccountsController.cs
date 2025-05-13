@@ -185,6 +185,7 @@ namespace RepMed.Web.Controllers.BaseApis
                                 d.ConfirmPassword = reqDto.ConfirmPassword;
                                 d.Email = reqDto.Email;
                             });
+                            userObj.PharmacyId = reqDto.PharmacyId;
                             var user = await userService.AddEditUser(userObj, personid);
                             if(!user.IsSuccess)
                             {
