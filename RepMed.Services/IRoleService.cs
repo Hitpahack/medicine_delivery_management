@@ -38,6 +38,16 @@ namespace RepMed.Services
                 APIsResponse<EntityRoleDto> apiResponse = default(APIsResponse<EntityRoleDto>);
                 if (Id == 0)
                 {
+                    #region Assign Dashboards to Role
+                    if (reqDto.RoleName == "admin")
+                        reqDto.PermissionIds.Add(6);
+                    else if (reqDto.RoleName == "doctor")
+                        reqDto.PermissionIds.Add(7);
+                    else if (reqDto.RoleName == "pharmacy")
+                        reqDto.PermissionIds.Add(8);
+                    else
+                        reqDto.PermissionIds.Add(9);
+                    #endregion
                     #region Check RoleExist
                     if ((await IsRoleExist(reqDto.RoleName)))
                     {
@@ -71,16 +81,6 @@ namespace RepMed.Services
                 }
                 else
                 {
-                    #region Assign Dashboards to Role
-                    if (reqDto.RoleName == "admin")
-                        reqDto.PermissionIds.Add(6);
-                    else if (reqDto.RoleName =="doctor")
-                        reqDto.PermissionIds.Add(7);
-                    else if(reqDto.RoleName == "pharmacy")
-                        reqDto.PermissionIds.Add(8);
-                    else
-                        reqDto.PermissionIds.Add(9);
-                    #endregion
                     #region Update Role
                     EntityRoleDto entityRoleDto = _idbConnection.Update<EntityRoleDto>(_idbTransaction, DbTables.tblRole,
                     new Dictionary<string, object> {
@@ -290,6 +290,17 @@ namespace RepMed.Services
                 APIsResponse<EntityRoleDto> apiResponse = default(APIsResponse<EntityRoleDto>);
                 if (Id == 0)
                 {
+                    #region Assign Dashboards to Role
+                    if (reqDto.RoleName == "admin")
+                        reqDto.PermissionIds.Add(6);
+                    else if (reqDto.RoleName == "doctor")
+                        reqDto.PermissionIds.Add(7);
+                    else if (reqDto.RoleName == "pharmacy")
+                        reqDto.PermissionIds.Add(8);
+                    else
+                        reqDto.PermissionIds.Add(9);
+                    #endregion
+
                     #region Check RoleExist
                     if ((await IsRoleExist(reqDto.RoleName)))
                     {
