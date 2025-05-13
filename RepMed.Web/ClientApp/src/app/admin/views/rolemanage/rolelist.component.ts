@@ -112,11 +112,11 @@ export class RoleListComponent extends AdminBaseComponent implements OnInit, Aft
                         <button class="btn btn-sm btn-primary edit-role" data-id="${row.id}" title="Edit" style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; border-radius: 12px;">
                             <i class="bi bi-pencil-square" style="font-size: 16px;"></i>
                         </button>
-
-                        <button class="btn btn-sm btn-danger delete-role" data-id="${row.id}" title="Delete" 
-                            style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; border-radius: 12px;">
-                            <i class="bi bi-trash" style="font-size: 16px;"></i>
-                        </button>
+                        <button class="btn btn-sm btn-danger delete-role" data-id="${row.id}" title="Delete"
+    ${row.roleName === 'doctor' || row.roleName === 'pharmacy' ? 'disabled' : ''}
+    style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; border-radius: 12px;">
+<i class="bi bi-trash" style="font-size: 16px;"></i>
+</button>
 
                         <button class="btn btn-sm ${row.isActive ? 'btn-success' : 'btn-danger'} toggle-status-btn" 
                          data-id="${row.id}" data-status="${row.isActive}" 
