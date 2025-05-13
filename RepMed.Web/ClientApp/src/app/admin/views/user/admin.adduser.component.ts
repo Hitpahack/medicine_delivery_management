@@ -95,7 +95,8 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
             id: user.id,
             personId: user.personId,
             gender: user.gender,
-            dateofBirth: this.dateMethod(user.dateOfBirth)
+            dateofBirth: this.dateMethod(user.dateOfBirth),
+            pharmacyId: null
           });
           if (user.address) {
             this.editUserForm.get('address').patchValue({
@@ -225,19 +226,19 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
       this.adminuserservice.edituser(this.editUserForm.value, this.userId).subscribe({
         next: (response) => {
           if (response.isSuccess) {
-              Helper.ShowSuccess(response.message || 'User Updated successfully.');
-              this.router.navigate(['/admin/user']);
+            Helper.ShowSuccess(response.message || 'User Updated successfully.');
+            this.router.navigate(['/admin/user']);
           } else {
-              console.error('API returned isSuccess: false');
-              this.errorMessage = response.message || 'Failed to add user.';
-              Helper.ShowError(this.errorMessage);  // Optional toast/popup
+            console.error('API returned isSuccess: false');
+            this.errorMessage = response.message || 'Failed to add user.';
+            Helper.ShowError(this.errorMessage);  // Optional toast/popup
           }
-      },
-      error: (err) => {
+        },
+        error: (err) => {
           console.error('HTTP Error:', err);
           this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
           Helper.ShowError(this.errorMessage);  // Optional toast/popup
-      }
+        }
       })
       // if (false) {
       //   this.validator.markInvalidFieldsTouched(this.editUserForm);
@@ -248,7 +249,11 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
         this.validator.markInvalidFieldsTouched(this.addUserForm);
         return;
       }
-      const dto: AddPersonDto = this.addUserForm.value;
+      //const dto: AddPersonDto = this.addUserForm.value;
+      const dto: AddPersonDto = {
+        ...this.addUserForm.value,  // Preserve form values
+        pharmacyId: null   // Add pharmacyId here
+      };
       this.adminuserservice.add(dto).subscribe({
         next: (response) => {
           if (response.isSuccess) {

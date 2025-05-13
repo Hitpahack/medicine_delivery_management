@@ -17,7 +17,7 @@ export class StaffListComponent extends AdminBaseComponent implements OnInit {
     constructor(public validator: CustomValidator, public router: Router) {
         super();
     }
-
+    pharmacyId: string | null = null;
     tableOptions = {
         tableId: 'post_pharmacylist_datatable',
         ajax: {
@@ -25,12 +25,13 @@ export class StaffListComponent extends AdminBaseComponent implements OnInit {
             type: "POST",
             contentType: "application/json; charset=utf-8",
             dataType: "json", // Expect JSON response
-            data: function (d) {
+            data: (d: any) => {
+                d.pharmacyId = this.pharmacyId; // ✅ now works correctly
                 return JSON.stringify(d);
             },
-            datasrc:function (json) {
+            datasrc: function (json) {
                 debugger;
-                console.log('User list API response:', json); 
+                console.log('User list API response:', json);
                 return json.data || json;
             }
         },
@@ -48,6 +49,7 @@ export class StaffListComponent extends AdminBaseComponent implements OnInit {
     };
 
     ngOnInit(): void {
+        this.pharmacyId = sessionStorage.getItem('pharmacyId');
         const self = this;
         $(document).on('click', '.edit-user', function () {
             const id = $(this).data('id');

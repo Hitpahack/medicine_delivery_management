@@ -23,6 +23,9 @@ export class EditRoleComponent extends AdminBaseComponent implements OnInit {
     componentList: ComponentDto[] = [];
     errorMessage: string = '';
 
+    readonlyRoles: string[] = ['admin', 'doctor', 'pharmacy'];
+    isReadonlyRole: boolean = false;
+
     constructor(public validator: CustomValidator,
         public roleService: RoleService,
         public fb: FormBuilder,
@@ -62,16 +65,25 @@ export class EditRoleComponent extends AdminBaseComponent implements OnInit {
             const roleData = response.data.role;
             const permissionsData = response.data.permissions;
 
-            // Map permissions array to array of permission IDs
+            // Debugging to make sure roleName is loaded
+            console.log('Loaded Role Name:', roleData.roleName);
+
             const permissionIds = Array.isArray(permissionsData) ? permissionsData.map((permission: any) => permission.id) : [];
 
-            // Now patch your form
             this.editRoleForm.patchValue({
                 roleName: roleData.roleName,
                 description: roleData.description,
-                PermissionIds: permissionIds   // Assuming PermissionIds is a FormControl or FormArray
+                PermissionIds: permissionIds
             });
-            this.editRoleForm.get('PermissionIds')?.updateValueAndValidity(); // <<< Add after patch
+
+            this.editRoleForm.get('PermissionIds')?.updateValueAndValidity();
+
+            const currentRoleName = (roleData.roleName || '').toLowerCase();
+            this.isReadonlyRole = this.readonlyRoles.includes(currentRoleName);
+
+            if (this.isReadonlyRole) {
+                this.editRoleForm.get('roleName')?.disable(); // Disable if readonly role
+            }
         });
     }
 
@@ -94,6 +106,10 @@ export class EditRoleComponent extends AdminBaseComponent implements OnInit {
     }
 
     onSubmit() {
+        if (this.isReadonlyRole) {
+            Helper.ShowError('You cannot update Admin, Doctor, or Pharmacy roles.');
+            return;
+        }
         this.validator.markInvalidFieldsTouched(this.editRoleForm);
 
         if (this.editRoleForm.invalid) {
