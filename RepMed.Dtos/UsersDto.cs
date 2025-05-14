@@ -79,6 +79,8 @@ namespace RepMed.Dtos
     {
         public long UserId{ get; set; }
         public long PersonId { get; set; }
+        public long RoleId { get; set; }
+        public string RoleName { get; set; }
         public BasicAddressDto? Address { get; set; }
     }
 
@@ -113,6 +115,8 @@ namespace RepMed.Dtos
     public class API_EDIT_USER : BasicPersonsDto
     {
         public AddAddressDto? Address { get; set; }
+        public string Role { get; set; }
+
     }
 
 }

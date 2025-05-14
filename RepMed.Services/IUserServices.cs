@@ -98,10 +98,12 @@ namespace RepMed.Services
             try
             {
                 var sql = $@"
-                            SELECT u.Id as UserId , p.Id as PersonId, p.FirstName,p.LastName,p.Email,p.Mobile,p.Gender,p.DateOfBirth,p.Email,a.AddressLine,a.CityId,a.StateId,a.CountryId,a.Pincode
+                            SELECT u.Id as UserId , p.Id as PersonId,r.RoleName,r.Id as RoleId, p.FirstName,p.LastName,p.Email,p.Mobile,p.Gender,p.DateOfBirth,p.Email,a.AddressLine,a.CityId,a.StateId,a.CountryId,a.Pincode
                             FROM {DbTables.tblUser} u
                             LEFT JOIN {DbTables.tblPersons} p ON u.PersonId = p.Id
                             LEFT JOIN {DbTables.tblUserAddress} a ON a.PersonId = p.Id
+                            LEFT JOIN {DbTables.tblUserRoles} ur ON ur.UserId= u.Id
+                            LEFT JOIN {DbTables.tblRole} r ON ur.RoleId= r.Id
                             WHERE u.PersonId = @Id;
                         ";
                 var result = await _idbConnection.QueryAsync<GetUserDto, BasicAddressDto, GetUserDto>(

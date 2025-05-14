@@ -151,13 +151,13 @@ namespace RepMed.Web.Controllers.BaseApis
                 {
                     using (IAccountService accountService = new AccountService(db, tran))
                     {
-                        var isReset = await accountService.AddRoleAsync(reqDto,role);
+                        var isReset = await accountService.AddRoleAsync(reqDto, role);
                         if (isReset.IsSuccess)
                             tran.Commit();
                         else
                             tran.Rollback();
 
-                        return new APIsResponse<bool> { IsSuccess = false, Message= " role added" };
+                        return new APIsResponse<bool> { IsSuccess = false, Message = " role added" };
                     }
                 }
             }
@@ -170,9 +170,9 @@ namespace RepMed.Web.Controllers.BaseApis
                 using (var tran = db.BeginTransaction())
                 {
                     using (IPersonService personService = new PersonService(db, tran))
-                    {   
-                        var person = await personService.AddEditPerson(reqDto,personid);
-                        if(!person.IsSuccess)
+                    {
+                        var person = await personService.AddEditPerson(reqDto, personid);
+                        if (!person.IsSuccess)
                         {
                             tran.Rollback();
                             return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = person.Message };
@@ -187,40 +187,37 @@ namespace RepMed.Web.Controllers.BaseApis
                             });
                             userObj.PharmacyId = reqDto.PharmacyId;
                             var user = await userService.AddEditUser(userObj, personid);
-                            if(!user.IsSuccess)
+                            if (!user.IsSuccess)
                             {
                                 tran.Rollback();
                                 return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = user.Message };
                             }
-                            if (personid == 0)
+                            if (!string.IsNullOrEmpty(reqDto.Role))
                             {
-                                if (!string.IsNullOrEmpty(reqDto.Role))
+                                using (IAccountService accountService = new AccountService(db, tran))
                                 {
-                                    using (IAccountService accountService = new AccountService(db, tran))
+                                    var role = await accountService.AddRoleAsync(user.Data, reqDto.Role);
+                                    if (!role.IsSuccess)
                                     {
-                                        var role = await accountService.AddRoleAsync(user.Data, reqDto.Role);
-                                        if (!role.IsSuccess)
-                                        {
-                                            tran.Rollback();
-                                            return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = role.Message };
-                                        }
+                                        tran.Rollback();
+                                        return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = role.Message };
                                     }
-                                    using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
+                                }
+                                using (IPharmacyService pharmacyService = new PharmacyService(db, tran))
+                                {
+                                    var email = await pharmacyService.GenrateEmailToken(user.Data.Id, reqDto.Email);
+                                    if (!email.IsSuccess)
                                     {
-                                        var email = await pharmacyService.GenrateEmailToken(user.Data.Id, reqDto.Email);
-                                        if (!email.IsSuccess)
-                                        {
-                                            tran.Rollback();
-                                            return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = email.Message };
-                                        }
+                                        tran.Rollback();
+                                        return new APIsResponse<EntityUsersDto> { IsSuccess = false, Message = email.Message };
                                     }
                                 }
                             }
                             tran.Commit();
-                            return new APIsResponse<EntityUsersDto> { IsSuccess = true, Data= user.Data, Message = user.Message};
+                            return new APIsResponse<EntityUsersDto> { IsSuccess = true, Data = user.Data, Message = user.Message };
                         }
                     }
-                    
+
                 }
             }
         }
