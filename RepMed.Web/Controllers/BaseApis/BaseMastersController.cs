@@ -108,7 +108,7 @@ namespace RepMed.Web.Controllers.BaseApis
             }
 
         }
-        protected async Task<APIsResponse<IEnumerable<SelectListItem>>> PharmacyRoles()
+        protected async Task<APIsResponse<IEnumerable<SelectListItem>>> PharmacyRoles(long Id)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -118,7 +118,7 @@ namespace RepMed.Web.Controllers.BaseApis
                 {
                     using (IMasterService masterService = new MasterService(db, tran))
                     {
-                        var countries = await masterService.GetPharmacyRoles();
+                        var countries = await masterService.GetPharmacyRoles(Id);
                         tran.Commit();
                         return countries;
 

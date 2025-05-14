@@ -67,10 +67,10 @@ namespace RepMed.Web.Controllers.WebApis
 
         }
 
-        [HttpGet("getpharmacyroles")]
-        public async Task<IActionResult> GetPharmacyRoles()
+        [HttpGet("getpharmacyroles/{Id}")]
+        public async Task<IActionResult> GetPharmacyRoles(long Id)
         {
-            var data = await base.PharmacyRoles();
+            var data = await base.PharmacyRoles(Id);
             if (data.IsSuccess)
                 return Ok(data);
 
