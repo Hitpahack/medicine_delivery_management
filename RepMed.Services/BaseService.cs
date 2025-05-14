@@ -39,9 +39,6 @@ namespace RepMed.Services
             _mapper = ServiceActivator.GetScope().ServiceProvider.GetService<IGenericMapper>();
         }
 
-
-
-
         public BaseService(IDbConnection sqlConnection, IDbTransaction dbTransaction)
         {
             _idbConnection = sqlConnection;
@@ -51,6 +48,7 @@ namespace RepMed.Services
             _adminSettings = ServiceActivator.GetScope().ServiceProvider.GetService<IOptions<AdminSettings>>().Value;
             _emailSettings = ServiceActivator.GetScope().ServiceProvider.GetService<IOptions<EmailSettings>>().Value;
             _validateMessages = ServiceActivator.GetScope().ServiceProvider.GetService<IValidationMessagesServices>();
+            _httpContext = ServiceActivator.GetScope().ServiceProvider.GetService<IHttpContextAccessor>();
         }
 
         public Task<bool> IsEmailExist(string email, bool checkUserTbl = false)
