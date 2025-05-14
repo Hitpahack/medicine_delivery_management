@@ -15,6 +15,8 @@ public partial class Permission
 
     public bool? IsAdmin { get; set; }
 
+    public int? OrderSequence { get; set; }
+
     public virtual ICollection<Childpermission> Childpermissions { get; set; } = new List<Childpermission>();
 
     public virtual ICollection<Rolepermission> Rolepermissions { get; set; } = new List<Rolepermission>();

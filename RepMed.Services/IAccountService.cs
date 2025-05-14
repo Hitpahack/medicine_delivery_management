@@ -167,7 +167,7 @@ namespace RepMed.Services
                                                 ON RP.{nameof(Rolepermission.PermissionId)} = P.{nameof(Permission.Id)}
                                               LEFT JOIN {DbTables.tblChildPermissions} CP 
                                                 ON CP.{nameof(Childpermission.PermissionId)} = P.{nameof(Permission.Id)}
-                                              WHERE RP.{nameof(Rolepermission.RoleId)} = @RoleId",
+                                              WHERE RP.{nameof(Rolepermission.RoleId)} = @RoleId Order by P.{nameof(Permission.OrderSequence)} asc" ,
                                             new { RoleId = response.Roles[0].Id },
                                             _idbTransaction
                                         );
