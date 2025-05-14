@@ -92,7 +92,9 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
       // For Edit
       this.editUserForm = this.initEditForm();
       this.initEditForm();
-      this.loadUserData(this.userId);
+      this.loadRoles(() => {
+        this.loadUserData(this.userId);
+      });
     } else {
       // For Add
       this.addUserForm = this.initAddForm();
@@ -101,11 +103,14 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
     }
   }
 
-  // load roles
-  loadRoles() {
+  //load roles 
+  loadRoles(callback?: () => void) {
     this.adminuserservice.getRoles().subscribe((res) => {
       if (res?.isSuccess) {
         this.roles = res.data;
+        if (callback) {
+          callback();
+        }
       }
     });
   }
@@ -121,6 +126,7 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
           lastname: user.lastName,
           email: user.email,
           mobile: user.mobile,
+          Role: user.roleName,
           id: user.id,
           personId: user.personId,
           gender: user.gender,
@@ -147,7 +153,7 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
       } else {
         console.error("Failed to load country data", response);
       }
-    })
+    });
   }
 
   // Add User Form
@@ -192,6 +198,7 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
       firstname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
       lastname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
       mobile: new FormControl(null, [Validators.required]),
+      Role: new FormControl(null, [Validators.required]),
       email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
       gender: new FormControl(null),
       dateofBirth: new FormControl(null, this.dateRangeValidator.bind(this)),

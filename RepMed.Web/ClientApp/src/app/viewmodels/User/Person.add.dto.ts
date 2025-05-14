@@ -59,6 +59,8 @@ export interface BasePerson {
     isActive?: boolean;
     address?: AddAddressDto;
     Role?: string;
-    personId:number;    
+    personId:number;
+    roleId?:string;
+    roleName?:string;    
   }
   
