@@ -89,7 +89,11 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
             // For Edit
             this.editstaffForm = this.initEditForm();
             this.initEditForm();
-            this.loadUserData(this.userId);
+            //this.loadRoles();
+            //this.loadUserData(this.userId);
+            this.loadRoles(() => {
+                this.loadUserData(this.userId);
+            });
         } else {
             // For Add
             this.addStaffForm = this.initAddForm();
@@ -99,10 +103,13 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
     }
 
     //load roles 
-    loadRoles() {
+    loadRoles(callback?: () => void) {
         this.StaffService.getRoles().subscribe((res) => {
             if (res?.isSuccess) {
                 this.roles = res.data;
+                if (callback) {
+                    callback();
+                }
             }
         });
     }
@@ -118,6 +125,7 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
                     lastname: user.lastName,
                     email: user.email,
                     mobile: user.mobile,
+                    Role: user.roleName,
                     id: user.id,
                     personId: user.personId,
                     gender: user.gender,
@@ -189,6 +197,7 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
             firstname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
             lastname: new FormControl(null, [Validators.required, Validators.pattern('^[a-zA-Z\s]*$')]),
             mobile: new FormControl(null, [Validators.required]),
+            Role: new FormControl(null, [Validators.required]),
             email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
             gender: new FormControl(null),
             dateofBirth: new FormControl(null, this.dateRangeValidator.bind(this)),

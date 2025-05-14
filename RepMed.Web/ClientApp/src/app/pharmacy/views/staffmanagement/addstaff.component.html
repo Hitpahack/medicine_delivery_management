@@ -7,28 +7,28 @@
             <div class="form-grid">
                 <div class="input-group mb-4 float">
                     <input type="text" class="form-control" placeholder=" " formControlName="firstname" maxlength="25"
-                        minlength="3">
+                        minlength="3" required>
                     <label class="float-lbl">First Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="text" class="form-control" placeholder=" " formControlName="lastname" maxlength="25"
-                        minlength="3">
+                        minlength="3" required>
                     <label class="float-lbl">Last Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="text" class="form-control" placeholder=" " formControlName="mobile" maxlength="30"
                         placeholder="1234567890" maxlength="10" (keypress)="allowOnlyNumbers($event)"
-                        (paste)="disablePaste($event)">
+                        (paste)="disablePaste($event)" required>
                     <label class="float-lbl">mobile *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="50">
+                    <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="50" required>
                     <label class="float-lbl">Email *</label>
                 </div>
                 <div class="mb-3 form-password-toggle">
                     <div class="input-group input-group-merge">
                         <input type="password" id="Password" class="form-control" style="width: 50% !important;"
-                            name="Password" formControlName="Password" placeholder="" aria-describedby="password" />
+                            name="Password" formControlName="Password" placeholder="" aria-describedby="password" required />
                         <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                         <label class="float-lbl">Password *</label>
                     </div>
@@ -37,13 +37,13 @@
                     <div class="input-group input-group-merge">
                         <input type="password" id="ConfirmPassword" class="form-control" style="width: 50% !important;"
                             name="ConfirmPassword" formControlName="ConfirmPassword" placeholder=""
-                            aria-describedby="ConfirmPassword" maxlength="16" />
+                            aria-describedby="ConfirmPassword" maxlength="16" required />
                         <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                         <label class="float-lbl">Confirm Password *</label>
                     </div>
                 </div>
                 <div class="input-group mb-4 float">
-                    <select class="form-control" formControlName="Role">
+                    <select class="form-control" formControlName="Role" required>
                         <option value="" disabled selected>Select Role</option>
                         <option *ngFor="let role of roles" [value]="role.text">
                             {{ role.text }}
@@ -71,23 +71,33 @@
             <div class="form-grid">
                 <div class="input-group mb-4 float">
                     <input type="text" class="form-control" placeholder=" " formControlName="firstname" maxlength="25"
-                        minlength="3">
+                        minlength="3" required>
                     <label class="float-lbl">First Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="text" class="form-control" placeholder=" " formControlName="lastname" maxlength="25"
-                        minlength="3">
+                        minlength="3" required>
                     <label class="float-lbl">Last Name *</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="text" class="form-control" placeholder=" " formControlName="mobile" maxlength="30"
                         placeholder="1234567890" maxlength="10" (keypress)="allowOnlyNumbers($event)"
-                        (paste)="disablePaste($event)">
+                        (paste)="disablePaste($event)" required>
                     <label class="float-lbl">mobile *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="50">
+                    <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="50"
+                        required>
                     <label class="float-lbl">Email *</label>
+                </div>
+                <div class="input-group mb-4 float">
+                    <select class="form-control" formControlName="Role" required>
+                        <option value="" disabled>Select Role</option>
+                        <option *ngFor="let role of roles" [value]="role.text">
+                            {{ role.text }}
+                        </option>
+                    </select>
+                    <label class="float-lbl">Role *</label>
                 </div>
             </div>
         </fieldset>
@@ -101,12 +111,12 @@
                         <option value="Female">Female</option>
                         <option value="Others">Others</option>
                     </select>
-                    <label class="float-lbl">Gender *</label>
+                    <label class="float-lbl">Gender</label>
                 </div>
 
                 <div class="input-group mb-4 float">
                     <input type="date" formControlName="dateofBirth" class="form-control" [max]="maxDate" />
-                    <label class="float-lbl">Date Of Birth *</label>
+                    <label class="float-lbl">Date Of Birth</label>
                 </div>
             </div>
         </fieldset>
@@ -114,41 +124,41 @@
         <fieldset formGroupName="address">
             <div class="input-group mb-4 float">
                 <textarea formControlName="addressline" class="form-control"></textarea>
-                <label class="float-lbl">Address *</label>
+                <label class="float-lbl">Address</label>
             </div>
 
             <div class="form-grid">
 
                 <div class="input-group mb-4 float">
                     <select formControlName="countryId" class="form-control" (change)="onCountryDropdownChange($event)"
-                        (ngModelChange)="onValueChanged($event)" required>
+                        (ngModelChange)="onValueChanged($event)">
                         <option value="" disabled>Select Country</option>
                         <option *ngFor="let country of countries" [value]="country.value">{{ country.text }}
                         </option>
                     </select>
-                    <label class="float-lbl">Country *</label>
+                    <label class="float-lbl">Country</label>
                 </div>
 
                 <div class="input-group mb-4 float">
                     <select formControlName="stateId" class="form-control" (change)="onCityDropdownChange($event)"
-                        (ngModelChange)="onValueChaanged($event)" required>
+                        (ngModelChange)="onValueChaanged($event)">
                         <option value="" disabled>Select State</option>
                         <option *ngFor="let st of states" [value]="st.value">{{ st.text }}</option>
                     </select>
-                    <label class="float-lbl">State *</label>
+                    <label class="float-lbl">State</label>
                 </div>
 
                 <div class="input-group mb-4 float">
-                    <select formControlName="cityId" class="form-control" required>
+                    <select formControlName="cityId" class="form-control">
                         <option value="" disabled>Select city</option>
                         <option *ngFor="let city of cities" [value]="city.value">{{ city.text }}</option>
                     </select>
-                    <label class="float-lbl">City *</label>
+                    <label class="float-lbl">City</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="text" formControlName="pincode" class="form-control"
                         (keypress)="allowOnlyNumbers($event)" maxlength="6" />
-                    <label class="float-lbl">Pincode *</label>
+                    <label class="float-lbl">Pincode</label>
                 </div>
             </div>
         </fieldset>
