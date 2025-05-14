@@ -121,8 +121,7 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
                     id: user.id,
                     personId: user.personId,
                     gender: user.gender,
-                    dateofBirth: this.dateMethod(user.dateOfBirth),
-                    pharmacyId: this.pharmacyId
+                    dateofBirth: this.dateMethod(user.dateOfBirth)
                 });
                 if (user.address) {
                     this.editstaffForm.get('address').patchValue({
@@ -193,6 +192,7 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
             email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
             gender: new FormControl(null),
             dateofBirth: new FormControl(null, this.dateRangeValidator.bind(this)),
+            pharmacyId: new FormControl(this.pharmacyId),
             address: this.fb.group({
                 addressline: new FormControl(null),
                 countryId: new FormControl(),

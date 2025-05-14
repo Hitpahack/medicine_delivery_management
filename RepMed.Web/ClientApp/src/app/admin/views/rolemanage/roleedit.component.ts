@@ -45,7 +45,8 @@ export class EditRoleComponent extends AdminBaseComponent implements OnInit {
         return this.fb.group({
             roleName: new FormControl(null, Validators.required),
             description: new FormControl(null),
-            PermissionIds: [[], [Validators.required, this.validator.checkboxRequiredValidator]]  // Ensure it's an empty array initially
+            PermissionIds: [[], [Validators.required, this.validator.checkboxRequiredValidator]],  // Ensure it's an empty array initially
+            pharmacyId: new FormControl(null)
         });
     }
 
@@ -74,7 +75,6 @@ export class EditRoleComponent extends AdminBaseComponent implements OnInit {
                 roleName: roleData.roleName,
                 description: roleData.description,
                 PermissionIds: permissionIds,
-                pharmacyId: null
             });
 
             this.editRoleForm.get('PermissionIds')?.updateValueAndValidity();

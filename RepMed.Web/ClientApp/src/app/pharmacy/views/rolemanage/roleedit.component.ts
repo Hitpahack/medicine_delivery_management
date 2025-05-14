@@ -44,7 +44,8 @@ export class PharmacyEditRoleComponent extends AdminBaseComponent implements OnI
         return this.fb.group({
             roleName: new FormControl(null, Validators.required),
             description: new FormControl(null),
-            PermissionIds: [[], [Validators.required, this.validator.checkboxRequiredValidator]]  // Ensure it's an empty array initially
+            PermissionIds: [[], [Validators.required, this.validator.checkboxRequiredValidator]],  // Ensure it's an empty array initially
+            pharmacyId: new FormControl(this.pharmacyId)
         });
     }
 
@@ -71,8 +72,7 @@ export class PharmacyEditRoleComponent extends AdminBaseComponent implements OnI
             this.editRoleForm.patchValue({
                 roleName: roleData.roleName,
                 description: roleData.description,
-                PermissionIds: permissionIds,
-                pharmacyId: this.pharmacyId 
+                PermissionIds: permissionIds
             });
             this.editRoleForm.get('PermissionIds')?.updateValueAndValidity(); // <<< Add after patch
         });
