@@ -22,13 +22,15 @@
                     <label class="float-lbl">mobile *</label>
                 </div>
                 <div class="input-group mb-4 float">
-                    <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="50" required>
+                    <input type="text" class="form-control" placeholder=" " formControlName="email" maxlength="50"
+                        required>
                     <label class="float-lbl">Email *</label>
                 </div>
                 <div class="mb-3 form-password-toggle">
                     <div class="input-group input-group-merge">
                         <input type="password" id="Password" class="form-control" style="width: 50% !important;"
-                            name="Password" formControlName="Password" placeholder="" aria-describedby="password" required />
+                            name="Password" formControlName="Password" placeholder="" aria-describedby="password"
+                            required />
                         <span class="input-group-text cursor-pointer"><i class="bx bx-hide"></i></span>
                         <label class="float-lbl">Password *</label>
                     </div>
@@ -42,14 +44,14 @@
                         <label class="float-lbl">Confirm Password *</label>
                     </div>
                 </div>
-                <div class="input-group mb-4 float">
-                    <select class="form-control" formControlName="Role" required>
+                <div class="form-floating mb-4">
+                    <select class="form-select" id="roleSelect" formControlName="Role" required>
                         <option value="" disabled selected>Select Role</option>
                         <option *ngFor="let role of roles" [value]="role.text">
                             {{ role.text }}
                         </option>
                     </select>
-                    <label class="float-lbl">Role *</label>
+                    <label for="roleSelect">Role *</label>
                 </div>
             </div>
         </fieldset>

@@ -103,8 +103,9 @@ export class AddStaffComponent extends AdminBaseComponent implements OnInit, Aft
     }
 
     //load roles 
+
     loadRoles(callback?: () => void) {
-        this.StaffService.getRoles().subscribe((res) => {
+        this.StaffService.getRoles(Number(this.pharmacyId)).subscribe((res) => {
             if (res?.isSuccess) {
                 this.roles = res.data;
                 if (callback) {

@@ -30,8 +30,8 @@ export class StaffService extends adminBaseService {
     return this.http.get<ApiResponse<AddPersonDto>>(this.apiConfig.endpoints.staff.get(id), { headers: this.apiConfig.requestSettings.header })
   }
 
-  getRoles() {
-    return this.http.get<ApiResponse<Role[]>>(this.apiConfig.endpoints.staff.userroles, { headers: this.apiConfig.requestSettings.header })
+  getRoles(id: number) {
+    return this.http.get<ApiResponse<Role[]>>(this.apiConfig.endpoints.staff.userroles(id), { headers: this.apiConfig.requestSettings.header })
   }
 
   getallusers() {
