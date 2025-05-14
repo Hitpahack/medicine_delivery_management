@@ -1,2 +1,2 @@
-﻿dotnet ef dbcontext scaffold "server=localhost;port=3306;database=repmed;user=arka;password=Admin@1234;" Pomelo.EntityFrameworkCore.MySql  --context RepMedContext --force
+﻿dotnet ef dbcontext scaffold "server=14.99.115.62;port=3306;database=repmed;user=Arka;password=Arka@123;" Pomelo.EntityFrameworkCore.MySql  --context RepMedContext --force
 
