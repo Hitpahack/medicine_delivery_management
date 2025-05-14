@@ -107,12 +107,7 @@ export class EditRoleComponent extends AdminBaseComponent implements OnInit {
     }
 
     onSubmit() {
-        if (this.isReadonlyRole) {
-            Helper.ShowError('You cannot update Admin, Doctor, or Pharmacy roles.');
-            return;
-        }
         this.validator.markInvalidFieldsTouched(this.editRoleForm);
-
         if (this.editRoleForm.invalid) {
 
             const componentIdControl = this.editRoleForm.get('PermissionIds');
@@ -125,9 +120,9 @@ export class EditRoleComponent extends AdminBaseComponent implements OnInit {
             }
             return;
         }
-        const dto: AddRoleDto = this.editRoleForm.value;
+        const dto: AddRoleDto = this.editRoleForm.getRawValue();
         const roleId = this.route.snapshot.params['id'];
-        this.roleService.editrole(this.editRoleForm.value, roleId).subscribe({
+        this.roleService.editrole(dto, roleId).subscribe({
             next: (response) => {
                 if (response.isSuccess) {
                     console.log('Successfully updated');
