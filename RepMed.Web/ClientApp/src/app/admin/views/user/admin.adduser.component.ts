@@ -195,6 +195,7 @@ export class AddUserComponent extends AdminBaseComponent implements OnInit, Afte
       email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
       gender: new FormControl(null),
       dateofBirth: new FormControl(null, this.dateRangeValidator.bind(this)),
+      pharmacyId: new FormControl(null),
       address: this.fb.group({
         addressline: new FormControl(null),
         countryId: new FormControl(),
