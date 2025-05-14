@@ -2,7 +2,7 @@
     <form class="auth_form form_validation" *ngIf="addUserForm" appAutoValidate [formGroup]="addUserForm"
         #phForm_html="ngForm" (ngSubmit)="onSubmit()">
         <fieldset>
-            <legend>Staff</legend>
+            <legend>Add Doctor</legend>
             <div class="form-grid">
                 <div class="input-group mb-4 float">
                     <input type="text" class="form-control" placeholder=" " formControlName="firstname" maxlength="25"
@@ -60,7 +60,7 @@
     <form class="auth_form form_validation" *ngIf="editUserForm" appAutoValidate [formGroup]="editUserForm"
         #phForm_html="ngForm" (ngSubmit)="onSubmit()">
         <fieldset>
-            <legend>Edit Staff</legend>
+            <legend>Edit doctor</legend>
             <div class="form-grid">
                 <div class="input-group mb-4 float">
                     <input type="text" class="form-control" placeholder=" " formControlName="firstname" maxlength="25"
