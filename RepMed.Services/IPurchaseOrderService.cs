@@ -307,30 +307,59 @@ namespace RepMed.Services
             {
                 APIsResponse<CreatePODto> apiResponse = default;
                 #region Get ShortBook
-                var sbQuery = DbTables.tblShortBook.SelectAll("Id IN @ShortbookIds");
+                var sbQuery = DbTables.tblShortBook.SelectAll($@"Id IN @ShortbookIds");
                 var shortBook = await _idbConnection.QueryAsync<EntityShortbookDto>(
                     sbQuery,
                     new { ShortbookIds = reqDto.ShortbookId },
                     _idbTransaction
                 );
-                var result = shortBook.GroupBy(o=> o.SupplierId);
+                var groupedBySupplier = shortBook.GroupBy(o=> o.SupplierId);
                 #endregion
-
-                foreach(var item in result)
+                foreach (var group in groupedBySupplier)
                 {
-                    reqDto.CreatedAt = DateTime.Now;
-                    reqDto.OrderDate = DateTime.Now;
-                    reqDto.Status = "Ordered";
                     #region Insert Purchase Orders
+                    reqDto.CreatedAt = DateTime.Now;
+                    reqDto.UpdatedAt = DateTime.Now;
+                    reqDto.OrderDate = DateTime.Now;
+                    reqDto.Ponumber = GetNextPONumber(reqDto.PharmacyId).Result.Data.ToString();
+                    reqDto.OrderDate = DateTime.Now;
+                    reqDto.Status = "Pending";
+                    reqDto.SupplierId = Convert.ToUInt32(group.Key);
                     var insertPo = _idbConnection.Insert<EntityPODto>(_idbTransaction,
                                        DbTables.tblPurchaseOrders,
                                        DapperHelper.QueryAsColumnsParma<Purchaseorder, BasePODto>(),
                                        DapperHelper.QueryAsValuesParma<Purchaseorder, BasePODto>(),
-                                       item);
-                }
+                                       group);
+                    #endregion
+                    #region Insert PO Items
+                    foreach (var item in group)
+                    {
+                        var poItemDetail = new BasePOItemDto
+                        {
+                            PurchaseOrderId = insertPo.Id,
+                            ProductId = item.ProductId,
+                            Quantity = item.Quantity,  
+                            CreatedAt = DateTime.Now,
+                            UpdatedAt = DateTime.Now,
+                        };
 
+                        var insertPOItems = _idbConnection.Insert<EntityPOItemDto>(_idbTransaction,
+                                       DbTables.tblPurchaseOrderItems,
+                                       DapperHelper.QueryAsColumnsParma<Purchaseorderitem, BasePOItemDto>(),
+                                       DapperHelper.QueryAsValuesParma<Purchaseorderitem, BasePOItemDto>(),
+                                       poItemDetail);
+                    }
+                    #endregion
+                }
+                #region Delete Items from ShortBook
+                var deleteQuery = $@"DELETE FROM {DbTables.tblShortBook} WHERE Id in @ShortbookIds";
+                int rowsDeleted = await _idbConnection.ExecuteAsync(deleteQuery, new { ShortbookIds = reqDto.ShortbookId }, _idbTransaction);
+                if(rowsDeleted >0)
+                    return new APIsSuccsss<CreatePODto>(_validateMessages.AddSuccess, reqDto);
                 #endregion
-                return null;
+
+
+                    return null;
                 //if (insertPo != null)
                 //{
                 //    List<EntityPOItemDto> list = new List<EntityPOItemDto>(); ;
