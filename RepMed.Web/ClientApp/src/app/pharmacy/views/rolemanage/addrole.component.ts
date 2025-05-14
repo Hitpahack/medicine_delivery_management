@@ -25,7 +25,7 @@ export class PharmacyAddRoleComponent extends AdminBaseComponent implements OnIn
     errorMessage: string = '';
     selectedComponentIds: number[] = [];
     componentList: ComponentDto[] = [];
-
+    pharmacyId: string | null = null;
 
     constructor(public validator: CustomValidator, public RoleService: RoleService, public fb: FormBuilder) {
         super();
@@ -33,7 +33,7 @@ export class PharmacyAddRoleComponent extends AdminBaseComponent implements OnIn
 
     ngOnInit(): void {
         this.addroleForm = this.initForm();
-
+        this.pharmacyId = sessionStorage.getItem('pharmacyId');
         this.RoleService.getmodule().subscribe((response) => {
             if (response?.isSuccess && response.data) {
                 console.log('data component', response.data)
@@ -69,7 +69,11 @@ export class PharmacyAddRoleComponent extends AdminBaseComponent implements OnIn
         }
 
         // Proceed with form submission if valid
-        const dto: AddRoleDto = this.addroleForm.value;
+        //const dto: AddRoleDto = this.addroleForm.value;
+        const dto: AddRoleDto = {
+            ...this.addroleForm.value,  // Preserve the other values
+            pharmacyId: this.pharmacyId   // Add the pharmacyId
+        };
         console.log("role", this.addroleForm)
         this.RoleService.add(dto).subscribe({
             next: (response) => {

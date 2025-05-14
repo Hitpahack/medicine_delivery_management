@@ -22,6 +22,7 @@ export class PharmacyEditRoleComponent extends AdminBaseComponent implements OnI
     roleId: number;
     componentList: ComponentDto[] = [];
     errorMessage: string = '';
+    pharmacyId: string | null = null;
 
     constructor(public validator: CustomValidator,
         public roleService: RoleService,
@@ -33,6 +34,7 @@ export class PharmacyEditRoleComponent extends AdminBaseComponent implements OnI
 
     ngOnInit(): void {
         this.roleId = Number(this.route.snapshot.paramMap.get('id'));
+        this.pharmacyId = sessionStorage.getItem('pharmacyId');
         this.editRoleForm = this.initForm();
         this.loadModules();
         this.loadRoleDetails();
@@ -69,7 +71,8 @@ export class PharmacyEditRoleComponent extends AdminBaseComponent implements OnI
             this.editRoleForm.patchValue({
                 roleName: roleData.roleName,
                 description: roleData.description,
-                PermissionIds: permissionIds   // Assuming PermissionIds is a FormControl or FormArray
+                PermissionIds: permissionIds,
+                pharmacyId: this.pharmacyId 
             });
             this.editRoleForm.get('PermissionIds')?.updateValueAndValidity(); // <<< Add after patch
         });

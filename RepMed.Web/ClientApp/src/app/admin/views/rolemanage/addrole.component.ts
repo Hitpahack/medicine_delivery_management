@@ -69,7 +69,11 @@ export class AddRoleComponent extends AdminBaseComponent implements OnInit {
         }
 
         // Proceed with form submission if valid
-        const dto: AddRoleDto = this.addroleForm.value;
+        //const dto: AddRoleDto = this.addroleForm.value;
+        const dto: AddRoleDto = {
+            ...this.addroleForm.value,  // Preserve form values
+            pharmacyId: null   // Add pharmacyId here
+        };
         console.log("role", this.addroleForm)
         this.RoleService.add(dto).subscribe({
             next: (response) => {

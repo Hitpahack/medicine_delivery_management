@@ -73,7 +73,8 @@ export class EditRoleComponent extends AdminBaseComponent implements OnInit {
             this.editRoleForm.patchValue({
                 roleName: roleData.roleName,
                 description: roleData.description,
-                PermissionIds: permissionIds
+                PermissionIds: permissionIds,
+                pharmacyId: null
             });
 
             this.editRoleForm.get('PermissionIds')?.updateValueAndValidity();

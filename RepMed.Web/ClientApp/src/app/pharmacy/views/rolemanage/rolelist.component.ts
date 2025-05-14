@@ -20,12 +20,12 @@ export class PharmacyRoleListComponent extends AdminBaseComponent implements OnI
     constructor(public validator: CustomValidator, public RoleService: RoleService) {
         super();
     }
-
+    pharmacyId: string | null = null;
     ngAfterViewInit(): void {
         $(document).off('click', '.edit-role');
         $(document).off('click', '.toggle-status-btn');
         $(document).off('click', '.delete-role');
-    
+
 
         $(document).on('click', '.edit-role', (event) => {
             const id = $(event.currentTarget).data('id');
@@ -94,7 +94,9 @@ export class PharmacyRoleListComponent extends AdminBaseComponent implements OnI
             type: "POST",
             contentType: "application/json; charset=utf-8",
             dataType: "json", // Expect JSON response
-            data: function (d) {
+            data: (d) => {
+                // Inject pharmacyId into the request payload
+                d.pharmacyId = this.pharmacyId;
                 return JSON.stringify(d);
             }
 
@@ -157,9 +159,9 @@ export class PharmacyRoleListComponent extends AdminBaseComponent implements OnI
             });
         }
     }
-    
-    ngOnInit(): void {
 
+    ngOnInit(): void {
+        this.pharmacyId = sessionStorage.getItem('pharmacyId');
 
     }
 
