@@ -49,7 +49,7 @@ namespace RepMed.Services
                         reqDto.PermissionIds.Add(9);
                     #endregion
                     #region Check RoleExist
-                    if ((await IsRoleExist(reqDto.RoleName)))
+                    if ((await IsRoleExist(reqDto.RoleName,reqDto.PharmacyId)))
                     {
                         return await Task.FromResult(new APIsError<EntityRoleDto>(_validateMessages.AlreadyExist));
                     }
@@ -170,7 +170,6 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
             }
         }
-
         public void Dispose()
         {
             GC.SuppressFinalize(this);
@@ -302,7 +301,7 @@ namespace RepMed.Services
                     #endregion
 
                     #region Check RoleExist
-                    if ((await IsRoleExist(reqDto.RoleName)))
+                    if ((await IsRoleExist(reqDto.RoleName, reqDto.PharmacyId)))
                     {
                         return await Task.FromResult(new APIsError<EntityRoleDto>(_validateMessages.AlreadyExist));
                     }
@@ -381,6 +380,7 @@ namespace RepMed.Services
                 parameters.Add("page", reqDto.Page, DbType.Int32);
                 parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
                 parameters.Add("searchText", reqDto.SearchText ?? string.Empty, DbType.String);
+                parameters.Add("pharmacyId", reqDto.PharmacyId, DbType.Int32);
                 parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
                 parameters.Add("Order_by", orderBy, DbType.String);
 
@@ -404,7 +404,5 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<Datatable<RolesPagingResponse>>(ex.GetActualError()));
             }
         }
-
-
     }
 }

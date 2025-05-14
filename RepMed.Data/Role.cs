@@ -9,6 +9,8 @@ public partial class Role
 
     public string RoleName { get; set; }
 
+    public long? PharmacyId { get; set; }
+
     public string Description { get; set; }
 
     public DateTime? CreatedAt { get; set; }
@@ -18,6 +20,8 @@ public partial class Role
     public bool? IsActive { get; set; }
 
     public bool? IsAdminRole { get; set; }
+
+    public virtual Pharmacy Pharmacy { get; set; }
 
     public virtual ICollection<Rolepermission> Rolepermissions { get; set; } = new List<Rolepermission>();
 }

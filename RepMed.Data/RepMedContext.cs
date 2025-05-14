@@ -887,7 +887,7 @@ public partial class RepMedContext : DbContext
 
             entity.ToTable("roles");
 
-            entity.HasIndex(e => e.RoleName, "RoleName").IsUnique();
+            entity.HasIndex(e => e.PharmacyId, "roles_ibfk_1_idx");
 
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
@@ -901,6 +901,10 @@ public partial class RepMedContext : DbContext
                 .ValueGeneratedOnAddOrUpdate()
                 .HasDefaultValueSql("CURRENT_TIMESTAMP")
                 .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Pharmacy).WithMany(p => p.Roles)
+                .HasForeignKey(d => d.PharmacyId)
+                .HasConstraintName("roles_ibfk_1");
         });
 
         modelBuilder.Entity<Rolepermission>(entity =>

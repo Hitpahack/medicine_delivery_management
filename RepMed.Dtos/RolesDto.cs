@@ -28,6 +28,7 @@ namespace RepMed.Dtos
     public class CreateRoleDto : BasicRoleDto
     {
         public List<long> PermissionIds { get; set; }
+        public long? PharmacyId { get; set; }
     }
 
     public class GetRoleDto

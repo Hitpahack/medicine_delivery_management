@@ -123,15 +123,19 @@ namespace RepMed.Services
 
             return Task.FromResult(result != null);
         }
-        public Task<bool> IsRoleExist(string roleName)
+        public Task<bool> IsRoleExist(string roleName, long? pharmacyId)
         {
-            string sql = $@"
-                SELECT 1
-                FROM {DbTables.tblRole}
-                WHERE RoleName = @RoleName
-                LIMIT 1;";
+        string sql = $@"
+                        SELECT 1
+                        FROM {DbTables.tblRole}
+                        WHERE RoleName = @RoleName
+                          AND (
+                               (@PharmacyId IS NULL AND PharmacyId IS NULL)
+                               OR (@PharmacyId IS NOT NULL AND PharmacyId = @PharmacyId)
+                          )
+                        LIMIT 1;";
 
-            var result = _idbConnection.ExecuteScalar(sql, new { RoleName = roleName }, transaction: _idbTransaction);
+            var result = _idbConnection.ExecuteScalar(sql, new { RoleName = roleName, PharmacyId =pharmacyId}, transaction: _idbTransaction);
 
             return Task.FromResult(result != null);
         }
