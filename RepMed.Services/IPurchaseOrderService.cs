@@ -25,7 +25,7 @@ namespace RepMed.Services
         Task<APIsResponse<Datatable<POPagingResponse>>> GetAllPO(POPagingRequest reqDto);
         Task<APIsResponse<Datatable<ShortbookPagingResponse>>> GetShortBookItems(ShortbookPagingRequest reqDto);
         Task<APIsResponse<NextPoNumberDto>> GetNextPONumber(long pharmacyId);
-        Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId);
+        Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId,string search);
         Task<APIsResponse<POPdfContentDto>> GetPOPdfDetails(long poId);
         Task<APIsResponse<List<GetPOItemsDto>>> GetPOItems(long poId);
         Task<APIsResponse<IEnumerable<EntityProductDto>>> SearchProducts(string search);
@@ -108,11 +108,11 @@ namespace RepMed.Services
             }
         }
 
-        public async Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId)
+        public async Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId, string search)
         {
             try
             {
-                string query = DbTables.tblSuppliers.SelectAll($@"`{nameof(Supplier.PharmacyId)}` = {pharmacyId}");
+                string query = DbTables.tblSuppliers.SelectAll($@"`{nameof(Supplier.PharmacyId)}` = {pharmacyId} and {nameof(Supplier.Name)} LIKE  '%{search}%' ORDER BY Name ASC LIMIT 20;");
                 var suppliers = await _idbConnection.QueryAsync<GetSupppliersDto>(query, transaction: _idbTransaction);
                 return new APIsSuccsss<List<GetSupppliersDto>>(_validateMessages.RetriveSuccess, suppliers);
             }

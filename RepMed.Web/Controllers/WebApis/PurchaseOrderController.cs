@@ -143,7 +143,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("getsuppliers/{pharmacyId}")]
         [HttpPost]
-        public async Task<IActionResult> GetAllSuppliers(long pharmacyId)
+        public async Task<IActionResult> GetAllSuppliers(long pharmacyId, string search)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -152,7 +152,7 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
                     {
-                        var result = await purchaseOrderService.GetAllSuppliers(pharmacyId);
+                        var result = await purchaseOrderService.GetAllSuppliers(pharmacyId,search);
                         if (!result.IsSuccess)
                         {
                             return BadRequest(result);
