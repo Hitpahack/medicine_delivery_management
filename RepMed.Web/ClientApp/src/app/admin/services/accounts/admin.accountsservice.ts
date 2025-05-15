@@ -18,7 +18,7 @@ export class adminAccountsService extends adminBaseService {
   }
 
   login(formData: any): Observable<ApiResponse<LoginResponse>> {
-    return this.http.post<ApiResponse<LoginResponse>>(this.apiConfig.endpoints.accounts.login, formData, { headers: this.apiConfig.requestSettings.header }
+    return this.http.post<ApiResponse<LoginResponse>>(this.apiConfig.endpoints.accounts.login, formData,
     );
   }
   // logout(): Observable<ApiResponse<any>> {
