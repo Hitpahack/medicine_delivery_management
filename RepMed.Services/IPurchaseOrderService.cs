@@ -30,6 +30,7 @@ namespace RepMed.Services
         Task<APIsResponse<List<GetPOItemsDto>>> GetPOItems(long poId);
         Task<APIsResponse<IEnumerable<EntityProductDto>>> SearchProducts(string search);
         Task<APIsResponse<byte[]>> Generate(POPdfContentDto po, List<GetPOItemsDto> items);
+        Task<APIsResponse<EntityShortbookDto>> GetItem(long itemId);
     }
     public class PurchaseOrderService : BaseService, IPurchaseOrderService
     {
@@ -480,6 +481,28 @@ namespace RepMed.Services
             catch (Exception ex)
             {
                 return await Task.FromResult(new APIsError<Datatable<ShortbookPagingResponse>>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<EntityShortbookDto>> GetItem(long itemId)
+        {
+            try
+            {
+                var sqlShortbook= DbTables.tblShortBook.SelectAll("Id = @ItemId");
+                var result = await _idbConnection.QueryFirstOrDefaultAsync<EntityRoleDto>(
+                               sqlShortbook,
+                               new { ItemId = itemId },
+                               transaction: _idbTransaction
+                           );
+                if (result == null)
+                    return new APIsError<EntityShortbookDto>(_validateMessages.NotExist);
+                else
+                    return new APIsSuccsss<EntityShortbookDto>(_validateMessages.RetriveSuccess, result);
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<EntityShortbookDto>(ex.GetActualError()));
             }
         }
     }
