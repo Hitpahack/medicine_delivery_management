@@ -59,6 +59,10 @@ export class PurchaseOrderService extends adminBaseService {
     );
   }
 
+  deleteitembyid(id: number) {
+    return this.http.post<any>(this.apiConfig.endpoints.purchaseorder.deleteitem(id), { headers: this.apiConfig.requestSettings.header });
+  }
+
   // getOrderProducts(pharmacyId: number): Observable<any> {
   //   return this.http.get<any>(`${this.apiConfig.endpoints.purchaseorder.orderProductslist}`, {
   //     params: { pharmacyId: pharmacyId }

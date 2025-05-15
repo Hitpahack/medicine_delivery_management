@@ -1,59 +1,15 @@
 <div class="authentication">
-    <!-- Editable Row Form -->
-    <div *ngIf="selectedProduct" class="edit-form mb-3 p-2 border rounded" style="background-color: #f9f9f9;">
-        <div class="row align-items-end">
-            <div class="col-md-2">
-                <label>Date</label>
-                <input type="text" class="form-control" [value]="selectedProduct.addedDate | date:'shortDate'"
-                    disabled />
-            </div>
-            <div class="col-md-2">
-                <label>Item</label>
-                <input type="text" class="form-control" [value]="selectedProduct.name" disabled />
-            </div>
-            <div class="col-md-2">
-                <label>Supplier</label>
-                <select class="form-control" [(ngModel)]="selectedProductEdit.supplierId">
-                    <option *ngFor="let supplier of suppliers" [value]="supplier.id">{{ supplier.name }}</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label>Priority</label>
-                <select class="form-control" [(ngModel)]="selectedProductEdit.priority">
-                    <option value="Low">Low</option>
-                    <option value="Normal">Normal</option>
-                    <option value="High">High</option>
-                </select>
-            </div>
-            <div class="col-md-1">
-                <label>Qty</label>
-                <input type="number" class="form-control" [(ngModel)]="selectedProductEdit.quantity" />
-            </div>
-            <div class="col-md-2">
-                <label>Status</label>
-                <select class="form-control" [(ngModel)]="selectedProductEdit.status">
-                    <option value="Pending">Pending</option>
-                    <option value="Confirmed">Confirmed</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <label>Shortbook</label>
-            </div>
-            <div class="col-md-1">
-                <button class="btn btn-success w-100" (click)="updateProduct()">Update</button>
-            </div>
-        </div>
-    </div>
-
 
     <form class="auth_form form_validation" *ngIf="poForm" appAutoValidate [formGroup]="poForm" (ngSubmit)="onSubmit()">
         <fieldset formGroupName="purchaseOrder">
-            <legend>Purchase Order </legend>
+            <legend>Shortbook </legend>
             <div class="form-grid">
                 <!-- Search Input -->
                 <div class="position-relative">
-                    <input type="text" class="form-control" placeholder="Search product" [(ngModel)]="productSearch"
-                        (input)="onSearchChange($event.target.value)" />
+                    <!-- <input type="text" class="form-control" placeholder="Search product" [(ngModel)]="productSearch"
+                        (input)="onSearchChange($event.target.value)" /> -->
+                    <input type="text" class="form-control" placeholder="Search product" formControlName="productSearch"
+                        (input)="onSearchChange(poForm.get('purchaseOrder.productSearch')?.value)" />
 
                     <!-- Dropdown with filtered products -->
                     <ul *ngIf="filteredProducts.length" class="dropdown-menu show" [ngClass]="{'show': showDropdown}">
@@ -72,33 +28,12 @@
                     </ul>
                 </div>
             </div>
-            <div>
-                <table class="table table-bordered table-striped" *ngIf="productsList.length">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Item Name</th>
-                            <th>Supplier</th>
-                            <th>Priority</th>
-                            <th>Qty</th>
-                            <th>Status</th>
-                            <th>Source</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let item of productsList" (click)="editProduct(item)" style="cursor: pointer;">
-                            <td>{{item.addedDate}}</td>
-                            <td>{{ item.name }}</td>
-                            <td>{{ item.Supplier }}</td>
-                            <td>{{ item.Priority }}</td>
-                            <td>{{ item.quantity}}</td>
-                            <td>{{ item.status }}</td>
-                            <td>Shortbook</td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                <p *ngIf="!productsList.length">No products added yet.</p>
+            <div class="flex-grow-1 container-p-y">
+                <div class="card">
+                    <div class="card-body">
+                        <app-datatable [options]="tableOptions"></app-datatable>
+                    </div>
+                </div>
             </div>
         </fieldset>
         <!-- Submit Button -->

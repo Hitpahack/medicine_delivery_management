@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { FormBuilder, FormControl, FormsModule, FormGroup, ReactiveFormsModule, Validators, FormArray } from "@angular/forms";
 import { AdminBaseComponent } from "../../../../app/admin/admin.base.component";
@@ -13,16 +13,17 @@ import { SupplierDto } from "../../../viewmodels/supplier/supplier.dto";
 import { Product } from "../../../viewmodels/purchaseorder/product.dto";
 import { ProductDto } from "../../../viewmodels/purchaseorder/productdetails.dto";
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { DatatableComponent } from "../../../../app/admin/shared/datatables/datatable.component";
 import { Subject } from 'rxjs';
 
 @Component({
     selector: 'app-pharmacy-dashboard',
     templateUrl: './purchaseorder.component.html',
-    styleUrl: './purchaseorder.component.css',
+    styleUrls: ['./purchaseorder.component.css'],
     standalone: true,
-    imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective],
+    imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective, DatatableComponent],
 })
-export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit {
+export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit, AfterViewInit {
     constructor(
         public router: Router,
         public fb: FormBuilder,
@@ -32,72 +33,33 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
     ) {
         super(router, fb);
     }
+    tableOptions: any;
     poForm: FormGroup;
     errorMessage: string = '';
     PurchaseOrderDto: CreatePODto;
-
     productsList: ProductDto[] = [];
     searchTerm$ = new Subject<string>();
-
     suppliers: GetSupppliersDto[] = [];
     pharmacyId: string | null = null;
-
     productSearch: string = '';
     filteredProducts: ProductDto[] = [];
     showDropdown = false;
-
     selectedProduct: ProductDto | null = null;
-    selectedProductEdit = {
-        supplierId: null,
-        quantity: 1,
-        priority: '',
-        status: ''
-    };
 
-    editProduct(product: ProductDto) {
-        this.selectedProduct = product;
-        this.selectedProductEdit = {
-            supplierId: product.SupplierId,
-            quantity: product.Quantity,
-            priority: product.Priority,
-            status: product.Status
-        };
-    }
-
-    updateProduct() {
-        if (!this.selectedProduct) return;
-
-        const payload = {
-            productId: this.selectedProduct.id,
-            pharmacyId: Number(this.pharmacyId),
-            supplierId: this.selectedProductEdit.supplierId,
-            quantity: this.selectedProductEdit.quantity,
-            priority: this.selectedProductEdit.priority,
-            status: this.selectedProductEdit.status
-        };
-
-        this.PurchaseOrderService.updateProductInOrder(payload).subscribe({
-            next: (response) => {
-                if (response.isSuccess) {
-                    Helper.ShowSuccess('Product updated successfully.');
-                    this.loadOrderProducts();
-                    this.selectedProduct = null;  // Clear edit form
-                } else {
-                    Helper.ShowError(response.message || 'Failed to update.');
-                }
-            },
-            error: (err) => {
-                Helper.ShowError(err?.error?.message || 'Something went wrong.');
-            }
+    ngAfterViewInit(): void {
+        $(document).off('click', '.delete-role');
+        $(document).on('click', '.delete-role', (event) => {
+            const id = $(event.currentTarget).data('id');
+            this.onDelete(id);
         });
     }
-
     ngOnInit(): void {
         this.poForm = this.initPoForm();
         this.pharmacyId = sessionStorage.getItem('pharmacyId');
         const id = Number(this.pharmacyId);
         this.getallsupplier(id);
-        this.loadOrderProducts();
+        this.callShortbookList();
+
 
         this.searchTerm$
             .pipe(
@@ -107,7 +69,7 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             )
             .subscribe((response: any) => {
                 if (response.isSuccess && response.data?.length) {
-                    this.filteredProducts = response.data.slice(0, 5); // ✅ Use `response.data`
+                    this.filteredProducts = response.data.slice(0, 5);
                     this.showDropdown = true;
                 } else {
                     this.filteredProducts = [];
@@ -116,10 +78,75 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             });
     }
 
-    TotalAmount: number = 0;
-    PriceValue: number = 0;
-    QuantityValue: number = 0;
-    blankValue: number = 0;
+    callShortbookList() {
+        const self = this;
+        this.tableOptions = {
+            tableId: 'post_productlist_datatable',
+            ajax: {
+                url: this.admin_apiconfig.endpoints.purchaseorder.orderProductslist,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                data: (d: any) => {
+                    d.pharmacyId = self.pharmacyId;
+                    return JSON.stringify(d);
+                },
+                dataSrc: function (json) {
+                    console.log('list API response:', json);
+                    return json.data?.data || [];
+                }
+            },
+            searching: true,
+            columns: [
+                { data: 'id', title: '#', render: (data: any) => `<input class="item_checkbox" id="${data}" type="checkbox" value="${data}" />` },
+                //{ title: 'Date', data: 'addedDate' },
+                {
+                    title: 'Date',
+                    data: 'addedDate',
+                    render: function (data: any) {
+                        if (!data) return '';
+                        const date = new Date(data);
+                        const month = String(date.getMonth() + 1).padStart(2, '0');
+                        const day = String(date.getDate()).padStart(2, '0');
+                        let hours = date.getHours();
+                        const minutes = String(date.getMinutes()).padStart(2, '0');
+                        const ampm = hours >= 12 ? 'PM' : 'AM';
+                        hours = hours % 12;
+                        hours = hours ? hours : 12; // 0 ko 12 banana
+                        const strHours = String(hours).padStart(2, '0');
+                        return `${month}-${day}, ${strHours}:${minutes} ${ampm}`;
+                    }
+                },
+                { title: 'Item', data: 'productName' },
+                { title: 'Distributor', data: 'supplierId' },
+                //{ title: 'Manuf.', data: '' },
+                //{ title: 'Min', data: '' },
+                //{ title: 'Stock', data: '' },
+                { title: 'quantity', data: 'quantity' },
+                { title: 'status', data: 'status' },
+                {
+                    data: 'SortBook',
+                    title: 'Source',
+                    render: () => {
+                        return 'Shortbook';
+                    }
+                },
+                {
+                    title: '',
+                    data: null,
+                    orderable: false,
+                    render: (data: any, type: any, row: any) => {
+                        return `
+                    <button class="btn btn-sm btn-danger delete-role" data-id="${row.id}" title="Remove" 
+                        style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; padding: 5px 10px; border-radius: 12px;">
+                        <i class="bi bi-trash" style="font-size: 16px;"></i>
+                    </button>
+                    `;
+                    }
+                },
+            ],
+        };
+    }
 
     filterProducts() {
         const search = this.productSearch.toLowerCase();
@@ -132,16 +159,17 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
         if (term) {
             this.searchTerm$.next(term);
         } else {
-            this.filteredProducts = []; // Clear the dropdown if search term is empty
-            this.showDropdown = false;  // Hide dropdown
+            this.filteredProducts = [];
+            this.showDropdown = false;
         }
     }
 
+    // When search Item in searchbox and click item than item add in shortbook.
     selectProduct(product: ProductDto) {
 
         const payload = {
             pharmacyId: Number(this.pharmacyId),
-            productId: product.id,  // ✅ Corrected
+            productId: product.id,
             supplierId: null,
             quantity: 1,
             priority: null,
@@ -153,7 +181,7 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             next: (response) => {
                 if (response.isSuccess) {
                     Helper.ShowSuccess(response.message || 'Product added in Cart.');
-                    this.loadOrderProducts();  // Reload table
+                    this.callShortbookList();
                 } else {
                     this.errorMessage = response.message || 'Failed to add user.';
                     Helper.ShowError(this.errorMessage);
@@ -171,23 +199,6 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
         this.showDropdown = false;
     }
 
-    loadOrderProducts() {
-
-        if (!this.pharmacyId) return;
-
-        this.PurchaseOrderService.getOrderProducts(Number(this.pharmacyId)).subscribe({
-            next: (response) => {
-                if (response.isSuccess && response.data) {
-                    this.productsList = response.data;
-                } else {
-                    this.productsList = [];
-                }
-            },
-            error: (err) => {
-                console.error('Failed to load products:', err);
-            }
-        });
-    }
     //#region get supplier
     getallsupplier(pharmacyId: number) {
         this.PurchaseOrderService.getsupplier(pharmacyId).subscribe((response) => {
@@ -198,20 +209,45 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             }
         });
     }
-
     //#endregion
+
     initPoForm() {
         return this.fb.group({
             purchaseOrder: this.fb.group({
                 supplierId: [null, Validators.required],
                 poNumber: [''],
                 expectedDelivery: [''],
-                remarks: ['']
+                remarks: [''],
+                productSearch: ['']
             }),
             products: this.fb.array([])  // dynamic products list
         });
     }
 
+    //remove product in shortbook
+    onDelete(id: number): void {
+        if (confirm('Are you sure you want to delete this item?')) {
+            this.PurchaseOrderService.deleteitembyid(id).subscribe({
+                next: (response) => {
+                    if (response?.isSuccess) {
+                        // Show success message
+                        Helper.ShowSuccess(response.message || 'Item deleted successfully');
+                        // Optionally reload the DataTable
+                        this.callShortbookList();
+                    } else {
+                        // Show error message if deletion failed
+                        Helper.ShowError(response.message || 'Failed to delete the item');
+                    }
+                },
+                error: (error) => {
+                    console.error('Delete error:', error);
+                    // Show error message if there is an API or HTTP error
+                    const errorMessage = error?.error?.message || 'An error occurred while deleting the item';
+                    Helper.ShowError(errorMessage);
+                }
+            });
+        }
+    }
 
     onSubmit(): void {
         if (this.poForm.invalid) {

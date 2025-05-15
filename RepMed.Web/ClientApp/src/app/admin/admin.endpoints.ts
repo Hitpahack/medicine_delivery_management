@@ -9,15 +9,19 @@ export class AdminApiConfigService {
   constructor(private config: ConfigService) {}
 
   get requestSettings() {
+    const token = localStorage.getItem('token');
     return {
       header: {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Accept-Language': 'en'
+        'Accept-Language': 'en',
+        'Authorization': `Bearer ${token}`
       },
       headerFormData: {
-        'Content-Disposition': 'multipart/form-data',
-        'Accept-Language': 'en'
+        //'Content-Disposition': 'multipart/form-data',
+        'Accept': 'application/json',
+        'Accept-Language': 'en',
+        'Authorization': `Bearer ${token}`
       }
     };
   }
@@ -95,6 +99,7 @@ export class AdminApiConfigService {
         addProduct: `${v1}/po/add_item/`,
         orderProductslist: `${v1}/po/get_items`,
         updateProduct: `${v1}/po/update_item/`,
+        deleteitem: (id: number) => `${v1}/po/delete_item/${id}`,
       },
       CMS: {
         add: `${v1}/cms/addstaticpage`,
