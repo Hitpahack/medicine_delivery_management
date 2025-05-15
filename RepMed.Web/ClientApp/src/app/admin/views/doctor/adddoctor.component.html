@@ -89,14 +89,14 @@
 
         <fieldset>
             <div class="form-grid">
-                <div class="input-group mb-4 float">
-                    <select formControlName="gender" class="form-control">
+                <div class="form-floating mb-4">
+                    <select formControlName="gender" id="gender" class="form-select">
                         <option value="" disabled>Select Gender</option>
                         <option value="Male">Male</option>
                         <option value="Female">Female</option>
                         <option value="Others">Others</option>
                     </select>
-                    <label class="float-lbl">Gender</label>
+                    <label for="gender">Gender</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="date" formControlName="dateofBirth" class="form-control" [max]="maxDate" />
@@ -117,31 +117,31 @@
 
             <div class="form-grid">
 
-                <div class="input-group mb-4 float">
-                    <select formControlName="countryId" class="form-control" (change)="onCountryDropdownChange($event)"
+                <div class="form-floating mb-4">
+                    <select formControlName="countryId" class="form-select" id="country" (change)="onCountryDropdownChange($event)"
                         (ngModelChange)="onValueChanged($event)" required>
                         <option value="" disabled>Select Country</option>
                         <option *ngFor="let country of countries" [value]="country.value">{{ country.text }}
                         </option>
                     </select>
-                    <label class="float-lbl">Country</label>
+                    <label for="country">Country</label>
                 </div>
 
-                <div class="input-group mb-4 float">
-                    <select formControlName="stateId" class="form-control" (change)="onCityDropdownChange($event)"
+                <div class="form-floating mb-4">
+                    <select formControlName="stateId" id="state" class="form-select" (change)="onCityDropdownChange($event)"
                         (ngModelChange)="onValueChaanged($event)" required>
                         <option value="" disabled>Select State</option>
                         <option *ngFor="let st of states" [value]="st.value">{{ st.text }}</option>
                     </select>
-                    <label class="float-lbl">State</label>
+                    <label for="state">State</label>
                 </div>
 
-                <div class="input-group mb-4 float">
-                    <select formControlName="cityId" class="form-control" required>
+                <div class="form-floating mb-4">
+                    <select formControlName="cityId" id="city" class="form-select" required>
                         <option value="" disabled>Select city</option>
                         <option *ngFor="let city of cities" [value]="city.value">{{ city.text }}</option>
                     </select>
-                    <label class="float-lbl">City</label>
+                    <label for="city">City</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="text" formControlName="pincode" class="form-control"

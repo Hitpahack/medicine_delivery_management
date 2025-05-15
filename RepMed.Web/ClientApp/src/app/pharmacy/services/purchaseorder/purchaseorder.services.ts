@@ -74,7 +74,7 @@ export class PurchaseOrderService extends adminBaseService {
     const url = this.apiConfig.endpoints.purchaseorder.orderProductslist;
     const reqBody = {
       pharmacyId: pharmacyId,
-      start: 0,
+      start: 1,
       length: 1000,
       status: '',
       statusFilter: '',
