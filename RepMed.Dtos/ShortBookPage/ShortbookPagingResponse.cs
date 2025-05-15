@@ -11,6 +11,7 @@ namespace RepMed.Dtos.ShortBookPage
         public long Id { get; set; }
         public long ProductId { get; set; }
         public string ProductName { get; set; }
+        public string SupplierName { get; set; }
         public long PharmacyId { get; set; }
         public long SupplierId { get; set; }
         public long Quantity { get; set; }
