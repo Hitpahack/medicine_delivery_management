@@ -96,11 +96,11 @@
                         <option value="Female">Female</option>
                         <option value="Others">Others</option>
                     </select>
-                    <label class="float-lbl">Gender *</label>
+                    <label class="float-lbl">Gender</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="date" formControlName="dateofBirth" class="form-control" [max]="maxDate" />
-                    <label class="float-lbl">Date Of Birth *</label>
+                    <label class="float-lbl">Date Of Birth</label>
                 </div>
                 <div class="form-grid"></div>
                 <div class="form-grid"></div>
@@ -112,7 +112,7 @@
         <fieldset formGroupName="address">
             <div class="input-group mb-4 float">
                 <textarea formControlName="addressline" class="form-control"></textarea>
-                <label class="float-lbl">Address *</label>
+                <label class="float-lbl">Address</label>
             </div>
 
             <div class="form-grid">
@@ -124,7 +124,7 @@
                         <option *ngFor="let country of countries" [value]="country.value">{{ country.text }}
                         </option>
                     </select>
-                    <label class="float-lbl">Country *</label>
+                    <label class="float-lbl">Country</label>
                 </div>
 
                 <div class="input-group mb-4 float">
@@ -133,7 +133,7 @@
                         <option value="" disabled>Select State</option>
                         <option *ngFor="let st of states" [value]="st.value">{{ st.text }}</option>
                     </select>
-                    <label class="float-lbl">State *</label>
+                    <label class="float-lbl">State</label>
                 </div>
 
                 <div class="input-group mb-4 float">
@@ -141,12 +141,12 @@
                         <option value="" disabled>Select city</option>
                         <option *ngFor="let city of cities" [value]="city.value">{{ city.text }}</option>
                     </select>
-                    <label class="float-lbl">City *</label>
+                    <label class="float-lbl">City</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <input type="text" formControlName="pincode" class="form-control"
                         (keypress)="allowOnlyNumbers($event)" maxlength="6" />
-                    <label class="float-lbl">Pincode *</label>
+                    <label class="float-lbl">Pincode</label>
                 </div>
             </div>
         </fieldset>

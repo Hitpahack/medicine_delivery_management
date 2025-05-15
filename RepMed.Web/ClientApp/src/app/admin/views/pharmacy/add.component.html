@@ -59,12 +59,12 @@
                 <div class="input-group mb-4 float">
                     <textarea rows="2" placeholder=" " formControlName="address1" class="form-control"
                         style="width: 90%;" maxlength="100"></textarea>
-                    <label class="float-lbl">Address 1 *</label>
+                    <label class="float-lbl">Address 1</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <textarea rows="2" placeholder=" " formControlName="address2" class="form-control"
                         style="width: 90%;" maxlength="100"></textarea>
-                    <label class="float-lbl">Address 2 *</label>
+                    <label class="float-lbl">Address 2</label>
                 </div>
             </div>
             <div class="form-grid">
@@ -75,7 +75,7 @@
                         <option *ngFor="let country of countries" [value]="country.value">{{ country.text }}
                         </option>
                     </select>
-                    <label class="float-lbl">Country *</label>
+                    <label class="float-lbl">Country</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <select formControlName="stateId" class="form-control" (change)="onCityDropdownChange($event)"
@@ -83,14 +83,14 @@
                         <option value="" disabled selected>Select state</option>
                         <option *ngFor="let state of states" [value]="state.value">{{ state.text }}</option>
                     </select>
-                    <label class="float-lbl">State *</label>
+                    <label class="float-lbl">State</label>
                 </div>
                 <div class="input-group mb-4 float">
                     <select formControlName="cityId" class="form-control">
                         <option value="" disabled selected>Select city</option>
                         <option *ngFor="let city of cities" [value]="city.value">{{ city.text }}</option>
                     </select>
-                    <label class="float-lbl">City *</label>
+                    <label class="float-lbl">City</label>
                 </div>
             </div>
         </fieldset>
