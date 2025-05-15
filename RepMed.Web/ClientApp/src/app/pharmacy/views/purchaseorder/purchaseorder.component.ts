@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from "@angular/router";
 import { FormBuilder, FormControl, FormsModule, FormGroup, ReactiveFormsModule, Validators, FormArray } from "@angular/forms";
 import { AdminBaseComponent } from "../../../../app/admin/admin.base.component";
@@ -45,6 +45,9 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
     filteredProducts: ProductDto[] = [];
     showDropdown = false;
     selectedProduct: ProductDto | null = null;
+    @ViewChild('dataTable') datatable!: DatatableComponent;
+    //@ViewChild(DatatableComponent) datatable!: DatatableComponent;
+    //selector: 'data-table'
 
     ngAfterViewInit(): void {
         $(document).off('click', '.delete-role');
@@ -181,7 +184,7 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             next: (response) => {
                 if (response.isSuccess) {
                     Helper.ShowSuccess(response.message || 'Product added in Cart.');
-                    this.callShortbookList();
+                    this.datatable.reload();
                 } else {
                     this.errorMessage = response.message || 'Failed to add user.';
                     Helper.ShowError(this.errorMessage);
@@ -220,7 +223,7 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
                 remarks: [''],
                 productSearch: ['']
             }),
-            products: this.fb.array([])  // dynamic products list
+            products: this.fb.array([])
         });
     }
 
@@ -230,12 +233,9 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             this.PurchaseOrderService.deleteitembyid(id).subscribe({
                 next: (response) => {
                     if (response?.isSuccess) {
-                        // Show success message
                         Helper.ShowSuccess(response.message || 'Item deleted successfully');
-                        // Optionally reload the DataTable
-                        this.callShortbookList();
+                        this.datatable.reload();
                     } else {
-                        // Show error message if deletion failed
                         Helper.ShowError(response.message || 'Failed to delete the item');
                     }
                 },
