@@ -76,7 +76,7 @@ export class ResetPassword extends AdminBaseComponent implements OnInit {
         next: (response) => {
           if (response.isSuccess) {
               Helper.ShowSuccess(response.message || '');
-              this.router.navigate(['/admin/login']);
+              this.router.navigate(['/login']);
           } else {
               this.errorMessage = response.message || '';
               Helper.ShowError(this.errorMessage);
