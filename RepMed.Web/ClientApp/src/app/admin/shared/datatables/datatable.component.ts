@@ -30,21 +30,27 @@ export class DatatableComponent implements AfterViewInit, OnDestroy {
   }
 
   ngAfterViewInit(): void {
-   
+
     this.dtInstance = $(this.tableSelector).DataTable({
       dom: 'Bfrtip',
-      buttons: this.options.customButtons??[],
-      processing: this.options.processing??true,
-      serverSide: this.options.serverSide??true,
-      searching: this.options.searching??true,
+      buttons: this.options.customButtons ?? [],
+      processing: this.options.processing ?? true,
+      serverSide: this.options.serverSide ?? true,
+      searching: this.options.searching ?? true,
       drawCallback: (settings) => {
         this.initDrawCallback(settings)
       },
       ajax: this.options.ajax,
       columns: this.options.columns,
-     
+
     });
 
+  }
+
+  public reload(): void {
+    if (this.dtInstance) {
+      this.dtInstance.ajax.reload(null, false); // false = don't reset pagination
+    }
   }
 
   ngOnDestroy(): void {
@@ -65,7 +71,7 @@ export class DatatableComponent implements AfterViewInit, OnDestroy {
             if (this.dtInstance) {
               this.dtInstance.search(value).draw();
             }
-          }, this.options.delaySearchTimeOut||2000); // 3 seconds
+          }, this.options.delaySearchTimeOut || 2000); // 3 seconds
         });
       }
     }
