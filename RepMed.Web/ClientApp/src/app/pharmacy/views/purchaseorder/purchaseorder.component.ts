@@ -24,6 +24,7 @@ import { Subject } from 'rxjs';
     imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective, DatatableComponent],
 })
 export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit, AfterViewInit {
+    selectedSupplier: any;
     constructor(
         public router: Router,
         public fb: FormBuilder,
@@ -35,19 +36,28 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
     }
     tableOptions: any;
     poForm: FormGroup;
+    ItemEditForm: FormGroup;
+
     errorMessage: string = '';
     PurchaseOrderDto: CreatePODto;
     productsList: ProductDto[] = [];
+
     searchTerm$ = new Subject<string>();
+    supplierSearchTerm$ = new Subject<string>();
+
     suppliers: GetSupppliersDto[] = [];
-    pharmacyId: string | null = null;
-    productSearch: string = '';
     filteredProducts: ProductDto[] = [];
+
+    pharmacyId: string | null = null;
+
+    productSearch: string = '';
+
     showDropdown = false;
+    showSupplierDropdown = false;
+
     selectedProduct: ProductDto | null = null;
+
     @ViewChild('dataTable') datatable!: DatatableComponent;
-    //@ViewChild(DatatableComponent) datatable!: DatatableComponent;
-    //selector: 'data-table'
 
     ngAfterViewInit(): void {
         $(document).off('click', '.delete-role');
@@ -58,12 +68,13 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
     }
     ngOnInit(): void {
         this.poForm = this.initPoForm();
+        this.initItemEditForm();
         this.pharmacyId = sessionStorage.getItem('pharmacyId');
         const id = Number(this.pharmacyId);
         this.getallsupplier(id);
         this.callShortbookList();
 
-
+        // search Item 
         this.searchTerm$
             .pipe(
                 debounceTime(300),
@@ -77,6 +88,23 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
                 } else {
                     this.filteredProducts = [];
                     this.showDropdown = false;
+                }
+            });
+
+        // search Supplier base pharmacyId
+        this.supplierSearchTerm$
+            .pipe(
+                debounceTime(300),
+                distinctUntilChanged(),
+                switchMap(term => this.PurchaseOrderService.getFilteredSupplier(term, id)) //API call
+            )
+            .subscribe((response: any) => {
+                if (response.isSuccess && response.data?.length) {
+                    this.suppliers = response.data.slice(0, 5);
+                    this.showSupplierDropdown = true;
+                } else {
+                    this.suppliers = [];
+                    this.showSupplierDropdown = false;
                 }
             });
     }
@@ -125,7 +153,7 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
                 //{ title: 'Manuf.', data: '' },
                 //{ title: 'Min', data: '' },
                 //{ title: 'Stock', data: '' },
-                { title: 'quantity', data: 'quantity' },
+                { title: 'QTY.', data: 'quantity' },
                 { title: 'status', data: 'status' },
                 {
                     data: 'SortBook',
@@ -165,6 +193,15 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             this.filteredProducts = [];
             this.showDropdown = false;
         }
+    }
+
+    onSupplierSearch(term: string) {
+        this.supplierSearchTerm$.next(term);
+    }
+    selectSupplier(supplier: any) {
+        this.selectedSupplier = supplier;
+        this.ItemEditForm.get('supplierId')?.setValue(supplier.id);
+        this.showSupplierDropdown = false;
     }
 
     // When search Item in searchbox and click item than item add in shortbook.
@@ -227,6 +264,14 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
         });
     }
 
+    initItemEditForm() {
+        this.ItemEditForm = this.fb.group({
+            supplierId: [null, Validators.required],
+            Priority: ['', Validators.required],
+            quantity: ['', [Validators.required, Validators.min(1), Validators.max(9999999999)]],
+        });
+    }
+
     //remove product in shortbook
     onDelete(id: number): void {
         if (confirm('Are you sure you want to delete this item?')) {
@@ -247,6 +292,9 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
                 }
             });
         }
+    }
+    onUpdate() {
+
     }
 
     onSubmit(): void {

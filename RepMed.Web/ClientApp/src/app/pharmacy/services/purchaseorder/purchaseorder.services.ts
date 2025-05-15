@@ -47,6 +47,15 @@ export class PurchaseOrderService extends adminBaseService {
     });
   }
 
+  getFilteredSupplier(searchText: string, pharmacyId: number): Observable<ProductDto[]> {
+    return this.http.get<ProductDto[]>(`${this.apiConfig.endpoints.purchaseorder.searchsupplier}`, {
+      params: {
+        search: searchText,
+        pharmacyId: pharmacyId.toString()
+      }
+    });
+  }
+
   addProductToOrder(payload: any) {
     return this.http.post<any>(`${this.apiConfig.endpoints.purchaseorder.addProduct}`, payload);
   }
