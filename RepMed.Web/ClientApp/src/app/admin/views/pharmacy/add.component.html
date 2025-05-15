@@ -68,29 +68,29 @@
                 </div>
             </div>
             <div class="form-grid">
-                <div class="input-group mb-4 float">
-                    <select formControlName="countryId" class="form-control" (change)="($event)"
+                <div class="form-floating mb-4">
+                    <select formControlName="countryId" id="country" class="form-select" (change)="($event)"
                         (ngModelChange)="onValueChanged($event)">
                         <option value="" disabled selected>Select country</option>
                         <option *ngFor="let country of countries" [value]="country.value">{{ country.text }}
                         </option>
                     </select>
-                    <label class="float-lbl">Country</label>
+                    <label for="country">Country</label>
                 </div>
-                <div class="input-group mb-4 float">
-                    <select formControlName="stateId" class="form-control" (change)="onCityDropdownChange($event)"
-                        (ngModelChange)="onValueChaanged($event)">
+                <div class="form-floating mb-4">
+                    <select formControlName="stateId" id="state" class="form-select"
+                        (change)="onCityDropdownChange($event)" (ngModelChange)="onValueChaanged($event)">
                         <option value="" disabled selected>Select state</option>
                         <option *ngFor="let state of states" [value]="state.value">{{ state.text }}</option>
                     </select>
-                    <label class="float-lbl">State</label>
+                    <label for="state">State</label>
                 </div>
-                <div class="input-group mb-4 float">
-                    <select formControlName="cityId" class="form-control">
+                <div class="form-floating mb-4">
+                    <select formControlName="cityId" id="city" class="form-select">
                         <option value="" disabled selected>Select city</option>
                         <option *ngFor="let city of cities" [value]="city.value">{{ city.text }}</option>
                     </select>
-                    <label class="float-lbl">City</label>
+                    <label for="city">City</label>
                 </div>
             </div>
         </fieldset>
@@ -133,47 +133,22 @@
             </div>
         </fieldset>
 
-        <!-- <fieldset formGroupName="user" *ngIf="phForm" [formGroup]="phForm">
-            <div class="input-group mb-4 float">
-                <select formControlName="gender" class="form-control">
-                    <option value="" disabled>Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Others">Others</option>
-                </select>
-                <label class="float-lbl">Gender *</label>
-            </div>
-        </fieldset> -->
-
-        <!-- <fieldset formGroupName="pharmacy">
-            <google-map *ngIf="mapLoaded" height="400px" width="100%" [center]="{ lat: lat, lng: lng }" [zoom]="zoom"
-                (mapClick)="onMapClick($event)">
-                <map-marker [position]="{ lat: lat, lng: lng }" [title]="'Current Location'"></map-marker>
-            </google-map>
-        </fieldset> -->
-
         <fieldset formGroupName="pharmacy" *ngIf="phForm" [formGroup]="phForm">
-            <div class="d-flex">
-                <div class="col-2 pe-4">
-                    <div class="input-group mb-4 float">
-                        <input type="text" formControlName="storeMobile1" class="form-control" placeholder="9874563210"
-                            maxlength="10" (keypress)="allowOnlyNumbers($event)" (paste)="disablePaste($event)">
-                        <label class="float-lbl">StoreMobile1 *</label>
-                    </div>
+            <div class="form-grid">
+                <div class="input-group mb-4 float">
+                    <input type="text" formControlName="storeMobile1" class="form-control" placeholder="9874563210"
+                        maxlength="10" (keypress)="allowOnlyNumbers($event)" (paste)="disablePaste($event)">
+                    <label class="float-lbl">StoreMobile1</label>
                 </div>
-                <div class="col-3 pe-4">
-                    <div class="input-group mb-4 float">
-                        <input type="email" formControlName="storeEmail1" class="form-control" placeholder=""
-                            maxlength="60">
-                        <label class="float-lbl">StoreEmail1 *</label>
-                    </div>
+                <div class="input-group mb-4 float">
+                    <input type="email" formControlName="storeEmail1" class="form-control" placeholder=""
+                        maxlength="60">
+                    <label class="float-lbl">StoreEmail1</label>
                 </div>
-                <div class="col-3">
-                    <div class="input-group mb-4 float">
-                        <input type="email" formControlName="storeEmail2" class="form-control" placeholder=""
-                            maxlength="60">
-                        <label class="float-lbl">StoreEmail2 *</label>
-                    </div>
+                <div class="input-group mb-4 float">
+                    <input type="email" formControlName="storeEmail2" class="form-control" placeholder=""
+                        maxlength="60">
+                    <label class="float-lbl">StoreEmail2</label>
                 </div>
             </div>
         </fieldset>
