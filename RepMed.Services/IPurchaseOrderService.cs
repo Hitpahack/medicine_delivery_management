@@ -31,6 +31,7 @@ namespace RepMed.Services
         Task<APIsResponse<IEnumerable<EntityProductDto>>> SearchProducts(string search);
         Task<APIsResponse<byte[]>> Generate(POPdfContentDto po, List<GetPOItemsDto> items);
         Task<APIsResponse<EntityShortbookDto>> GetItem(long itemId);
+        Task<APIsResponse<bool>> DeleteItem(long itemId);
     }
     public class PurchaseOrderService : BaseService, IPurchaseOrderService
     {
@@ -503,6 +504,28 @@ namespace RepMed.Services
             catch (Exception ex)
             {
                 return await Task.FromResult(new APIsError<EntityShortbookDto>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<bool>> DeleteItem(long itemId)
+        {
+            try
+            {
+                APIsResponse<bool> apiResponse = default(APIsResponse<bool>);
+                #region Delete the role
+                string deleteQuery = $@"DELETE FROM {DbTables.tblShortBook} WHERE Id = @ItemId;";
+                int rowsAffected = await _idbConnection.ExecuteAsync(deleteQuery, new { ItemId = itemId }, _idbTransaction);
+
+                if (rowsAffected > 0)
+                    apiResponse = new APIsSuccsss<bool>("Item deleted successfully.", true);
+                else
+                    apiResponse = new APIsSuccsss<bool>("Item not found.", true);
+                #endregion
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
             }
         }
     }

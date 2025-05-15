@@ -69,6 +69,30 @@ namespace RepMed.Web.Controllers.WebApis
                 }
             }
         }
+
+        [Route("delete_item/{itemId}")]
+        [HttpPost]
+        public async Task<IActionResult> DeleteItem(long itemId)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.DeleteItem(itemId);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
         [Route("createpo")]
         [HttpPost]
         public async Task<IActionResult> CreatePO(CreatePODto reqDto)
