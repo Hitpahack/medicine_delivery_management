@@ -147,4 +147,15 @@
   font-weight: 500;
   color: #28a745;
 }
+
+.custom-priority-select {
+  width: 80px;            /* Enough width for text */
+  height: 32px;
+  font-size: 13px;
+  padding: 6px 10px;
+  box-sizing: border-box;  /* Ensures padding doesn’t cut text */
+  white-space: nowrap;     /* Prevents text from wrapping */
+  overflow: hidden;        /* Optional: hides overflow */
+  text-overflow: ellipsis; /* Optional: adds ... if cut */
+}
   

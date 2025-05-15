@@ -71,7 +71,6 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
         this.initItemEditForm();
         this.pharmacyId = sessionStorage.getItem('pharmacyId');
         const id = Number(this.pharmacyId);
-        this.getallsupplier(id);
         this.callShortbookList();
 
         // search Item 
@@ -96,7 +95,7 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             .pipe(
                 debounceTime(300),
                 distinctUntilChanged(),
-                switchMap(term => this.PurchaseOrderService.getFilteredSupplier(term, id)) //API call
+                switchMap(term => this.PurchaseOrderService.getFilteredSupplier(id, term)) //API call
             )
             .subscribe((response: any) => {
                 if (response.isSuccess && response.data?.length) {
@@ -149,7 +148,7 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
                     }
                 },
                 { title: 'Item', data: 'productName' },
-                { title: 'Distributor', data: 'supplierId' },
+                { title: 'Distributor', data: 'supplierName' },
                 //{ title: 'Manuf.', data: '' },
                 //{ title: 'Min', data: '' },
                 //{ title: 'Stock', data: '' },
@@ -196,6 +195,13 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
     }
 
     onSupplierSearch(term: string) {
+        if (!term) {
+            this.suppliers = [];
+            this.showSupplierDropdown = false;
+            this.selectedSupplier = null;
+            this.ItemEditForm.get('supplierId')?.setValue(null);
+            return;
+        }
         this.supplierSearchTerm$.next(term);
     }
     selectSupplier(supplier: any) {
@@ -239,18 +245,6 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
         this.showDropdown = false;
     }
 
-    //#region get supplier
-    getallsupplier(pharmacyId: number) {
-        this.PurchaseOrderService.getsupplier(pharmacyId).subscribe((response) => {
-            if (response?.isSuccess && response.data) {
-                this.suppliers = response.data;
-            } else {
-                console.error("Failed to load suppliers data", response);
-            }
-        });
-    }
-    //#endregion
-
     initPoForm() {
         return this.fb.group({
             purchaseOrder: this.fb.group({
@@ -267,10 +261,27 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
     initItemEditForm() {
         this.ItemEditForm = this.fb.group({
             supplierId: [null, Validators.required],
-            Priority: ['', Validators.required],
-            quantity: ['', [Validators.required, Validators.min(1), Validators.max(9999999999)]],
+            Priority: ['Low'],
+            quantity: [1, [Validators.required]],
         });
     }
+
+    //#region quantity key paste disable
+    preventInvalidKeys(event: KeyboardEvent): void {
+        const invalidKeys = ['-', 'e', 'E', '+', '.'];
+
+        if (invalidKeys.includes(event.key)) {
+            event.preventDefault();
+        }
+    }
+    preventPaste(event: ClipboardEvent): void {
+        const pastedInput: string = event.clipboardData?.getData('text') ?? '';
+        const number = parseInt(pastedInput, 10);
+        if (isNaN(number) || number < 1 || number > 1000) {
+            event.preventDefault();
+        }
+    }
+    //#endregion
 
     //remove product in shortbook
     onDelete(id: number): void {
