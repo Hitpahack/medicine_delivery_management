@@ -69,6 +69,20 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             this.onDelete(id);
         });
 
+        // Select all checkbox
+        $(document).on('change', '#select_all_main_checkbox', function () {
+            const checked = $(this).is(':checked');
+            $('.item_checkbox').prop('checked', checked);
+            $('#generatePoBtn').toggle($('.item_checkbox:checked').length > 0);
+        });
+
+        // Single checkbox click
+        $(document).on('change', '.item_checkbox', function () {
+            const total = $('.item_checkbox').length;
+            const checkedCount = $('.item_checkbox:checked').length;
+            $('#select_all_main_checkbox').prop('checked', total === checkedCount);
+            $('#generatePoBtn').toggle(checkedCount > 0);
+        });
     }
     get tableSelector(): string {
         return `#${this.tableOptions.tableId}`;
@@ -172,7 +186,11 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             },
             searching: true,
             columns: [
-                { data: 'id', title: '#', render: (data: any) => `<input class="item_checkbox" id="${data}" type="checkbox" value="${data}" />` },
+                {
+                    data: 'id',
+                    title: `<input type="checkbox" id="select_all_main_checkbox" />`,
+                    render: (data: any) => `<input class="item_checkbox" type="checkbox" value="${data}" data-id="${data}" />`
+                },
                 {
                     title: 'Date',
                     data: 'addedDate',
@@ -413,4 +431,65 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
         }
 
     }
+
+    onGeneratePo() {
+        const selectedIds: string[] = [];
+
+        $('.item_checkbox:checked').each(function () {
+            const id = $(this).data('id');
+            selectedIds.push(id);
+        });
+
+        if (selectedIds.length === 0) {
+            Helper.ShowError("Please select at least one item.");
+            return;
+        }
+
+        // ✅ Access dtInstance via ViewChild
+        const table = this.datatable.dtInstance;
+        const selectedItems = [];
+
+        table.rows().every(function () {
+            const data = this.data();
+            if (selectedIds.includes(data.id)) {
+                selectedItems.push(data);
+            }
+        });
+
+        // ✅ Supplier validation
+        const missingSupplier = selectedItems.some(item => !item.supplierId);
+        if (missingSupplier) {
+            Helper.ShowError("Please select supplier for all selected items.");
+            return;
+        }
+
+        const finalIds = selectedItems.map(x => x.id);
+
+        const payload = {
+            pharmacyId: this.pharmacyId,
+            ShortbookId: finalIds
+        };
+
+        // ✅ Call your service to generate PO
+        // this.purchaseOrderService.generatePO(payload).subscribe(...)
+        console.log('hello call po generate api');
+        this.PurchaseOrderService.pogenerate(payload).subscribe({
+            next: (response) => {
+                if (response.isSuccess) {
+                    Helper.ShowSuccess(response.message || "PO generated successfully.");
+                    this.datatable.reload();
+                    // optionally hide/generate buttons or reset UI as needed
+                } else {
+                    this.errorMessage = response.message || "Failed to generate PO.";
+                    Helper.ShowError(this.errorMessage);
+                }
+            },
+            error: (err) => {
+                this.errorMessage = err?.error?.message || "Something went wrong while generating PO.";
+                Helper.ShowError(this.errorMessage);
+            }
+        });
+    }
+
+
 }
