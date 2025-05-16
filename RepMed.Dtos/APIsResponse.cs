@@ -58,7 +58,7 @@
         }
 
     }
-    public class APIsUnAuthorize : APIsResponse<bool>
+    public class APIsUnAuthorize<T> : APIsResponse<T>
     {
         public APIsUnAuthorize(string message) : base(message, false)
         {

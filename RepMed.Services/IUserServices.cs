@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using RepMed.Dtos.DataTables;
 using RepMed.Dtos.PharmacyPage;
 using RepMed.Dtos.UsersPage;
+using System.Security.Claims;
 
 namespace RepMed.Services
 {
@@ -97,6 +98,19 @@ namespace RepMed.Services
         {
             try
             {
+                var loggedUserId = _httpContext.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                string query = DbTables.tblUser.SelectAll($@"PersonId = {personid} LIMIT 1");
+                ulong? userIdFromPerson = await _idbConnection.QueryFirstOrDefaultAsync<ulong?>(
+                    query,
+                    new { PersonId = personid },
+                    _idbTransaction
+                );
+                if (loggedUserId != userIdFromPerson.ToString())
+                {
+                    return new APIsUnAuthorize<GetUserDto>("You are not allowed to edit this profile.");
+                }
+
+                
                 var sql = $@"
                             SELECT u.Id as UserId , p.Id as PersonId,r.RoleName,r.Id as RoleId, p.FirstName,p.LastName,p.Email,p.Mobile,p.Gender,p.DateOfBirth,p.Email,a.AddressLine,a.CityId,a.StateId,a.CountryId,a.Pincode
                             FROM {DbTables.tblUser} u

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using MySqlConnector;
 using RepMed.Core;
@@ -44,6 +45,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("get/{Id}")]
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GET(long Id)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
@@ -57,6 +59,10 @@ namespace RepMed.Web.Controllers.WebApis
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();
+                            if(result.Status == 401)
+                            {
+                                return Unauthorized(result);
+                            }
                             return BadRequest(result);
                         }
                         tran.Commit();

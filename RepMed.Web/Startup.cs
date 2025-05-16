@@ -118,14 +118,14 @@ namespace RepMed.Web
                                context.Response.Headers.Add("Token-Expired", "true");
                                context.Response.ContentType = "application/json";
                                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                               context.Response.WriteAsync(JsonConvert.SerializeObject(new APIsUnAuthorize("Token has been expired")));
+                               context.Response.WriteAsync(JsonConvert.SerializeObject(new APIsUnAuthorize<bool>("Token has been expired")));
                            }
                            if (context.Exception.GetType() == typeof(ArgumentException))
                            {
                                context.Response.Headers.Add("Invalid-Token", "true");
                                context.Response.ContentType = "application/json";
                                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                               context.Response.WriteAsync(JsonConvert.SerializeObject(new APIsUnAuthorize("Invalid token")));
+                               context.Response.WriteAsync(JsonConvert.SerializeObject(new APIsUnAuthorize<bool>("Invalid token")));
                            }
 
                            return Task.FromResult("Token authorization failed");
