@@ -50,7 +50,7 @@ namespace RepMed.Services
                 Audience = _appSettings.JwtAuth.Issuer,
                 TokenType = "Jwt",
                 Claims = jwtClaims,
-                Expires = DateTime.UtcNow.AddMinutes(1),
+                Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = credentials
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
