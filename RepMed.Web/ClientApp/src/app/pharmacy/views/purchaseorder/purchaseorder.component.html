@@ -2,7 +2,7 @@
 
     <form class="auth_form form_validation" *ngIf="poForm" appAutoValidate [formGroup]="poForm" (ngSubmit)="onSubmit()">
         <fieldset formGroupName="purchaseOrder">
-            <legend>Add Item</legend>
+            <h5>Add Item</h5>
             <div class="form-grid">
                 <div class="position-relative">
                     <input type="text" class="form-control" placeholder="Search product" formControlName="productSearch"
@@ -31,25 +31,25 @@
     <!-- This is my edit form -->
     <form class="auth_form form_validation" *ngIf="ItemEditForm && showEditForm" appAutoValidate
         [formGroup]="ItemEditForm" (ngSubmit)="onUpdate()">
-        <div class="mt-3 border rounded p-2">
-            <div class="d-flex align-items-center flex-wrap gap-3 fw-semibold text-muted mb-1">
+        <div class="border rounded p-3 container-fluid mb-2 ">
+            <div class="d-flex align-items-center flex-wrap gap-4 fw-semibold text-muted">
                 <span style="width: 80px;">Date</span>
-                <span style="width: 110px;">Item</span>
-                <span style="width: 150px;">Distributor</span>
+                <span style="width: 200px;">Item</span>
+                <span style="width: 200px;">Distributor</span>
                 <span style="width: 80px;">Manuf.</span>
                 <span style="width: 80px;">Priority</span>
                 <span style="width: 40px;">Min</span>
                 <span style="width: 40px;">Stock</span>
                 <span style="width: 50px;">Qty.</span>
                 <span style="width: 70px;">Status</span>
-                <span style="width: 80px;">Source</span>
+                <!--<span style="width: 80px;">Source</span>-->
                 <span style="width: 80px;">Action</span>
             </div>
             <hr />
-            <div class="d-flex align-items-center flex-wrap gap-3">
+            <div class="d-flex align-items-center flex-wrap gap-4">
                 <span style="width: 80px; font-size: 14px;">{{ ItemEditForm.value.date | date: 'dd-MM HH:mm' }}</span>
-                <span style="width: 110px;font-size: 14px;">{{ ItemEditForm.value.itemName | slice:0:30 }}</span>
-                <div class="position-relative" style="width: 15%;">
+                <span style="width: 200px;font-size: 14px;">{{ ItemEditForm.value.itemName | slice:0:30 }}</span>
+                <div class="position-relative" style="width: 18%; margin-left:-20px ">
                     <input type="text" class="form-control" placeholder="Search Supplier..."
                         [value]="selectedSupplier?.name || ''" (input)="onSupplierSearch($event.target.value)"
                         style="width: 100%; height: 2%; font-size: 14px;" required formControlName="supplierId" />
@@ -75,18 +75,18 @@
                     formControlName="quantity" min="1" max="1000" (keydown)="preventInvalidKeys($event)"
                     (paste)="preventPaste($event)" />
                 <span style="width: 70px;">Pending</span>
-                <span style="width: 80px;">Shortbook</span>
+                <!--<span style="width: 80px;">Shortbook</span>-->
                 <button class="btn custom-btn" style="width: 80px;" type="submit">Update</button>
             </div>
         </div>
     </form>
 
     <!-- This is my ItemList Code -->
-    <div class="flex-grow-1 container-p-y">
+    <div class="flex-grow-1 container-fluid">
         <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
+            <!--<div class="card-header d-flex justify-content-between align-items-center">
                 <span class="h5 mb-0">Shortbook</span>
-            </div>
+            </div>-->
             <div class="card-body">
                 <app-datatable #dataTable (rowClicked)="onRowClick($event)" [options]="tableOptions"></app-datatable>
             </div>
