@@ -36,6 +36,7 @@ namespace RepMed.Dtos
 
     public class CreatePODto : BasePODto
     {
+        [Required]
         public List<long> ShortbookId { get; set; }
     }
     public class NextPoNumberDto

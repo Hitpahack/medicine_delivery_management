@@ -12,7 +12,7 @@ import { Title } from '@angular/platform-browser';
 declare var $: any;
 
 @Component({
-    selector: 'app-Role-list',
+    selector: 'app-AdminRole-listPage',
     templateUrl: './cmslist.component.html',
     imports: [DatatableComponent, RouterModule]
 })
