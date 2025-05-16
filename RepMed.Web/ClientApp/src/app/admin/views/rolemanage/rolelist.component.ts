@@ -11,7 +11,7 @@ import { Helper } from "../../../../app/common/helper.extenstions";
 declare var $: any;
 
 @Component({
-    selector: 'app-Role-list',
+    selector: 'app-AdminRole-list',
     templateUrl: 'rolelist.component.html',
     imports: [DatatableComponent, RouterModule]
 })

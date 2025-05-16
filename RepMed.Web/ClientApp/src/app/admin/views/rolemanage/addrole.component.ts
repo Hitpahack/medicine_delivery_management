@@ -12,7 +12,7 @@ import { AutoValidateDirective } from "../../../common/form.validator";
 declare const window: any;
 
 @Component({
-    selector: 'admin-add-role',
+    selector: 'admin-add-rolePage',
     templateUrl: './addrole.component.html',
     styleUrls: ['./addrole.component.css'],
     standalone: true,
