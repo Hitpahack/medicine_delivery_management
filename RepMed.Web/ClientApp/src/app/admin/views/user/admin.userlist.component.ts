@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 declare var $: any;
 
 @Component({
-    selector: 'app-User-list',
+    selector: 'app-User-listPage',
     templateUrl: 'admin.userlist.component.html',
     imports: [DatatableComponent, RouterModule, CommonModule]
 })
