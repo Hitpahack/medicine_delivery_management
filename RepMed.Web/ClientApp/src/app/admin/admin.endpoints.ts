@@ -99,7 +99,7 @@ export class AdminApiConfigService {
         searchsupplier: `${v1}/po/getsuppliers`,
         addProduct: `${v1}/po/add_item/`,
         orderProductslist: `${v1}/po/get_items`,
-        updateProduct: `${v1}/po/update_item/`,
+        updateItem: `${v1}/po/edit_item`,
         deleteitem: (id: number) => `${v1}/po/delete_item/${id}`,
       },
       CMS: {

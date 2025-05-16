@@ -388,6 +388,7 @@ namespace RepMed.Services
                 else
                 {
                     #region Update ShortBook Item
+                    reqDto.Status = "Pending";
                     EntityShortbookDto entityRoleDto = _idbConnection.Update<EntityShortbookDto>(_idbTransaction, DbTables.tblShortBook,
                     new Dictionary<string, object> {
                     { nameof(EntityShortbookDto.SupplierId), reqDto.SupplierId},

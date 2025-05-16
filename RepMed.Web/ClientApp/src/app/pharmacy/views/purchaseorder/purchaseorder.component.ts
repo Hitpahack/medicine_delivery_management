@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from "@angular/router";
 import { FormBuilder, FormControl, FormsModule, FormGroup, ReactiveFormsModule, Validators, FormArray } from "@angular/forms";
 import { AdminBaseComponent } from "../../../../app/admin/admin.base.component";
@@ -24,7 +24,7 @@ import { Subject } from 'rxjs';
     imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective, DatatableComponent],
 })
 export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit, AfterViewInit {
-    selectedSupplier: any;
+
     constructor(
         public router: Router,
         public fb: FormBuilder,
@@ -47,17 +47,20 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
 
     suppliers: GetSupppliersDto[] = [];
     filteredProducts: ProductDto[] = [];
-
+    Updateproduct: ProductDto[] = [];
     pharmacyId: string | null = null;
 
     productSearch: string = '';
-
+    selectedSupplier: any;
     showDropdown = false;
     showSupplierDropdown = false;
+    showEditForm: boolean = false;
 
     selectedProduct: ProductDto | null = null;
 
     @ViewChild('dataTable') datatable!: DatatableComponent;
+    @Output() rowClicked = new EventEmitter<any>();
+    @Output() dtInitialized = new EventEmitter<any>();
 
     ngAfterViewInit(): void {
         $(document).off('click', '.delete-role');
@@ -65,6 +68,48 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             const id = $(event.currentTarget).data('id');
             this.onDelete(id);
         });
+
+    }
+    get tableSelector(): string {
+        return `#${this.tableOptions.tableId}`;
+    }
+    onRowClick(rowData: any): void {
+        console.log('Row clicked:', rowData);
+        //alert('Clicked row ID in purchase module: ' + rowData.id);
+
+        //Update code here
+        // Show the form if it’s hidden
+        if (!this.ItemEditForm) {
+            this.initItemEditForm(); // or make sure form is initialized
+        }
+
+        // Patch form values
+        this.ItemEditForm.patchValue({
+            productId: rowData.productId,
+            itemId: rowData.id,
+            date: rowData.addedDate,
+            itemName: rowData.productName,
+            supplierId: rowData.supplierName,
+            manufacturer: rowData.manufacturer,
+            Priority: rowData.priority || 'Low',
+            min: rowData.min,
+            stock: rowData.stock,
+            quantity: rowData.quantity,
+            status: rowData.status,
+            source: rowData.source
+        });
+
+        // Also set selected supplier name for dropdown input
+        if (rowData.supplierId && rowData.supplierName) {
+            this.selectedSupplier = {
+                id: rowData.supplierId,
+                name: rowData.supplierName
+            };
+        }
+
+        // Show dropdown as closed
+        this.showSupplierDropdown = false;
+        this.showEditForm = true;
     }
     ngOnInit(): void {
         this.poForm = this.initPoForm();
@@ -122,14 +167,12 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
                     return JSON.stringify(d);
                 },
                 dataSrc: function (json) {
-                    console.log('list API response:', json);
                     return json.data?.data || [];
                 }
             },
             searching: true,
             columns: [
                 { data: 'id', title: '#', render: (data: any) => `<input class="item_checkbox" id="${data}" type="checkbox" value="${data}" />` },
-                //{ title: 'Date', data: 'addedDate' },
                 {
                     title: 'Date',
                     data: 'addedDate',
@@ -142,16 +185,25 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
                         const minutes = String(date.getMinutes()).padStart(2, '0');
                         const ampm = hours >= 12 ? 'PM' : 'AM';
                         hours = hours % 12;
-                        hours = hours ? hours : 12; // 0 ko 12 banana
+                        hours = hours ? hours : 12;
                         const strHours = String(hours).padStart(2, '0');
                         return `${month}-${day}, ${strHours}:${minutes} ${ampm}`;
                     }
                 },
-                { title: 'Item', data: 'productName' },
+                {
+                    data: 'productName',
+                    title: 'Item',
+                    render: (data, type, row) => {
+                        const truncated = data && data.length > 40 ? data.substring(0, 30) + '...' : data;
+                        return `<span title="${Helper.encodeHtml(data)}">${Helper.encodeHtml(truncated)}</span>`;
+                    }
+                },
+
                 { title: 'Distributor', data: 'supplierName' },
                 //{ title: 'Manuf.', data: '' },
                 //{ title: 'Min', data: '' },
                 //{ title: 'Stock', data: '' },
+                { title: 'Priority', data: 'priority' },
                 { title: 'QTY.', data: 'quantity' },
                 { title: 'status', data: 'status' },
                 {
@@ -260,9 +312,18 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
 
     initItemEditForm() {
         this.ItemEditForm = this.fb.group({
+            productId: [null],
+            itemId: [null],
+            date: [null],
+            itemName: [''],
             supplierId: [null, Validators.required],
+            manufacturer: [''],
             Priority: ['Low'],
-            quantity: [1, [Validators.required]],
+            min: [0],
+            stock: [0],
+            quantity: [1, [Validators.required, Validators.min(1)]],
+            status: [''],
+            source: ['']
         });
     }
 
@@ -305,6 +366,43 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
         }
     }
     onUpdate() {
+        // if (this.ItemEditForm.invalid) {
+        //     this.ItemEditForm.markAllAsTouched();
+        //     return;
+        // }
+        if (this.ItemEditForm.invalid) {
+            this.validator.markInvalidFieldsTouched(this.ItemEditForm);
+            return;
+        }
+
+        const formValue = this.ItemEditForm.value;
+        const itemId = formValue.itemId;
+        const updateDto: any = {
+            id: this.selectedProduct?.id,
+            productName: formValue.itemName,
+            supplierId: this.selectedSupplier?.id,
+            priority: formValue.Priority,
+            quantity: formValue.quantity,
+            pharmacyId: this.pharmacyId,
+            productId: formValue.productId
+        };
+        this.PurchaseOrderService.updateProductInOrder(updateDto, itemId).subscribe({
+            next: (response: any) => {
+                if (response.isSuccess) {
+                    Helper.ShowSuccess(response.message || 'Item Updated successfully.');
+                    this.showEditForm = false;
+                    this.datatable.reload();
+                } else {
+                    console.error('API returned isSuccess: false');
+                    this.errorMessage = response.message || 'Failed to Update Item.';
+                    Helper.ShowError(this.errorMessage);
+                }
+            },
+            error: (err) => {
+                this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
+                Helper.ShowError(this.errorMessage);
+            }
+        });
 
     }
 

@@ -22,7 +22,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         }
 
-        [Route("edit_item")]
+        [Route("edit_item/{Id}")]
         [HttpPost]
         public async Task<IActionResult> EditItem(BaseShortbookDto reqDto,long Id)
         {

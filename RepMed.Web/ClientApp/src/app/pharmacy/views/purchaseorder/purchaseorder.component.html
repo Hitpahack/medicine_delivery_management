@@ -29,13 +29,13 @@
     </form>
 
     <!-- This is my edit form -->
-    <form class="auth_form form_validation" *ngIf="ItemEditForm" appAutoValidate [formGroup]="ItemEditForm"
+    <form class="auth_form form_validation" *ngIf="ItemEditForm && showEditForm" appAutoValidate [formGroup]="ItemEditForm"
         (ngSubmit)="onUpdate()">
         <div class="mt-3 border rounded p-2">
             <div class="d-flex align-items-center flex-wrap gap-3 fw-semibold text-muted mb-1">
                 <span style="width: 80px;">Date</span>
                 <span style="width: 110px;">Item</span>
-                <span style="width: 150px;">Supplier</span>
+                <span style="width: 150px;">Distributor</span>
                 <span style="width: 80px;">Manuf.</span>
                 <span style="width: 80px;">Priority</span>
                 <span style="width: 40px;">Min</span>
@@ -47,12 +47,12 @@
             </div>
             <hr />
             <div class="d-flex align-items-center flex-wrap gap-3">
-                <span style="width: 80px;">dd-MM hh:mm</span>
-                <span style="width: 110px;">productname</span>
+                <span style="width: 80px; font-size: 14px;">{{ ItemEditForm.value.date | date: 'dd-MM HH:mm' }}</span>
+                <span style="width: 110px;font-size: 14px;">{{ ItemEditForm.value.itemName | slice:0:30 }}</span>
                 <div class="position-relative" style="width: 15%;">
                     <input type="text" class="form-control" placeholder="Search Supplier..."
                         [value]="selectedSupplier?.name || ''" (input)="onSupplierSearch($event.target.value)"
-                        style="width: 100%; height: 2%; font-size: 14px;" required />
+                        style="width: 100%; height: 2%; font-size: 14px;" required formControlName="supplierId" />
 
                     <ul *ngIf="showSupplierDropdown" class="dropdown-menu show"
                         style="width: 280px; position: absolute; z-index: 1000; top: 100%; left: 0; font-size: 14px;">
@@ -64,8 +64,8 @@
                     </ul>
                 </div>
 
-                <span style="width: 80px;">No</span>
-                <select formControlName="Priority" id="Priority" class="form-select custom-priority-select" re>
+                <span style="width: 80px;">XYZ</span>
+                <select formControlName="Priority" id="Priority" class="form-select custom-priority-select">
                     <option value="Low">Low</option>
                     <option value="High">High</option>
                 </select>
@@ -88,7 +88,7 @@
                 <span class="h5 mb-0">Shortbook</span>
             </div>
             <div class="card-body">
-                <app-datatable #dataTable [options]="tableOptions"></app-datatable>
+                <app-datatable #dataTable (rowClicked)="onRowClick($event)" [options]="tableOptions"></app-datatable>
             </div>
         </div>
     </div>

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { AfterViewInit, Component, Input, OnDestroy } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 
 
@@ -23,8 +23,8 @@ export class DatatableComponent implements AfterViewInit, OnDestroy {
     customButtons?: any[];
   };
 
-  private dtInstance: any;
-
+  public dtInstance: any;
+  @Output() rowClicked = new EventEmitter<any>();
   get tableSelector(): string {
     return `#${this.options.tableId}`;
   }
@@ -43,6 +43,15 @@ export class DatatableComponent implements AfterViewInit, OnDestroy {
       ajax: this.options.ajax,
       columns: this.options.columns,
 
+    });
+
+    $(this.tableSelector + ' tbody').on('click', 'tr', (event) => {
+        if ($(event.target).is('input[type="checkbox"]')) return;
+
+        const rowData = this.dtInstance?.row(event.currentTarget)?.data();
+        if (rowData?.id) {
+            this.rowClicked.emit(rowData);
+        }
     });
 
   }
