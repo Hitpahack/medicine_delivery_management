@@ -359,30 +359,7 @@ namespace RepMed.Services
                 if(rowsDeleted >0)
                     return new APIsSuccsss<CreatePODto>(_validateMessages.AddSuccess, reqDto);
                 #endregion
-
-
-                    return null;
-                //if (insertPo != null)
-                //{
-                //    List<EntityPOItemDto> list = new List<EntityPOItemDto>(); ;
-                //    foreach (var item in reqDto.Items)
-                //    {
-                //        item.PurchaseOrderId = insertPo.Id;
-                //        item.TotalPrice = item.Quantity * item.UnitPrice;
-                //        item.CreatedAt = DateTime.Now;
-                //        var insertItem = _idbConnection.Insert<EntityPOItemDto>(_idbTransaction,
-                //                  DbTables.tblPurchaseOrderItems,
-                //                  DapperHelper.QueryAsColumnsParma<Purchaseorderitem, BasePOItemDto>(),
-                //                  DapperHelper.QueryAsValuesParma<Purchaseorderitem, BasePOItemDto>(),
-                //                  item);
-                //        list.Add(insertItem);
-                //    }
-                //    return new APIsSuccsss<CreatePODto>(_validateMessages.AddSuccess, reqDto);
-                //}
-                //else
-                //{
-                //    return new APIsError<CreatePODto>("Error inserting the purchase order");
-                //}
+                return null;
 
             }
             catch (Exception ex)
