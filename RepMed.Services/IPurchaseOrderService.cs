@@ -356,11 +356,10 @@ namespace RepMed.Services
                 #region Delete Items from ShortBook
                 var deleteQuery = $@"DELETE FROM {DbTables.tblShortBook} WHERE Id in @ShortbookIds";
                 int rowsDeleted = await _idbConnection.ExecuteAsync(deleteQuery, new { ShortbookIds = reqDto.ShortbookId }, _idbTransaction);
-                if(rowsDeleted >0)
-                    return new APIsSuccsss<CreatePODto>(_validateMessages.AddSuccess, reqDto);
                 #endregion
-                return null;
 
+                apiResponse = new APIsSuccsss<CreatePODto>("PO genrated successfully", reqDto);
+                return apiResponse;
             }
             catch (Exception ex)
             {
