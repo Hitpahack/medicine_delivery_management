@@ -58,6 +58,10 @@ export class PurchaseOrderService extends adminBaseService {
     return this.http.post<any>(`${this.apiConfig.endpoints.purchaseorder.addProduct}`, payload);
   }
 
+  pogenerate(payload: any) {
+  return this.http.post<any>(`${this.apiConfig.endpoints.purchaseorder.generatepo}`, payload);
+}
+
   updateProductInOrder(payload: any, id: number) {
     return this.http.post<any>(
       `${this.apiConfig.endpoints.purchaseorder.updateItem}/${id}`,

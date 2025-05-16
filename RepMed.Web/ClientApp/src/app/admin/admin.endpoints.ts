@@ -101,6 +101,7 @@ export class AdminApiConfigService {
         orderProductslist: `${v1}/po/get_items`,
         updateItem: `${v1}/po/edit_item`,
         deleteitem: (id: number) => `${v1}/po/delete_item/${id}`,
+        generatepo: `${v1}/po/createpo/`,
       },
       CMS: {
         add: `${v1}/cms/addstaticpage`,
