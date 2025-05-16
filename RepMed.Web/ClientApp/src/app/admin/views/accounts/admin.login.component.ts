@@ -42,6 +42,16 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
     ngOnInit(): void {
         this.uniqueId = Math.random().toString(36).substring(2);
         this.loginForm = this.initForm();
+
+        const savedEmail = localStorage.getItem('rememberedEmail');
+        const savedRemember = localStorage.getItem('remember') === 'true';
+
+        if (savedEmail && savedRemember) {
+            this.loginForm.patchValue({
+                email: savedEmail,
+                remember: true
+            });
+        }
     }
     rolename: string;
 
@@ -49,12 +59,22 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
         return this.fb.group({
             email: new FormControl(null, [Validators.required, this.validator.ValidateEmail]),
             password: new FormControl(null, [Validators.required]),
-            remamber: new FormControl(false)
+            remember: new FormControl(false)
 
         });
     }
     loginError: string = '';
     onSubmit() {
+        const remember = this.loginForm.get('remember')?.value;
+        const email = this.loginForm.get('email')?.value;
+
+        if (remember) {
+            localStorage.setItem('rememberedEmail', email);
+            localStorage.setItem('remember', 'true');
+        } else {
+            localStorage.removeItem('rememberedEmail');
+            localStorage.removeItem('remember');
+        }
         if (this.loginForm.invalid) {
             this.loginForm.markAllAsTouched();
             return;
@@ -82,7 +102,7 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
 
                     // This is token..
                     localStorage.setItem('token', response.data.token.token);
-                    
+
                     if (this.rolename === 'admin') {
                         this.router.navigate(['/admin/admindashboard']);
                     }
@@ -92,7 +112,7 @@ export class AdminLoginComponent extends AdminBaseComponent implements OnInit, A
                     else if (this.rolename === 'doctor') {
                         this.router.navigate(['/doctor/doctordashboard']);
                     }
-                    else{
+                    else {
                         this.router.navigate(['/common/dashboard']);
                     }
 
