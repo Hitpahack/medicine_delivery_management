@@ -319,19 +319,25 @@ namespace RepMed.Services
                 #endregion
                 foreach (var group in groupedBySupplier)
                 {
+
                     #region Insert Purchase Orders
-                    reqDto.CreatedAt = DateTime.Now;
-                    reqDto.UpdatedAt = DateTime.Now;
-                    reqDto.OrderDate = DateTime.Now;
-                    reqDto.Ponumber = GetNextPONumber(reqDto.PharmacyId).Result.Data.ToString();
-                    reqDto.OrderDate = DateTime.Now;
-                    reqDto.Status = "Pending";
-                    reqDto.SupplierId = Convert.ToUInt32(group.Key);
+                    var po = new BasePODto
+                    {
+
+                        PharmacyId = reqDto.PharmacyId,
+                        Ponumber = GetNextPONumber(reqDto.PharmacyId).Result.Data.NextPONumber,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                        OrderDate = DateTime.Now,
+                        Status = "Pending",
+                        SupplierId = Convert.ToUInt32(group.Key)
+                    };
+                    
                     var insertPo = _idbConnection.Insert<EntityPODto>(_idbTransaction,
                                        DbTables.tblPurchaseOrders,
                                        DapperHelper.QueryAsColumnsParma<Purchaseorder, BasePODto>(),
                                        DapperHelper.QueryAsValuesParma<Purchaseorder, BasePODto>(),
-                                       group);
+                                       po);
                     #endregion
                     #region Insert PO Items
                     foreach (var item in group)

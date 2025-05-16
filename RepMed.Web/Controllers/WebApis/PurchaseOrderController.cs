@@ -186,27 +186,27 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
-        [Route("getponumber/{pharmacyId}")]
-        [HttpPost]
-        public async Task<IActionResult> GetNextPONumber(long pharmacyId)
-        {
-            using (var db = new MySqlConnection(_appSettings.ConnectionString))
-            {
-                db.Open();
-                using (var tran = db.BeginTransaction())
-                {
-                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
-                    {
-                        var result = await purchaseOrderService.GetNextPONumber(pharmacyId);
-                        if (!result.IsSuccess)
-                        {
-                            return BadRequest(result);
-                        }
-                        return Ok(result);
-                    }
-                }
-            }
-        }
+        //[Route("getponumber/{pharmacyId}")]
+        //[HttpPost]
+        //public async Task<IActionResult> GetNextPONumber(long pharmacyId)
+        //{
+        //    using (var db = new MySqlConnection(_appSettings.ConnectionString))
+        //    {
+        //        db.Open();
+        //        using (var tran = db.BeginTransaction())
+        //        {
+        //            using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+        //            {
+        //                var result = await purchaseOrderService.GetNextPONumber(pharmacyId);
+        //                if (!result.IsSuccess)
+        //                {
+        //                    return BadRequest(result);
+        //                }
+        //                return Ok(result);
+        //            }
+        //        }
+        //    }
+        //}
 
         [HttpGet("generate-po-pdf/{poId}")]
         public async Task<IActionResult> GeneratePoPdf(int poId)
