@@ -25,6 +25,10 @@ export class DatatableComponent implements AfterViewInit, OnDestroy {
 
   public dtInstance: any;
   @Output() rowClicked = new EventEmitter<any>();
+
+  @Input() selectedItemIds: number[] = [];
+  @Output() selectedItemIdsChange = new EventEmitter<number[]>();
+
   get tableSelector(): string {
     return `#${this.options.tableId}`;
   }
@@ -46,12 +50,12 @@ export class DatatableComponent implements AfterViewInit, OnDestroy {
     });
 
     $(this.tableSelector + ' tbody').on('click', 'tr', (event) => {
-        if ($(event.target).is('input[type="checkbox"]')) return;
+      if ($(event.target).is('input[type="checkbox"]')) return;
 
-        const rowData = this.dtInstance?.row(event.currentTarget)?.data();
-        if (rowData?.id) {
-            this.rowClicked.emit(rowData);
-        }
+      const rowData = this.dtInstance?.row(event.currentTarget)?.data();
+      if (rowData?.id) {
+        this.rowClicked.emit(rowData);
+      }
     });
 
   }
@@ -84,6 +88,46 @@ export class DatatableComponent implements AfterViewInit, OnDestroy {
         });
       }
     }
+
+
+    const table = $(this.tableSelector);
+
+    //Re-check selected items
+    table.find('.item_checkbox').each((_, checkbox) => {
+      const id = +$(checkbox).data('id');
+      if (this.selectedItemIds.includes(id)) {
+        $(checkbox).prop('checked', true);
+      }
+    });
+
+    //Listen to checkbox change
+    table.find('.item_checkbox').off('change').on('change', (e: any) => {
+      const id = +$(e.target).data('id');
+      if (e.target.checked) {
+        if (!this.selectedItemIds.includes(id)) {
+          this.selectedItemIds.push(id);
+        }
+      } else {
+        this.selectedItemIds = this.selectedItemIds.filter(x => x !== id);
+      }
+      this.selectedItemIdsChange.emit(this.selectedItemIds);
+    });
+
+    //Handle select all
+    table.find('#select_all_main_checkbox').off('change').on('change', (e: any) => {
+      const checked = e.target.checked;
+      this.selectedItemIds = [];
+
+      table.find('.item_checkbox').each((_, checkbox) => {
+        const id = +$(checkbox).data('id');
+        $(checkbox).prop('checked', checked);
+        if (checked) {
+          this.selectedItemIds.push(id);
+        }
+      });
+
+      this.selectedItemIdsChange.emit(this.selectedItemIds);
+    });
 
   }
 }

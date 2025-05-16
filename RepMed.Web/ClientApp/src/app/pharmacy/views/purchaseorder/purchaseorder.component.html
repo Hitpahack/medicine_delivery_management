@@ -88,7 +88,9 @@
                 <span class="h5 mb-0">Shortbook</span>
             </div>
             <div class="card-body">
-                <app-datatable #dataTable (rowClicked)="onRowClick($event)" [options]="tableOptions"></app-datatable>
+                <app-datatable #dataTable (rowClicked)="onRowClick($event)" [options]="tableOptions"
+                    [selectedItemIds]="selectedItemIds"
+                    (selectedItemIdsChange)="selectedItemIds = $event"></app-datatable>
             </div>
         </div>
     </div>
@@ -96,7 +98,8 @@
 
     <div class="row justify-content-end mt-4">
         <div class="col-sm-2">
-            <button class="btn custom-btn" (click)="onGeneratePo()" id="generatePoBtn" style="width: 130px; display:none;" type="submit">Po Generate</button>
+            <button class="btn custom-btn" (click)="onGeneratePo()" id="generatePoBtn"
+                style="width: 130px; display:none;" type="submit">Po Generate</button>
 
             <!-- <button  class="btn btn-primary" style="display:none;" (click)="onGeneratePo()">
                 Generate PO

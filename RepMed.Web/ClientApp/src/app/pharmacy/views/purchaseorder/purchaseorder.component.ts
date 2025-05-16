@@ -57,7 +57,7 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
     showEditForm: boolean = false;
 
     selectedProduct: ProductDto | null = null;
-
+    public selectedItemIds: number[] = [];
     @ViewChild('dataTable') datatable!: DatatableComponent;
     @Output() rowClicked = new EventEmitter<any>();
     @Output() dtInitialized = new EventEmitter<any>();
@@ -425,10 +425,6 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
     }
 
     onSubmit(): void {
-        if (this.poForm.invalid) {
-            this.validator.markInvalidFieldsTouched(this.poForm);
-            return;
-        }
 
     }
 
@@ -456,10 +452,10 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             }
         });
 
-        // ✅ Supplier validation
+        // Supplier validation
         const missingSupplier = selectedItems.some(item => !item.supplierId);
         if (missingSupplier) {
-            Helper.ShowError("Please select supplier for all selected items.");
+            Helper.ShowError("Please select supplier in all selected items.");
             return;
         }
 
@@ -470,15 +466,17 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
             ShortbookId: finalIds
         };
 
-        // ✅ Call your service to generate PO
-        // this.purchaseOrderService.generatePO(payload).subscribe(...)
         console.log('hello call po generate api');
         this.PurchaseOrderService.pogenerate(payload).subscribe({
             next: (response) => {
                 if (response.isSuccess) {
                     Helper.ShowSuccess(response.message || "PO generated successfully.");
-                    this.datatable.reload();
-                    // optionally hide/generate buttons or reset UI as needed
+                    $('.item_checkbox').prop('checked', false);
+                    $('#select_all_main_checkbox').prop('checked', false);
+                    $('#generatePoBtn').hide();
+
+                    this.datatable.reload(); // reload table
+                    this.selectedItemIds = [];
                 } else {
                     this.errorMessage = response.message || "Failed to generate PO.";
                     Helper.ShowError(this.errorMessage);
