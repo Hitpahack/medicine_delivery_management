@@ -41,6 +41,7 @@ import { PharmacyAddRoleComponent } from './pharmacy/views/rolemanage/addrole.co
 import { PharmacyEditRoleComponent } from './pharmacy/views/rolemanage/roleedit.component';
 import { PharmacyRoleListComponent } from './pharmacy/views/rolemanage/rolelist.component';
 import { StaffListComponent } from './pharmacy/views/staffmanagement/stafflist.component';
+import { PoListComponent } from './pharmacy/views/purchaseorder/polist.component';
 
 // doctor imports..
 import { DoctorDashboardComponent } from "../app/doctor/views/doctordashboard/dashboard.component";
@@ -104,7 +105,7 @@ export const routes: Routes = [
 
       { path: 'faq/add', component: FAQComponent, canActivate: [AuthGuardService], data: { module: 'cmsManagement' } },
       { path: 'faq/edit/:id', component: FAQComponent, canActivate: [AuthGuardService], data: { module: 'cmsManagement' } },
-      { path: 'faq/list', component: FAQListComponent, canActivate: [AuthGuardService], data: { module: 'cmsManagement' }}
+      { path: 'faq/list', component: FAQListComponent, canActivate: [AuthGuardService], data: { module: 'cmsManagement' } }
     ]
   },
 
@@ -127,6 +128,7 @@ export const routes: Routes = [
     children: [
       { path: 'pharmacydashboard', component: PharmacDashboardComponent, canActivate: [AuthGuardService], data: { module: 'pharmacydashboard' } },
       { path: 'purchaseorder', component: PoGenerateComponent, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
+      { path: 'polist', component: PoListComponent, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
       { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
 
       { path: 'staff/add', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' } },
