@@ -208,6 +208,28 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
+        [Route("get_po_distwise")]
+        [HttpPost]
+        public async Task<IActionResult> GetPODistWise(PODWPagingRequest reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.GetPODistWise(reqDto);
+                        if (!result.IsSuccess)
+                        {
+                            return BadRequest(result);
+                        }
+                        return Ok(result.Data);
+                    }
+                }
+            }
+        }
+
         [HttpGet("generate-po-pdf/{poId}")]
         public async Task<IActionResult> GeneratePoPdf(int poId)
         {

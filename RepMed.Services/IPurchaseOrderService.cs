@@ -24,6 +24,7 @@ namespace RepMed.Services
         Task<APIsResponse<EntitySupplierDto>> AddSupplier(BaseSupplierDto reqDto);
         Task<APIsResponse<Datatable<POPagingResponse>>> GetPOOrdeWise(POPagingRequest reqDto);
         Task<APIsResponse<Datatable<POIWPagingResponse>>> GetPOItemWise(POIWPagingRequest reqDto);
+        Task<APIsResponse<Datatable<PODWPagingResponse>>> GetPODistWise(PODWPagingRequest reqDto);
         Task<APIsResponse<Datatable<ShortbookPagingResponse>>> GetShortBookItems(ShortbookPagingRequest reqDto);
         Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId,string search);
         Task<APIsResponse<POPdfContentDto>> GetPOPdfDetails(long poId);
@@ -129,8 +130,8 @@ namespace RepMed.Services
                 parameters.Add("page", reqDto.Page, DbType.Int32);
                 parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
                 parameters.Add("pharmacyId", reqDto.PharmacyId, DbType.Int32);
-                parameters.Add("productName", reqDto.PONumber ?? string.Empty, DbType.String);
-                parameters.Add("priority", reqDto.SupplierName ?? string.Empty, DbType.String);
+                parameters.Add("productName", reqDto.ItemName ?? string.Empty, DbType.String);
+                parameters.Add("priority", reqDto.Priority ?? string.Empty, DbType.String);
                 parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
                 parameters.Add("order_by", orderBy, DbType.String);
                 parameters.Add("fromDate", reqDto.FromDate, DbType.Date);
@@ -156,6 +157,48 @@ namespace RepMed.Services
                 return await Task.FromResult(new APIsError<Datatable<POIWPagingResponse>>(ex.GetActualError()));
             }
         }
+        public async Task<APIsResponse<Datatable<PODWPagingResponse>>> GetPODistWise(PODWPagingRequest reqDto)
+        {
+            try
+            {
+                APIsResponse<Datatable<PODWPagingResponse>> apiResponse = default;
+                string orderBy;
+                if (reqDto.Order[0].Column == 0)
+                    orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|desc";
+                else
+                    orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
+                #region Get All PO Order Wise
+                var parameters = new DynamicParameters();
+                parameters.Add("page", reqDto.Page, DbType.Int32);
+                parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
+                parameters.Add("pharmacyId", reqDto.PharmacyId, DbType.Int32);
+                parameters.Add("supplierName", reqDto.SupplierName ?? string.Empty, DbType.String);
+                parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
+                parameters.Add("order_by", orderBy, DbType.String);
+                parameters.Add("fromDate", reqDto.FromDate, DbType.Date);
+                parameters.Add("toDate", reqDto.ToDate, DbType.Date);
+
+                var result = (await _idbConnection.QueryAsync<PODWPagingResponse>(
+                               sql: "GET_PODW_PAGED",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                )).ToList();
+                #endregion
+                var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
+                var output = new Datatable<PODWPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
+                if (result.Any())
+                    return await Task.FromResult(new APIsSuccsss<Datatable<PODWPagingResponse>>(_validateMessages.RetriveSuccess, output));
+                else
+                    return await Task.FromResult(new APIsSuccsss<Datatable<PODWPagingResponse>>(_validateMessages.NotExist));
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<Datatable<PODWPagingResponse>>(ex.GetActualError()));
+            }
+        }
+
         public async Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId, string search)
         {
             try
