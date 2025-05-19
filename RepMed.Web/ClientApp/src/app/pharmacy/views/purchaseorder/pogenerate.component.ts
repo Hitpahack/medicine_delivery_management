@@ -181,7 +181,7 @@ export class PoGenerateComponent extends AdminBaseComponent implements OnInit, A
                     return JSON.stringify(d);
                 },
                 dataSrc: function (json) {
-                    return json.data?.data || [];
+                    return json.data || [];
                 }
             },
             searching: true,
