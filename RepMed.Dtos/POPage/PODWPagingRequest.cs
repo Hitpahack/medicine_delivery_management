@@ -9,16 +9,15 @@ using System.Threading.Tasks;
 
 namespace RepMed.Dtos.POPage
 {
-    public class POIWPagingRequest: PagingRequest
+    public class PODWPagingRequest :PagingRequest
     {
         [JsonProperty("status")]
         public string? Status { get; set; }
         [JsonProperty("statusFilter")]
         public string? StatusFilter { get; set; }
         [Required]
-        public long PharmacyId { get; set; }
-        public string? ItemName { get; set; }
-        public string? Priority { get; set; }
+        public long? PharmacyId { get; set; }
+        public string? SupplierName { get; set; }
         public int? Page => (start / length) + 1;
         public int? PageSize => length;
         public DateTime? FromDate { get; set; }
