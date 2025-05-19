@@ -22,9 +22,8 @@ namespace RepMed.Services
         Task<APIsResponse<CreatePODto>> CreatePO(CreatePODto reqDto);
         Task<APIsResponse<EntityShortbookDto>> AddEditItem(BaseShortbookDto reqDto, long Id);
         Task<APIsResponse<EntitySupplierDto>> AddSupplier(BaseSupplierDto reqDto);
-        Task<APIsResponse<Datatable<POPagingResponse>>> GetAllPO(POPagingRequest reqDto);
+        Task<APIsResponse<Datatable<POPagingResponse>>> GetPOOrdeWise(POPagingRequest reqDto);
         Task<APIsResponse<Datatable<ShortbookPagingResponse>>> GetShortBookItems(ShortbookPagingRequest reqDto);
-        Task<APIsResponse<NextPoNumberDto>> GetNextPONumber(long pharmacyId);
         Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId,string search);
         Task<APIsResponse<POPdfContentDto>> GetPOPdfDetails(long poId);
         Task<APIsResponse<List<GetPOItemsDto>>> GetPOItems(long poId);
@@ -71,21 +70,23 @@ namespace RepMed.Services
             GC.SuppressFinalize(this);
         }
 
-        public async Task<APIsResponse<Datatable<POPagingResponse>>> GetAllPO(POPagingRequest reqDto)
+        public async Task<APIsResponse<Datatable<POPagingResponse>>> GetPOOrdeWise(POPagingRequest reqDto)
         {
             try
             {
                 APIsResponse<Datatable<POPagingResponse>> apiResponse = default;
                 string orderBy;
                 orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
-                #region Get All PO 
+                #region Get All PO Order Wise
                 var parameters = new DynamicParameters();
                 parameters.Add("page", reqDto.Page, DbType.Int32);
                 parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
                 parameters.Add("pharmacyId", reqDto.PharmacyId, DbType.Int32);
                 parameters.Add("searchText", reqDto.SearchText ?? string.Empty, DbType.String);
                 parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
-                parameters.Add("Order_by", orderBy, DbType.String);
+                parameters.Add("order_by", orderBy, DbType.String);
+                parameters.Add("fromDate", reqDto.FromDate, DbType.Date);
+                parameters.Add("toDate", reqDto.ToDate, DbType.Date);
 
                 var result = (await _idbConnection.QueryAsync<POPagingResponse>(
                                sql: "GET_PO_PAGED",

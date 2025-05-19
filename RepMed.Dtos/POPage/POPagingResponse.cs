@@ -13,12 +13,12 @@ namespace RepMed.Dtos.POPage
         public long SupplierId { get; set; }
         public string PONumber { get; set; }
         public DateTime OrderDate { get; set; }
-        public DateTime? EDDate { get; set; }
-        public string Status { get; set; }
-        public decimal TotalAmount { get; set; }
-        public decimal TaxAmount { get; set; }
-        public string Remarks { get; set; }
+        public string Status { get; set; }        
         public string SupplierName { get; set; }
+        public long Available{ get; set; }
+        public long Fulfilled{ get; set; }
+        public long Amount{ get; set; }
+        
     }
 }
 
