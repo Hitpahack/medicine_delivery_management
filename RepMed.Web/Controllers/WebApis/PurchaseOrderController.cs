@@ -180,7 +180,7 @@ namespace RepMed.Web.Controllers.WebApis
                         {
                             return BadRequest(result);
                         }
-                        return Ok(result);
+                        return Ok(result.Data);
                     }
                 }
             }

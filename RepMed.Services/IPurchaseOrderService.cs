@@ -76,7 +76,10 @@ namespace RepMed.Services
             {
                 APIsResponse<Datatable<POPagingResponse>> apiResponse = default;
                 string orderBy;
-                orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
+                if (reqDto.Order[0].Column == 0)
+                    orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|desc";
+                else
+                    orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
                 #region Get All PO Order Wise
                 var parameters = new DynamicParameters();
                 parameters.Add("page", reqDto.Page, DbType.Int32);
