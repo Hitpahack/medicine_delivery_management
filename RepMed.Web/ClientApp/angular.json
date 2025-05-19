@@ -32,7 +32,8 @@
               "src/assets/vendor/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css",
               "src/assets/vendor/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css",
               "src/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css",
-              "src/assets/vendor/libs/dttables/bootstrap.min.css"
+              "src/assets/vendor/libs/dttables/bootstrap.min.css",
+			  "node_modules/daterangepicker/daterangepicker.css"
             ],
             "scripts": [
               "src/assets/vendor/libs/jquery/jquery.min.js",
@@ -49,7 +50,9 @@
               "src/assets/vendor/js/helpers.js",
               "src/assets/js/pages-account-settings-account.js",
               "src/assets/vendor/js/menu.js",
-              "src/assets/js/appmain.js"
+              "src/assets/js/appmain.js",
+			  "node_modules/moment/min/moment.min.js",
+              "node_modules/daterangepicker/daterangepicker.js"
             ]
           },
           "configurations": {
