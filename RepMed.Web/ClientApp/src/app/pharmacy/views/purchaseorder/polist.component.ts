@@ -104,7 +104,7 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
             },
             serverSide: true,
             processing: true,
-            searchable: false,
+            searching: false,
             columns: [
                 { title: 'PO No.', data: 'poNumber' },
                 {
@@ -167,9 +167,26 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
             processing: true,
             searching: false,
             columns: [
-                { title: 'Item Name', data: 'itemName' },
-                { title: 'Category', data: 'category' },
-                { title: 'Quantity', data: 'quantity' }
+                {
+                    title: 'Item Name',
+                    data: 'itemName',
+                    render: function (data: any, type: any, row: any) {
+                        if (data && data.length > 40) {
+                            return data.substring(0, 40) + '...';
+                        }
+                        return data;
+                    }
+                },
+                { title: 'current Stock', data: 'currentStock' },
+                { title: 'ordered Qty', data: 'orderedQty' },
+                {
+                    title: 'Ordered To',
+                    data: 'orderedTo',
+                    render: function (data: any, type: any, row: any) {
+                        return `<span style="color: blue;">${data}</span>`;
+                    }
+                },
+                { title: 'Total Amount', data: 'totalAmount' }
             ],
             searchInputId: 'itemwiseSearchBox',
             delaySearchTimeOut: 1000
@@ -188,19 +205,13 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                     return JSON.stringify(d);
                 }
             },
-            serverSide: false,
+            serverSide: true,
             processing: true,
-            searching: true,
+            searching: false,
             columns: [
-                {
-                    title: '<input type="checkbox" id="select_all_main_checkbox">',
-                    data: 'id',
-                    render: (data) => `<input type="checkbox" class="item_checkbox" data-id="${data}">`,
-                    orderable: false
-                },
-                { title: 'Distributor', data: 'distributorName' },
-                { title: 'Contact', data: 'contact' },
-                { title: 'Region', data: 'region' }
+                { title: 'Distributor', data: 'supplierName' },
+                { title: 'Mobile No.', data: 'mobile' },
+                //{ title: 'Area', data: 'region' }
             ],
             searchInputId: 'distributorwiseSearchBox',
             delaySearchTimeOut: 1000
