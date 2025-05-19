@@ -5,36 +5,23 @@
         <button [class.active]="activeTab === 'distributorwise'"
             (click)="changeTab('distributorwise')">Distributorwise</button>
     </div>
-    <div>&nbsp;</div>
-
-
-    <!-- <div class="search-wrapper" *ngIf="activeTab === 'orderwise'">
-        <input id="orderwiseSearchBox" placeholder="Search Orders..." />
-    </div>
-    <div class="search-wrapper" *ngIf="activeTab === 'itemwise'">
-        <input id="itemwiseSearchBox" placeholder="Search Items..." />
-    </div>
-    <div class="search-wrapper" *ngIf="activeTab === 'distributorwise'">
-        <input id="distributorwiseSearchBox" placeholder="Search Distributors..." />
-    </div> -->
-
-
+    <br />
     <!-- FILTER SECTION -->
     <div class="card-body">
         <!-- This filter for Orderwise Tab-->
         <div class="row mb-3" *ngIf="activeTab === 'orderwise'">
             <div class="col-md-4">
                 <div class="position-relative">
-                    <input type="text" [(ngModel)]="orderwiseFilter.poNumber" class="form-control pe-5"
-                        placeholder="Search PO Number...">
+                    <input type="text" name="poNumber" [(ngModel)]="orderwiseFilter.poNumber" class="form-control pe-5"
+                        placeholder="Search PO Number..." (input)="onFilterChange()">
                     <i class="fa fa-search position-absolute"
                         style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="input-group">
-                    <input type="text" class="form-control" id="dateRangePicker" placeholder="01/05/2025-01/05/2026"
-                        readonly>
+                    <input type="text" class="form-control" [(ngModel)]="orderwiseFilter.date" id="dateRangePickerOrderwise"
+                        placeholder="01/05/2025-01/05/2026" readonly>
                     <span class="input-group-text">
                         <i class="bx bx-calendar"></i>
                     </span>
@@ -43,7 +30,7 @@
             <div class="col-md-4">
                 <div class="position-relative">
                     <input type="text" [(ngModel)]="orderwiseFilter.distributor" class="form-control pe-5"
-                        placeholder="Search Distributor Name...">
+                        placeholder="Search Distributor Name..." (input)="onFilterChange()">
                     <i class="fa fa-search position-absolute"
                         style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
                 </div>
@@ -55,22 +42,22 @@
             <div class="col-md-4">
                 <div class="position-relative">
                     <input type="text" [(ngModel)]="itemwiseFilter.itemName" class="form-control pe-5"
-                        placeholder="Item Name">
+                        placeholder="Item Name" (input)="onFilterChange()">
                     <i class="fa fa-search position-absolute"
                         style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="input-group">
-                    <input type="text" class="form-control" id="dateRangePicker" placeholder="01/05/2025-01/05/2026"
-                        readonly>
+                    <input type="text" class="form-control" [(ngModel)]="itemwiseFilter.date" id="dateRangePickerItemwise"
+                        placeholder="01/05/2025-01/05/2026" readonly>
                     <span class="input-group-text">
                         <i class="bx bx-calendar"></i>
                     </span>
                 </div>
             </div>
             <div class="col-md-4">
-                <select [(ngModel)]="itemwiseFilter.status" class="form-select">
+                <select [(ngModel)]="itemwiseFilter.status" (input)="onFilterChange()" class="form-select">
                     <option value="pending">Pending</option>
                     <option value="Orderplaced">Order Placed</option>
                     <option value="Accepted">Accepted</option>
@@ -86,8 +73,9 @@
         <div class="row mb-3" *ngIf="activeTab === 'distributorwise'">
             <div class="col-md-4">
                 <div class="input-group">
-                    <input type="text" class="form-control" id="dateRangePicker" placeholder="01/05/2025-01/05/2026"
-                        readonly>
+                    <input type="text" class="form-control"
+                        [(ngModel)]="distributorwiseFilter.date" id="dateRangePickerDistributorwise"
+                        placeholder="01/05/2025-01/05/2026" readonly>
                     <span class="input-group-text">
                         <i class="bx bx-calendar"></i>
                     </span>
@@ -95,7 +83,8 @@
             </div>
             <div class="col-md-4">
                 <div class="position-relative">
-                    <input type="text" [(ngModel)]="distributorwiseFilter.distributorName" class="form-control pe-5"
+                    <input type="text" (input)="onFilterChange()"
+                        [(ngModel)]="distributorwiseFilter.distributorName" class="form-control pe-5"
                         placeholder="Distributor Name">
                     <i class="fa fa-search position-absolute"
                         style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
