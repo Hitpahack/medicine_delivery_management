@@ -17,6 +17,93 @@
     <div class="search-wrapper" *ngIf="activeTab === 'distributorwise'">
         <input id="distributorwiseSearchBox" placeholder="Search Distributors..." />
     </div> -->
+
+
+    <!-- FILTER SECTION -->
+    <div class="card-body">
+        <!-- This filter for Orderwise Tab-->
+        <div class="row mb-3" *ngIf="activeTab === 'orderwise'">
+            <div class="col-md-4">
+                <div class="position-relative">
+                    <input type="text" [(ngModel)]="orderwiseFilter.poNumber" class="form-control pe-5"
+                        placeholder="Search PO Number...">
+                    <i class="fa fa-search position-absolute"
+                        style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="dateRangePicker" placeholder="01/05/2025-01/05/2026"
+                        readonly>
+                    <span class="input-group-text">
+                        <i class="bx bx-calendar"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="position-relative">
+                    <input type="text" [(ngModel)]="orderwiseFilter.distributor" class="form-control pe-5"
+                        placeholder="Search Distributor Name...">
+                    <i class="fa fa-search position-absolute"
+                        style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- This filter for itemwise Tab-->
+        <div class="row mb-3" *ngIf="activeTab === 'itemwise'">
+            <div class="col-md-4">
+                <div class="position-relative">
+                    <input type="text" [(ngModel)]="itemwiseFilter.itemName" class="form-control pe-5"
+                        placeholder="Item Name">
+                    <i class="fa fa-search position-absolute"
+                        style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="dateRangePicker" placeholder="01/05/2025-01/05/2026"
+                        readonly>
+                    <span class="input-group-text">
+                        <i class="bx bx-calendar"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <select [(ngModel)]="itemwiseFilter.status" class="form-select">
+                    <option value="pending">Pending</option>
+                    <option value="Orderplaced">Order Placed</option>
+                    <option value="Accepted">Accepted</option>
+                    <option value="Partiallycompleted">Partially Completed</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Expired">Expired</option>
+                    <option value="Shipped">Shipped</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- This filter for distributorwise Tab-->
+        <div class="row mb-3" *ngIf="activeTab === 'distributorwise'">
+            <div class="col-md-4">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="dateRangePicker" placeholder="01/05/2025-01/05/2026"
+                        readonly>
+                    <span class="input-group-text">
+                        <i class="bx bx-calendar"></i>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="position-relative">
+                    <input type="text" [(ngModel)]="distributorwiseFilter.distributorName" class="form-control pe-5"
+                        placeholder="Distributor Name">
+                    <i class="fa fa-search position-absolute"
+                        style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="flex-grow-1 container-p-y">
         <div class="card">
             <div [ngSwitch]="activeTab" class="card-body">
