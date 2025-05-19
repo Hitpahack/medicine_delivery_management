@@ -163,16 +163,10 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                     return JSON.stringify(d);
                 }
             },
-            serverSide: false,
+            serverSide: true,
             processing: true,
-            searching: true,
+            searching: false,
             columns: [
-                {
-                    title: '<input type="checkbox" id="select_all_main_checkbox">',
-                    data: 'id',
-                    render: (data) => `<input type="checkbox" class="item_checkbox" data-id="${data}">`,
-                    orderable: false
-                },
                 { title: 'Item Name', data: 'itemName' },
                 { title: 'Category', data: 'category' },
                 { title: 'Quantity', data: 'quantity' }
