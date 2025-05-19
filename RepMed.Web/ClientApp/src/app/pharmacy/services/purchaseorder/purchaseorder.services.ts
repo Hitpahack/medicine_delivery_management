@@ -86,7 +86,7 @@ export class PurchaseOrderService extends adminBaseService {
   // }
 
   getOrderProducts(pharmacyId: number): Observable<any> {
-    const url = this.apiConfig.endpoints.purchaseorder.orderProductslist;
+    const url = this.apiConfig.endpoints.purchaseorder.shortbookitemlist;
     const reqBody = {
       pharmacyId: pharmacyId,
       start: 1,

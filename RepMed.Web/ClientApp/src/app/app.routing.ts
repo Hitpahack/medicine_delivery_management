@@ -33,7 +33,7 @@ import { FAQListComponent } from './admin/views/CMSmanagement/faqlist.component'
 
 // pharmacy imports..
 import { PharmacDashboardComponent } from "../app/pharmacy/views/pharmacydashboard/dashboard.component";
-import { PurchaseOrderComponent } from "../app/pharmacy/views/purchaseorder/purchaseorder.component";
+import { PoGenerateComponent } from "../app/pharmacy/views/purchaseorder/pogenerate.component";
 import { AddStaffComponent } from "../app/pharmacy/views/staffmanagement/addstaff.component";
 import { PurchaseInvoice } from '../app/pharmacy/views/PurchaseInvoice/Invoice.component';
 import { EditPharmacyComponent } from "../app/pharmacy/views/Details/editpharmacydetails";
@@ -126,7 +126,7 @@ export const routes: Routes = [
     component: PharmacyLayoutComponent,
     children: [
       { path: 'pharmacydashboard', component: PharmacDashboardComponent, canActivate: [AuthGuardService], data: { module: 'pharmacydashboard' } },
-      { path: 'purchaseorder', component: PurchaseOrderComponent, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
+      { path: 'purchaseorder', component: PoGenerateComponent, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
       { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
 
       { path: 'staff/add', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' } },
@@ -166,11 +166,9 @@ export const routes: Routes = [
       { path: 'doctor/list', component: DoctorList, canActivate: [AuthGuardService], data: { module: 'doctormanagement' } },
       { path: 'doctor/add', component: AddDoctorComponent, canActivate: [AuthGuardService], data: { module: 'doctormanagement' } },
 
-      { path: 'purchaseorder', component: PurchaseOrderComponent, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
+      { path: 'purchaseorder', component: PoGenerateComponent, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
       { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
 
-      { path: 'purchaseorder', component: PurchaseOrderComponent, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
-      { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
       { path: 'staff/add', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' } },
       { path: 'staff/edit/:id', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' } },
       { path: 'editprofile/:id', component: EditProfile, canActivate: [AuthGuardService], data: { module: 'pharmacydashboard' } },

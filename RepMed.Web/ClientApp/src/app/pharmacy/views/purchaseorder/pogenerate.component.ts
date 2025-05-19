@@ -18,12 +18,12 @@ import { Subject } from 'rxjs';
 
 @Component({
     selector: 'app-pharmacy-dashboard',
-    templateUrl: './purchaseorder.component.html',
-    styleUrls: ['./purchaseorder.component.css'],
+    templateUrl: './pogenerate.component.html',
+    styleUrls: ['./pogenerate.component.css'],
     standalone: true,
     imports: [CommonModule, ReactiveFormsModule, FormsModule, AutoValidateDirective, DatatableComponent],
 })
-export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit, AfterViewInit {
+export class PoGenerateComponent extends AdminBaseComponent implements OnInit, AfterViewInit {
 
     constructor(
         public router: Router,
@@ -172,7 +172,7 @@ export class PurchaseOrderComponent extends AdminBaseComponent implements OnInit
         this.tableOptions = {
             tableId: 'post_productlist_datatable',
             ajax: {
-                url: this.admin_apiconfig.endpoints.purchaseorder.orderProductslist,
+                url: this.admin_apiconfig.endpoints.purchaseorder.shortbookitemlist,
                 type: "POST",
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
