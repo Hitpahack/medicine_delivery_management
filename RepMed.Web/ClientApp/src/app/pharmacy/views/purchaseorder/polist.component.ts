@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { DatatableComponent } from '../../../admin/shared/datatables/datatable.component';
@@ -26,19 +26,29 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
         super(router, fb);
     }
 
+    //This code for make row clickable
+    @ViewChild('dataTable') datatable!: DatatableComponent;
+    @Output() rowClicked = new EventEmitter<any>();
+
     activeTab: string = 'orderwise'; // default tab
     selectedItemIds: number[] = [];
+    pharmacyId: string | null = null;
 
+    //this code for manage filter & orderwise section
     orderwiseOptions: any;
     itemwiseOptions: any;
     distributorwiseOptions: any;
-
-    pharmacyId: string | null = null;
-
     orderwiseFilter = { poNumber: '', date: '', SupplierName: '' };
     itemwiseFilter = { itemName: '', date: '', status: '' };
     distributorwiseFilter = { date: '', SupplierName: '' };
     private filterChangeSubject = new Subject<void>();
+
+    //This code for manage show item list base on ponumber
+    showOrderwiseList = true;
+    showOrderwiseFilter = true;
+    ItemListBaseOnPONumberID = false;
+
+    selectedOrderId: number | null = null;
 
     orderwiseFilterdata = {
         fromDate: '',
@@ -66,6 +76,7 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
         }
     }
     ngAfterViewInit(): void {
+        //this.loadTableConfigs();
         $(document).on('click', '.email-icon', (e) => {
             const id = $(e.currentTarget).data('id');
             console.log('Email icon clicked for ID:', id);
@@ -83,7 +94,26 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
             console.log('Delete icon clicked for ID:', id);
             // your delete logic
         });
+
+        //This code for make row clickable
+        $('#' + this.orderwiseOptions.tableId + ' tbody').on('click', 'tr', (event) => {
+            const row = $(event.currentTarget);
+            const rowData = this.datatable.dtInstance.row(row).data();
+
+            // Yahan 'this' abhi bhi component ka hi hai
+            const tableId = this.orderwiseOptions?.tableId;
+            console.log('Table ID:', tableId);
+        });
         this.initializeDatePickers();
+    }
+
+    // This function use for write rowclick logic
+    onRowClick(rowData: any): void {
+        console.log('onRowClick method is run:', rowData);
+        this.selectedOrderId = rowData.id;
+        this.showOrderwiseList = false;
+        this.showOrderwiseFilter = false;
+        this.ItemListBaseOnPONumberID = true;
     }
 
     initializeDatePickers() {

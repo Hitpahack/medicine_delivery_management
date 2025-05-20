@@ -7,32 +7,37 @@
     </div>
     <br />
     <!-- FILTER SECTION -->
+
     <div class="card-body">
         <!-- This filter for Orderwise Tab-->
-        <div class="row mb-3" *ngIf="activeTab === 'orderwise'">
-            <div class="col-md-4">
-                <div class="position-relative">
-                    <input type="text" name="poNumber" [(ngModel)]="orderwiseFilter.poNumber" class="form-control pe-5"
-                        placeholder="Search PO Number..." (input)="onFilterChange($event.target.value, 'orderwise_poNumber')">
-                    <i class="fa fa-search position-absolute"
-                        style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
+        <div *ngIf="showOrderwiseFilter">
+            <div class="row mb-3" *ngIf="activeTab === 'orderwise'">
+                <div class="col-md-4">
+                    <div class="position-relative">
+                        <input type="text" name="poNumber" [(ngModel)]="orderwiseFilter.poNumber"
+                            class="form-control pe-5" placeholder="Search PO Number..."
+                            (input)="onFilterChange($event.target.value, 'orderwise_poNumber')">
+                        <i class="fa fa-search position-absolute"
+                            style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="input-group">
-                    <input type="text" class="form-control" [(ngModel)]="orderwiseFilter.date" id="dateRangePickerOrderwise"
-                        placeholder="01/05/2025-01/05/2026" readonly>
-                    <span class="input-group-text">
-                        <i class="bx bx-calendar"></i>
-                    </span>
+                <div class="col-md-4">
+                    <div class="input-group">
+                        <input type="text" class="form-control" [(ngModel)]="orderwiseFilter.date"
+                            id="dateRangePickerOrderwise" placeholder="01/05/2025-01/05/2026" readonly>
+                        <span class="input-group-text">
+                            <i class="bx bx-calendar"></i>
+                        </span>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-4">
-                <div class="position-relative">
-                    <input type="text" [(ngModel)]="orderwiseFilter.SupplierName" class="form-control pe-5"
-                        placeholder="Search Distributor Name..." name="SupplierName"  (input)="onFilterChange($event.target.value, 'orderwise_SupplierName')">
-                    <i class="fa fa-search position-absolute"
-                        style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
+                <div class="col-md-4">
+                    <div class="position-relative">
+                        <input type="text" [(ngModel)]="orderwiseFilter.SupplierName" class="form-control pe-5"
+                            placeholder="Search Distributor Name..." name="SupplierName"
+                            (input)="onFilterChange($event.target.value, 'orderwise_SupplierName')">
+                        <i class="fa fa-search position-absolute"
+                            style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
+                    </div>
                 </div>
             </div>
         </div>
@@ -49,15 +54,16 @@
             </div>
             <div class="col-md-4">
                 <div class="input-group">
-                    <input type="text" class="form-control" [(ngModel)]="itemwiseFilter.date" id="dateRangePickerItemwise"
-                        placeholder="01/05/2025-01/05/2026" readonly>
+                    <input type="text" class="form-control" [(ngModel)]="itemwiseFilter.date"
+                        id="dateRangePickerItemwise" placeholder="01/05/2025-01/05/2026" readonly>
                     <span class="input-group-text">
                         <i class="bx bx-calendar"></i>
                     </span>
                 </div>
             </div>
             <div class="col-md-4">
-                <select [(ngModel)]="itemwiseFilter.status" (change)="onFilterChange($event.target.value, 'itemwise_status')" class="form-select">
+                <select [(ngModel)]="itemwiseFilter.status"
+                    (change)="onFilterChange($event.target.value, 'itemwise_status')" class="form-select">
                     <option value="pending">Pending</option>
                     <option value="Orderplaced">Order Placed</option>
                     <option value="Accepted">Accepted</option>
@@ -73,9 +79,8 @@
         <div class="row mb-3" *ngIf="activeTab === 'distributorwise'">
             <div class="col-md-4">
                 <div class="input-group">
-                    <input type="text" class="form-control"
-                        [(ngModel)]="distributorwiseFilter.date" id="dateRangePickerDistributorwise"
-                        placeholder="01/05/2025-01/05/2026" readonly>
+                    <input type="text" class="form-control" [(ngModel)]="distributorwiseFilter.date"
+                        id="dateRangePickerDistributorwise" placeholder="01/05/2025-01/05/2026" readonly>
                     <span class="input-group-text">
                         <i class="bx bx-calendar"></i>
                     </span>
@@ -96,14 +101,25 @@
     <div class="flex-grow-1 container-p-y">
         <div class="card">
             <div [ngSwitch]="activeTab" class="card-body">
-                <app-datatable *ngSwitchCase="'orderwise'" [options]="orderwiseOptions"
-                    [(selectedItemIds)]="selectedItemIds"></app-datatable>
+                <div *ngIf="showOrderwiseList">
+                    <app-datatable *ngSwitchCase="'orderwise'" #dataTable (rowClicked)="onRowClick($event)"
+                        [options]="orderwiseOptions" [(selectedItemIds)]="selectedItemIds"></app-datatable>
+                </div>
 
                 <app-datatable *ngSwitchCase="'itemwise'" [options]="itemwiseOptions"
                     [(selectedItemIds)]="selectedItemIds"></app-datatable>
 
                 <app-datatable *ngSwitchCase="'distributorwise'" [options]="distributorwiseOptions"
                     [(selectedItemIds)]="selectedItemIds"></app-datatable>
+
+                <!-- Itemwise List Section (after clicking a row) -->
+                <div *ngIf="ItemListBaseOnPONumberID">
+                    <h4>Items Base on poid</h4>
+                    <app-datatable [options]="getItemBaseOnPONumberID"></app-datatable>
+
+                    <!-- Optional Back Button -->
+                    <button class="btn btn-secondary mt-3">← Back</button>
+                </div>
             </div>
         </div>
     </div>
