@@ -25,7 +25,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("edit_item/{Id}")]
         [HttpPost]
-        public async Task<IActionResult> EditItem(BaseShortbookDto reqDto,long Id)
+        public async Task<IActionResult> EditShortBookItem(BaseShortbookDto reqDto,long Id)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -49,7 +49,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("add_item")]
         [HttpPost]
-        public async Task<IActionResult> AddItem(BaseShortbookDto reqDto)
+        public async Task<IActionResult> AddShortBookItem(BaseShortbookDto reqDto)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -73,7 +73,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("delete_item/{itemId}")]
         [HttpPost]
-        public async Task<IActionResult> DeleteItem(long itemId)
+        public async Task<IActionResult> DeleteShortBookItem(long itemId)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -97,7 +97,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("createpo")]
         [HttpPost]
-        public async Task<IActionResult> CreatePO(CreatePODto reqDto)
+        public async Task<IActionResult> GeneratePO(CreatePODto reqDto)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -107,6 +107,30 @@ namespace RepMed.Web.Controllers.WebApis
                     using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
                     {
                         var result = await purchaseOrderService.CreatePO(reqDto);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
+        [Route("delete_po/{poId}")]
+        [HttpPost]
+        public async Task<IActionResult> DeletePO(long poId)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.CreatePO(poId);
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();
@@ -346,6 +370,7 @@ namespace RepMed.Web.Controllers.WebApis
                 }
             }
         }
+
 
 
     }

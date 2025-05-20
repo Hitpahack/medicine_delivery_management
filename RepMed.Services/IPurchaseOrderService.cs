@@ -21,6 +21,7 @@ namespace RepMed.Services
     public interface IPurchaseOrderService : IDisposable
     {
         Task<APIsResponse<CreatePODto>> CreatePO(CreatePODto reqDto);
+        Task<APIsResponse<bool>> DeletePO(long poId);
         Task<APIsResponse<EntityShortbookDto>> AddEditItem(BaseShortbookDto reqDto, long Id);
         Task<APIsResponse<EntitySupplierDto>> AddSupplier(BaseSupplierDto reqDto);
         Task<APIsResponse<Datatable<POPagingResponse>>> GetPOOrdeWise(POPagingRequest reqDto);
@@ -28,7 +29,7 @@ namespace RepMed.Services
         Task<APIsResponse<Datatable<POIWPagingResponse>>> GetPOItemWise(POIWPagingRequest reqDto);
         Task<APIsResponse<Datatable<PODWPagingResponse>>> GetPODistWise(PODWPagingRequest reqDto);
         Task<APIsResponse<Datatable<ShortbookPagingResponse>>> GetShortBookItems(ShortbookPagingRequest reqDto);
-        Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId,string search);
+        Task<APIsResponse<List<GetSupppliersDto>>> GetAllSuppliers(long pharmacyId, string search);
         Task<APIsResponse<POPdfContentDto>> GetPOPdfDetails(long poId);
         Task<APIsResponse<List<GetPOItemsDto>>> GetPOItems(long poId);
         Task<APIsResponse<IEnumerable<EntityProductDto>>> SearchProducts(string search);
@@ -133,8 +134,8 @@ namespace RepMed.Services
                 parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
                 parameters.Add("pharmacyId", reqDto.PharmacyId, DbType.Int32);
                 parameters.Add("poId", reqDto.POId, DbType.Int32);
-                parameters.Add("stockAvailability",reqDto.StockAvailability != null ? string.Join(",",reqDto.StockAvailability) : string.Empty,DbType.String);
-                parameters.Add("status",reqDto.Status != null ? string.Join(",", reqDto.Status) : string.Empty,DbType.String);
+                parameters.Add("stockAvailability", reqDto.StockAvailability != null ? string.Join(",", reqDto.StockAvailability) : string.Empty, DbType.String);
+                parameters.Add("status", reqDto.Status != null ? string.Join(",", reqDto.Status) : string.Empty, DbType.String);
                 parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
                 parameters.Add("order_by", orderBy, DbType.String);
                 parameters.Add("fromDate", reqDto.FromDate, DbType.Date);
@@ -452,7 +453,7 @@ namespace RepMed.Services
                     new { ShortbookIds = reqDto.ShortbookId },
                     _idbTransaction
                 );
-                var groupedBySupplier = shortBook.GroupBy(o=> o.SupplierId);
+                var groupedBySupplier = shortBook.GroupBy(o => o.SupplierId);
                 #endregion
                 foreach (var group in groupedBySupplier)
                 {
@@ -469,7 +470,7 @@ namespace RepMed.Services
                         Status = "Pending",
                         SupplierId = Convert.ToUInt32(group.Key)
                     };
-                    
+
                     var insertPo = _idbConnection.Insert<EntityPODto>(_idbTransaction,
                                        DbTables.tblPurchaseOrders,
                                        DapperHelper.QueryAsColumnsParma<Purchaseorder, BasePODto>(),
@@ -483,7 +484,7 @@ namespace RepMed.Services
                         {
                             PurchaseOrderId = insertPo.Id,
                             ProductId = item.ProductId,
-                            Quantity = item.Quantity,  
+                            Quantity = item.Quantity,
                             CreatedAt = DateTime.Now,
                             UpdatedAt = DateTime.Now,
                         };
@@ -556,7 +557,7 @@ namespace RepMed.Services
             try
             {
                 var query = DbTables.tblProduct.SelectAll("Name LIKE @SearchTerm ORDER BY Name ASC LIMIT 20;");
-                var result = await _idbConnection.QueryAsync<EntityProductDto>(query, new { SearchTerm = $"%{search}%" },_idbTransaction);
+                var result = await _idbConnection.QueryAsync<EntityProductDto>(query, new { SearchTerm = $"%{search}%" }, _idbTransaction);
                 return new APIsSuccsss<IEnumerable<EntityProductDto>>("Item added to shortbook", result);
             }
             catch (Exception ex)
@@ -609,7 +610,7 @@ namespace RepMed.Services
         {
             try
             {
-                var sqlShortbook= DbTables.tblShortBook.SelectAll("Id = @ItemId");
+                var sqlShortbook = DbTables.tblShortBook.SelectAll("Id = @ItemId");
                 var result = await _idbConnection.QueryFirstOrDefaultAsync<EntityRoleDto>(
                                sqlShortbook,
                                new { ItemId = itemId },
@@ -640,6 +641,42 @@ namespace RepMed.Services
                     apiResponse = new APIsSuccsss<bool>("Item deleted successfully.", true);
                 else
                     apiResponse = new APIsSuccsss<bool>("Item not found.", true);
+                #endregion
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<bool>> DeletePO(long poId)
+        {
+            try
+            {
+                APIsResponse<bool> apiResponse = default(APIsResponse<bool>);
+                #region Get PO Items
+                string queryItems = DbTables.tblPurchaseOrderItems.SelectAll($@"{nameof(Purchaseorderitem.PurchaseOrderId)} = {poId}");
+                var itemIds = (await _idbConnection.QueryAsync<long>(queryItems, _idbTransaction)).ToList();
+                #endregion
+
+                #region Delete the PO Items
+                string deleteQuery = $@"DELETE FROM {DbTables.tblPurchaseOrderItems} WHERE Id IN @ItemIds";
+                int rowsAffected = await _idbConnection.ExecuteAsync(deleteQuery, new { ItemIds = itemIds }, _idbTransaction);
+                #endregion
+
+                #region Delete PO
+                if (rowsAffected > 0)
+                {
+                    string deletePOQuery = $@"DELETE FROM {DbTables.tblPurchaseOrders} WHERE Id = @PoId";
+                    int poRowsAffected = await _idbConnection.ExecuteAsync(deleteQuery, new { PoId = poId }, _idbTransaction);
+                    if (poRowsAffected > 0)
+                        apiResponse = new APIsSuccsss<bool>("PO deleted successfully.", true);
+                    else
+                        apiResponse = new APIsSuccsss<bool>("No PO found.", true);
+                }
+                else
+                    apiResponse = new APIsSuccsss<bool>("No PO items found.", true);
                 #endregion
                 return apiResponse;
             }
