@@ -9,6 +9,7 @@ namespace RepMed.Dtos.POPage.POItems
     public class POOWItemsPagingResponse : SP_BASE_RESPONSE
     {
         public long POId { get; set; }
+        public long POItemId { get; set; }
         public string ItemName { get; set; }
         public long CurrentStock { get; set; }
         public string? StockAvailability { get; set; }
