@@ -117,7 +117,6 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
         this.pharmacyId = sessionStorage.getItem('pharmacyId');
         this.loadTableConfigs();
         this.filterChangeSubject.pipe(debounceTime(300)).subscribe(() => {
-            console.log('run reload method');
             this.refreshTable();
         });
     }
@@ -141,10 +140,6 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
             default:
                 break;
         }
-
-        console.log('Filter Changed:', filterType, value);
-
-        // Trigger DataTable reload (or API call)
         this.filterChangeSubject.next();
     }
 
@@ -231,9 +226,7 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
 
                     //search itemName filter
                     d.itemName = this.itemwiseFilter.itemName;
-                    //search status filter
                     d.status = this.itemwiseFilter.status;
-                    //search date filter
                     if (this.itemwiseFilter.date.includes('to')) {
                         const dates = this.itemwiseFilter.date.split('to').map(x => x.trim());
                         d.fromDate = dates[0];
@@ -281,10 +274,8 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                 data: (d) => {
                     // Inject pharmacyId into the request payload
                     d.pharmacyId = this.pharmacyId;
-
-                    //search distributorName filter
+                    //search filter
                     d.SupplierName = this.distributorwiseFilter.SupplierName;
-                    //search date filter
                     if (this.distributorwiseFilter.date.includes('to')) {
                         const dates = this.distributorwiseFilter.date.split('to').map(x => x.trim());
                         d.fromDate = dates[0];
