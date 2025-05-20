@@ -44,12 +44,8 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
     distributorwiseFilter = { date: '', SupplierName: '' };
     private filterChangeSubject = new Subject<void>();
 
-    //This code for manage show item list base on ponumber
-    showOrderwiseList = true;
-    showOrderwiseFilter = true;
-    ItemListBaseOnPONumberID = false;
 
-    selectedOrderId: number | null = null;
+    POID: number | null = null;
 
     orderwiseFilterdata = {
         fromDate: '',
@@ -110,8 +106,8 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
         $('#' + this.orderwiseOptions.tableId + ' tbody').on('click', 'tr', (event) => {
             const row = $(event.currentTarget);
             const rowData = this.datatable.dtInstance.row(row).data();
-
-            // Yahan 'this' abhi bhi component ka hi hai
+            this.POID = rowData.purchaseOrderId;
+            this.router.navigate(['/pharmacy/poitemlist', this.POID]);
             const tableId = this.orderwiseOptions?.tableId;
             console.log('Table ID:', tableId);
         });
@@ -121,10 +117,6 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
     // This function use for write rowclick logic
     onRowClick(rowData: any): void {
         console.log('onRowClick method is run:', rowData);
-        this.selectedOrderId = rowData.id;
-        this.showOrderwiseList = false;
-        this.showOrderwiseFilter = false;
-        this.ItemListBaseOnPONumberID = true;
     }
 
     initializeDatePickers() {
