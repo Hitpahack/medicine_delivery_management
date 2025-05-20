@@ -74,16 +74,9 @@ export class PurchaseOrderService extends adminBaseService {
     return this.http.post<any>(this.apiConfig.endpoints.purchaseorder.deleteitem(id), { headers: this.apiConfig.requestSettings.header });
   }
 
-  // getOrderProducts(pharmacyId: number): Observable<any> {
-  //   return this.http.get<any>(`${this.apiConfig.endpoints.purchaseorder.orderProductslist}`, {
-  //     params: { pharmacyId: pharmacyId }
-  //   });
-  // }
-
-  // getOrderProducts(pharmacyId: number): Observable<any> {
-  //   const url = this.apiConfig.endpoints.purchaseorder.orderProductslist(pharmacyId); // ✅ Call the function
-  //   return this.http.get<any>(url);
-  // }
+  deletePObypoid(id: number) {
+    return this.http.post<any>(this.apiConfig.endpoints.purchaseorder.deletePO(id), { headers: this.apiConfig.requestSettings.header });
+  }
 
   getOrderProducts(pharmacyId: number): Observable<any> {
     const url = this.apiConfig.endpoints.purchaseorder.shortbookitemlist;

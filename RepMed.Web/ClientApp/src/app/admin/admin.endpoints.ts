@@ -107,6 +107,7 @@ export class AdminApiConfigService {
         getItemWise: `${v1}/po/get_po_itemwise`,
         getItemDistributorWise: `${v1}/po/get_po_distwise`,
         getItemBaseOnPONumber: `${v1}/po/get_po_owitems`,
+        deletePO: (id: number) => `${v1}/po/delete_po/${id}`,
       },
       CMS: {
         add: `${v1}/cms/addstaticpage`,

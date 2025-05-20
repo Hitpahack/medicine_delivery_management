@@ -5,6 +5,7 @@ import { DatatableComponent } from '../../../admin/shared/datatables/datatable.c
 import { AdminBaseComponent } from 'src/app/admin/admin.base.component';
 import { CustomValidator } from 'src/app/common/custom.validators';
 import { PurchaseOrderService } from "../../../pharmacy/services/purchaseorder/purchaseorder.services";
+import { Helper } from "../../../../app/common/helper.extenstions";
 import { FormBuilder } from '@angular/forms';
 import { debounceTime, Subject } from 'rxjs';
 declare var $: any;
@@ -92,7 +93,7 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
         $(document).on('click', '.delete-icon', (e) => {
             const id = $(e.currentTarget).data('id');
             console.log('Delete icon clicked for ID:', id);
-            // your delete logic
+            this.DeletePO(id);
         });
 
         //This code for make row clickable
@@ -234,7 +235,7 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                         return `
                    <i class="fa fa-envelope email-icon" data-id="${row.id}" style="cursor:pointer; color:blue; margin-right:10px;" title="Email"></i>
                    <i class="fa fa-whatsapp whatsapp-icon" data-id="${row.id}" style="cursor:pointer; color:green; margin-right:10px;" title="WhatsApp"></i>
-                   <i class="fa fa-trash delete-icon" data-id="${row.id}" style="cursor:pointer; color:red; cursor:pointer;" title="Delete"></i>
+                   <i class="fa fa-trash delete-icon" data-id="${data.purchaseOrderId}" style="cursor:pointer; color:red; cursor:pointer;" title="Delete"></i>
                     `;
                     }
                 }
@@ -364,6 +365,31 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                 });
             }
         }, 0);
+    }
+
+    DeletePO(id: number): void {
+        if (confirm('Are you sure you want to delete this PO?')) {
+            // Call the deleteRole method from the service
+            this.PurchaseOrderService.deletePObypoid(id).subscribe({
+                next: (response) => {
+                    if (response?.isSuccess) {
+                        // Show success message
+                        Helper.ShowSuccess(response.message || 'PO deleted successfully');
+                        // Optionally reload the DataTable
+                        $('#orderwiseTable').DataTable().ajax.reload();
+                    } else {
+                        // Show error message if deletion failed
+                        Helper.ShowError(response.message || 'Failed to delete the item');
+                    }
+                },
+                error: (error) => {
+                    console.error('Delete error:', error);
+                    // Show error message if there is an API or HTTP error
+                    const errorMessage = error?.error?.message || 'An error occurred while deleting the item';
+                    Helper.ShowError(errorMessage);
+                }
+            });
+        }
     }
 
 }
