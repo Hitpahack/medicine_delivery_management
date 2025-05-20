@@ -680,7 +680,7 @@ namespace RepMed.Services
                 APIsResponse<bool> apiResponse = default(APIsResponse<bool>);
                 #region Get PO Items
                 string queryItems = DbTables.tblPurchaseOrderItems.SelectAll($@"{nameof(Purchaseorderitem.PurchaseOrderId)} = {poId}");
-                var itemIds = (await _idbConnection.QueryAsync<long>(queryItems, _idbTransaction)).ToList();
+                var itemIds = (await _idbConnection.QueryAsync<long>(queryItems,transaction: _idbTransaction)).ToList();
                 #endregion
 
                 #region Delete the PO Items
@@ -692,7 +692,7 @@ namespace RepMed.Services
                 if (rowsAffected > 0)
                 {
                     string deletePOQuery = $@"DELETE FROM {DbTables.tblPurchaseOrders} WHERE Id = @PoId";
-                    int poRowsAffected = await _idbConnection.ExecuteAsync(deleteQuery, new { PoId = poId }, _idbTransaction);
+                    int poRowsAffected = await _idbConnection.ExecuteAsync(deletePOQuery, new { PoId = poId }, _idbTransaction);
                     if (poRowsAffected > 0)
                         apiResponse = new APIsSuccsss<bool>("PO deleted successfully.", true);
                     else
