@@ -6,6 +6,7 @@ import { AdminBaseComponent } from 'src/app/admin/admin.base.component';
 import { CustomValidator } from 'src/app/common/custom.validators';
 import { PurchaseOrderService } from "../../../pharmacy/services/purchaseorder/purchaseorder.services";
 import { FormBuilder } from '@angular/forms';
+import { debounceTime, Subject } from 'rxjs';
 declare var $: any;
 
 @Component({
@@ -37,12 +38,33 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
     orderwiseFilter = { poNumber: '', date: '', distributor: '' };
     itemwiseFilter = { itemName: '', date: '', status: '' };
     distributorwiseFilter = { date: '', distributorName: '' };
-
+    private filterChangeSubject = new Subject<void>();
 
     orderwiseFilterdata = {
         fromDate: '',
         toDate: ''
     };
+
+    refreshTable() {
+        let tableId = '';
+        switch (this.activeTab) {
+            case 'orderwise':
+                tableId = '#orderwiseTable';
+                break;
+            case 'itemwise':
+                tableId = '#itemwiseTable';
+                break;
+            case 'distributorwise':
+                tableId = '#distributorwiseTable';
+                break;
+        }
+
+        if (tableId) {
+            setTimeout(() => {
+                ($(tableId) as any).DataTable().draw();
+            }, 100);
+        }
+    }
     ngAfterViewInit(): void {
         $(document).on('click', '.email-icon', (e) => {
             const id = $(e.currentTarget).data('id');
@@ -61,34 +83,51 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
             console.log('Delete icon clicked for ID:', id);
             // your delete logic
         });
+        this.initializeDatePickers();
+    }
 
-        $('#dateRangePicker').daterangepicker(
-            {
-                opens: 'right',
-                autoUpdateInput: false,
-                locale: {
-                    cancelLabel: 'Clear',
-                    format: 'YYYY-MM-DD'
-                }
-            },
-            (start: any, end: any) => {
-                this.orderwiseFilterdata.fromDate = start.format('YYYY-MM-DD');
-                this.orderwiseFilterdata.toDate = end.format('YYYY-MM-DD');
-                $('#dateRangePicker').val(`${this.orderwiseFilterdata.fromDate} to ${this.orderwiseFilterdata.toDate}`);
-            }
-        );
+    initializeDatePickers() {
+        // Orderwise
+        $('#dateRangePickerOrderwise').daterangepicker({
+            // options
+        }, (start, end) => {
+            this.orderwiseFilter.date = `${start.format('YYYY-MM-DD')} to ${end.format('YYYY-MM-DD')}`;
+            this.refreshTable();
+        });
 
-        $('#dateRangePicker').on('cancel.daterangepicker', function () {
-            $(this).val('');
+        // Itemwise
+        $('#dateRangePickerItemwise').daterangepicker({
+            // options
+        }, (start, end) => {
+            this.itemwiseFilter.date = `${start.format('YYYY-MM-DD')} to ${end.format('YYYY-MM-DD')}`;
+            this.refreshTable();
+        });
+
+        // Distributorwise
+        $('#dateRangePickerDistributorwise').daterangepicker({
+            // options
+        }, (start, end) => {
+            this.distributorwiseFilter.date = `${start.format('YYYY-MM-DD')} to ${end.format('YYYY-MM-DD')}`;
+            this.refreshTable();
         });
     }
+
 
     ngOnInit(): void {
         this.pharmacyId = sessionStorage.getItem('pharmacyId');
         this.loadTableConfigs();
+        this.filterChangeSubject.pipe(debounceTime(300)).subscribe(() => {
+            console.log('run reload method');
+            this.refreshTable();
+        });
+    }
+    onFilterChange(): void {
+        console.log('Filter changed:', this.orderwiseFilter.poNumber);
+        this.filterChangeSubject.next();
     }
 
     loadTableConfigs(): void {
+        const that = this; // 👈 Yeh sabse important hai!
         this.orderwiseOptions = {
             tableId: 'orderwiseTable',
             ajax: {
@@ -98,13 +137,27 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                 dataType: "json", // Expect JSON response
                 data: (d) => {
                     // Inject pharmacyId into the request payload
-                    d.pharmacyId = this.pharmacyId;
+                    d.pharmacyId = that.pharmacyId;
+
+                    //search ponumber filter
+                    d.poNumber = that.orderwiseFilter.poNumber;
+                    console.log('this is po number', that.orderwiseFilter.poNumber)
+                    // search distributor filter
+                    d.distributor = that.orderwiseFilter.distributor;
+                    // handle date filter
+                    if (this.orderwiseFilter.date.includes('to')) {
+                        const dates = this.orderwiseFilter.date.split('to').map(x => x.trim());
+                        d.fromDate = dates[0];
+                        d.toDate = dates[1];
+                        console.log('this is date', dates)
+                    }
+                    console.log('Filters sent to API:', d);
                     return JSON.stringify(d);
                 }
             },
             serverSide: true,
             processing: true,
-            searchable: false,
+            searching: false,
             columns: [
                 { title: 'PO No.', data: 'poNumber' },
                 {
@@ -160,6 +213,17 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                 data: (d) => {
                     // Inject pharmacyId into the request payload
                     d.pharmacyId = this.pharmacyId;
+
+                    //search itemName filter
+                    d.itemName = this.itemwiseFilter.itemName;
+                    //search status filter
+                    d.status = this.itemwiseFilter.status;
+                    //search date filter
+                    if (this.itemwiseFilter.date.includes('to')) {
+                        const dates = this.itemwiseFilter.date.split('to').map(x => x.trim());
+                        d.fromDate = dates[0];
+                        d.toDate = dates[1];
+                    }
                     return JSON.stringify(d);
                 }
             },
@@ -167,9 +231,26 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
             processing: true,
             searching: false,
             columns: [
-                { title: 'Item Name', data: 'itemName' },
-                { title: 'Category', data: 'category' },
-                { title: 'Quantity', data: 'quantity' }
+                {
+                    title: 'Item Name',
+                    data: 'itemName',
+                    render: function (data: any, type: any, row: any) {
+                        if (data && data.length > 40) {
+                            return data.substring(0, 40) + '...';
+                        }
+                        return data;
+                    }
+                },
+                { title: 'current Stock', data: 'currentStock' },
+                { title: 'ordered Qty', data: 'orderedQty' },
+                {
+                    title: 'Ordered To',
+                    data: 'orderedTo',
+                    render: function (data: any, type: any, row: any) {
+                        return `<span style="color: blue;">${data}</span>`;
+                    }
+                },
+                { title: 'Total Amount', data: 'totalAmount' }
             ],
             searchInputId: 'itemwiseSearchBox',
             delaySearchTimeOut: 1000
@@ -185,30 +266,68 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                 data: (d) => {
                     // Inject pharmacyId into the request payload
                     d.pharmacyId = this.pharmacyId;
+
+                    //search distributorName filter
+                    d.distributorName = this.distributorwiseFilter.distributorName;
+                    //search date filter
+                    if (this.distributorwiseFilter.date.includes('to')) {
+                        const dates = this.distributorwiseFilter.date.split('to').map(x => x.trim());
+                        d.fromDate = dates[0];
+                        d.toDate = dates[1];
+                    }
                     return JSON.stringify(d);
                 }
             },
-            serverSide: false,
+            serverSide: true,
             processing: true,
-            searching: true,
+            searching: false,
             columns: [
-                {
-                    title: '<input type="checkbox" id="select_all_main_checkbox">',
-                    data: 'id',
-                    render: (data) => `<input type="checkbox" class="item_checkbox" data-id="${data}">`,
-                    orderable: false
-                },
-                { title: 'Distributor', data: 'distributorName' },
-                { title: 'Contact', data: 'contact' },
-                { title: 'Region', data: 'region' }
+                { title: 'Distributor', data: 'supplierName' },
+                { title: 'Mobile No.', data: 'mobile' },
+                //{ title: 'Area', data: 'region' }
             ],
             searchInputId: 'distributorwiseSearchBox',
             delaySearchTimeOut: 1000
         };
     }
 
-    changeTab(tab: string): void {
+    changeTab(tab: string) {
         this.activeTab = tab;
-        this.selectedItemIds = []; // reset selection when tab changes
+
+        setTimeout(() => {
+            // destroy any existing datepicker (optional)
+            $('.daterangepicker').remove();
+
+            // initialize datepicker for the active tab's input
+            let id = '';
+            if (tab === 'orderwise') id = '#dateRangePickerOrderwise';
+            else if (tab === 'itemwise') id = '#dateRangePickerItemwise';
+            else if (tab === 'distributorwise') id = '#dateRangePickerDistributorwise';
+
+            if (id) {
+                $(id).daterangepicker({
+                    opens: 'right',
+                    autoUpdateInput: false,
+                    locale: {
+                        cancelLabel: 'Clear',
+                        format: 'YYYY-MM-DD'
+                    }
+                }, (start, end) => {
+                    if (tab === 'orderwise') {
+                        this.orderwiseFilter.date = `${start.format('YYYY-MM-DD')} to ${end.format('YYYY-MM-DD')}`;
+                    } else if (tab === 'itemwise') {
+                        this.itemwiseFilter.date = `${start.format('YYYY-MM-DD')} to ${end.format('YYYY-MM-DD')}`;
+                    } else if (tab === 'distributorwise') {
+                        this.distributorwiseFilter.date = `${start.format('YYYY-MM-DD')} to ${end.format('YYYY-MM-DD')}`;
+                    }
+                    this.refreshTable();
+                });
+
+                $(id).on('cancel.daterangepicker', function () {
+                    $(this).val('');
+                });
+            }
+        }, 0);
     }
+
 }

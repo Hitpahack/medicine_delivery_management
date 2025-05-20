@@ -105,7 +105,7 @@ export class AdminApiConfigService {
 
         getItemOrderWise: `${v1}/po/get_po_orderwise`,
         getItemWise: `${v1}/po/get_po_itemwise`,
-        getItemDistributorWise: `${v1}/po/get_po_distributorwise`,
+        getItemDistributorWise: `${v1}/po/get_po_distwise`,
       },
       CMS: {
         add: `${v1}/cms/addstaticpage`,
