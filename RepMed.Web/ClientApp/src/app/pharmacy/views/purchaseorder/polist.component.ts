@@ -35,9 +35,9 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
 
     pharmacyId: string | null = null;
 
-    orderwiseFilter = { poNumber: '', date: '', distributor: '' };
+    orderwiseFilter = { poNumber: '', date: '', SupplierName: '' };
     itemwiseFilter = { itemName: '', date: '', status: '' };
-    distributorwiseFilter = { date: '', distributorName: '' };
+    distributorwiseFilter = { date: '', SupplierName: '' };
     private filterChangeSubject = new Subject<void>();
 
     orderwiseFilterdata = {
@@ -121,13 +121,34 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
             this.refreshTable();
         });
     }
-    onFilterChange(): void {
-        console.log('Filter changed:', this.orderwiseFilter.poNumber);
+    onFilterChange(value: string, filterType: string): void {
+        switch (filterType) {
+            case 'orderwise_poNumber':
+                this.orderwiseFilter.poNumber = value;
+                break;
+            case 'orderwise_SupplierName':
+                this.orderwiseFilter.SupplierName = value;
+                break;
+            case 'itemwise_itemName':
+                this.itemwiseFilter.itemName = value;
+                break;
+            case 'itemwise_status':
+                this.itemwiseFilter.status = value;
+                break;
+            case 'distributorwise_SupplierName':
+                this.distributorwiseFilter.SupplierName = value;
+                break;
+            default:
+                break;
+        }
+
+        console.log('Filter Changed:', filterType, value);
+
+        // Trigger DataTable reload (or API call)
         this.filterChangeSubject.next();
     }
 
     loadTableConfigs(): void {
-        const that = this; // 👈 Yeh sabse important hai!
         this.orderwiseOptions = {
             tableId: 'orderwiseTable',
             ajax: {
@@ -137,21 +158,15 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                 dataType: "json", // Expect JSON response
                 data: (d) => {
                     // Inject pharmacyId into the request payload
-                    d.pharmacyId = that.pharmacyId;
-
-                    //search ponumber filter
-                    d.poNumber = that.orderwiseFilter.poNumber;
-                    console.log('this is po number', that.orderwiseFilter.poNumber)
-                    // search distributor filter
-                    d.distributor = that.orderwiseFilter.distributor;
-                    // handle date filter
+                    d.pharmacyId = this.pharmacyId;
+                    //Search filter
+                    d.poNumber = this.orderwiseFilter.poNumber;
+                    d.SupplierName = this.orderwiseFilter.SupplierName;
                     if (this.orderwiseFilter.date.includes('to')) {
                         const dates = this.orderwiseFilter.date.split('to').map(x => x.trim());
                         d.fromDate = dates[0];
                         d.toDate = dates[1];
-                        console.log('this is date', dates)
                     }
-                    console.log('Filters sent to API:', d);
                     return JSON.stringify(d);
                 }
             },
@@ -268,7 +283,7 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                     d.pharmacyId = this.pharmacyId;
 
                     //search distributorName filter
-                    d.distributorName = this.distributorwiseFilter.distributorName;
+                    d.SupplierName = this.distributorwiseFilter.SupplierName;
                     //search date filter
                     if (this.distributorwiseFilter.date.includes('to')) {
                         const dates = this.distributorwiseFilter.date.split('to').map(x => x.trim());

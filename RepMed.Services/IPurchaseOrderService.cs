@@ -179,7 +179,7 @@ namespace RepMed.Services
                 parameters.Add("pharmacyId", reqDto.PharmacyId, DbType.Int32);
                 parameters.Add("productName", reqDto.ItemName ?? string.Empty, DbType.String);
                 parameters.Add("priority", reqDto.Priority ?? string.Empty, DbType.String);
-                parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
+                parameters.Add("statusFilter", reqDto.Status ?? string.Empty, DbType.String);
                 parameters.Add("order_by", orderBy, DbType.String);
                 parameters.Add("fromDate", reqDto.FromDate, DbType.Date);
                 parameters.Add("toDate", reqDto.ToDate, DbType.Date);
