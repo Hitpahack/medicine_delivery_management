@@ -5,6 +5,7 @@ using RepMed.Core;
 using RepMed.Data;
 using RepMed.Dtos;
 using RepMed.Dtos.POPage;
+using RepMed.Dtos.POPage.POItems;
 using RepMed.Dtos.ShortBookPage;
 using RepMed.Services;
 using RepMed.Web.Controllers.BaseApis;
@@ -220,6 +221,28 @@ namespace RepMed.Web.Controllers.WebApis
                     using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
                     {
                         var result = await purchaseOrderService.GetPODistWise(reqDto);
+                        if (!result.IsSuccess)
+                        {
+                            return BadRequest(result);
+                        }
+                        return Ok(result.Data);
+                    }
+                }
+            }
+        }
+
+        [Route("get_po_owitems")]
+        [HttpPost]
+        public async Task<IActionResult> GetPOOWItems(POOWItemsPagingRequest reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.GetPOOWItems(reqDto);
                         if (!result.IsSuccess)
                         {
                             return BadRequest(result);

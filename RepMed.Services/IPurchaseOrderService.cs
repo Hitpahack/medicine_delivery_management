@@ -14,6 +14,7 @@ using QuestPDF.Infrastructure;
 using System.Threading.Tasks;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 using RepMed.Dtos.ShortBookPage;
+using RepMed.Dtos.POPage.POItems;
 
 namespace RepMed.Services
 {
@@ -23,6 +24,7 @@ namespace RepMed.Services
         Task<APIsResponse<EntityShortbookDto>> AddEditItem(BaseShortbookDto reqDto, long Id);
         Task<APIsResponse<EntitySupplierDto>> AddSupplier(BaseSupplierDto reqDto);
         Task<APIsResponse<Datatable<POPagingResponse>>> GetPOOrdeWise(POPagingRequest reqDto);
+        Task<APIsResponse<Datatable<POOWItemsPagingResponse>>> GetPOOWItems(POOWItemsPagingRequest reqDto);
         Task<APIsResponse<Datatable<POIWPagingResponse>>> GetPOItemWise(POIWPagingRequest reqDto);
         Task<APIsResponse<Datatable<PODWPagingResponse>>> GetPODistWise(PODWPagingRequest reqDto);
         Task<APIsResponse<Datatable<ShortbookPagingResponse>>> GetShortBookItems(ShortbookPagingRequest reqDto);
@@ -112,6 +114,50 @@ namespace RepMed.Services
             catch (Exception ex)
             {
                 return await Task.FromResult(new APIsError<Datatable<POPagingResponse>>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<Datatable<POOWItemsPagingResponse>>> GetPOOWItems(POOWItemsPagingRequest reqDto)
+        {
+            try
+            {
+                APIsResponse<Datatable<POOWItemsPagingResponse>> apiResponse = default;
+                string orderBy;
+                if (reqDto.Order[0].Column == 0)
+                    orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|desc";
+                else
+                    orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
+                #region Get All PO Order Wise
+                var parameters = new DynamicParameters();
+                parameters.Add("page", reqDto.Page, DbType.Int32);
+                parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
+                parameters.Add("pharmacyId", reqDto.PharmacyId, DbType.Int32);
+                parameters.Add("poId", reqDto.POId, DbType.Int32);
+                parameters.Add("stockAvailability",reqDto.StockAvailability != null ? string.Join(",",reqDto.StockAvailability) : string.Empty,DbType.String);
+                parameters.Add("status",reqDto.Status != null ? string.Join(",", reqDto.Status) : string.Empty,DbType.String);
+                parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
+                parameters.Add("order_by", orderBy, DbType.String);
+                parameters.Add("fromDate", reqDto.FromDate, DbType.Date);
+                parameters.Add("toDate", reqDto.ToDate, DbType.Date);
+
+                var result = (await _idbConnection.QueryAsync<POOWItemsPagingResponse>(
+                               sql: "GET_POOW_ITEMS_PAGED",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                )).ToList();
+                #endregion
+                var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
+                var output = new Datatable<POOWItemsPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
+                if (result.Any())
+                    return await Task.FromResult(new APIsSuccsss<Datatable<POOWItemsPagingResponse>>(_validateMessages.RetriveSuccess, output));
+                else
+                    return await Task.FromResult(new APIsSuccsss<Datatable<POOWItemsPagingResponse>>(_validateMessages.NotExist));
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<Datatable<POOWItemsPagingResponse>>(ex.GetActualError()));
             }
         }
 
