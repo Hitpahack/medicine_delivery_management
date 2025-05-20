@@ -35,7 +35,10 @@ namespace RepMed.Services
         Task<APIsResponse<IEnumerable<EntityProductDto>>> SearchProducts(string search);
         Task<APIsResponse<byte[]>> Generate(POPdfContentDto po, List<GetPOItemsDto> items);
         Task<APIsResponse<EntityShortbookDto>> GetItem(long itemId);
+        Task<APIsResponse<EntityPOItemDto>> GetPOItem(long poItemId);
         Task<APIsResponse<bool>> DeleteItem(long itemId);
+        Task<APIsResponse<bool>> DeletePOItem(long poItemId);
+        Task<APIsResponse<EntityPOItemDto>> UpdatePOItem(long poItemId, long qty);
     }
     public class PurchaseOrderService : BaseService, IPurchaseOrderService
     {
@@ -611,7 +614,7 @@ namespace RepMed.Services
             try
             {
                 var sqlShortbook = DbTables.tblShortBook.SelectAll("Id = @ItemId");
-                var result = await _idbConnection.QueryFirstOrDefaultAsync<EntityRoleDto>(
+                var result = await _idbConnection.QueryFirstOrDefaultAsync<EntityShortbookDto>(
                                sqlShortbook,
                                new { ItemId = itemId },
                                transaction: _idbTransaction
@@ -650,6 +653,26 @@ namespace RepMed.Services
             }
         }
 
+        public async Task<APIsResponse<bool>> DeletePOItem(long poItemId)
+        {
+            try
+            {
+                APIsResponse<bool> apiResponse = default(APIsResponse<bool>);
+                #region Delete the PO Item
+                string deleteQuery = $@"DELETE FROM {DbTables.tblPurchaseOrderItems} WHERE Id = @ItemId;";
+                int rowsAffected = await _idbConnection.ExecuteAsync(deleteQuery, new { ItemId = poItemId }, _idbTransaction);
+                if (rowsAffected > 0)
+                    apiResponse = new APIsSuccsss<bool>("Item deleted successfully.", true);
+                else
+                    apiResponse = new APIsSuccsss<bool>("Item not found.", true);
+                #endregion
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
+            }
+        }
         public async Task<APIsResponse<bool>> DeletePO(long poId)
         {
             try
@@ -683,6 +706,49 @@ namespace RepMed.Services
             catch (Exception ex)
             {
                 return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
+            }
+        }
+        public async Task<APIsResponse<EntityPOItemDto>> GetPOItem(long poItemId)
+        {
+            try
+            {
+                var sqlShortbook = DbTables.tblPurchaseOrderItems.SelectAll("Id = @ItemId");
+                var result = await _idbConnection.QueryFirstOrDefaultAsync<EntityPOItemDto>(
+                               sqlShortbook,
+                               new { ItemId = poItemId },
+                               transaction: _idbTransaction
+                           );
+                if (result == null)
+                    return new APIsError<EntityPOItemDto>(_validateMessages.NotExist);
+                else
+                    return new APIsSuccsss<EntityPOItemDto>(_validateMessages.RetriveSuccess, result);
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<EntityPOItemDto>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<EntityPOItemDto>> UpdatePOItem(long poItemId, long qty)
+        {
+            try
+            {
+                APIsResponse<EntityPOItemDto> apiResponse = default;
+                #region Update Quantity of PO Item
+                EntityPOItemDto entityRoleDto = _idbConnection.Update<EntityPOItemDto>(_idbTransaction, DbTables.tblPurchaseOrderItems,
+                new Dictionary<string, object> {
+                    { nameof(EntityPOItemDto.Quantity), qty},
+                    { nameof(EntityPOItemDto.UpdatedAt),DateTime.Now },
+                }, $@" {nameof(EntityPOItemDto.Id)}='{poItemId}' ", "RETURNING *");
+                #endregion
+
+                apiResponse = new APIsSuccsss<EntityPOItemDto>("PO item updated successfully");
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<EntityPOItemDto>(ex.GetActualError()));
             }
         }
     }
