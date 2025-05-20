@@ -290,7 +290,7 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
             columns: [
                 { title: 'Distributor', data: 'supplierName' },
                 { title: 'Mobile No.', data: 'mobile' },
-                //{ title: 'Area', data: 'region' }
+                { title: 'Area', data: 'address' }
             ],
             searchInputId: 'distributorwiseSearchBox',
             delaySearchTimeOut: 1000
