@@ -13,7 +13,7 @@
             <div class="col-md-4">
                 <div class="position-relative">
                     <input type="text" name="poNumber" [(ngModel)]="orderwiseFilter.poNumber" class="form-control pe-5"
-                        placeholder="Search PO Number..." (input)="onFilterChange()">
+                        placeholder="Search PO Number..." (input)="onFilterChange($event.target.value, 'orderwise_poNumber')">
                     <i class="fa fa-search position-absolute"
                         style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
                 </div>
@@ -29,8 +29,8 @@
             </div>
             <div class="col-md-4">
                 <div class="position-relative">
-                    <input type="text" [(ngModel)]="orderwiseFilter.distributor" class="form-control pe-5"
-                        placeholder="Search Distributor Name..." (input)="onFilterChange()">
+                    <input type="text" [(ngModel)]="orderwiseFilter.SupplierName" class="form-control pe-5"
+                        placeholder="Search Distributor Name..." name="SupplierName"  (input)="onFilterChange($event.target.value, 'orderwise_SupplierName')">
                     <i class="fa fa-search position-absolute"
                         style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
                 </div>
@@ -42,7 +42,7 @@
             <div class="col-md-4">
                 <div class="position-relative">
                     <input type="text" [(ngModel)]="itemwiseFilter.itemName" class="form-control pe-5"
-                        placeholder="Item Name" (input)="onFilterChange()">
+                        placeholder="Item Name" (input)="onFilterChange($event.target.value, 'itemwise_itemName')">
                     <i class="fa fa-search position-absolute"
                         style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
                 </div>
@@ -57,7 +57,7 @@
                 </div>
             </div>
             <div class="col-md-4">
-                <select [(ngModel)]="itemwiseFilter.status" (input)="onFilterChange()" class="form-select">
+                <select [(ngModel)]="itemwiseFilter.status" (change)="onFilterChange($event.target.value, 'itemwise_status')" class="form-select">
                     <option value="pending">Pending</option>
                     <option value="Orderplaced">Order Placed</option>
                     <option value="Accepted">Accepted</option>
@@ -83,8 +83,8 @@
             </div>
             <div class="col-md-4">
                 <div class="position-relative">
-                    <input type="text" (input)="onFilterChange()"
-                        [(ngModel)]="distributorwiseFilter.distributorName" class="form-control pe-5"
+                    <input type="text" (input)="onFilterChange($event.target.value, 'distributorwise_SupplierName')"
+                        [(ngModel)]="distributorwiseFilter.SupplierName" name="SupplierName" class="form-control pe-5"
                         placeholder="Distributor Name">
                     <i class="fa fa-search position-absolute"
                         style="top: 50%; right: 15px; transform: translateY(-50%); color: #aaa;"></i>
