@@ -130,7 +130,7 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
                     {
-                        var result = await purchaseOrderService.CreatePO(poId);
+                        var result = await purchaseOrderService.DeletePO(poId);
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();
