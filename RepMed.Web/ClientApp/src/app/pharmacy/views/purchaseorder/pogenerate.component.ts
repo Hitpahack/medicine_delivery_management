@@ -170,7 +170,7 @@ export class PoGenerateComponent extends AdminBaseComponent implements OnInit, A
     callShortbookList() {
         const self = this;
         this.tableOptions = {
-            tableId: 'post_productlist_datatable',
+            tableId: 'post_shortbooklist_datatable',
             ajax: {
                 url: this.admin_apiconfig.endpoints.purchaseorder.shortbookitemlist,
                 type: "POST",
