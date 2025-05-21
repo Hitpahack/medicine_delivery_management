@@ -24,10 +24,6 @@ export class PurchaseOrderService extends adminBaseService {
     return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.purchaseorder.add, formData, { headers: this.apiConfig.requestSettings.header })
   }
 
-  // edituser(formData: any, id: number) {
-  //   return this.http.post<ApiResponse<Task>>(this.apiConfig.endpoints.user.update(id), formData, { headers: this.apiConfig.requestSettings.header })
-  // }
-
   getsupplier(id: number) {
     return this.http.post<ApiResponse<GetSupppliersDto[]>>(this.apiConfig.endpoints.purchaseorder.getsuppliers(id), { headers: this.apiConfig.requestSettings.header })
   }
@@ -59,8 +55,8 @@ export class PurchaseOrderService extends adminBaseService {
   }
 
   pogenerate(payload: any) {
-  return this.http.post<any>(`${this.apiConfig.endpoints.purchaseorder.generatepo}`, payload);
-}
+    return this.http.post<any>(`${this.apiConfig.endpoints.purchaseorder.generatepo}`, payload);
+  }
 
   updateProductInOrder(payload: any, id: number) {
     return this.http.post<any>(
@@ -72,6 +68,10 @@ export class PurchaseOrderService extends adminBaseService {
 
   deleteitembyid(id: number) {
     return this.http.post<any>(this.apiConfig.endpoints.purchaseorder.deleteitem(id), { headers: this.apiConfig.requestSettings.header });
+  }
+
+  deletePOItembyid(id: number) {
+    return this.http.post<any>(this.apiConfig.endpoints.purchaseorder.deletePOItem(id), { headers: this.apiConfig.requestSettings.header });
   }
 
   deletePObypoid(id: number) {
@@ -95,7 +95,16 @@ export class PurchaseOrderService extends adminBaseService {
 
     return this.http.post<any>(url, reqBody); // send POST with body
   }
-  //   getallusers() {
-  //     return this.http.post<ApiResponse<UserListDto>>(this.apiConfig.endpoints.user.list, { headers: this.apiConfig.requestSettings.header })
-  //   }
+
+  // updateItemQty(poItemId: number, qty: number) {
+  //   return this.http.post<any>(`${this.apiConfig.endpoints.purchaseorder.updateitem(poItemId)}?qty=${qty}`,{},{ headers: this.apiConfig.requestSettings.header });
+  // }
+
+  updateItemQty(poItemId: number, qty: number) {
+    // qty as query param, empty body
+    return this.http.post<any>(
+      `${this.apiConfig.endpoints.purchaseorder.updateitem(poItemId)}?qty=${qty}`,null,{ headers: this.apiConfig.requestSettings.header }
+    );
+  }
+
 }

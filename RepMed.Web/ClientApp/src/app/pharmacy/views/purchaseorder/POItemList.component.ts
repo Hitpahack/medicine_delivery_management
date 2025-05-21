@@ -13,6 +13,7 @@ declare var $: any;
 @Component({
     selector: 'app-POItem-list',
     templateUrl: 'POItemList.component.html',
+    styleUrls: ['./POItemList.component.css'],
     imports: [DatatableComponent, RouterModule]
 })
 
@@ -26,14 +27,71 @@ export class POIDItemListComponent extends AdminBaseComponent implements OnInit,
     }
     pharmacyId: string | null = null;
     POID: Number | null = null;
+    errorMessage: string = '';
 
     ngAfterViewInit(): void {
         $(document).off('click', '.editItem');
         $(document).off('click', '.deleteItem');
+        $(document).off('click', '.updateQtyBtn');
 
         $(document).on('click', '.editItem', (event) => {
             const id = $(event.currentTarget).data('id');
-            this.router.navigate(['/pharmacy/role/edit', id]);
+            const currentQty = $(event.currentTarget).data('qty');
+
+            // Set Qty in modal input
+            $('#qtyInput').val(currentQty);
+            $('#qtyInput').data('id', id);
+            $('#qtyEditModal').show();
+        });
+
+        $(document).on('click', '#updateQtyBtn', () => {
+            const updatedQty = parseInt($('#qtyInput').val(), 10);
+            const id = $('#qtyInput').data('id');
+
+            // Remove any previous errors
+            $('#qtyInput').removeClass('input-error');
+            $('.error-message').remove();
+
+            // Validation Check
+            if (isNaN(updatedQty) || updatedQty < 1 || updatedQty > 1000) {
+                $('#qtyInput')
+                    .addClass('input-error')
+                    .after('<div class="error-message" style="color: #dc3545; font-size: 13px; margin-top: 5px;">Quantity must be between 1 and 1000</div>');
+                return;
+            }
+            this.PurchaseOrderService.updateItemQty(id, updatedQty).subscribe({
+                next: (response) => {
+                    if (response.isSuccess) {
+                        Helper.ShowSuccess(response.message || 'Qty updated successfully.');
+                        $('#post_POItemListlist_datatable').DataTable().ajax.reload();
+                    } else {
+                        console.error('API returned isSuccess: false');
+                        this.errorMessage = response.message || 'Failed to update role.';
+                        Helper.ShowError(this.errorMessage);
+                    }
+                },
+                error: (err) => {
+                    console.error('HTTP Error:', err);
+                    this.errorMessage = err?.error?.message || 'Something went wrong. Please try again.';
+                    Helper.ShowError(this.errorMessage);
+                }
+            });
+            $('#qtyEditModal').hide();
+        });
+
+        // Remove error on typing valid value
+        $(document).on('input', '#qtyInput', () => {
+            const qty = parseInt($('#qtyInput').val(), 10);
+
+            if (!isNaN(qty) && qty >= 1 && qty <= 1000) {
+                $('#qtyInput').removeClass('input-error');
+                $('.error-message').remove();
+            }
+        });
+
+
+        $(document).on('click', '#closeModalBtn', () => {
+            $('#qtyEditModal').hide();
         });
 
         $(document).on('click', '.deleteItem', (event) => {
@@ -94,7 +152,7 @@ export class POIDItemListComponent extends AdminBaseComponent implements OnInit,
 
     onDelete(id: number): void {
         if (confirm('Are you sure you want to delete this item?')) {
-            this.PurchaseOrderService.deleteitembyid(id).subscribe({
+            this.PurchaseOrderService.deletePOItembyid(id).subscribe({
                 next: (response) => {
                     if (response?.isSuccess) {
                         Helper.ShowSuccess(response.message || 'Item deleted successfully');

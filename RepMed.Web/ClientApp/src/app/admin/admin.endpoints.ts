@@ -110,6 +110,8 @@ export class AdminApiConfigService {
         SendMailToDistributor: (id: number) => `${v1}/po/  /${id}`,
 
         getItemBaseOnPONumber: `${v1}/po/get_po_owitems`,
+        deletePOItem: (id: number) => `${v1}/po/delete_po_item/${id}`,
+        updateitem: (id: number) => `${v1}/po/edit_po_item/${id}`
       },
       CMS: {
         add: `${v1}/cms/addstaticpage`,

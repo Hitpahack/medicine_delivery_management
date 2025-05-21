@@ -98,7 +98,7 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
 
         $(document).on('click', '.ShowAllItem', (e) => {
             const id = $(e.currentTarget).data('id');
-            console.log('ShowAllItem Method is call')
+            this.router.navigate(['/pharmacy/itemdistrlist', id]);
 
         });
 
@@ -109,7 +109,6 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
             this.POID = rowData.purchaseOrderId;
             this.router.navigate(['/pharmacy/poitemlist', this.POID]);
             const tableId = this.orderwiseOptions?.tableId;
-            console.log('Table ID:', tableId);
         });
         this.initializeDatePickers();
     }
