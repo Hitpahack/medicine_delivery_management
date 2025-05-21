@@ -1,9 +1,9 @@
 <div class="form-grid">
     <div class="tabs">
-        <button [class.active]="activeTab === 'orderwise'" (click)="changeTab('orderwise')">Orderwise</button>
-        <button [class.active]="activeTab === 'itemwise'" (click)="changeTab('itemwise')">Itemwise</button>
+        <button [class.active]="activeTab === 'orderwise'" (click)="onTabChange('orderwise')">Orderwise</button>
+        <button [class.active]="activeTab === 'itemwise'" (click)="onTabChange('itemwise')">Itemwise</button>
         <button [class.active]="activeTab === 'distributorwise'"
-            (click)="changeTab('distributorwise')">Distributorwise</button>
+            (click)="onTabChange('distributorwise')">Distributorwise</button>
     </div>
     <br />
     <!-- FILTER SECTION -->

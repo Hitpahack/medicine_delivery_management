@@ -96,12 +96,8 @@ export class PurchaseOrderService extends adminBaseService {
     return this.http.post<any>(url, reqBody); // send POST with body
   }
 
-  // updateItemQty(poItemId: number, qty: number) {
-  //   return this.http.post<any>(`${this.apiConfig.endpoints.purchaseorder.updateitem(poItemId)}?qty=${qty}`,{},{ headers: this.apiConfig.requestSettings.header });
-  // }
 
   updateItemQty(poItemId: number, qty: number) {
-    // qty as query param, empty body
     return this.http.post<any>(
       `${this.apiConfig.endpoints.purchaseorder.updateitem(poItemId)}?qty=${qty}`,null,{ headers: this.apiConfig.requestSettings.header }
     );

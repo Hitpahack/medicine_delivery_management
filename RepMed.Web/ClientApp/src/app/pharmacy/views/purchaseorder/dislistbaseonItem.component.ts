@@ -25,22 +25,22 @@ export class DistributorListBaseOnItemComponent extends AdminBaseComponent imple
         super();
     }
     pharmacyId: string | null = null;
-    POID: Number | null = null;
+    ProductId: Number | null = null;
 
     ngAfterViewInit(): void {
-        
+
     }
 
     tableOptions = {
         tableId: 'post_distributorList_datatable',
         ajax: {
-            url: this.admin_apiconfig.endpoints.purchaseorder.getItemBaseOnPONumber,
+            url: this.admin_apiconfig.endpoints.purchaseorder.getPOListBaseOnItemID,
             type: "POST",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             data: (d) => {
                 d.pharmacyId = this.pharmacyId;
-                d.POId = this.POID;
+                d.ProductId = this.ProductId;
                 return JSON.stringify(d);
             }
 
@@ -49,24 +49,39 @@ export class DistributorListBaseOnItemComponent extends AdminBaseComponent imple
         columns: [
             {
                 title: 'Ordered To',
-                data: 'itemName',
+                data: 'supplierName',
                 render: function (data: any, type: any, row: any) {
-                    if (data && data.length > 30) {
-                        return data.substring(0, 30) + '...';
+                    if (data && data.length > 40) {
+                        return data.substring(0, 40) + '...';
                     }
                     return data;
                 }
             },
-            { title: 'PO NO.', data: 'currentStock' },
-            { title: 'Date.', data: 'stockAvailability' },
-            { title: 'Priority', data: 'status' },
-            { title: 'Qty', data: 'mrp' },
+            { title: 'PO NO.', data: 'poNumber' },
+            {
+                title: 'Date',
+                data: 'orderDate',
+                render: function (data: any) {
+                    if (!data) return '';
+                    const date = new Date(data);
+                    const month = String(date.getMonth() + 1).padStart(2, '0');
+                    const day = String(date.getDate()).padStart(2, '0');
+                    let hours = date.getHours();
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+                    const ampm = hours >= 12 ? 'PM' : 'AM';
+                    hours = hours % 12;
+                    hours = hours ? hours : 12;
+                    const strHours = String(hours).padStart(2, '0');
+                    return `${month}-${day}, ${strHours}:${minutes} ${ampm}`;
+                }
+            },
+            { title: 'Qty', data: 'quantity' },
             { title: 'Total Amount', data: 'amount' }
         ],
     };
 
     ngOnInit(): void {
-        this.POID = Number(this.route.snapshot.paramMap.get('id'));
+        this.ProductId = Number(this.route.snapshot.paramMap.get('id'));
         this.pharmacyId = sessionStorage.getItem('pharmacyId');
 
     }

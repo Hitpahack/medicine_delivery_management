@@ -143,7 +143,13 @@ export class POIDItemListComponent extends AdminBaseComponent implements OnInit,
                 render: (data, type, row) => {
                     return `
                         <i class="fa fa-edit editItem" data-id="${row.poItemId}" style="cursor:pointer; color:blue; font-size:18px; margin-right:10px;" title="Edit"></i>
-                        <i class="fa fa-trash deleteItem" data-id="${row.poItemId}" style="cursor:pointer; color:red; font-size:18px;" title="Delete"></i>
+                        <button class="deleteItem ${row.status !== 'Pending' ? 'blur-icon' : ''}"
+                        data-id="${row.poItemId}"
+                        ${row.status !== 'Pending' ? 'disabled' : ''}
+                        style="background: none; border: none; padding: 0; margin: 0; color: red; font-size: 18px;"
+                        title="Delete">
+                        <i class="fa fa-trash"></i>
+                        </button>
                     `;
                 }
             }

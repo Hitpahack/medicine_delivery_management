@@ -80,18 +80,21 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
         $(document).off('click', '.ShowAllItem');
 
         $(document).on('click', '.emailsend', (e) => {
+            e.stopPropagation();
             const id = $(e.currentTarget).data('id');
             console.log('Email btn clicked for ID:', id);
             this.SendMailToDistributor(id);
         });
 
         $(document).on('click', '.whatsappmsgsend', (e) => {
+            e.stopPropagation();
             const id = $(e.currentTarget).data('id');
             console.log('WhatsApp btn clicked for ID:', id);
             // your whatsapp logic
         });
 
         $(document).on('click', '.deletepo', (e) => {
+            e.stopPropagation();
             const id = $(e.currentTarget).data('id');
             this.DeletePO(id);
         });
@@ -101,16 +104,27 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
             this.router.navigate(['/pharmacy/itemdistrlist', id]);
 
         });
+        this.bindOrderwiseRowClick();
+        this.initializeDatePickers();
+    }
 
-        //This code for make row clickable
+    bindOrderwiseRowClick() {
+        const tableId = '#' + this.orderwiseOptions.tableId + ' tbody';
+        $(document).off('click', tableId + ' tr');
+
         $('#' + this.orderwiseOptions.tableId + ' tbody').on('click', 'tr', (event) => {
+            //Check
+            const target = $(event.target);
+            if (target.hasClass('deletepo') || target.hasClass('emailsend') || target.hasClass('whatsappmsgsend') || target.hasClass('ShowAllItem')) {
+                return;
+            }
+
             const row = $(event.currentTarget);
             const rowData = this.datatable.dtInstance.row(row).data();
             this.POID = rowData.purchaseOrderId;
             this.router.navigate(['/pharmacy/poitemlist', this.POID]);
             const tableId = this.orderwiseOptions?.tableId;
         });
-        this.initializeDatePickers();
     }
 
     // This function use for write rowclick logic
@@ -287,7 +301,7 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                     title: 'Ordered To',
                     data: 'orderedTo',
                     render: function (data: any, type: any, row: any) {
-                        return `<span class="ShowAllItem" data-id="${row.id}" data-name="${data}" style="color: blue; cursor: pointer;">
+                        return `<span class="ShowAllItem" data-id="${row.productId}" data-name="${data}" style="color: blue; cursor: pointer;">
                         ${data}
                         </span>`;
                     }
@@ -331,11 +345,15 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
         };
     }
 
-    changeTab(tab: string) {
+    onTabChange(tab: string): void {
         this.activeTab = tab;
 
+        // Optional: refresh table for the active tab
+        this.refreshTable();
+
+        // Wait for DOM update
         setTimeout(() => {
-            // destroy any existing datepicker (optional)
+            // destroy existing datepickers to prevent duplicate initialization
             $('.daterangepicker').remove();
 
             // initialize datepicker for the active tab's input
@@ -353,22 +371,38 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                         format: 'YYYY-MM-DD'
                     }
                 }, (start, end) => {
+                    const formatted = `${start.format('YYYY-MM-DD')} to ${end.format('YYYY-MM-DD')}`;
+
+                    // Set selected date to respective filter object
                     if (tab === 'orderwise') {
-                        this.orderwiseFilter.date = `${start.format('YYYY-MM-DD')} to ${end.format('YYYY-MM-DD')}`;
+                        this.orderwiseFilter.date = formatted;
                     } else if (tab === 'itemwise') {
-                        this.itemwiseFilter.date = `${start.format('YYYY-MM-DD')} to ${end.format('YYYY-MM-DD')}`;
+                        this.itemwiseFilter.date = formatted;
                     } else if (tab === 'distributorwise') {
-                        this.distributorwiseFilter.date = `${start.format('YYYY-MM-DD')} to ${end.format('YYYY-MM-DD')}`;
+                        this.distributorwiseFilter.date = formatted;
                     }
+
+                    // Set input box value so selected date is shown in UI
+                    $(id).val(formatted);
+
+                    // Refresh table after date change
                     this.refreshTable();
                 });
 
+                // Clear value on cancel
                 $(id).on('cancel.daterangepicker', function () {
                     $(this).val('');
                 });
             }
-        }, 0);
+
+            // Bind row click for orderwise tab
+            if (tab === 'orderwise') {
+                this.bindOrderwiseRowClick();
+            }
+        }, 300); // Delay to ensure DOM & DataTable is ready
     }
+
+
 
     SendMailToDistributor(id: number): void {
         this.PurchaseOrderService.sendMailToDistributor(id).subscribe({
