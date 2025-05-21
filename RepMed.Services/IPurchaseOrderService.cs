@@ -825,10 +825,17 @@ namespace RepMed.Services
                 pdfResponse.Data,
                 $"PO_{poDetails.Data.PONumber}.pdf"
             );
+            #region Change Status to Order Placed
+            EntityPODto entityRoleDto = _idbConnection.Update<EntityPODto>(_idbTransaction, DbTables.tblPurchaseOrders,
+                new Dictionary<string, object> {
+                    { nameof(EntityPODto.Status), "Order Placed"},
+                    { nameof(EntityPODto.UpdatedAt),DateTime.Now },
+                }, $@" {nameof(EntityPODto.Id)}='{poId}' ", "RETURNING *");
+            #endregion
 
             return emailSent
-                ? new APIsSuccsss<bool>("Email sent successfully", true)
-                : new APIsError<bool>("Failed to send email");
+                ? new APIsSuccsss<bool>("Oreder placed successfully", true)
+                : new APIsError<bool>("Failed to place order");
         }
 
         private async Task<bool> SendEmailWithAttachment(string to, string subject, string body, byte[] attachmentBytes, string attachmentName)

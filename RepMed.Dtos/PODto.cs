@@ -29,7 +29,7 @@ namespace RepMed.Dtos
         [JsonIgnore]
         public DateTime? UpdatedAt { get; set; }
     }
-    public class EntityPODto
+    public class EntityPODto : BasePODto
     {
         public long Id { get; set; }
     }
