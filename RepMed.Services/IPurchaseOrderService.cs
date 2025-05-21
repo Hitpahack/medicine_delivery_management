@@ -26,6 +26,7 @@ namespace RepMed.Services
         Task<APIsResponse<EntitySupplierDto>> AddSupplier(BaseSupplierDto reqDto);
         Task<APIsResponse<Datatable<POPagingResponse>>> GetPOOrdeWise(POPagingRequest reqDto);
         Task<APIsResponse<Datatable<POOWItemsPagingResponse>>> GetPOOWItems(POOWItemsPagingRequest reqDto);
+        Task<APIsResponse<Datatable<POIWItemsPagingResponse>>> GetPOIWItems(POIWItemsPagingRequest reqDto);
         Task<APIsResponse<Datatable<POIWPagingResponse>>> GetPOItemWise(POIWPagingRequest reqDto);
         Task<APIsResponse<Datatable<PODWPagingResponse>>> GetPODistWise(PODWPagingRequest reqDto);
         Task<APIsResponse<Datatable<ShortbookPagingResponse>>> GetShortBookItems(ShortbookPagingRequest reqDto);
@@ -165,6 +166,40 @@ namespace RepMed.Services
             }
         }
 
+        public async Task<APIsResponse<Datatable<POIWItemsPagingResponse>>> GetPOIWItems(POIWItemsPagingRequest reqDto)
+        {
+            try
+            {
+                APIsResponse<Datatable<POIWItemsPagingResponse>> apiResponse = default;
+                string orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
+                #region Get All PO Order Wise
+                var parameters = new DynamicParameters();
+                parameters.Add("page", reqDto.Page, DbType.Int32);
+                parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
+                parameters.Add("pharmacyId", reqDto.PharmacyId, DbType.Int32);
+                parameters.Add("productId", reqDto.ProductId, DbType.Int32);
+                parameters.Add("status", reqDto.Status != null ? string.Join(",", reqDto.Status) : string.Empty, DbType.String);
+                parameters.Add("order_by", orderBy, DbType.String);
+                var result = (await _idbConnection.QueryAsync<POIWItemsPagingResponse>(
+                               sql: "GET_POIW_PO_PAGED",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                )).ToList();
+                #endregion
+                var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
+                var output = new Datatable<POIWItemsPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
+                if (result.Any())
+                    return await Task.FromResult(new APIsSuccsss<Datatable<POIWItemsPagingResponse>>(_validateMessages.RetriveSuccess, output));
+                else
+                    return await Task.FromResult(new APIsSuccsss<Datatable<POIWItemsPagingResponse>>(_validateMessages.NotExist));
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<Datatable<POIWItemsPagingResponse>>(ex.GetActualError()));
+            }
+        }
         public async Task<APIsResponse<Datatable<POIWPagingResponse>>> GetPOItemWise(POIWPagingRequest reqDto)
         {
             try

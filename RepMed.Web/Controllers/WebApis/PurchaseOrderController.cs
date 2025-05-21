@@ -277,6 +277,28 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
+        [Route("get_po_iwitems")]
+        [HttpPost]
+        public async Task<IActionResult> GetPOIWItems(POIWItemsPagingRequest reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.GetPOIWItems(reqDto);
+                        if (!result.IsSuccess)
+                        {
+                            return BadRequest(result);
+                        }
+                        return Ok(result.Data);
+                    }
+                }
+            }
+        }
+
         [HttpGet("generate-po-pdf/{poId}")]
         public async Task<IActionResult> GeneratePoPdf(int poId)
         {
