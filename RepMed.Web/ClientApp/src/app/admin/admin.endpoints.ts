@@ -107,7 +107,7 @@ export class AdminApiConfigService {
         getItemWise: `${v1}/po/get_po_itemwise`,
         getItemDistributorWise: `${v1}/po/get_po_distwise`,
         deletePO: (id: number) => `${v1}/po/delete_po/${id}`,
-        SendMailToDistributor: (id: number) => `${v1}/po/  /${id}`,
+        SendMailToDistributor: (id: number) => `${v1}/po/place_po_order/${id}`,
 
         getItemBaseOnPONumber: `${v1}/po/get_po_owitems`,
         getPOListBaseOnItemID: `${v1}/po/get_po_iwitems`,

@@ -30,7 +30,7 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
     //This code for make row clickable
     @ViewChild('dataTable') datatable!: DatatableComponent;
     @Output() rowClicked = new EventEmitter<any>();
-
+    showSuccessOverlay = false;
     activeTab: string = 'orderwise'; // default tab
     selectedItemIds: number[] = [];
     pharmacyId: string | null = null;
@@ -386,7 +386,12 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
         this.PurchaseOrderService.sendMailToDistributor(id).subscribe({
             next: (response) => {
                 if (response?.isSuccess) {
-                    Helper.ShowSuccess(response.message || 'Mail Send To Distributor successfully');
+
+                    this.showSuccessOverlay = true;
+                    // Hide after 3 seconds
+                    setTimeout(() => {
+                        this.showSuccessOverlay = false;
+                    }, 3000);
                     $('#orderwiseTable').DataTable().ajax.reload();
                 } else {
                     Helper.ShowError(response.message || 'Failed to Send Mail To Distributor');

@@ -180,8 +180,8 @@ export class POIDItemListComponent extends AdminBaseComponent implements OnInit,
         this.PurchaseOrderService.sendMailToDistributor(POID).subscribe({
             next: (response) => {
                 if (response?.isSuccess) {
+                    this.router.navigate(['/pharmacy/polist']);
                     Helper.ShowSuccess(response.message || 'Mail Send To Distributor successfully');
-                    $('#orderwiseTable').DataTable().ajax.reload();
                 } else {
                     Helper.ShowError(response.message || 'Failed to Send Mail To Distributor');
                 }
