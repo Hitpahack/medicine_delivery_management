@@ -15,6 +15,10 @@ using System.Threading.Tasks;
 using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 using RepMed.Dtos.ShortBookPage;
 using RepMed.Dtos.POPage.POItems;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using System.Net.Mail;
+using System.Net;
 
 namespace RepMed.Services
 {
@@ -40,6 +44,7 @@ namespace RepMed.Services
         Task<APIsResponse<bool>> DeleteItem(long itemId);
         Task<APIsResponse<bool>> DeletePOItem(long poItemId);
         Task<APIsResponse<EntityPOItemDto>> UpdatePOItem(long poItemId, long qty);
+        Task<APIsResponse<bool>> SendPOEmail(long poId);
     }
     public class PurchaseOrderService : BaseService, IPurchaseOrderService
     {
@@ -418,9 +423,6 @@ namespace RepMed.Services
                                 {
                                     c.Item().Text($"PO Number: {po.PONumber}");
                                     c.Item().Text($"Order Date: {po.OrderDate:yyyy-MM-dd}");
-                                    c.Item().Text($"Expected Date: {po.EDDate:yyyy-MM-dd}");
-                                    c.Item().Text($"Status: {po.Status}");
-                                    c.Item().Text($"Remarks: {po.Remarks}");
                                 });
                             });
 
@@ -804,6 +806,66 @@ namespace RepMed.Services
             catch (Exception ex)
             {
                 return await Task.FromResult(new APIsError<EntityPOItemDto>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<bool>> SendPOEmail(long poId)
+        {
+            var poDetails = await GetPOPdfDetails(poId);
+            var poItems = await GetPOItems(poId);
+
+            var pdfResponse = await Generate(poDetails.Data, poItems.Data);
+            if (!pdfResponse.IsSuccess)
+                return new APIsError<bool>("Failed to generate PDF");
+
+            var emailSent = await SendEmailWithAttachment(
+                poDetails.Data.SupplierEmail,
+                $"Purchase Order - {poDetails.Data.PONumber}",
+                "Please find the attached Purchase Order.",
+                pdfResponse.Data,
+                $"PO_{poDetails.Data.PONumber}.pdf"
+            );
+
+            return emailSent
+                ? new APIsSuccsss<bool>("Email sent successfully", true)
+                : new APIsError<bool>("Failed to send email");
+        }
+
+        private async Task<bool> SendEmailWithAttachment(string to, string subject, string body, byte[] attachmentBytes, string attachmentName)
+        {
+            try
+            {
+                using (var message = new MailMessage())
+                {
+                    message.From = new MailAddress(_emailSettings.FromEmail);
+                    message.To.Add(to);
+                    message.Subject = subject;
+                    message.Body = body;
+                    message.IsBodyHtml = true;
+
+                    if (attachmentBytes != null)
+                    {
+                        var stream = new MemoryStream(attachmentBytes);
+                        var attachment = new Attachment(stream, attachmentName, "application/pdf");
+                        message.Attachments.Add(attachment);
+                    }
+
+                    using (var smtp = new SmtpClient(_emailSettings.PrimaryDomain, _emailSettings.PrimaryPort))
+                    {
+                        smtp.Credentials = new NetworkCredential(
+                            _emailSettings.UsernameEmail,
+                            _emailSettings.UsernamePassword);
+
+                        smtp.EnableSsl = true;
+                        await smtp.SendMailAsync(message);
+                    }
+                }
+
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
             }
         }
     }

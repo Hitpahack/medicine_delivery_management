@@ -465,7 +465,29 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
-
+        [Route("place_po_order/{poId}")]
+        [HttpPost]
+        public async Task<IActionResult> SendPOEmail(long poId)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.SendPOEmail(poId);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
 
     }
 }
