@@ -44,12 +44,8 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
     distributorwiseFilter = { date: '', SupplierName: '' };
     private filterChangeSubject = new Subject<void>();
 
-    //This code for manage show item list base on ponumber
-    showOrderwiseList = true;
-    showOrderwiseFilter = true;
-    ItemListBaseOnPONumberID = false;
 
-    selectedOrderId: number | null = null;
+    POID: number | null = null;
 
     orderwiseFilterdata = {
         fromDate: '',
@@ -77,31 +73,41 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
         }
     }
     ngAfterViewInit(): void {
-        //this.loadTableConfigs();
-        $(document).on('click', '.email-icon', (e) => {
+
+        $(document).off('click', '.emailsend');
+        $(document).off('click', '.whatsappmsgsend');
+        $(document).off('click', '.deletepo');
+        $(document).off('click', '.ShowAllItem');
+
+        $(document).on('click', '.emailsend', (e) => {
             const id = $(e.currentTarget).data('id');
-            console.log('Email icon clicked for ID:', id);
-            // your email logic
+            console.log('Email btn clicked for ID:', id);
+            this.SendMailToDistributor(id);
         });
 
-        $(document).on('click', '.whatsapp-icon', (e) => {
+        $(document).on('click', '.whatsappmsgsend', (e) => {
             const id = $(e.currentTarget).data('id');
-            console.log('WhatsApp icon clicked for ID:', id);
+            console.log('WhatsApp btn clicked for ID:', id);
             // your whatsapp logic
         });
 
-        $(document).on('click', '.delete-icon', (e) => {
+        $(document).on('click', '.deletepo', (e) => {
             const id = $(e.currentTarget).data('id');
-            console.log('Delete icon clicked for ID:', id);
             this.DeletePO(id);
+        });
+
+        $(document).on('click', '.ShowAllItem', (e) => {
+            const id = $(e.currentTarget).data('id');
+            console.log('ShowAllItem Method is call')
+
         });
 
         //This code for make row clickable
         $('#' + this.orderwiseOptions.tableId + ' tbody').on('click', 'tr', (event) => {
             const row = $(event.currentTarget);
             const rowData = this.datatable.dtInstance.row(row).data();
-
-            // Yahan 'this' abhi bhi component ka hi hai
+            this.POID = rowData.purchaseOrderId;
+            this.router.navigate(['/pharmacy/poitemlist', this.POID]);
             const tableId = this.orderwiseOptions?.tableId;
             console.log('Table ID:', tableId);
         });
@@ -111,10 +117,6 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
     // This function use for write rowclick logic
     onRowClick(rowData: any): void {
         console.log('onRowClick method is run:', rowData);
-        this.selectedOrderId = rowData.id;
-        this.showOrderwiseList = false;
-        this.showOrderwiseFilter = false;
-        this.ItemListBaseOnPONumberID = true;
     }
 
     initializeDatePickers() {
@@ -233,9 +235,9 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                     orderable: false,
                     render: (data, type, row) => {
                         return `
-                   <i class="fa fa-envelope email-icon" data-id="${row.id}" style="cursor:pointer; color:blue; margin-right:10px;" title="Email"></i>
-                   <i class="fa fa-whatsapp whatsapp-icon" data-id="${row.id}" style="cursor:pointer; color:green; margin-right:10px;" title="WhatsApp"></i>
-                   <i class="fa fa-trash delete-icon" data-id="${data.purchaseOrderId}" style="cursor:pointer; color:red; cursor:pointer;" title="Delete"></i>
+                   <i class="fa fa-envelope emailsend" data-id="${data.purchaseOrderId}" style="cursor:pointer; color:blue; margin-right:10px;" title="Email"></i>
+                   <i class="fa fa-whatsapp whatsappmsgsend" data-id="${row.id}" style="cursor:pointer; color:green; margin-right:10px;" title="WhatsApp"></i>
+                   <i class="fa fa-trash deletepo" data-id="${data.purchaseOrderId}" style="cursor:pointer; color:red; cursor:pointer;" title="Delete"></i>
                     `;
                     }
                 }
@@ -286,7 +288,9 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                     title: 'Ordered To',
                     data: 'orderedTo',
                     render: function (data: any, type: any, row: any) {
-                        return `<span style="color: blue;">${data}</span>`;
+                        return `<span class="ShowAllItem" data-id="${row.id}" data-name="${data}" style="color: blue; cursor: pointer;">
+                        ${data}
+                        </span>`;
                     }
                 },
                 { title: 'Total Amount', data: 'totalAmount' }
@@ -365,6 +369,24 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                 });
             }
         }, 0);
+    }
+
+    SendMailToDistributor(id: number): void {
+        this.PurchaseOrderService.sendMailToDistributor(id).subscribe({
+            next: (response) => {
+                if (response?.isSuccess) {
+                    Helper.ShowSuccess(response.message || 'Mail Send To Distributor successfully');
+                    $('#orderwiseTable').DataTable().ajax.reload();
+                } else {
+                    Helper.ShowError(response.message || 'Failed to Send Mail To Distributor');
+                }
+            },
+            error: (error) => {
+                console.error('error:', error);
+                const errorMessage = error?.error?.message || 'An error occurred while Send Mail To Distributor';
+                Helper.ShowError(errorMessage);
+            }
+        });
     }
 
     DeletePO(id: number): void {

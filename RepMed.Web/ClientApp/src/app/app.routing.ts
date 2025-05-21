@@ -42,6 +42,7 @@ import { PharmacyEditRoleComponent } from './pharmacy/views/rolemanage/roleedit.
 import { PharmacyRoleListComponent } from './pharmacy/views/rolemanage/rolelist.component';
 import { StaffListComponent } from './pharmacy/views/staffmanagement/stafflist.component';
 import { PoListComponent } from './pharmacy/views/purchaseorder/polist.component';
+import { POIDItemListComponent } from './pharmacy/views/purchaseorder/POItemList.component';
 
 // doctor imports..
 import { DoctorDashboardComponent } from "../app/doctor/views/doctordashboard/dashboard.component";
@@ -130,6 +131,7 @@ export const routes: Routes = [
       { path: 'purchaseorder', component: PoGenerateComponent, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
       { path: 'polist', component: PoListComponent, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
       { path: 'purchaseinvoice', component: PurchaseInvoice, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
+      { path: 'poitemlist/:id', component: POIDItemListComponent, canActivate: [AuthGuardService], data: { module: 'purchasemanagement' } },
 
       { path: 'staff/add', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' } },
       { path: 'staff/edit/:id', component: AddStaffComponent, canActivate: [AuthGuardService], data: { module: 'pharmacystaff' } },

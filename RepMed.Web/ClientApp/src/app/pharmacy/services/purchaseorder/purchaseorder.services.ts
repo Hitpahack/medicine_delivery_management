@@ -78,6 +78,10 @@ export class PurchaseOrderService extends adminBaseService {
     return this.http.post<any>(this.apiConfig.endpoints.purchaseorder.deletePO(id), { headers: this.apiConfig.requestSettings.header });
   }
 
+  sendMailToDistributor(id: number) {
+    return this.http.post<any>(this.apiConfig.endpoints.purchaseorder.SendMailToDistributor(id), { headers: this.apiConfig.requestSettings.header });
+  }
+
   getOrderProducts(pharmacyId: number): Observable<any> {
     const url = this.apiConfig.endpoints.purchaseorder.shortbookitemlist;
     const reqBody = {
