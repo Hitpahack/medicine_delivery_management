@@ -26,7 +26,7 @@ export class POIDItemListComponent extends AdminBaseComponent implements OnInit,
         super();
     }
     pharmacyId: string | null = null;
-    POID: Number | null = null;
+    POID: Number;
     errorMessage: string = '';
 
     ngAfterViewInit(): void {
@@ -143,7 +143,13 @@ export class POIDItemListComponent extends AdminBaseComponent implements OnInit,
                 render: (data, type, row) => {
                     return `
                         <i class="fa fa-edit editItem" data-id="${row.poItemId}" style="cursor:pointer; color:blue; font-size:18px; margin-right:10px;" title="Edit"></i>
-                        <i class="fa fa-trash deleteItem" data-id="${row.poItemId}" style="cursor:pointer; color:red; font-size:18px;" title="Delete"></i>
+                        <button class="deleteItem ${row.status !== 'Pending' ? 'blur-icon' : ''}"
+                        data-id="${row.poItemId}"
+                        ${row.status !== 'Pending' ? 'disabled' : ''}
+                        style="background: none; border: none; padding: 0; margin: 0; color: red; font-size: 18px;"
+                        title="Delete">
+                        <i class="fa fa-trash"></i>
+                        </button>
                     `;
                 }
             }
@@ -168,6 +174,24 @@ export class POIDItemListComponent extends AdminBaseComponent implements OnInit,
                 }
             });
         }
+    }
+
+    SendMailToDistributor(POID): void {
+        this.PurchaseOrderService.sendMailToDistributor(POID).subscribe({
+            next: (response) => {
+                if (response?.isSuccess) {
+                    Helper.ShowSuccess(response.message || 'Mail Send To Distributor successfully');
+                    $('#orderwiseTable').DataTable().ajax.reload();
+                } else {
+                    Helper.ShowError(response.message || 'Failed to Send Mail To Distributor');
+                }
+            },
+            error: (error) => {
+                console.error('error:', error);
+                const errorMessage = error?.error?.message || 'An error occurred while Send Mail To Distributor';
+                Helper.ShowError(errorMessage);
+            }
+        });
     }
 
     ngOnInit(): void {
