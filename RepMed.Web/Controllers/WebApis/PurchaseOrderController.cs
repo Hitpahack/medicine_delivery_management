@@ -467,7 +467,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("place_po_order/{poId}")]
         [HttpPost]
-        public async Task<IActionResult> SendPOEmail(long poId)
+        public async Task<IActionResult> PlacePOOrder(long poId)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
