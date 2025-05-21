@@ -100,7 +100,7 @@
     <div class="flex-grow-1 container-p-y">
         <div class="card">
             <div [ngSwitch]="activeTab" class="card-body">
-                <app-datatable *ngSwitchCase="'orderwise'" #dataTable (rowClicked)="onRowClick($event)"
+                <app-datatable *ngSwitchCase="'orderwise'" #dataTable
                     [options]="orderwiseOptions" [(selectedItemIds)]="selectedItemIds"></app-datatable>
 
 

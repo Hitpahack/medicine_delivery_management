@@ -26,7 +26,7 @@ export class POIDItemListComponent extends AdminBaseComponent implements OnInit,
         super();
     }
     pharmacyId: string | null = null;
-    POID: Number | null = null;
+    POID: Number;
     errorMessage: string = '';
 
     ngAfterViewInit(): void {
@@ -174,6 +174,24 @@ export class POIDItemListComponent extends AdminBaseComponent implements OnInit,
                 }
             });
         }
+    }
+
+    SendMailToDistributor(POID): void {
+        this.PurchaseOrderService.sendMailToDistributor(POID).subscribe({
+            next: (response) => {
+                if (response?.isSuccess) {
+                    Helper.ShowSuccess(response.message || 'Mail Send To Distributor successfully');
+                    $('#orderwiseTable').DataTable().ajax.reload();
+                } else {
+                    Helper.ShowError(response.message || 'Failed to Send Mail To Distributor');
+                }
+            },
+            error: (error) => {
+                console.error('error:', error);
+                const errorMessage = error?.error?.message || 'An error occurred while Send Mail To Distributor';
+                Helper.ShowError(errorMessage);
+            }
+        });
     }
 
     ngOnInit(): void {

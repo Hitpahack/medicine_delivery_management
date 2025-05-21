@@ -127,10 +127,6 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
         });
     }
 
-    // This function use for write rowclick logic
-    onRowClick(rowData: any): void {
-        console.log('onRowClick method is run:', rowData);
-    }
 
     initializeDatePickers() {
         // Orderwise
@@ -158,7 +154,6 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
         });
     }
 
-
     ngOnInit(): void {
         this.pharmacyId = sessionStorage.getItem('pharmacyId');
         this.loadTableConfigs();
@@ -166,6 +161,7 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
             this.refreshTable();
         });
     }
+
     onFilterChange(value: string, filterType: string): void {
         switch (filterType) {
             case 'orderwise_poNumber':
@@ -347,16 +343,10 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
 
     onTabChange(tab: string): void {
         this.activeTab = tab;
-
-        // Optional: refresh table for the active tab
         this.refreshTable();
-
-        // Wait for DOM update
         setTimeout(() => {
-            // destroy existing datepickers to prevent duplicate initialization
             $('.daterangepicker').remove();
 
-            // initialize datepicker for the active tab's input
             let id = '';
             if (tab === 'orderwise') id = '#dateRangePickerOrderwise';
             else if (tab === 'itemwise') id = '#dateRangePickerItemwise';
@@ -372,8 +362,6 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                     }
                 }, (start, end) => {
                     const formatted = `${start.format('YYYY-MM-DD')} to ${end.format('YYYY-MM-DD')}`;
-
-                    // Set selected date to respective filter object
                     if (tab === 'orderwise') {
                         this.orderwiseFilter.date = formatted;
                     } else if (tab === 'itemwise') {
@@ -381,28 +369,18 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                     } else if (tab === 'distributorwise') {
                         this.distributorwiseFilter.date = formatted;
                     }
-
-                    // Set input box value so selected date is shown in UI
                     $(id).val(formatted);
-
-                    // Refresh table after date change
                     this.refreshTable();
                 });
-
-                // Clear value on cancel
                 $(id).on('cancel.daterangepicker', function () {
                     $(this).val('');
                 });
             }
-
-            // Bind row click for orderwise tab
             if (tab === 'orderwise') {
                 this.bindOrderwiseRowClick();
             }
-        }, 300); // Delay to ensure DOM & DataTable is ready
+        }, 300);
     }
-
-
 
     SendMailToDistributor(id: number): void {
         this.PurchaseOrderService.sendMailToDistributor(id).subscribe({
