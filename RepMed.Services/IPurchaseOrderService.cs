@@ -693,14 +693,38 @@ namespace RepMed.Services
             try
             {
                 APIsResponse<bool> apiResponse = default(APIsResponse<bool>);
+
+                #region Check if the associated PO has any remaining items
+                string getPoIdQuery = $@"SELECT PurchaseOrderId FROM {DbTables.tblPurchaseOrderItems} WHERE Id = @ItemId;";
+                long? poId = await _idbConnection.ExecuteScalarAsync<long?>(getPoIdQuery, new { ItemId = poItemId }, _idbTransaction);
+                #endregion
+
                 #region Delete the PO Item
                 string deleteQuery = $@"DELETE FROM {DbTables.tblPurchaseOrderItems} WHERE Id = @ItemId;";
                 int rowsAffected = await _idbConnection.ExecuteAsync(deleteQuery, new { ItemId = poItemId }, _idbTransaction);
-                if (rowsAffected > 0)
-                    apiResponse = new APIsSuccsss<bool>("Item deleted successfully.", true);
-                else
-                    apiResponse = new APIsSuccsss<bool>("Item not found.", true);
                 #endregion
+                if (rowsAffected > 0)
+                {
+
+                    if (poId.HasValue)
+                    {
+                        string countQuery = $@"SELECT COUNT(*) FROM {DbTables.tblPurchaseOrderItems} WHERE PurchaseOrderId = @POId;";
+                        int remainingItems = await _idbConnection.ExecuteScalarAsync<int>(countQuery, new { POId = poId.Value }, _idbTransaction);
+                        #region Delete PO As No Item left
+                        if (remainingItems == 0)
+                        {
+                            string deletePOQuery = $@"DELETE FROM {DbTables.tblPurchaseOrders} WHERE Id = @PoId";
+                            int poRowsAffected = await _idbConnection.ExecuteAsync(deletePOQuery, new { PoId = poId.Value }, _idbTransaction);
+                            if (poRowsAffected > 0)
+                                apiResponse = new APIsSuccsss<bool>("PO with item deleted successfully.", true);
+                        }
+                        #endregion
+                    }
+                    else
+                        apiResponse = new APIsSuccsss<bool>("PO Item deleted successfully.", true);
+                }
+                else
+                    apiResponse = new APIsSuccsss<bool>("Item not found.", true);                
                 return apiResponse;
             }
             catch (Exception ex)
@@ -715,7 +739,7 @@ namespace RepMed.Services
                 APIsResponse<bool> apiResponse = default(APIsResponse<bool>);
                 #region Get PO Items
                 string queryItems = DbTables.tblPurchaseOrderItems.SelectAll($@"{nameof(Purchaseorderitem.PurchaseOrderId)} = {poId}");
-                var itemIds = (await _idbConnection.QueryAsync<long>(queryItems,transaction: _idbTransaction)).ToList();
+                var itemIds = (await _idbConnection.QueryAsync<long>(queryItems, transaction: _idbTransaction)).ToList();
                 #endregion
 
                 #region Delete the PO Items
@@ -724,17 +748,13 @@ namespace RepMed.Services
                 #endregion
 
                 #region Delete PO
-                if (rowsAffected > 0)
-                {
-                    string deletePOQuery = $@"DELETE FROM {DbTables.tblPurchaseOrders} WHERE Id = @PoId";
-                    int poRowsAffected = await _idbConnection.ExecuteAsync(deletePOQuery, new { PoId = poId }, _idbTransaction);
-                    if (poRowsAffected > 0)
-                        apiResponse = new APIsSuccsss<bool>("PO deleted successfully.", true);
-                    else
-                        apiResponse = new APIsSuccsss<bool>("No PO found.", true);
-                }
+
+                string deletePOQuery = $@"DELETE FROM {DbTables.tblPurchaseOrders} WHERE Id = @PoId";
+                int poRowsAffected = await _idbConnection.ExecuteAsync(deletePOQuery, new { PoId = poId }, _idbTransaction);
+                if (poRowsAffected > 0)
+                    apiResponse = new APIsSuccsss<bool>("PO deleted successfully.", true);
                 else
-                    apiResponse = new APIsSuccsss<bool>("No PO items found.", true);
+                    apiResponse = new APIsSuccsss<bool>("No PO found.", true);
                 #endregion
                 return apiResponse;
             }
