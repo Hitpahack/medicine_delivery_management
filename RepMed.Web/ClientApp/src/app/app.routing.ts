@@ -30,6 +30,8 @@ import { CmsComponent } from './admin/views/CMSmanagement/cms.component';
 import { PageListComponent } from './admin/views/CMSmanagement/cmslist.component';
 import { FAQComponent } from './admin/views/CMSmanagement/faq.component';
 import { FAQListComponent } from './admin/views/CMSmanagement/faqlist.component';
+import { AddSupplierComponent } from './admin/views/supplierManagement/addsupplier.component';
+import { SupplierListComponent } from './admin/views/supplierManagement/supplierlist.component';
 
 // pharmacy imports..
 import { PharmacDashboardComponent } from "../app/pharmacy/views/pharmacydashboard/dashboard.component";
@@ -107,7 +109,11 @@ export const routes: Routes = [
 
       { path: 'faq/add', component: FAQComponent, canActivate: [AuthGuardService], data: { module: 'cmsManagement' } },
       { path: 'faq/edit/:id', component: FAQComponent, canActivate: [AuthGuardService], data: { module: 'cmsManagement' } },
-      { path: 'faq/list', component: FAQListComponent, canActivate: [AuthGuardService], data: { module: 'cmsManagement' } }
+      { path: 'faq/list', component: FAQListComponent, canActivate: [AuthGuardService], data: { module: 'cmsManagement' } },
+
+      { path: 'supplier/add', component: AddSupplierComponent, canActivate: [AuthGuardService], data: { module: 'suppliermanagement' } },
+      { path: 'supplier/edit/:id', component: AddSupplierComponent, canActivate: [AuthGuardService], data: { module: 'suppliermanagement' } },
+      { path: 'supplier/list', component: SupplierListComponent, canActivate: [AuthGuardService], data: { module: 'suppliermanagement' } },
     ]
   },
 
@@ -146,6 +152,10 @@ export const routes: Routes = [
       { path: 'role/list', component: PharmacyRoleListComponent, canActivate: [AuthGuardService], data: { module: 'pharmacyrole' } },
       { path: 'role/edit/:id', component: PharmacyEditRoleComponent, canActivate: [AuthGuardService], data: { module: 'pharmacyrole' } },
       { path: 'editpharmacy/:id', component: EditPharmacyComponent, canActivate: [AuthGuardService], data: { module: 'pharmacydashboard' } },
+
+      { path: 'supplier/add', component: AddSupplierComponent, canActivate: [AuthGuardService], data: { module: 'suppliermanagement' } },
+      { path: 'supplier/edit/:id', component: AddSupplierComponent, canActivate: [AuthGuardService], data: { module: 'suppliermanagement' } },
+      { path: 'supplier/list', component: SupplierListComponent, canActivate: [AuthGuardService], data: { module: 'suppliermanagement' } },
     ]
   },
   {

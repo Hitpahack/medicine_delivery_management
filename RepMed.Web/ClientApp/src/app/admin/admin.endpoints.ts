@@ -130,6 +130,14 @@ export class AdminApiConfigService {
         updateStatus: `${v1}/faq/changestatus`,
         delete: (id: number) => `${v1}/faq/deletefaq/${id}`,
       },
+      supplier:{
+        add: `${v1}/po/addsupplier`,
+        list: `${v1}/po/ `,
+        updateStatus: `${v1}/po/ `,
+        get: (id: number) => `${v1}/po/ /${id}`,
+        edit: (id: number) => `${v1}/po/ /${id}`,
+        delete: (id: number) => `${v1}/po/ /${id}`,
+      },
       
     };
   }
