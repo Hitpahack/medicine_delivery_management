@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, HostListener, OnInit, Output, ViewChild } from '@angular/core';
 import { Router } from "@angular/router";
 import { FormBuilder, FormControl, FormsModule, FormGroup, ReactiveFormsModule, Validators, FormArray } from "@angular/forms";
 import { AdminBaseComponent } from "../../../../app/admin/admin.base.component";
@@ -61,6 +61,10 @@ export class PoGenerateComponent extends AdminBaseComponent implements OnInit, A
     @ViewChild('dataTable') datatable!: DatatableComponent;
     @Output() rowClicked = new EventEmitter<any>();
     @Output() dtInitialized = new EventEmitter<any>();
+
+    //this code for close dropdown.
+    @ViewChild('supplierBox') supplierBox!: ElementRef;
+    @ViewChild('productBox') productBox!: ElementRef;
 
     ngAfterViewInit(): void {
         $(document).off('click', '.delete-role');
@@ -488,6 +492,24 @@ export class PoGenerateComponent extends AdminBaseComponent implements OnInit, A
             }
         });
     }
+
+    //#region Automatically close dropdowm (supplier/Item)
+    @HostListener('document:click', ['$event'])
+    handleClickOutside(event: MouseEvent) {
+        const clickedInsideSupplier = this.supplierBox?.nativeElement.contains(event.target);
+        const clickedInsideProduct = this.productBox?.nativeElement.contains(event.target);
+
+        if (!clickedInsideSupplier) {
+            this.showSupplierDropdown = false;
+        }
+
+        if (!clickedInsideProduct) {
+            this.showDropdown = false;
+        }
+    }
+    //#endregion
+
+    
 
 
 }

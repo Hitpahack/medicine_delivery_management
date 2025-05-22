@@ -4,7 +4,7 @@
         <fieldset formGroupName="purchaseOrder">
             <h5>Add Item</h5>
             <div class="form-grid">
-                <div class="position-relative">
+                <div class="position-relative" #productBox>
                     <input type="text" class="form-control" placeholder="Search product" formControlName="productSearch"
                         (input)="onSearchChange(poForm.get('purchaseOrder.productSearch')?.value)" />
 
@@ -49,7 +49,7 @@
             <div class="d-flex align-items-center flex-wrap gap-4">
                 <span style="width: 60px; font-size: 14px;">{{ ItemEditForm.value.date | date: 'dd-MM HH:mm' }}</span>
                 <span style="width: 110px;font-size: 14px;">{{ ItemEditForm.value.itemName | slice:0:30 }}</span>
-                <div class="position-relative" style="width: 18%; margin-left:-20px ">
+                <div class="position-relative" style="width: 18%; margin-left:-20px " #supplierBox>
                     <input type="text" class="form-control" placeholder="Search Supplier..."
                         [value]="selectedSupplier?.name || ''" (input)="onSupplierSearch($event.target.value)"
                         style="width: 100%; height: 2%; font-size: 14px;" required formControlName="supplierId" />
