@@ -7,6 +7,7 @@ using RepMed.Dtos;
 using RepMed.Dtos.POPage;
 using RepMed.Dtos.POPage.POItems;
 using RepMed.Dtos.ShortBookPage;
+using RepMed.Dtos.SupplierPage;
 using RepMed.Services;
 using RepMed.Web.Controllers.BaseApis;
 using System.Threading.Tasks;
@@ -131,30 +132,6 @@ namespace RepMed.Web.Controllers.WebApis
                     using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
                     {
                         var result = await purchaseOrderService.DeletePO(poId);
-                        if (!result.IsSuccess)
-                        {
-                            tran.Rollback();
-                            return BadRequest(result);
-                        }
-                        tran.Commit();
-                        return Ok(result);
-                    }
-                }
-            }
-        }
-
-        [Route("addsupplier")]
-        [HttpPost]
-        public async Task<IActionResult> AddSupplier(BaseSupplierDto reqDto)
-        {
-            using (var db = new MySqlConnection(_appSettings.ConnectionString))
-            {
-                db.Open();
-                using (var tran = db.BeginTransaction())
-                {
-                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
-                    {
-                        var result = await purchaseOrderService.AddSupplier(reqDto);
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();
@@ -489,5 +466,74 @@ namespace RepMed.Web.Controllers.WebApis
             }
         }
 
+        [Route("addsupplier")]
+        [HttpPost]
+        public async Task<IActionResult> AddSupplier(BaseSupplierDto reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.AddEditSupplier(reqDto,0);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
+        [Route("editsupplier/{Id}")]
+        [HttpPost]
+        public async Task<IActionResult> EditSupplier(BaseSupplierDto reqDto, long Id)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.AddEditSupplier(reqDto,Id);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
+
+        [Route("get_suppliers")]
+        [HttpPost]
+        public async Task<IActionResult> GetSuppliers(SupplierPagingRequest reqDto)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseOrderService purchaseOrderService = new PurchaseOrderService(db, tran))
+                    {
+                        var result = await purchaseOrderService.GetSuppliers(reqDto);
+                        if (!result.IsSuccess)
+                        {
+                            return BadRequest(result);
+                        }
+                        return Ok(result.Data);
+                    }
+                }
+            }
+        }
     }
 }

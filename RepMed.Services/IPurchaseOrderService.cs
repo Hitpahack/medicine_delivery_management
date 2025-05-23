@@ -19,6 +19,7 @@ using Microsoft.Extensions.Configuration;
 using System.IO;
 using System.Net.Mail;
 using System.Net;
+using RepMed.Dtos.SupplierPage;
 
 namespace RepMed.Services
 {
@@ -27,7 +28,7 @@ namespace RepMed.Services
         Task<APIsResponse<CreatePODto>> CreatePO(CreatePODto reqDto);
         Task<APIsResponse<bool>> DeletePO(long poId);
         Task<APIsResponse<EntityShortbookDto>> AddEditItem(BaseShortbookDto reqDto, long Id);
-        Task<APIsResponse<EntitySupplierDto>> AddSupplier(BaseSupplierDto reqDto);
+        Task<APIsResponse<EntitySupplierDto>> AddEditSupplier(BaseSupplierDto reqDto, long Id);
         Task<APIsResponse<Datatable<POPagingResponse>>> GetPOOrdeWise(POPagingRequest reqDto);
         Task<APIsResponse<Datatable<POOWItemsPagingResponse>>> GetPOOWItems(POOWItemsPagingRequest reqDto);
         Task<APIsResponse<Datatable<POIWItemsPagingResponse>>> GetPOIWItems(POIWItemsPagingRequest reqDto);
@@ -45,6 +46,7 @@ namespace RepMed.Services
         Task<APIsResponse<bool>> DeletePOItem(long poItemId);
         Task<APIsResponse<EntityPOItemDto>> UpdatePOItem(long poItemId, long qty);
         Task<APIsResponse<bool>> SendPOEmail(long poId);
+        Task<APIsResponse<Datatable<SupplierPagingResponse>>> GetSuppliers(SupplierPagingRequest reqDto);
     }
     public class PurchaseOrderService : BaseService, IPurchaseOrderService
     {
@@ -53,37 +55,92 @@ namespace RepMed.Services
 
         }
 
-        public async Task<APIsResponse<EntitySupplierDto>> AddSupplier(BaseSupplierDto reqDto)
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
+        }
+        public async Task<APIsResponse<EntitySupplierDto>> AddEditSupplier(BaseSupplierDto reqDto, long Id)
         {
             try
             {
-                reqDto.Status = "Active";
-                reqDto.CreatedAt = DateTime.Now;
-                #region Add Supplier
-                var supplier = _idbConnection.Insert<EntitySupplierDto>(_idbTransaction,
-                                   DbTables.tblSuppliers,
-                                   DapperHelper.QueryAsColumnsParma<Supplier, BaseSupplierDto>(),
-                                   DapperHelper.QueryAsValuesParma<Supplier, BaseSupplierDto>(),
-                                   reqDto);
-                #endregion
-                if (supplier != null)
-                    return new APIsSuccsss<EntitySupplierDto>("Supplier Added Successfully", supplier);
+                if (Id == 0)
+                {
+                    #region Add New Supplier
+                    reqDto.Status = "Active";
+                    reqDto.CreatedAt = DateTime.Now;
+                    reqDto.UpdatedAt = DateTime.Now;
+                    var supplier = _idbConnection.Insert<EntitySupplierDto>(_idbTransaction,
+                                       DbTables.tblSuppliers,
+                                       DapperHelper.QueryAsColumnsParma<Supplier, BaseSupplierDto>(),
+                                       DapperHelper.QueryAsValuesParma<Supplier, BaseSupplierDto>(),
+                                       reqDto);
+                    #endregion
+                    if (supplier != null)
+                        return new APIsSuccsss<EntitySupplierDto>("Supplier Added Successfully", supplier);
+                    else
+                        return new APIsError<EntitySupplierDto>("Error inserting the supplier");
+                }
                 else
-                    return new APIsError<EntitySupplierDto>("Error inserting the supplier");
+                {
+                    #region Update Supplier Details
+                    EntitySupplierDto entityRoleDto = _idbConnection.Update<EntitySupplierDto>(_idbTransaction, DbTables.tblSuppliers,
+                    new Dictionary<string, object> {
+                    { nameof(EntitySupplierDto.Name), reqDto.Name},
+                    { nameof(EntitySupplierDto.Address), reqDto.Address},
+                    { nameof(EntitySupplierDto.Mobile), reqDto.Mobile},
+                    { nameof(EntitySupplierDto.Email), reqDto.Email},
+                    { nameof(EntitySupplierDto.UpdatedAt), DateTime.Now},
 
+                    }, $@" {nameof(EntitySupplierDto.Id)}='{Id}' ", "RETURNING *");
+                    #endregion 
+
+                    return new APIsSuccsss<EntitySupplierDto>("Supplier updated successfully");
+                }
             }
             catch (Exception ex)
             {
                 return await Task.FromResult(new APIsError<EntitySupplierDto>(ex.GetActualError()));
             }
         }
-
-
-        public void Dispose()
+        public async Task<APIsResponse<Datatable<SupplierPagingResponse>>> GetSuppliers(SupplierPagingRequest reqDto)
         {
-            GC.SuppressFinalize(this);
-        }
+            try
+            {
+                APIsResponse<Datatable<SupplierPagingResponse>> apiResponse = default;
+                string orderBy;
+                if (reqDto.Order[0].Column == 0)
+                    orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|desc";
+                else
+                    orderBy = reqDto.Columns[reqDto.Order[0].Column].Data + "|" + reqDto.Order[0].Dir;
+                #region Get All PO Order Wise
+                var parameters = new DynamicParameters();
+                parameters.Add("page", reqDto.Page, DbType.Int32);
+                parameters.Add("pageSize", reqDto.PageSize, DbType.Int32);
+                parameters.Add("pharmacyId", reqDto.PharmacyId, DbType.Int32);
+                parameters.Add("statusFilter", reqDto.StatusFilter ?? string.Empty, DbType.String);
+                parameters.Add("order_by", orderBy, DbType.String);
 
+                var result = (await _idbConnection.QueryAsync<SupplierPagingResponse>(
+                               sql: "GET_SUPPLIERS_PAGED",
+                               param: parameters,
+                               commandType: CommandType.StoredProcedure,
+                               transaction: _idbTransaction
+                )).ToList();
+                #endregion
+                var totalRecords = result.FirstOrDefault()?.TotalCount ?? 0;
+                var output = new Datatable<SupplierPagingResponse>(result, reqDto.Draw, totalRecords, totalRecords);
+                if (result.Any())
+                    return await Task.FromResult(new APIsSuccsss<Datatable<SupplierPagingResponse>>(_validateMessages.RetriveSuccess, output));
+                else
+                    return await Task.FromResult(new APIsSuccsss<Datatable<SupplierPagingResponse>>(_validateMessages.NotExist));
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<Datatable<SupplierPagingResponse>>(ex.GetActualError()));
+            }
+        }
         public async Task<APIsResponse<Datatable<POPagingResponse>>> GetPOOrdeWise(POPagingRequest reqDto)
         {
             try
