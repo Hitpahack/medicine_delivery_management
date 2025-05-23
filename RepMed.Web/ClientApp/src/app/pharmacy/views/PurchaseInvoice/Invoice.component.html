@@ -1,7 +1,103 @@
 <div class="authentication">
-    <form class="auth_form form_validation" appAutoValidate [formGroup]="PurchaseInvoice" #phForm_html="ngForm"
-        (ngSubmit)="onSubmit()">
+    <form [formGroup]="PurchaseInvoice" appAutoValidate (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+            <div class="input-group mb-4">
+                <input type="text" id="PONumber" class="form-control" formControlName="PONumber"
+                    placeholder="Enter PO Number" required>
+                <button type="button" class="btn btn-outline-primary" (click)="fetchPOData()">
+                    <i class="bi bi-search me-1"></i> Fetch
+                </button>
+            </div>
+        </div>
 
-        
     </form>
+
+    <div *ngIf="productList?.length > 0">
+        <table class="table table-bordered mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>PONumber</th>
+                    <th>Bill Date</th>
+                    <th>Item Name</th>
+                    <th>Item ID</th>
+                    <th>Batch No</th>
+                    <th>Expiry (MM/YYYY)</th>
+                    <th>MRP</th>
+                    <th>PTR</th>
+                    <th>Qty</th>
+                    <th>Free Qty</th>
+                    <th>Lump. Disc</th>
+                    <th>Disc %</th>
+                    <th>Base Price</th>
+                    <th>GST</th>
+                    <th>Amount</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of productList; let i = index">
+                    <td>{{ item.PONumber }}</td>
+                    <td>{{ item.Billdate }}</td>
+                    <td>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.Itemname" class="form-control">
+                        <span *ngIf="editIndex !== i">{{ item.Itemname }}</span>
+                    </td>
+                    <td>{{ item.ItemId }}</td>
+                    <td>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.BatchNo" class="form-control">
+                        <span *ngIf="editIndex !== i">{{ item.BatchNo }}</span>
+                    </td>
+                    <td>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.ExpiryDate" placeholder="MM/YYYY"
+                            class="form-control">
+                        <span *ngIf="editIndex !== i">{{ item.ExpiryDate }}</span>
+                    </td>
+                    <td>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.MRP" class="form-control">
+                        <span *ngIf="editIndex !== i">{{ item.MRP }}</span>
+                    </td>
+                    <td>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.PTR" class="form-control">
+                        <span *ngIf="editIndex !== i">{{ item.PTR }}</span>
+                    </td>
+                    <td>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.quantity" class="form-control">
+                        <span *ngIf="editIndex !== i">{{ item.quantity }}</span>
+                    </td>
+                    <td>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.freequantity" class="form-control">
+                        <span *ngIf="editIndex !== i">{{ item.freequantity }}</span>
+                    </td>
+                    <td>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.LumpsumDiscount" class="form-control">
+                        <span *ngIf="editIndex !== i">{{ item.LumpsumDiscount }}</span>
+                    </td>
+                    <td>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.Discount" class="form-control">
+                        <span *ngIf="editIndex !== i">{{ item.Discount }}</span>
+                    </td>
+                    <td>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.Baseprice" class="form-control">
+                        <span *ngIf="editIndex !== i">{{ item.Baseprice }}</span>
+                    </td>
+                    <td>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.GST" class="form-control">
+                        <span *ngIf="editIndex !== i">{{ item.GST }}</span>
+                    </td>
+                    <td>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.Amount" class="form-control">
+                        <span *ngIf="editIndex !== i">{{ item.Amount }}</span>
+                    </td>
+                    <td>
+                        <button *ngIf="editIndex !== i" class="btn btn-sm btn-warning"
+                            (click)="enableEdit(i)">Edit</button>
+                        <button *ngIf="editIndex === i" class="btn btn-sm btn-success"
+                            (click)="updateRow(i)">Update</button>
+                        <button *ngIf="editIndex === i" class="btn btn-sm btn-secondary ms-1"
+                            (click)="cancelEdit()">Cancel</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>
