@@ -55,7 +55,7 @@ export class SupplierListComponent extends AdminBaseComponent implements OnInit,
 
     // Method to update the status (Active/Inactive)
     toggleStatus(id: number, newStatus: boolean, button: any, currentStatus: boolean): void {
-        const apiUrl = `${this.admin_apiconfig.endpoints.pharmacyrole.updateStatus}/${id}?status=${newStatus}`;
+        const apiUrl = `${this.admin_apiconfig.endpoints.supplier.updateStatus}/${id}?status=${newStatus}`;
 
         $.ajax({
             url: apiUrl,
@@ -90,7 +90,7 @@ export class SupplierListComponent extends AdminBaseComponent implements OnInit,
     tableOptions = {
         tableId: 'post_supplierlist_datatable',
         ajax: {
-            url: this.admin_apiconfig.endpoints.pharmacyrole.list,
+            url: this.admin_apiconfig.endpoints.supplier.list,
             type: "POST",
             contentType: "application/json; charset=utf-8",
             dataType: "json",
@@ -102,9 +102,10 @@ export class SupplierListComponent extends AdminBaseComponent implements OnInit,
         },
         searching: true,
         columns: [
-            { title: 'Distributor', data: 'roleName' },
-            { title: 'Email', data: 'roleName' },
-            { title: 'Mobile', data: 'roleName' },
+            { title: 'Distributor', data: 'name' },
+            { title: 'Email', data: 'email' },
+            { title: 'Mobile', data: 'mobile' },
+            { title: 'Gst', data: 'gstNumber' },
             {
                 data: null,
                 orderable: false,
@@ -120,13 +121,13 @@ export class SupplierListComponent extends AdminBaseComponent implements OnInit,
                             <i class="bi bi-trash" style="font-size: 16px;"></i>
                         </button>
 
-                        <button class="btn btn-sm ${row.isActive ? 'btn-success' : 'btn-danger'} toggle-status-btn" 
+                        <button class="btn btn-sm ${!row.isActive ? 'btn-success' : 'btn-danger'} toggle-status-btn" 
                          data-id="${row.id}" data-status="${row.isActive}" 
-                         title="${row.isActive ? 'Deactivate' : 'Activate'}" 
+                         title="${!row.isActive ? 'Deactivate' : 'Activate'}" 
                          style="display: inline-flex; align-items: center; justify-content: center; gap: 5px; 
                          padding: 5px 10px; border-radius: 12px; min-width: 120px;">
-                         ${row.isActive ? '<i class="bi bi-check-circle" style="font-size: 16px;"></i>' : '<i class="bi bi-x-circle" style="font-size: 16px;"></i>'}
-                         ${row.isActive ? 'Active' : 'Inactive'}
+                         ${!row.isActive ? '<i class="bi bi-check-circle" style="font-size: 16px;"></i>' : '<i class="bi bi-x-circle" style="font-size: 16px;"></i>'}
+                         ${!row.isActive ? 'Active' : 'Inactive'}
                         </button>
                     `;
                 }

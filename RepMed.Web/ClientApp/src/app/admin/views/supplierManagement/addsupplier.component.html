@@ -5,31 +5,31 @@
             <legend>Add Supplier</legend>
             <div class="form-grid">
                 <div class="input-group mb-3 float">
-                    <input formControlName="Name" class="form-control" placeholder="Supplier Name" minlength="3"
+                    <input formControlName="name" class="form-control" placeholder="Supplier Name" minlength="3"
                         maxlength="50" required />
                     <label class="float-lbl">Name *</label>
                 </div>
                 <div class="input-group mb-3 float">
-                    <input formControlName="Mobile" class="form-control" placeholder="1234567890"
+                    <input formControlName="mobile" class="form-control" placeholder="1234567890"
                         (keypress)="allowOnlyNumbers($event)" (paste)="disablePaste($event)" maxlength="10" required />
                     <label class="float-lbl">Contact *</label>
                 </div>
             </div>
             <div class="form-grid">
                 <div class="input-group mb-3 float">
-                    <input formControlName="Email" class="form-control" placeholder="example@mail.com" maxlength="30"
+                    <input formControlName="email" class="form-control" placeholder="example@mail.com" maxlength="30"
                         required />
                     <label class="float-lbl">Email *</label>
                 </div>
                 <div class="input-group mb-3 float">
-                    <input formControlName="Gstnumber" class="form-control" placeholder="09AAACH7409R1ZZ" maxlength="15"
+                    <input formControlName="gstnumber" class="form-control" placeholder="09AAACH7409R1ZZ" maxlength="15"
                         required />
                     <label class="float-lbl">GST</label>
                 </div>
             </div>
             <div class="form-grid">
                 <div class="input-group mb-3 float">
-                    <textarea formControlName="Address" class="form-control" placeholder="" maxlength="200"></textarea>
+                    <textarea formControlName="address" class="form-control" placeholder="" maxlength="200"></textarea>
                     <label class="float-lbl">Address</label>
                 </div>
             </div>
@@ -50,31 +50,31 @@
             <legend>Edit Supplier</legend>
             <div class="form-grid">
                 <div class="input-group mb-3 float">
-                    <input formControlName="Name" class="form-control" placeholder="Supplier Name" minlength="3"
-                        maxlength="50" required />
+                    <input formControlName="name" class="form-control" placeholder="Supplier Name" minlength="3"
+                        maxlength="50" required readonly />
                     <label class="float-lbl">Name *</label>
                 </div>
                 <div class="input-group mb-3 float">
-                    <input formControlName="Mobile" class="form-control" placeholder="1234567890"
+                    <input formControlName="mobile" class="form-control" placeholder="1234567890"
                         (keypress)="allowOnlyNumbers($event)" (paste)="disablePaste($event)" maxlength="10" required />
                     <label class="float-lbl">Contact *</label>
                 </div>
             </div>
             <div class="form-grid">
                 <div class="input-group mb-3 float">
-                    <input formControlName="Email" class="form-control" placeholder="example@mail.com" maxlength="30"
+                    <input formControlName="email" class="form-control" placeholder="example@mail.com" maxlength="30"
                         required />
                     <label class="float-lbl">Email *</label>
                 </div>
                 <div class="input-group mb-3 float">
-                    <input formControlName="Gstnumber" class="form-control" placeholder="09AAACH7409R1ZZ" maxlength="15"
-                        required />
+                    <input formControlName="gstnumber" class="form-control" placeholder="09AAACH7409R1ZZ" maxlength="15"
+                        required readonly/>
                     <label class="float-lbl">GST</label>
                 </div>
             </div>
             <div class="form-grid">
                 <div class="input-group mb-3 float">
-                    <textarea formControlName="Address" class="form-control" placeholder="" maxlength="200"></textarea>
+                    <textarea formControlName="address" class="form-control" placeholder="" maxlength="200"></textarea>
                     <label class="float-lbl">Address</label>
                 </div>
             </div>

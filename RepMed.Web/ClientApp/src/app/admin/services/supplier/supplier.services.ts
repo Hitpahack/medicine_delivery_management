@@ -20,7 +20,7 @@ export class SupplierService extends adminBaseService {
     }
 
     getSupplierbyId(id: number) {
-        return this.http.get<ApiResponse<SupplierDto>>(this.apiConfig.endpoints.supplier.get(id), { headers: this.apiConfig.requestSettings.header })
+        return this.http.post<ApiResponse<SupplierDto>>(this.apiConfig.endpoints.supplier.get(id), { headers: this.apiConfig.requestSettings.header })
     }
 
     editSupplier(formData: any, id: number) {

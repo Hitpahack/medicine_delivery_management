@@ -132,11 +132,11 @@ export class AdminApiConfigService {
       },
       supplier:{
         add: `${v1}/po/addsupplier`,
-        list: `${v1}/po/ `,
-        updateStatus: `${v1}/po/ `,
-        get: (id: number) => `${v1}/po/ /${id}`,
-        edit: (id: number) => `${v1}/po/ /${id}`,
-        delete: (id: number) => `${v1}/po/ /${id}`,
+        list: `${v1}/po/get_suppliers`,
+        updateStatus: `${v1}/po/change_supplier_status`,
+        get: (id: number) => `${v1}/po/get_supplier/${id}`,
+        edit: (id: number) => `${v1}/po/editsupplier/${id}`,
+        delete: (id: number) => `${v1}/po/delete_supplier/${id}`,
       },
       
     };

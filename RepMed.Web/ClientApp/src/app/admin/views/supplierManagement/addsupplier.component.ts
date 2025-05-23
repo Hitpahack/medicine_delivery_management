@@ -67,12 +67,13 @@ export class AddSupplierComponent extends AdminBaseComponent implements OnInit, 
         this.SupplierService.getSupplierbyId(id).subscribe((response) => {
             if (response?.isSuccess && response.data) {
                 const supplierdata = response.data;
+                console.log('this is supplier data',supplierdata)
                 this.editsupplierForm.patchValue({
-                    Name: supplierdata.Name,
-                    Mobile: supplierdata.Mobile,
-                    Email: supplierdata.Email,
-                    Gstnumber: supplierdata.Gstnumber,
-                    Address: supplierdata.Address,
+                    name: supplierdata.name,
+                    mobile: supplierdata.mobile,
+                    email: supplierdata.email,
+                    gstnumber: supplierdata.gstnumber,
+                    address: supplierdata.address,
                 });
             } else {
                 console.error("Failed to load Supplier data", response);
@@ -83,12 +84,12 @@ export class AddSupplierComponent extends AdminBaseComponent implements OnInit, 
     // Add User Form
     initAddForm(): FormGroup {
         const form = this.fb.group({
-            PharmacyId: [null],
-            Name: [null, [Validators.required,]],
-            Mobile: [null, [Validators.required, Validators.pattern(/^\d{10}$/)]],
-            Address: [''],
-            Email: ['', [Validators.required, this.validator.ValidateEmail]],
-            Gstnumber: [null, [Validators.required, Validators.pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/)]]
+            parmacyId: [null],
+            name: [null, [Validators.required,]],
+            mobile: [null, [Validators.required, Validators.pattern(/^\d{10}$/)]],
+            address: [''],
+            email: ['', [Validators.required, this.validator.ValidateEmail]],
+            gstnumber: [null, [Validators.required, Validators.pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/)]]
         });
         return form;
     }
@@ -96,12 +97,12 @@ export class AddSupplierComponent extends AdminBaseComponent implements OnInit, 
     // Edit User Form
     initEditForm(): FormGroup {
         return this.fb.group({
-            PharmacyId: [null],
-            Name: [null, [Validators.required, ]],
-            Mobile: [null, [Validators.required, Validators.pattern(/^\d{10}$/)]],
-            Address: [''],
-            Email: ['', [Validators.required, this.validator.ValidateEmail]],
-            Gstnumber: [null, [Validators.required, Validators.pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/)]]
+            pharmacyId: [null],
+            name: [null, [Validators.required,]],
+            mobile: [null, [Validators.required, Validators.pattern(/^\d{10}$/)]],
+            address: [''],
+            email: ['', [Validators.required, this.validator.ValidateEmail]],
+            gstnumber: [null, [Validators.required, Validators.pattern(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/)]]
         });
     }
 
@@ -111,17 +112,17 @@ export class AddSupplierComponent extends AdminBaseComponent implements OnInit, 
                 this.validator.markInvalidFieldsTouched(this.editsupplierForm);
                 return;
             }
-            this.SupplierService.editSupplier(this.editsupplierForm.value, this.supplierID).subscribe({
+            const dto: SupplierDto = {
+                ...this.editsupplierForm.value,
+                pharmacyId: this.pharmacyId
+            };
+            this.SupplierService.editSupplier(dto, this.supplierID).subscribe({
                 next: (response) => {
                     if (response.isSuccess) {
                         Helper.ShowSuccess(response.message || 'Supplier Updated successfully.');
                         console.log('check pharmacy id is null', this.pharmacyId)
-                        if (this.pharmacyId !== null) {
-                            this.router.navigate(['/pharmacy/supplier/list']);
-                        }
-                        else{
-                            this.router.navigate(['/admin/supplier/list']);
-                        }
+                        this.router.navigate(['/pharmacy/supplier/list']);
+
 
                     } else {
                         this.errorMessage = response.message || 'Failed to add supplier.';
@@ -140,20 +141,14 @@ export class AddSupplierComponent extends AdminBaseComponent implements OnInit, 
             }
             const dto: SupplierDto = {
                 ...this.addSupplierForm.value,
-                PharmacyId: this.pharmacyId
+                pharmacyId: this.pharmacyId
             };
             this.SupplierService.addSupplier(dto).subscribe({
                 next: (response) => {
                     if (response.isSuccess) {
                         Helper.ShowSuccess(response.message || 'Supplier add successfully.');
                         console.log('check pharmacy id is null', this.pharmacyId)
-                        if (this.pharmacyId !== null) {
-                            this.router.navigate(['/pharmacy/supplier/list']);
-                        }
-                        else{
-                            this.router.navigate(['/admin/supplier/list']);
-                        }
-
+                        this.router.navigate(['/pharmacy/supplier/list']);
                     } else {
                         Helper.ShowError(this.errorMessage);
                     }
