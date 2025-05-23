@@ -48,4 +48,14 @@ namespace RepMed.Dtos
         public BasePurchaseInvoiceDto Invoice {  get; set; }
         public List<BasePurchaseInvoiceItemDto> Items { get; set; }
     }
+
+    public class FetchPODto
+    {
+        public long ItemId { get; set; }
+        public long ProductId { get; set; }
+        public string ProductName { get; set; }
+        public decimal MRP { get; set; }
+        public long Quantity { get; set; }
+
+    }
 }

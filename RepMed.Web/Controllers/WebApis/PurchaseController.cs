@@ -41,5 +41,29 @@ namespace RepMed.Web.Controllers.WebApis
                 }
             }
         }
+
+        [Route("fetch_po/{pharmacyId}")]
+        [HttpPost]
+        public async Task<IActionResult> FetchPO(string poNumber, long pharmacyId)
+        {
+            using (var db = new MySqlConnection(_appSettings.ConnectionString))
+            {
+                db.Open();
+                using (var tran = db.BeginTransaction())
+                {
+                    using (IPurchaseService purchaseService = new PurchaseService(db, tran))
+                    {
+                        var result = await purchaseService.FetchPO(poNumber, pharmacyId);
+                        if (!result.IsSuccess)
+                        {
+                            tran.Rollback();
+                            return BadRequest(result);
+                        }
+                        tran.Commit();
+                        return Ok(result);
+                    }
+                }
+            }
+        }
     }
 }

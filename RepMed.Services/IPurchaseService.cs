@@ -14,6 +14,7 @@ namespace RepMed.Services
     public interface IPurchaseService : IDisposable
     {
         Task<APIsResponse<AddPurchaseInvoiceDto>> AddPurchaseInvoice(AddPurchaseInvoiceDto reqDto);
+        Task<APIsResponse<List<FetchPODto>>> FetchPO(string FetchPO, long pharmacyId);
 
     }
     public class PurchaseService : BaseService, IPurchaseService
@@ -95,7 +96,7 @@ namespace RepMed.Services
 
                     #region Update Inventory
                     string query = DbTables.tblPharmacyInventory.SelectAll();
-                    var getInventory = _idbConnection.QueryFirst<EntityPharmacyInventoryDto>(query,_idbTransaction);
+                    var getInventory = _idbConnection.QueryFirst<EntityPharmacyInventoryDto>(query, _idbTransaction);
                     if (getInventory != null && item.ExpiryDate == getInventory.ExpiryDate)
                     {
                         var updateInventory = _idbConnection.Update<EntityPharmacyInventoryDto>(_idbTransaction, DbTables.tblPharmacyInventory,
@@ -139,14 +140,43 @@ namespace RepMed.Services
                 }
                 #endregion
                 return new APIsSuccsss<AddPurchaseInvoiceDto>("Supplier Added Successfully");
-                
+
             }
-            catch (Exception ex)    
+            catch (Exception ex)
             {
                 return await Task.FromResult(new APIsError<AddPurchaseInvoiceDto>(ex.GetActualError()));
             }
         }
 
+        public async Task<APIsResponse<List<FetchPODto>>> FetchPO(string poNumber, long pharmacyId)
+        {
+            try
+            {
+
+                string query = $@"
+                                    SELECT 
+                                        poi.Id AS ItemId,
+                                        poi.ProductId,
+                                        p.Name AS ProductName,
+                                        poi.Quantity,
+                                        p.MRP
+                                    FROM {DbTables.tblPurchaseOrders} po 
+                                    LEFT JOIN {DbTables.tblPurchaseOrderItems} poi ON poi.PurchaseOrderId = po.Id
+                                    LEFT JOIN {DbTables.tblProduct} p ON poi.ProductId = p.Id
+                                    WHERE po.PONumber = @PON";
+
+                var result = (await _idbConnection.QueryAsync<FetchPODto>(query, new { PON = poNumber },_idbTransaction)).ToList();
+                if (result.Any())
+                    return new APIsSuccsss<List<FetchPODto>> ("PO fetched successfully", result);
+                else
+                    return new APIsSuccsss<List<FetchPODto>> ("No data found");
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<List<FetchPODto>>(ex.GetActualError()));
+            }
+        }
         public void Dispose()
         {
             GC.SuppressFinalize(this);
