@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace RepMed.Web.Controllers.WebApis
 {
     [ApiExplorerSettings(GroupName = "admin")]
-    [Route("api/v1/admin/po")]
+    [Route("api/v1/admin/purchaseinvoice")]
     public class PurchaseController : BaseAccountsController
     {
         public PurchaseController(IOptions<AppSettings> appSettings) : base(appSettings)
