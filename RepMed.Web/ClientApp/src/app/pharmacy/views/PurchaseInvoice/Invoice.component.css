@@ -124,3 +124,48 @@ textarea {
   font-weight: 500;
   color: #28a745;
 }
+
+/* This css for make Item List attrective */
+.input-view-mode {
+  border: none;
+  background: transparent;
+  pointer-events: none;
+}
+.input-edit-mode {
+  border: 1px solid #ccc;
+  background: white;
+}
+.view-input {
+  border: none;
+  background: transparent;
+  pointer-events: none;
+  width: 100%;
+  color: #000; /* Make sure text is visible */
+}
+
+/* This css for make input field attrective */
+.custom-input {
+  border: none;
+  border-bottom: 1px solid transparent;
+  border-radius: 0;
+  box-shadow: none;
+  padding: 2px 4px;
+  width: 100%;
+  background-color: transparent;
+  outline: none;
+  transition: border-color 0.2s ease-in-out;
+  font-size: 14px;
+}
+
+.custom-input:focus {
+  border-bottom: 1px solid #007bff; /* Light blue focus line */
+}
+
+.small-input {
+  max-width: 60px !important;
+}
+
+.Midsmall-input {
+  max-width: 80px !important;
+}
+

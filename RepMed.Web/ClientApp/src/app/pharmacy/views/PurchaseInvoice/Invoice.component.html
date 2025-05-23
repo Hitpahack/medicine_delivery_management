@@ -1,34 +1,30 @@
 <div class="authentication">
-    <form [formGroup]="PurchaseInvoice" appAutoValidate (ngSubmit)="onSubmit()">
+    <form [formGroup]="PurchaseInvoice" appAutoValidate (ngSubmit)="fetchPOData()">
         <div class="form-grid">
             <div class="input-group mb-4">
-                <input type="text" id="PONumber" class="form-control" formControlName="PONumber"
+                <input type="text" id="PONumber" class="form-control" formControlName="poNumber"
                     placeholder="Enter PO Number" required>
-                <button type="button" class="btn btn-outline-primary" (click)="fetchPOData()">
+                <button type="submit" class="btn btn-outline-primary">
                     <i class="bi bi-search me-1"></i> Fetch
                 </button>
             </div>
         </div>
-
     </form>
 
     <div *ngIf="productList?.length > 0">
-        <table class="table table-bordered mt-3">
-            <thead class="table-dark">
+        <table class="table mt-3">
+            <thead class="table-dark text-white">
                 <tr>
-                    <th>PONumber</th>
-                    <th>Bill Date</th>
                     <th>Item Name</th>
-                    <th>Item ID</th>
-                    <th>Batch No</th>
-                    <th>Expiry (MM/YYYY)</th>
+                    <th>Batch</th>
+                    <th>Expiry</th>
                     <th>MRP</th>
                     <th>PTR</th>
                     <th>Qty</th>
-                    <th>Free Qty</th>
-                    <th>Lump. Disc</th>
-                    <th>Disc %</th>
-                    <th>Base Price</th>
+                    <th>Free</th>
+                    <th>Sch. Amt</th>
+                    <th>Disc%</th>
+                    <th>Base</th>
                     <th>GST</th>
                     <th>Amount</th>
                     <th>Action</th>
@@ -36,65 +32,77 @@
             </thead>
             <tbody>
                 <tr *ngFor="let item of productList; let i = index">
-                    <td>{{ item.PONumber }}</td>
-                    <td>{{ item.Billdate }}</td>
                     <td>
-                        <input *ngIf="editIndex === i" [(ngModel)]="item.Itemname" class="form-control">
-                        <span *ngIf="editIndex !== i">{{ item.Itemname }}</span>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.productName" readonly class="custom-input">
+                        <span *ngIf="editIndex !== i">{{ item.productName | slice:0:20 }}</span>
                     </td>
-                    <td>{{ item.ItemId }}</td>
                     <td>
-                        <input *ngIf="editIndex === i" [(ngModel)]="item.BatchNo" class="form-control">
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.BatchNo" placeholder="BGT54"
+                            class="custom-input">
                         <span *ngIf="editIndex !== i">{{ item.BatchNo }}</span>
                     </td>
                     <td>
-                        <input *ngIf="editIndex === i" [(ngModel)]="item.ExpiryDate" placeholder="MM/YYYY"
-                            class="form-control">
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.ExpiryDate" placeholder="MM/YY"
+                            class="custom-input Midsmall-input">
                         <span *ngIf="editIndex !== i">{{ item.ExpiryDate }}</span>
                     </td>
                     <td>
-                        <input *ngIf="editIndex === i" [(ngModel)]="item.MRP" class="form-control">
-                        <span *ngIf="editIndex !== i">{{ item.MRP }}</span>
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.mrp" readonly placeholder="₹"
+                            class="custom-input Midsmall-input">
+                        <span *ngIf="editIndex !== i">{{ item.mrp }}</span>
                     </td>
                     <td>
-                        <input *ngIf="editIndex === i" [(ngModel)]="item.PTR" class="form-control">
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.PTR" placeholder="₹"
+                            class="custom-input Midsmall-input">
                         <span *ngIf="editIndex !== i">{{ item.PTR }}</span>
                     </td>
                     <td>
-                        <input *ngIf="editIndex === i" [(ngModel)]="item.quantity" class="form-control">
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.quantity" class="custom-input Midsmall-input">
                         <span *ngIf="editIndex !== i">{{ item.quantity }}</span>
                     </td>
                     <td>
-                        <input *ngIf="editIndex === i" [(ngModel)]="item.freequantity" class="form-control">
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.freequantity" placeholder="10"
+                            class="custom-input Midsmall-input">
                         <span *ngIf="editIndex !== i">{{ item.freequantity }}</span>
                     </td>
                     <td>
-                        <input *ngIf="editIndex === i" [(ngModel)]="item.LumpsumDiscount" class="form-control">
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.LumpsumDiscount" placeholder="%"
+                            class="custom-input small-input">
                         <span *ngIf="editIndex !== i">{{ item.LumpsumDiscount }}</span>
                     </td>
                     <td>
-                        <input *ngIf="editIndex === i" [(ngModel)]="item.Discount" class="form-control">
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.Discount" placeholder="%"
+                            class="custom-input small-input">
                         <span *ngIf="editIndex !== i">{{ item.Discount }}</span>
                     </td>
                     <td>
-                        <input *ngIf="editIndex === i" [(ngModel)]="item.Baseprice" class="form-control">
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.Baseprice" placeholder="₹"
+                            class="custom-input">
                         <span *ngIf="editIndex !== i">{{ item.Baseprice }}</span>
                     </td>
                     <td>
-                        <input *ngIf="editIndex === i" [(ngModel)]="item.GST" class="form-control">
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.GST" placeholder="12%"
+                            class="custom-input small-input">
                         <span *ngIf="editIndex !== i">{{ item.GST }}</span>
                     </td>
                     <td>
-                        <input *ngIf="editIndex === i" [(ngModel)]="item.Amount" class="form-control">
+                        <input *ngIf="editIndex === i" [(ngModel)]="item.Amount" placeholder="₹" class="custom-input">
                         <span *ngIf="editIndex !== i">{{ item.Amount }}</span>
                     </td>
                     <td>
-                        <button *ngIf="editIndex !== i" class="btn btn-sm btn-warning"
-                            (click)="enableEdit(i)">Edit</button>
-                        <button *ngIf="editIndex === i" class="btn btn-sm btn-success"
-                            (click)="updateRow(i)">Update</button>
-                        <button *ngIf="editIndex === i" class="btn btn-sm btn-secondary ms-1"
-                            (click)="cancelEdit()">Cancel</button>
+                        <!-- Edit Button -->
+                        <button *ngIf="editIndex !== i" class="btn btn-sm btn-warning" (click)="enableEdit(i)">
+                            <i class="fas fa-edit"></i>
+                        </button>
+
+                        <div *ngIf="editIndex === i" class="d-flex gap-1">
+                            <button class="btn btn-sm btn-success" (click)="updateRow(i)" title="Update">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="btn btn-sm btn-secondary" (click)="cancelEdit()" title="Cancel">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
                     </td>
                 </tr>
             </tbody>

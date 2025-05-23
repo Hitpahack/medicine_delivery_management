@@ -115,8 +115,8 @@ export class AdminApiConfigService {
         updateitem: (id: number) => `${v1}/po/edit_po_item/${id}`
       },
       Invoice: {
-        getPOItemList: (poNumber: string) => `${v1}/purchaseorder/getproductlist/${poNumber}`,
-        updateItemDetails: () => `${v1}/purchaseorder/updateproductdetails`,
+        getPOItemList: (id: number) => `${v1}/purchaseinvoice/fetch_po/${id}`,
+        updateItemDetails: () => `${v1}/purchaseinvoice/updateproductdetails`,
       },
       CMS: {
         add: `${v1}/cms/addstaticpage`,
