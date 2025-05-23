@@ -47,6 +47,10 @@ namespace RepMed.Services
         Task<APIsResponse<EntityPOItemDto>> UpdatePOItem(long poItemId, long qty);
         Task<APIsResponse<bool>> SendPOEmail(long poId);
         Task<APIsResponse<Datatable<SupplierPagingResponse>>> GetSuppliers(SupplierPagingRequest reqDto);
+        Task<APIsResponse<EntitySupplierDto>> GetSupplier(long supplierId);
+        Task<APIsResponse<bool>> DeleteSupplier(long supplierId);
+        Task<APIsResponse<bool>> ChangeSupplierStatus(long supplierId, string status);
+
     }
     public class PurchaseOrderService : BaseService, IPurchaseOrderService
     {
@@ -64,9 +68,9 @@ namespace RepMed.Services
         {
             try
             {
+                #region Add New Supplier
                 if (Id == 0)
                 {
-                    #region Add New Supplier
                     reqDto.Status = "Active";
                     reqDto.CreatedAt = DateTime.Now;
                     reqDto.UpdatedAt = DateTime.Now;
@@ -75,18 +79,17 @@ namespace RepMed.Services
                                        DapperHelper.QueryAsColumnsParma<Supplier, BaseSupplierDto>(),
                                        DapperHelper.QueryAsValuesParma<Supplier, BaseSupplierDto>(),
                                        reqDto);
-                    #endregion
                     if (supplier != null)
                         return new APIsSuccsss<EntitySupplierDto>("Supplier Added Successfully", supplier);
                     else
                         return new APIsError<EntitySupplierDto>("Error inserting the supplier");
                 }
+                #endregion
                 else
                 {
                     #region Update Supplier Details
                     EntitySupplierDto entityRoleDto = _idbConnection.Update<EntitySupplierDto>(_idbTransaction, DbTables.tblSuppliers,
                     new Dictionary<string, object> {
-                    { nameof(EntitySupplierDto.Name), reqDto.Name},
                     { nameof(EntitySupplierDto.Address), reqDto.Address},
                     { nameof(EntitySupplierDto.Mobile), reqDto.Mobile},
                     { nameof(EntitySupplierDto.Email), reqDto.Email},
@@ -930,6 +933,69 @@ namespace RepMed.Services
             catch (Exception)
             {
                 return false;
+            }
+        }
+
+        public async Task<APIsResponse<EntitySupplierDto>> GetSupplier(long supplierId)
+        {
+            try
+            {
+                var sqlSupplier = DbTables.tblSuppliers.SelectAll("Id = @SupplierId");
+                EntitySupplierDto result = await _idbConnection.QueryFirstOrDefaultAsync<EntitySupplierDto>(
+                               sqlSupplier,
+                               new { SupplierId = supplierId },
+                               transaction: _idbTransaction
+                           );
+                if (result == null)
+                    return new APIsError<EntitySupplierDto>(_validateMessages.NotExist);
+                else
+                    return new APIsSuccsss<EntitySupplierDto>(_validateMessages.RetriveSuccess, result);
+
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<EntitySupplierDto>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<bool>> DeleteSupplier(long supplierId)
+        {
+            try
+            {
+                APIsResponse<bool> apiResponse = default(APIsResponse<bool>);
+                #region Delete Supplier
+                string deleteQuery = $@"DELETE FROM {DbTables.tblSuppliers} WHERE Id = @SupplierId;";
+                int rowsAffected = await _idbConnection.ExecuteAsync(deleteQuery, new { SupplierId = supplierId }, _idbTransaction);
+
+                if (rowsAffected > 0)
+                    apiResponse = new APIsSuccsss<bool>("Supplier deleted successfully.", true);
+                else
+                    apiResponse = new APIsSuccsss<bool>("Supplier not found.", true);
+                #endregion
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
+            }
+        }
+
+        public async Task<APIsResponse<bool>> ChangeSupplierStatus(long supplierId, string status)
+        {
+            try
+            {
+                APIsResponse<bool> apiResponse = default(APIsResponse<bool>);
+                EntitySupplierDto entityRoleDto = _idbConnection.Update<EntitySupplierDto>(_idbTransaction, DbTables.tblSuppliers,
+                   new Dictionary<string, object> {
+                    { nameof(EntitySupplierDto.Status), status},
+                   }, $@" {nameof(EntitySupplierDto.Id)}='{supplierId}' ", "RETURNING *");
+
+                apiResponse = new APIsSuccsss<bool>("Supplier status updated successfully ");
+                return apiResponse;
+            }
+            catch (Exception ex)
+            {
+                return await Task.FromResult(new APIsError<bool>(ex.GetActualError()));
             }
         }
     }
