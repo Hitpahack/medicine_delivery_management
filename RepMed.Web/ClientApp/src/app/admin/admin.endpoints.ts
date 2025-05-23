@@ -114,6 +114,10 @@ export class AdminApiConfigService {
         deletePOItem: (id: number) => `${v1}/po/delete_po_item/${id}`,
         updateitem: (id: number) => `${v1}/po/edit_po_item/${id}`
       },
+      Invoice: {
+        getPOItemList: (poNumber: string) => `${v1}/purchaseorder/getproductlist/${poNumber}`,
+        updateItemDetails: () => `${v1}/purchaseorder/updateproductdetails`,
+      },
       CMS: {
         add: `${v1}/cms/addstaticpage`,
         getbyid: (id: number) => `${v1}/cms/getstaticpage/${id}`,

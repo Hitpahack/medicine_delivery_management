@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { purchaseInvoice } from "../../../viewmodels/pharmacy/purchaseInvoice";
 import { FormBuilder, FormControl, FormsModule, FormGroup, ReactiveFormsModule, Validators, FormArray, FormControlName } from "@angular/forms";
 import { AutoValidateDirective } from 'src/app/common/form.validator';
@@ -7,6 +7,7 @@ import { CommonModule } from "@angular/common";
 import { Router } from "@angular/router";
 import { CustomValidator } from "../../../common/custom.validators";
 import { PurchaseOrderService } from "../../../pharmacy/services/purchaseorder/purchaseorder.services";
+import { InvoiceService } from "../../../pharmacy/services/invoice/invoice.service";
 @Component({
     selector: 'aap-purchase-Invoice',
     templateUrl: './Invoice.component.html',
@@ -21,6 +22,7 @@ export class PurchaseInvoice extends AdminBaseComponent implements OnInit {
         public fb: FormBuilder,
         public validator: CustomValidator,
         public PurchaseOrderService: PurchaseOrderService,
+        public InvoiceService: InvoiceService,
     ) {
         super(router, fb);
     }
@@ -28,10 +30,49 @@ export class PurchaseInvoice extends AdminBaseComponent implements OnInit {
     PurchaseInvoice: FormGroup;
     pharmacyId: string | null = null;
 
+    productList: any[] = [];
+    editIndex: number | null = null;
+
     ngOnInit(): void {
         this.pharmacyId = sessionStorage.getItem('pharmacyId');
         const id = Number(this.pharmacyId);
         this.PurchaseInvoice = this.initForm();
+    }
+
+
+    fetchPOData() {
+        const poNumber = this.PurchaseInvoice.get('PONumber')?.value;
+        if (!poNumber) return;
+        this.InvoiceService.getProductListByPONumber(poNumber).subscribe((response) => {
+            if (response?.isSuccess && response.data) {
+                this.productList = response || [];
+            } else {
+                console.error("Failed to load Item data", response);
+            }
+        });
+    }
+
+    enableEdit(index: number) {
+        this.editIndex = index;
+    }
+
+    cancelEdit() {
+        this.editIndex = null;
+    }
+
+    updateRow(index: number) {
+        const updatedItem = this.productList[index];
+
+        this.InvoiceService.updateProductDetails(updatedItem).subscribe(
+            (res) => {
+                alert('Record updated successfully!');
+                this.fetchPOData(); // Refresh
+                this.editIndex = null;
+            },
+            (err) => {
+                console.error('Error updating row:', err);
+            }
+        );
     }
 
     initForm(): FormGroup {
