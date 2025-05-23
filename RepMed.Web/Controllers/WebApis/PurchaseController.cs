@@ -44,7 +44,7 @@ namespace RepMed.Web.Controllers.WebApis
 
         [Route("fetch_po/{pharmacyId}")]
         [HttpPost]
-        public async Task<IActionResult> FetchPO(string poNumber, long pharmacyId)
+        public async Task<IActionResult> FetchPO(FetchPoRequestDto reqDto, long pharmacyId)
         {
             using (var db = new MySqlConnection(_appSettings.ConnectionString))
             {
@@ -53,7 +53,7 @@ namespace RepMed.Web.Controllers.WebApis
                 {
                     using (IPurchaseService purchaseService = new PurchaseService(db, tran))
                     {
-                        var result = await purchaseService.FetchPO(poNumber, pharmacyId);
+                        var result = await purchaseService.FetchPO(reqDto.PoNumber, pharmacyId);
                         if (!result.IsSuccess)
                         {
                             tran.Rollback();

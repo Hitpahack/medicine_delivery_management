@@ -58,4 +58,9 @@ namespace RepMed.Dtos
         public long Quantity { get; set; }
 
     }
+
+    public class FetchPoRequestDto
+    {
+        public string PoNumber { get; set; }
+    }
 }
