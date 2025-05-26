@@ -245,7 +245,7 @@ export class PoListComponent extends AdminBaseComponent implements OnInit, After
                     render: (data, type, row) => {
                         return `
                    <i class="fa fa-envelope emailsend" data-id="${data.purchaseOrderId}" style="cursor:pointer; color:blue; margin-right:10px;" title="Email"></i>
-                   <i class="fa fa-whatsapp whatsappmsgsend" data-id="${row.id}" style="cursor:pointer; color:green; margin-right:10px;" title="WhatsApp"></i>
+                   <i class="fab fa-whatsapp whatsappmsgsend" data-id="${row.id}" style="cursor:pointer; color:green; margin-right:10px;" title="WhatsApp"></i>
                    <i class="fa fa-trash deletepo" data-id="${data.purchaseOrderId}"
                    style="cursor: pointer; color: red; ${data.status !== 'Pending' ? 'pointer-events: none; opacity: 0.5;' : ''}"
                    title="${data.status !== 'Pending' ? 'Only pending orders can be deleted' : 'Delete'}">
